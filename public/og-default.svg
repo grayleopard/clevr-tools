@@ -1,0 +1,6 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1D4ED8"/>
+  <text x="600" y="270" font-family="system-ui,sans-serif" font-size="72" font-weight="bold" fill="white" text-anchor="middle">clevr.tools</text>
+  <text x="600" y="360" font-family="system-ui,sans-serif" font-size="28" fill="rgba(255,255,255,0.8)" text-anchor="middle">Free Online File Utilities</text>
+  <text x="600" y="420" font-family="system-ui,sans-serif" font-size="20" fill="rgba(255,255,255,0.6)" text-anchor="middle">No signup · Files stay in your browser</text>
+</svg>
