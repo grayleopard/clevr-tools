@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
+import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { Slider } from "@/components/ui/slider";
@@ -14,6 +15,7 @@ import { truncateFilename } from "@/lib/utils";
 interface CompressedFile {
   file: File;
   originalFile: File;
+  originalUrl: string;
   url: string;
 }
 
@@ -33,7 +35,10 @@ export default function ImageCompressor() {
     if (files.length === 0) return;
     setIsProcessing(true);
     setResults((prev) => {
-      prev.forEach((r) => URL.revokeObjectURL(r.url));
+      prev.forEach((r) => {
+        URL.revokeObjectURL(r.url);
+        URL.revokeObjectURL(r.originalUrl);
+      });
       return [];
     });
 
@@ -52,7 +57,12 @@ export default function ImageCompressor() {
           fmt === "jpeg" ? "jpg" : fmt === "webp" ? "webp" : originalFile.name.split(".").pop() ?? "jpg";
         const baseName = originalFile.name.replace(/\.[^.]+$/, "");
         const newFile = new File([compressedBlob], `${baseName}-compressed.${ext}`, { type: mimeType });
-        compressed.push({ file: newFile, originalFile, url: URL.createObjectURL(newFile) });
+        compressed.push({
+          file: newFile,
+          originalFile,
+          originalUrl: URL.createObjectURL(originalFile),
+          url: URL.createObjectURL(newFile),
+        });
       }
       setResults(compressed);
     } catch (err) {
@@ -96,7 +106,10 @@ export default function ImageCompressor() {
   }, [results]);
 
   const reset = useCallback(() => {
-    results.forEach((r) => URL.revokeObjectURL(r.url));
+    results.forEach((r) => {
+      URL.revokeObjectURL(r.url);
+      URL.revokeObjectURL(r.originalUrl);
+    });
     setResults([]);
     setDownloaded(false);
     sourceFilesRef.current = [];
@@ -157,17 +170,26 @@ export default function ImageCompressor() {
 
       {/* 4. Results (pre-download) */}
       {results.length > 0 && !isProcessing && !downloaded && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           <h2 className="text-sm font-semibold">Results</h2>
           {results.map((r, i) => (
-            <DownloadCard
-              key={i}
-              href={r.url}
-              filename={r.file.name}
-              fileSize={r.file.size}
-              originalSize={r.originalFile.size}
-              onDownload={() => setDownloaded(true)}
-            />
+            <div key={i} className="space-y-3">
+              <ImagePreviewCard
+                originalUrl={r.originalUrl}
+                originalName={r.originalFile.name}
+                originalSize={r.originalFile.size}
+                processedUrl={r.url}
+                processedName={r.file.name}
+                processedSize={r.file.size}
+              />
+              <DownloadCard
+                href={r.url}
+                filename={r.file.name}
+                fileSize={r.file.size}
+                originalSize={r.originalFile.size}
+                onDownload={() => setDownloaded(true)}
+              />
+            </div>
           ))}
           {results.length > 1 && (
             <button

@@ -20,9 +20,6 @@ export default function Footer() {
             <Link href="/privacy" className="hover:text-foreground transition-colors">
               Privacy
             </Link>
-            <Link href="/about" className="hover:text-foreground transition-colors">
-              About
-            </Link>
           </nav>
         </div>
       </div>

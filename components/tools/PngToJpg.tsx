@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
+import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { Slider } from "@/components/ui/slider";
@@ -11,6 +12,8 @@ import { truncateFilename } from "@/lib/utils";
 interface Result {
   url: string;
   filename: string;
+  originalName: string;
+  originalUrl: string;
   size: number;
   originalSize: number;
 }
@@ -26,6 +29,10 @@ export default function PngToJpg() {
       const file = files[0];
       if (!file) return;
       setIsProcessing(true);
+      if (result) {
+        URL.revokeObjectURL(result.url);
+        URL.revokeObjectURL(result.originalUrl);
+      }
       setResult(null);
       setDownloaded(false);
 
@@ -50,19 +57,29 @@ export default function PngToJpg() {
         });
 
         const baseName = file.name.replace(/\.png$/i, "");
-        const url = URL.createObjectURL(blob);
-        setResult({ url, filename: `${baseName}.jpg`, size: blob.size, originalSize: file.size });
+        setResult({
+          url: URL.createObjectURL(blob),
+          filename: `${baseName}.jpg`,
+          originalName: file.name,
+          originalUrl: URL.createObjectURL(file),
+          size: blob.size,
+          originalSize: file.size,
+        });
       } catch (err) {
         console.error("Conversion failed:", err);
       } finally {
         setIsProcessing(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [quality]
   );
 
   const reset = useCallback(() => {
-    if (result) URL.revokeObjectURL(result.url);
+    if (result) {
+      URL.revokeObjectURL(result.url);
+      URL.revokeObjectURL(result.originalUrl);
+    }
     setResult(null);
     setDownloaded(false);
   }, [result]);
@@ -99,6 +116,14 @@ export default function PngToJpg() {
       {result && !isProcessing && !downloaded && (
         <div className="space-y-3">
           <h2 className="text-sm font-semibold">Result</h2>
+          <ImagePreviewCard
+            originalUrl={result.originalUrl}
+            originalName={result.originalName}
+            originalSize={result.originalSize}
+            processedUrl={result.url}
+            processedName={result.filename}
+            processedSize={result.size}
+          />
           <DownloadCard
             href={result.url}
             filename={result.filename}

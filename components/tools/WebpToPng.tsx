@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
+import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import JSZip from "jszip";
@@ -15,6 +16,7 @@ interface Result {
   size: number;
   originalSize: number;
   originalName: string;
+  originalUrl: string;
 }
 
 export default function WebpToPng() {
@@ -53,6 +55,7 @@ export default function WebpToPng() {
           size: blob.size,
           originalSize: file.size,
           originalName: file.name,
+          originalUrl: URL.createObjectURL(file),
         });
       } catch (err) {
         console.error(`Failed to convert ${file.name}:`, err);
@@ -80,7 +83,10 @@ export default function WebpToPng() {
   }, [results]);
 
   const reset = useCallback(() => {
-    results.forEach((r) => URL.revokeObjectURL(r.url));
+    results.forEach((r) => {
+      URL.revokeObjectURL(r.url);
+      URL.revokeObjectURL(r.originalUrl);
+    });
     setResults([]);
     setDownloaded(false);
   }, [results]);
@@ -95,17 +101,26 @@ export default function WebpToPng() {
 
       {/* 3. Results (pre-download) */}
       {results.length > 0 && !isProcessing && !downloaded && (
-        <div className="space-y-3">
+        <div className="space-y-4">
           <h2 className="text-sm font-semibold">Results</h2>
           {results.map((r, i) => (
-            <DownloadCard
-              key={i}
-              href={r.url}
-              filename={r.filename}
-              fileSize={r.size}
-              originalSize={r.originalSize}
-              onDownload={() => setDownloaded(true)}
-            />
+            <div key={i} className="space-y-3">
+              <ImagePreviewCard
+                originalUrl={r.originalUrl}
+                originalName={r.originalName}
+                originalSize={r.originalSize}
+                processedUrl={r.url}
+                processedName={r.filename}
+                processedSize={r.size}
+              />
+              <DownloadCard
+                href={r.url}
+                filename={r.filename}
+                fileSize={r.size}
+                originalSize={r.originalSize}
+                onDownload={() => setDownloaded(true)}
+              />
+            </div>
           ))}
           {results.length > 1 && (
             <button
