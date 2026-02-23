@@ -6,6 +6,7 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
+import { toPng } from "@/lib/processors";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -32,22 +33,7 @@ export default function JpgToPng() {
 
     for (const file of files) {
       try {
-        const bitmap = await createImageBitmap(file);
-        const canvas = document.createElement("canvas");
-        canvas.width = bitmap.width;
-        canvas.height = bitmap.height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) continue;
-        ctx.drawImage(bitmap, 0, 0);
-        bitmap.close();
-
-        const blob = await new Promise<Blob>((resolve, reject) => {
-          canvas.toBlob(
-            (b) => (b ? resolve(b) : reject(new Error("Conversion failed"))),
-            "image/png"
-          );
-        });
-
+        const blob = await toPng(file);
         const baseName = file.name.replace(/\.(jpg|jpeg)$/i, "");
         converted.push({
           url: URL.createObjectURL(blob),

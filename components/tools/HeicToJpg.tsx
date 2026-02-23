@@ -7,6 +7,7 @@ import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { Slider } from "@/components/ui/slider";
+import { heicToJpg } from "@/lib/processors";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -32,27 +33,18 @@ export default function HeicToJpg() {
       setResults([]);
       setDownloaded(false);
       const converted: Result[] = [];
-      // Dynamic import keeps heic2any out of the SSR bundle (it accesses window at module level)
-      const heic2any = (await import("heic2any")).default;
 
       for (const file of files) {
         try {
-          const blob = await heic2any({
-            blob: file,
-            toType: "image/jpeg",
-            quality: quality / 100,
-          });
-
-          const outputBlob = Array.isArray(blob) ? blob[0] : blob;
+          const blob = await heicToJpg(file, quality);
           const baseName = file.name.replace(/\.(heic|heif)$/i, "");
           converted.push({
-            url: URL.createObjectURL(outputBlob),
+            url: URL.createObjectURL(blob),
             filename: `${baseName}.jpg`,
-            size: outputBlob.size,
+            size: blob.size,
             originalSize: file.size,
             originalName: file.name,
-            // HEIC files can't be displayed natively in most browsers;
-            // the preview component handles this gracefully with a fallback.
+            // HEIC originals may not preview in all browsers — ImagePreviewCard handles gracefully
             originalUrl: URL.createObjectURL(file),
           });
         } catch (err) {

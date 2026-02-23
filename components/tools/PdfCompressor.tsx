@@ -5,7 +5,7 @@ import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
-import { PDFDocument } from "pdf-lib";
+import { compressPdf } from "@/lib/processors";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -16,26 +16,6 @@ interface Result {
   size: number;
   originalSize: number;
   originalName: string;
-}
-
-async function compressPdf(file: File): Promise<Blob> {
-  const arrayBuffer = await file.arrayBuffer();
-  const pdfDoc = await PDFDocument.load(arrayBuffer, {
-    ignoreEncryption: true,
-    updateMetadata: false,
-  });
-  pdfDoc.setTitle("");
-  pdfDoc.setAuthor("");
-  pdfDoc.setSubject("");
-  pdfDoc.setKeywords([]);
-  pdfDoc.setProducer("");
-  pdfDoc.setCreator("");
-  const compressed = await pdfDoc.save({
-    useObjectStreams: true,
-    addDefaultPage: false,
-    objectsPerTick: 50,
-  });
-  return new Blob([compressed.buffer.slice(0) as ArrayBuffer], { type: "application/pdf" });
 }
 
 export default function PdfCompressor() {

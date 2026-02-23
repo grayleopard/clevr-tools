@@ -7,6 +7,7 @@ import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { Slider } from "@/components/ui/slider";
+import { toWebp } from "@/lib/processors";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -35,23 +36,7 @@ export default function PngToWebp() {
 
       for (const file of files) {
         try {
-          const bitmap = await createImageBitmap(file);
-          const canvas = document.createElement("canvas");
-          canvas.width = bitmap.width;
-          canvas.height = bitmap.height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) continue;
-          ctx.drawImage(bitmap, 0, 0);
-          bitmap.close();
-
-          const blob = await new Promise<Blob>((resolve, reject) => {
-            canvas.toBlob(
-              (b) => (b ? resolve(b) : reject(new Error("Conversion failed"))),
-              "image/webp",
-              quality / 100
-            );
-          });
-
+          const blob = await toWebp(file, quality);
           const baseName = file.name.replace(/\.png$/i, "");
           converted.push({
             url: URL.createObjectURL(blob),

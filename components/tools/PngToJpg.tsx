@@ -7,6 +7,7 @@ import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { Slider } from "@/components/ui/slider";
+import { toJpg } from "@/lib/processors";
 import { truncateFilename } from "@/lib/utils";
 
 interface Result {
@@ -29,33 +30,17 @@ export default function PngToJpg() {
       const file = files[0];
       if (!file) return;
       setIsProcessing(true);
-      if (result) {
-        URL.revokeObjectURL(result.url);
-        URL.revokeObjectURL(result.originalUrl);
-      }
-      setResult(null);
+      setResult((prev) => {
+        if (prev) {
+          URL.revokeObjectURL(prev.url);
+          URL.revokeObjectURL(prev.originalUrl);
+        }
+        return null;
+      });
       setDownloaded(false);
 
       try {
-        const bitmap = await createImageBitmap(file);
-        const canvas = document.createElement("canvas");
-        canvas.width = bitmap.width;
-        canvas.height = bitmap.height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) throw new Error("Could not get canvas context");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(bitmap, 0, 0);
-        bitmap.close();
-
-        const blob = await new Promise<Blob>((resolve, reject) => {
-          canvas.toBlob(
-            (b) => (b ? resolve(b) : reject(new Error("Conversion failed"))),
-            "image/jpeg",
-            quality / 100
-          );
-        });
-
+        const blob = await toJpg(file, quality);
         const baseName = file.name.replace(/\.png$/i, "");
         setResult({
           url: URL.createObjectURL(blob),
@@ -71,18 +56,19 @@ export default function PngToJpg() {
         setIsProcessing(false);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [quality]
   );
 
   const reset = useCallback(() => {
-    if (result) {
-      URL.revokeObjectURL(result.url);
-      URL.revokeObjectURL(result.originalUrl);
-    }
-    setResult(null);
+    setResult((prev) => {
+      if (prev) {
+        URL.revokeObjectURL(prev.url);
+        URL.revokeObjectURL(prev.originalUrl);
+      }
+      return null;
+    });
     setDownloaded(false);
-  }, [result]);
+  }, []);
 
   return (
     <div className="space-y-6">

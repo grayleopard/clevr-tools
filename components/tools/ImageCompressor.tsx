@@ -7,7 +7,7 @@ import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { Slider } from "@/components/ui/slider";
-import imageCompression from "browser-image-compression";
+import { compressImage, type ImageOutputFormat } from "@/lib/processors";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -19,11 +19,9 @@ interface CompressedFile {
   url: string;
 }
 
-type OutputFormat = "original" | "jpeg" | "webp";
-
 export default function ImageCompressor() {
   const [quality, setQuality] = useState(80);
-  const [outputFormat, setOutputFormat] = useState<OutputFormat>("original");
+  const [outputFormat, setOutputFormat] = useState<ImageOutputFormat>("original");
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<CompressedFile[]>([]);
   const [downloaded, setDownloaded] = useState(false);
@@ -31,46 +29,44 @@ export default function ImageCompressor() {
   const sourceFilesRef = useRef<File[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const compress = useCallback(async (files: File[], q: number, fmt: OutputFormat) => {
-    if (files.length === 0) return;
-    setIsProcessing(true);
-    setResults((prev) => {
-      prev.forEach((r) => {
-        URL.revokeObjectURL(r.url);
-        URL.revokeObjectURL(r.originalUrl);
+  const compress = useCallback(
+    async (files: File[], q: number, fmt: ImageOutputFormat) => {
+      if (files.length === 0) return;
+      setIsProcessing(true);
+      setResults((prev) => {
+        prev.forEach((r) => {
+          URL.revokeObjectURL(r.url);
+          URL.revokeObjectURL(r.originalUrl);
+        });
+        return [];
       });
-      return [];
-    });
 
-    try {
-      const compressed: CompressedFile[] = [];
-      for (const originalFile of files) {
-        const mimeType =
-          fmt === "jpeg" ? "image/jpeg" : fmt === "webp" ? "image/webp" : originalFile.type;
-        const compressedBlob = await imageCompression(originalFile, {
-          maxSizeMB: 100,
-          initialQuality: q / 100,
-          useWebWorker: true,
-          fileType: mimeType,
-        });
-        const ext =
-          fmt === "jpeg" ? "jpg" : fmt === "webp" ? "webp" : originalFile.name.split(".").pop() ?? "jpg";
-        const baseName = originalFile.name.replace(/\.[^.]+$/, "");
-        const newFile = new File([compressedBlob], `${baseName}-compressed.${ext}`, { type: mimeType });
-        compressed.push({
-          file: newFile,
-          originalFile,
-          originalUrl: URL.createObjectURL(originalFile),
-          url: URL.createObjectURL(newFile),
-        });
+      try {
+        const compressed: CompressedFile[] = [];
+        for (const originalFile of files) {
+          const { blob, ext, mimeType } = await compressImage(originalFile, q, fmt);
+          const baseName = originalFile.name.replace(/\.[^.]+$/, "");
+          const newFile = new File(
+            [blob],
+            `${baseName}-compressed.${ext}`,
+            { type: mimeType }
+          );
+          compressed.push({
+            file: newFile,
+            originalFile,
+            originalUrl: URL.createObjectURL(originalFile),
+            url: URL.createObjectURL(newFile),
+          });
+        }
+        setResults(compressed);
+      } catch (err) {
+        console.error("Compression failed:", err);
+      } finally {
+        setIsProcessing(false);
       }
-      setResults(compressed);
-    } catch (err) {
-      console.error("Compression failed:", err);
-    } finally {
-      setIsProcessing(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const handleFiles = useCallback(
     (files: File[]) => {
@@ -148,7 +144,7 @@ export default function ImageCompressor() {
         <div className="space-y-2">
           <label className="text-sm font-medium">Output format</label>
           <div className="flex gap-2">
-            {(["original", "jpeg", "webp"] as OutputFormat[]).map((fmt) => (
+            {(["original", "jpeg", "webp"] as ImageOutputFormat[]).map((fmt) => (
               <button
                 key={fmt}
                 onClick={() => setOutputFormat(fmt)}

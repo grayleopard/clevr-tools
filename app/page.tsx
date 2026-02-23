@@ -1,8 +1,8 @@
 import { tools, toolCategories } from "@/lib/tools";
 import ToolCard from "@/components/tool/ToolCard";
+import SmartConverter from "@/components/home/SmartConverter";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { Zap } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -23,26 +23,33 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent px-4 py-16 text-center sm:px-6 sm:py-24">
-          <div className="mx-auto max-w-3xl">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
-              <Zap className="h-3.5 w-3.5" />
-              100% Free · No Signup · Files stay in your browser
+        {/* Hero — Smart Converter */}
+        <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent">
+          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+            {/* Headline */}
+            <div className="mb-8 text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
+                <span>100% Free · No Signup · Files stay in your browser</span>
+              </div>
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                Drop any file.{" "}
+                <span className="text-primary">We&apos;ll handle the rest.</span>
+              </h1>
+              <p className="mt-3 text-muted-foreground sm:text-lg">
+                Free file tools powered by your browser. No upload. No signup. No BS.
+              </p>
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl">
-              Smart tools for{" "}
-              <span className="text-primary">everyday files</span>
-            </h1>
-            <p className="mt-4 text-muted-foreground text-base sm:text-lg">
-              Compress, convert, and generate. All processing happens locally in your browser —
-              your files never touch our servers.
-            </p>
+
+            {/* Smart converter */}
+            <SmartConverter />
           </div>
         </section>
 
-        {/* Tools grid */}
+        {/* Tools grid — browsing + SEO */}
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+          <p className="mb-6 text-sm text-muted-foreground">
+            Or browse all tools:
+          </p>
           {categories.map((cat) => {
             const catTools = tools.filter((t) => t.category === cat.id);
             if (catTools.length === 0) return null;

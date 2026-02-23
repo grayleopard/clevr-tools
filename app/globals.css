@@ -128,3 +128,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+
+.animate-bob {
+  animation: bob 2.8s ease-in-out infinite;
+}
