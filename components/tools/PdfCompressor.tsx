@@ -6,6 +6,7 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { compressPdf } from "@/lib/processors";
+import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -73,6 +74,8 @@ export default function PdfCompressor() {
 
   return (
     <div className="space-y-6">
+      <PageDragOverlay onFiles={handleFiles} />
+
       {/* Info banner */}
       <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
         Strips embedded metadata and uses object streams to reduce file size. Works best on PDFs with verbose metadata or unoptimized structure.

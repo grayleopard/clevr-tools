@@ -15,8 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  const liveTools = tools.filter((t) => t.live !== false);
   const categories = toolCategories.filter((cat) =>
-    tools.some((t) => t.category === cat.id)
+    liveTools.some((t) => t.category === cat.id)
   );
 
   return (
@@ -51,7 +52,7 @@ export default function HomePage() {
             Or browse all tools:
           </p>
           {categories.map((cat) => {
-            const catTools = tools.filter((t) => t.category === cat.id);
+            const catTools = liveTools.filter((t) => t.category === cat.id);
             if (catTools.length === 0) return null;
             return (
               <div key={cat.id} className="mb-12">

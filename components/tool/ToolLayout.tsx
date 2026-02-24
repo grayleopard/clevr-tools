@@ -18,8 +18,8 @@ export default function ToolLayout({ tool, children, structuredData }: ToolLayou
     "@type": "SoftwareApplication",
     name: tool.name,
     description: tool.metaDescription,
-    applicationCategory: "UtilitiesApplication",
-    operatingSystem: "Web",
+    applicationCategory: "BrowserApplication",
+    operatingSystem: "Any",
     offers: {
       "@type": "Offer",
       price: "0",

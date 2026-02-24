@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: tool.metaDescription,
       url: `https://clevr.tools${tool.route}`,
       siteName: "clevr.tools",
-      images: ["/og-default.png"],
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",

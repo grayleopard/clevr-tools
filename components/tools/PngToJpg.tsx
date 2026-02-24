@@ -8,6 +8,7 @@ import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { PasteToast } from "@/components/tool/PasteToast";
 import { usePasteImage } from "@/lib/usePasteImage";
+import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { toJpg } from "@/lib/processors";
 import { truncateFilename } from "@/lib/utils";
@@ -77,6 +78,7 @@ export default function PngToJpg() {
   return (
     <div className="space-y-6">
       <PasteToast show={pasteToast} />
+      <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
       <FileDropZone accept=".png" multiple={false} maxSizeMB={50} onFiles={handleFiles} />

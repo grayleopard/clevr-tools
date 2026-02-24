@@ -8,6 +8,7 @@ import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { PasteToast } from "@/components/tool/PasteToast";
 import { usePasteImage } from "@/lib/usePasteImage";
+import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { toWebp } from "@/lib/processors";
 import JSZip from "jszip";
@@ -89,6 +90,7 @@ export default function PngToWebp() {
   return (
     <div className="space-y-6">
       <PasteToast show={pasteToast} />
+      <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
       <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} />
