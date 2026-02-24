@@ -6,6 +6,8 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
+import { PasteToast } from "@/components/tool/PasteToast";
+import { usePasteImage } from "@/lib/usePasteImage";
 import { toPng } from "@/lib/processors";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
@@ -52,6 +54,8 @@ export default function JpgToPng() {
     setIsProcessing(false);
   }, []);
 
+  const { pasteToast } = usePasteImage((file) => handleFiles([file]));
+
   const downloadAll = useCallback(async () => {
     if (results.length < 2) return;
     const zip = new JSZip();
@@ -79,6 +83,8 @@ export default function JpgToPng() {
 
   return (
     <div className="space-y-6">
+      <PasteToast show={pasteToast} />
+
       {/* 1. Drop zone */}
       <FileDropZone accept=".jpg,.jpeg" multiple maxSizeMB={50} onFiles={handleFiles} />
 

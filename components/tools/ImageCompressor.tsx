@@ -6,6 +6,8 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
+import { PasteToast } from "@/components/tool/PasteToast";
+import { usePasteImage } from "@/lib/usePasteImage";
 import { Slider } from "@/components/ui/slider";
 import { compressImage, type ImageOutputFormat } from "@/lib/processors";
 import JSZip from "jszip";
@@ -77,6 +79,8 @@ export default function ImageCompressor() {
     [quality, outputFormat, compress]
   );
 
+  const { pasteToast } = usePasteImage((file) => handleFiles([file]));
+
   useEffect(() => {
     if (sourceFilesRef.current.length === 0) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -113,6 +117,8 @@ export default function ImageCompressor() {
 
   return (
     <div className="space-y-6">
+      <PasteToast show={pasteToast} />
+
       {/* 1. Drop zone */}
       <FileDropZone
         accept=".jpg,.jpeg,.png,.webp"

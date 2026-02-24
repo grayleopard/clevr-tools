@@ -6,6 +6,8 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
+import { PasteToast } from "@/components/tool/PasteToast";
+import { usePasteImage } from "@/lib/usePasteImage";
 import { Slider } from "@/components/ui/slider";
 import { toJpg } from "@/lib/processors";
 import { truncateFilename } from "@/lib/utils";
@@ -59,6 +61,8 @@ export default function PngToJpg() {
     [quality]
   );
 
+  const { pasteToast } = usePasteImage((file) => handleFiles([file]));
+
   const reset = useCallback(() => {
     setResult((prev) => {
       if (prev) {
@@ -72,6 +76,8 @@ export default function PngToJpg() {
 
   return (
     <div className="space-y-6">
+      <PasteToast show={pasteToast} />
+
       {/* 1. Drop zone */}
       <FileDropZone accept=".png" multiple={false} maxSizeMB={50} onFiles={handleFiles} />
 

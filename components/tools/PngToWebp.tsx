@@ -6,6 +6,8 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
+import { PasteToast } from "@/components/tool/PasteToast";
+import { usePasteImage } from "@/lib/usePasteImage";
 import { Slider } from "@/components/ui/slider";
 import { toWebp } from "@/lib/processors";
 import JSZip from "jszip";
@@ -57,6 +59,8 @@ export default function PngToWebp() {
     [quality]
   );
 
+  const { pasteToast } = usePasteImage((file) => handleFiles([file]));
+
   const downloadAll = useCallback(async () => {
     if (results.length < 2) return;
     const zip = new JSZip();
@@ -84,6 +88,8 @@ export default function PngToWebp() {
 
   return (
     <div className="space-y-6">
+      <PasteToast show={pasteToast} />
+
       {/* 1. Drop zone */}
       <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} />
 

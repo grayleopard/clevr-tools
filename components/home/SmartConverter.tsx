@@ -19,6 +19,8 @@ import type { LucideIcon } from "lucide-react";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import ToolCard from "@/components/tool/ToolCard";
 import AdSlot from "@/components/tool/AdSlot";
+import { PasteToast } from "@/components/tool/PasteToast";
+import { usePasteImage } from "@/lib/usePasteImage";
 import { getToolBySlug, getRelatedTools } from "@/lib/tools";
 import {
   compressImage,
@@ -508,21 +510,6 @@ export default function SmartConverter() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Clipboard paste ───────────────────────────────────────────────────────
-
-  useEffect(() => {
-    const handlePaste = (e: ClipboardEvent) => {
-      const items = Array.from(e.clipboardData?.items ?? []);
-      const imageItem = items.find((i) => i.type.startsWith("image/"));
-      if (!imageItem) return;
-      const file = imageItem.getAsFile();
-      if (file) processFile(file);
-    };
-    document.addEventListener("paste", handlePaste);
-    return () => document.removeEventListener("paste", handlePaste);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // ── URL cleanup on unmount ────────────────────────────────────────────────
 
   useEffect(() => {
@@ -567,6 +554,9 @@ export default function SmartConverter() {
     setDetected({ file, type, previewUrl, dimensions });
     setStage("detected");
   }, []);
+
+  // Clipboard paste — feeds directly into processFile (same as drop)
+  const { pasteToast } = usePasteImage(processFile);
 
   const handleAction = useCallback(
     async (actionId: ActionId) => {
@@ -751,6 +741,8 @@ export default function SmartConverter() {
         className="hidden"
         onChange={handleFileInput}
       />
+
+      <PasteToast show={pasteToast} />
     </>
   );
 }
