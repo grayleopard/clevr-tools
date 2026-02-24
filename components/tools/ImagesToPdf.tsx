@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
@@ -82,6 +83,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
     setDownloaded(false);
   }, []);
 
+  useAutoLoadFile(addFiles);
   usePasteImage((file) => addFiles([file]));
 
   const removeFile = useCallback((id: string) => {

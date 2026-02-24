@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
@@ -63,6 +64,7 @@ export default function HeicToJpg() {
     [quality]
   );
 
+  useAutoLoadFile(handleFiles);
   usePasteImage((file) => handleFiles([file]));
 
   const downloadAll = useCallback(async () => {

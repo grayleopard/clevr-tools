@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
@@ -46,6 +47,8 @@ export default function MergePdf() {
     setResultUrl(null);
     setDownloaded(false);
   }, []);
+
+  useAutoLoadFile(addFiles);
 
   const removeFile = useCallback((id: string) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));

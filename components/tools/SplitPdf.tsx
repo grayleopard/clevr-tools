@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
@@ -57,6 +58,8 @@ export default function SplitPdf() {
       setIsLoading(false);
     }
   }, []);
+
+  useAutoLoadFile(handleFiles);
 
   const togglePage = useCallback((index: number) => {
     setSelectedPages((prev) => {

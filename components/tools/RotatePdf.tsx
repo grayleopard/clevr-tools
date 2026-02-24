@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
@@ -55,6 +56,8 @@ export default function RotatePdf() {
       setIsLoading(false);
     }
   }, []);
+
+  useAutoLoadFile(handleFiles);
 
   const rotatePage = useCallback((index: number) => {
     setPages((prev) => {

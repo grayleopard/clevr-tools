@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
@@ -59,6 +60,8 @@ export default function PdfCompressor() {
       addToast(`${processed.length} PDFs compressed`, "success");
     }
   }, []);
+
+  useAutoLoadFile(handleFiles);
 
   const downloadAll = useCallback(async () => {
     if (results.length < 2) return;

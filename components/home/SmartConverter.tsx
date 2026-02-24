@@ -10,29 +10,15 @@ import {
   Minimize2,
   Smartphone,
   X,
-  Download,
-  RotateCcw,
-  ArrowRight,
-  RefreshCw,
-  Sparkles,
   Scissors,
   RotateCw,
+  Sparkles,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
-import ToolCard from "@/components/tool/ToolCard";
 import AdSlot from "@/components/tool/AdSlot";
 import { usePasteImage } from "@/lib/usePasteImage";
 import { addToast } from "@/lib/toast";
-import { getToolBySlug, getRelatedTools } from "@/lib/tools";
-import {
-  compressImage,
-  toJpg,
-  toPng,
-  toWebp,
-  heicToJpg,
-  compressPdf,
-} from "@/lib/processors";
+import { setPendingFile } from "@/lib/file-handoff";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -47,23 +33,13 @@ type ActionId =
   | "pdf-to-jpg"
   | "split-pdf"
   | "rotate-pdf";
-type Stage = "idle" | "detected" | "processing" | "done";
+type Stage = "idle" | "detected";
 
 interface DetectedFile {
   file: File;
   type: FileType;
   previewUrl: string | null;
   dimensions: { width: number; height: number } | null;
-}
-
-interface ProcessResult {
-  url: string;
-  filename: string;
-  size: number;
-  originalSize: number;
-  actionId: ActionId;
-  toolSlug: string;
-  isImage: boolean;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -135,43 +111,19 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
   },
 };
 
-const PROCESSING_LABELS: Record<ActionId, string> = {
-  "compress-image": "Compressing image…",
-  "to-jpg": "Converting to JPG…",
-  "to-png": "Converting to PNG…",
-  "to-webp": "Converting to WebP…",
-  "compress-pdf": "Compressing PDF…",
-  "pdf-to-jpg": "Opening tool…",
-  "split-pdf": "Opening tool…",
-  "rotate-pdf": "Opening tool…",
-};
+// ─── Route mapping ────────────────────────────────────────────────────────────
 
-const NAVIGATE_ACTIONS: Partial<Record<ActionId, string>> = {
-  "pdf-to-jpg": "/convert/pdf-to-jpg",
-  "split-pdf": "/tools/split-pdf",
-  "rotate-pdf": "/tools/rotate-pdf",
-};
-
-// ─── Hooks ────────────────────────────────────────────────────────────────────
-
-function useCountUp(target: number, duration = 650): number {
-  const [value, setValue] = useState(0);
-  useEffect(() => {
-    if (target === 0) { setValue(0); return; }
-    setValue(0);
-    const start = performance.now();
-    let rafId: number;
-    function step(now: number) {
-      const progress = Math.min((now - start) / duration, 1);
-      // ease-out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(eased * target));
-      if (progress < 1) rafId = requestAnimationFrame(step);
-    }
-    rafId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafId);
-  }, [target, duration]);
-  return value;
+function getRoute(fileType: FileType, actionId: ActionId): string {
+  switch (actionId) {
+    case "compress-image": return "/compress/image";
+    case "to-jpg":         return fileType === "heic" ? "/convert/heic-to-jpg" : "/convert/png-to-jpg";
+    case "to-png":         return fileType === "webp" ? "/convert/webp-to-png" : "/convert/jpg-to-png";
+    case "to-webp":        return "/convert/png-to-webp";
+    case "compress-pdf":   return "/compress/pdf";
+    case "pdf-to-jpg":     return "/convert/pdf-to-jpg";
+    case "split-pdf":      return "/tools/split-pdf";
+    case "rotate-pdf":     return "/tools/rotate-pdf";
+  }
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -191,21 +143,6 @@ function detectFileType(file: File): FileType {
     return "heic";
   if (mime === "application/pdf" || ext === "pdf") return "pdf";
   return "unknown";
-}
-
-function getToolSlug(fileType: FileType, actionId: ActionId): string {
-  if (actionId === "compress-image") return "image-compressor";
-  if (actionId === "compress-pdf") return "pdf-compressor";
-  if (actionId === "to-jpg") {
-    if (fileType === "heic") return "heic-to-jpg";
-    return "png-to-jpg";
-  }
-  if (actionId === "to-png") {
-    if (fileType === "webp") return "webp-to-png";
-    return "jpg-to-png";
-  }
-  if (actionId === "to-webp") return "png-to-webp";
-  return "image-compressor";
 }
 
 function FileTypeIcon({ type, className }: { type: FileType; className?: string }) {
@@ -394,126 +331,8 @@ function DetectedView({
           )}
         </div>
       </div>
-    </div>
-  );
-}
 
-function ProcessingView({ label }: { label: string }) {
-  return (
-    <div className="animate-in fade-in duration-200 flex min-h-[320px] flex-col items-center justify-center gap-4">
-      <div className="relative h-14 w-14">
-        <div className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping" />
-        <div className="absolute inset-0 rounded-full border-2 border-primary/15" />
-        <div className="absolute inset-2 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-      </div>
-      <p className="text-sm font-medium text-muted-foreground animate-pulse">{label}</p>
-    </div>
-  );
-}
-
-function DoneView({
-  detected,
-  result,
-  onTryAnother,
-  onStartOver,
-}: {
-  detected: DetectedFile;
-  result: ProcessResult;
-  onTryAnother: () => void;
-  onStartOver: () => void;
-}) {
-  const reduction =
-    result.originalSize > result.size
-      ? Math.round((1 - result.size / result.originalSize) * 100)
-      : null;
-
-  const animatedReduction = useCountUp(reduction ?? 0);
-
-  const tool = getToolBySlug(result.toolSlug);
-  const relatedTools = tool ? getRelatedTools(tool).slice(0, 3) : [];
-
-  const handleDownload = useCallback(() => {
-    const a = document.createElement("a");
-    a.href = result.url;
-    a.download = result.filename;
-    a.click();
-  }, [result]);
-
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-5">
-      {/* Before/after preview for images */}
-      {result.isImage && detected.previewUrl && (
-        <ImagePreviewCard
-          originalUrl={detected.previewUrl}
-          originalName={detected.file.name}
-          originalSize={detected.file.size}
-          processedUrl={result.url}
-          processedName={result.filename}
-          processedSize={result.size}
-        />
-      )}
-
-      {/* Size comparison + download */}
-      <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-foreground">
-            {truncateFilename(result.filename, 36)}
-          </p>
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <span>{formatBytes(result.originalSize)}</span>
-            <ArrowRight className="h-3.5 w-3.5 shrink-0" />
-            <span className="font-medium text-foreground">
-              {formatBytes(result.size)}
-            </span>
-            {reduction !== null && reduction > 0 && (
-              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400 tabular-nums">
-                −{animatedReduction}%
-              </span>
-            )}
-          </div>
-        </div>
-        <button
-          onClick={handleDownload}
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow-md active:scale-[0.98]"
-        >
-          <Download className="h-4 w-4" />
-          Download
-        </button>
-      </div>
-
-      {/* Secondary actions */}
-      <div className="flex flex-wrap items-center gap-3">
-        <button
-          onClick={onTryAnother}
-          className="flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-        >
-          <RefreshCw className="h-3.5 w-3.5" />
-          Try another action
-        </button>
-        <button
-          onClick={onStartOver}
-          className="flex items-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-          Start over
-        </button>
-      </div>
-
-      {/* Related tools */}
-      {relatedTools.length > 0 && (
-        <div className="space-y-3 pt-1">
-          <p className="text-sm font-medium text-muted-foreground">
-            You might also need:
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedTools.map((t) => (
-              <ToolCard key={t.slug} tool={t} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <AdSlot className="h-[90px]" />
+      <AdSlot className="mt-6 h-[90px]" />
     </div>
   );
 }
@@ -524,10 +343,8 @@ export default function SmartConverter() {
   const router = useRouter();
   const [stage, setStage] = useState<Stage>("idle");
   const [detected, setDetected] = useState<DetectedFile | null>(null);
-  const [result, setResult] = useState<ProcessResult | null>(null);
   const [isPageDragging, setIsPageDragging] = useState(false);
   const [dropZoneDragging, setDropZoneDragging] = useState(false);
-  const [processingLabel, setProcessingLabel] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -575,7 +392,6 @@ export default function SmartConverter() {
   useEffect(() => {
     return () => {
       if (detected?.previewUrl) URL.revokeObjectURL(detected.previewUrl);
-      if (result?.url) URL.revokeObjectURL(result.url);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -583,13 +399,8 @@ export default function SmartConverter() {
   // ── Core logic ────────────────────────────────────────────────────────────
 
   const processFile = useCallback(async (file: File) => {
-    // Revoke previous URLs
     setDetected((prev) => {
       if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return null;
-    });
-    setResult((prev) => {
-      if (prev?.url) URL.revokeObjectURL(prev.url);
       return null;
     });
     setError(null);
@@ -618,111 +429,26 @@ export default function SmartConverter() {
     addToast(`${typeLabel} detected — choose an action below`, "info", 3000);
   }, []);
 
-  // Clipboard paste — feeds directly into processFile (same as drop)
   usePasteImage(processFile);
 
   const handleAction = useCallback(
-    async (actionId: ActionId) => {
+    (actionId: ActionId) => {
       if (!detected) return;
-
-      // Navigation actions — take user to the dedicated tool page
-      const navRoute = NAVIGATE_ACTIONS[actionId];
-      if (navRoute) {
-        router.push(navRoute);
-        return;
-      }
-
+      // Store file for the target tool page to pick up on mount
+      setPendingFile(detected.file);
+      router.push(getRoute(detected.type, actionId));
+      // Clean up SmartConverter state
+      if (detected.previewUrl) URL.revokeObjectURL(detected.previewUrl);
+      setDetected(null);
+      setStage("idle");
       setError(null);
-      setProcessingLabel(PROCESSING_LABELS[actionId]);
-      setStage("processing");
-
-      const baseName = detected.file.name.replace(/\.[^.]+$/, "");
-
-      try {
-        let blob: Blob;
-        let filename: string;
-
-        switch (actionId) {
-          case "compress-image": {
-            const { blob: b, ext } = await compressImage(
-              detected.file,
-              80,
-              "original"
-            );
-            blob = b;
-            filename = `${baseName}-compressed.${ext}`;
-            break;
-          }
-          case "to-jpg":
-            blob = await toJpg(detected.file, 90);
-            filename = `${baseName}.jpg`;
-            break;
-          case "to-png":
-            blob = await toPng(detected.file);
-            filename = `${baseName}.png`;
-            break;
-          case "to-webp":
-            blob = await toWebp(detected.file, 85);
-            filename = `${baseName}.webp`;
-            break;
-          case "compress-pdf":
-            blob = await compressPdf(detected.file);
-            filename = `${baseName}-compressed.pdf`;
-            break;
-          default:
-            return; // Navigation actions are handled above
-        }
-
-        const toolSlug = getToolSlug(detected.type, actionId);
-        const isImage = actionId !== "compress-pdf";
-
-        setResult((prev) => {
-          if (prev?.url) URL.revokeObjectURL(prev.url);
-          return {
-            url: URL.createObjectURL(blob),
-            filename,
-            size: blob.size,
-            originalSize: detected.file.size,
-            actionId,
-            toolSlug,
-            isImage,
-          };
-        });
-        setStage("done");
-        // Toast with result summary
-        const finalSize = blob.size;
-        const pct = Math.round((1 - finalSize / detected.file.size) * 100);
-        if (pct > 0) {
-          addToast(`Done — ${pct}% smaller!`, "success");
-        } else {
-          addToast("Done!", "success");
-        }
-      } catch (err) {
-        console.error("Processing failed:", err);
-        setError("Something went wrong. Please try again.");
-        addToast("Something went wrong. Please try again.", "error");
-        setStage("detected");
-      }
     },
     [detected, router]
   );
 
-  const backToDetected = useCallback(() => {
-    setResult((prev) => {
-      if (prev?.url) URL.revokeObjectURL(prev.url);
-      return null;
-    });
-    setError(null);
-    setStage("detected");
-  }, []);
-
   const reset = useCallback(() => {
     setDetected((prev) => {
       if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return null;
-    });
-    setResult((prev) => {
-      if (prev?.url) URL.revokeObjectURL(prev.url);
       return null;
     });
     setError(null);
@@ -733,7 +459,6 @@ export default function SmartConverter() {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) processFile(file);
-      // Reset input so same file can be reselected
       e.target.value = "";
     },
     [processFile]
@@ -744,7 +469,7 @@ export default function SmartConverter() {
   return (
     <>
       {/* Full-page drag overlay */}
-      {isPageDragging && stage !== "processing" && (
+      {isPageDragging && (
         <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-primary/5 backdrop-blur-[1px]">
           <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-primary border-dashed bg-background/80 px-12 py-8 shadow-xl">
             <Upload className="h-8 w-8 text-primary animate-bob" />
@@ -800,19 +525,6 @@ export default function SmartConverter() {
             onReset={reset}
           />
         )}
-
-        {stage === "processing" && (
-          <ProcessingView label={processingLabel} />
-        )}
-
-        {stage === "done" && detected && result && (
-          <DoneView
-            detected={detected}
-            result={result}
-            onTryAnother={backToDetected}
-            onStartOver={reset}
-          />
-        )}
       </div>
 
       {/* Hidden file input */}
@@ -823,7 +535,6 @@ export default function SmartConverter() {
         className="hidden"
         onChange={handleFileInput}
       />
-
     </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
@@ -66,6 +67,8 @@ export default function PdfToJpg() {
     setPdfEntries(entries);
     setIsLoadingThumbs(false);
   }, []);
+
+  useAutoLoadFile(handleFiles);
 
   const handleConvert = useCallback(async () => {
     if (pdfEntries.length === 0) return;

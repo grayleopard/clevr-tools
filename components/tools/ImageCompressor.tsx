@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
@@ -89,6 +90,7 @@ export default function ImageCompressor() {
     [quality, outputFormat, compress]
   );
 
+  useAutoLoadFile(handleFiles);
   usePasteImage((file) => handleFiles([file]));
 
   useEffect(() => {
