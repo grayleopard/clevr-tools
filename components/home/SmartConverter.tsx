@@ -19,8 +19,8 @@ import type { LucideIcon } from "lucide-react";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import ToolCard from "@/components/tool/ToolCard";
 import AdSlot from "@/components/tool/AdSlot";
-import { PasteToast } from "@/components/tool/PasteToast";
 import { usePasteImage } from "@/lib/usePasteImage";
+import { addToast } from "@/lib/toast";
 import { getToolBySlug, getRelatedTools } from "@/lib/tools";
 import {
   compressImage,
@@ -118,6 +118,28 @@ const PROCESSING_LABELS: Record<ActionId, string> = {
   "to-webp": "Converting to WebP…",
   "compress-pdf": "Compressing PDF…",
 };
+
+// ─── Hooks ────────────────────────────────────────────────────────────────────
+
+function useCountUp(target: number, duration = 650): number {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (target === 0) { setValue(0); return; }
+    setValue(0);
+    const start = performance.now();
+    let rafId: number;
+    function step(now: number) {
+      const progress = Math.min((now - start) / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(eased * target));
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    }
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [target, duration]);
+  return value;
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -311,14 +333,15 @@ function DetectedView({
             </div>
           ) : (
             <div className="grid gap-2.5 sm:grid-cols-2">
-              {actions.map((actionId) => {
+              {actions.map((actionId, i) => {
                 const def = ACTION_DEFS[actionId];
                 const Icon = def.icon;
                 return (
                   <button
                     key={actionId}
                     onClick={() => onAction(actionId)}
-                    className="group flex items-start gap-3 rounded-xl border border-border bg-background p-4 text-left transition-all hover:border-primary/40 hover:bg-primary/5 active:scale-[0.98]"
+                    style={{ animationDelay: `${i * 65}ms` }}
+                    className="animate-in fade-in slide-in-from-bottom-2 duration-300 group flex items-start gap-3 rounded-xl border border-border bg-background p-4 text-left transition-all hover:border-primary/40 hover:bg-primary/5 active:scale-[0.98]"
                   >
                     <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted transition-colors group-hover:bg-primary/10">
                       <Icon className={`h-4 w-4 ${def.accent}`} />
@@ -345,11 +368,12 @@ function DetectedView({
 function ProcessingView({ label }: { label: string }) {
   return (
     <div className="animate-in fade-in duration-200 flex min-h-[320px] flex-col items-center justify-center gap-4">
-      <div className="relative h-12 w-12">
-        <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
-        <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      <div className="relative h-14 w-14">
+        <div className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping" />
+        <div className="absolute inset-0 rounded-full border-2 border-primary/15" />
+        <div className="absolute inset-2 rounded-full border-2 border-primary border-t-transparent animate-spin" />
       </div>
-      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+      <p className="text-sm font-medium text-muted-foreground animate-pulse">{label}</p>
     </div>
   );
 }
@@ -369,6 +393,8 @@ function DoneView({
     result.originalSize > result.size
       ? Math.round((1 - result.size / result.originalSize) * 100)
       : null;
+
+  const animatedReduction = useCountUp(reduction ?? 0);
 
   const tool = getToolBySlug(result.toolSlug);
   const relatedTools = tool ? getRelatedTools(tool).slice(0, 3) : [];
@@ -407,8 +433,8 @@ function DoneView({
               {formatBytes(result.size)}
             </span>
             {reduction !== null && reduction > 0 && (
-              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                −{reduction}%
+              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400 tabular-nums">
+                −{animatedReduction}%
               </span>
             )}
           </div>
@@ -553,10 +579,13 @@ export default function SmartConverter() {
 
     setDetected({ file, type, previewUrl, dimensions });
     setStage("detected");
+
+    const typeLabel = type === "unknown" ? "File" : type.toUpperCase();
+    addToast(`${typeLabel} detected — choose an action below`, "info", 3000);
   }, []);
 
   // Clipboard paste — feeds directly into processFile (same as drop)
-  const { pasteToast } = usePasteImage(processFile);
+  usePasteImage(processFile);
 
   const handleAction = useCallback(
     async (actionId: ActionId) => {
@@ -616,9 +645,18 @@ export default function SmartConverter() {
           };
         });
         setStage("done");
+        // Toast with result summary
+        const finalSize = blob.size;
+        const pct = Math.round((1 - finalSize / detected.file.size) * 100);
+        if (pct > 0) {
+          addToast(`Done — ${pct}% smaller!`, "success");
+        } else {
+          addToast("Done!", "success");
+        }
       } catch (err) {
         console.error("Processing failed:", err);
         setError("Something went wrong. Please try again.");
+        addToast("Something went wrong. Please try again.", "error");
         setStage("detected");
       }
     },
@@ -742,7 +780,6 @@ export default function SmartConverter() {
         onChange={handleFileInput}
       />
 
-      <PasteToast show={pasteToast} />
     </>
   );
 }

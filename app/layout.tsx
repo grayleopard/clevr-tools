@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
+import { ToastContainer } from "@/components/ui/ToastContainer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -51,6 +52,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <ToastContainer />
         </ThemeProvider>
 
         {/* Google Analytics GA4 */}

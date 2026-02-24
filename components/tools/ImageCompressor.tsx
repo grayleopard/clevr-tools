@@ -6,11 +6,11 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
-import { PasteToast } from "@/components/tool/PasteToast";
 import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { compressImage, type ImageOutputFormat } from "@/lib/processors";
+import { addToast } from "@/lib/toast";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -62,8 +62,17 @@ export default function ImageCompressor() {
           });
         }
         setResults(compressed);
+        if (compressed.length === 1) {
+          const r = compressed[0];
+          const pct = Math.round((1 - r.file.size / r.originalFile.size) * 100);
+          if (pct > 0) addToast(`Compressed — ${pct}% smaller`, "success");
+          else addToast("Compression complete", "success");
+        } else if (compressed.length > 1) {
+          addToast(`${compressed.length} images compressed`, "success");
+        }
       } catch (err) {
         console.error("Compression failed:", err);
+        addToast("Compression failed. Please try again.", "error");
       } finally {
         setIsProcessing(false);
       }
@@ -80,7 +89,7 @@ export default function ImageCompressor() {
     [quality, outputFormat, compress]
   );
 
-  const { pasteToast } = usePasteImage((file) => handleFiles([file]));
+  usePasteImage((file) => handleFiles([file]));
 
   useEffect(() => {
     if (sourceFilesRef.current.length === 0) return;
@@ -118,7 +127,6 @@ export default function ImageCompressor() {
 
   return (
     <div className="space-y-6">
-      <PasteToast show={pasteToast} />
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}

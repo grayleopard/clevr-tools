@@ -1,19 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { addToast } from "@/lib/toast";
 
 /**
  * Listens for document-level paste events and extracts the first image item
- * from the clipboard. Calls `onPaste` with the File and briefly surfaces a
- * toast flag so callers can show feedback to the user.
+ * from the clipboard. Calls `onPaste` with the File and fires a toast via
+ * the global toast system.
  *
  * The listener is stable — `onPaste` is stored in a ref so the caller does
  * not need to memoize it.
  */
-export function usePasteImage(onPaste: (file: File) => void): {
-  pasteToast: boolean;
-} {
-  const [pasteToast, setPasteToast] = useState(false);
+export function usePasteImage(onPaste: (file: File) => void): void {
   const onPasteRef = useRef(onPaste);
   // Keep the ref up-to-date without re-adding the event listener
   onPasteRef.current = onPaste;
@@ -26,18 +24,10 @@ export function usePasteImage(onPaste: (file: File) => void): {
       const file = imageItem.getAsFile();
       if (!file) return;
       onPasteRef.current(file);
-      setPasteToast(true);
+      addToast("Image pasted from clipboard", "info");
     };
 
     document.addEventListener("paste", handler);
     return () => document.removeEventListener("paste", handler);
   }, []); // add listener once; ref keeps onPaste current
-
-  useEffect(() => {
-    if (!pasteToast) return;
-    const id = setTimeout(() => setPasteToast(false), 2200);
-    return () => clearTimeout(id);
-  }, [pasteToast]);
-
-  return { pasteToast };
 }

@@ -6,10 +6,10 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
-import { PasteToast } from "@/components/tool/PasteToast";
 import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { toPng } from "@/lib/processors";
+import { addToast } from "@/lib/toast";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -53,9 +53,11 @@ export default function WebpToPng() {
 
     setResults(converted);
     setIsProcessing(false);
+    if (converted.length === 1) addToast("Converted to PNG", "success");
+    else if (converted.length > 1) addToast(`${converted.length} images converted to PNG`, "success");
   }, []);
 
-  const { pasteToast } = usePasteImage((file) => handleFiles([file]));
+  usePasteImage((file) => handleFiles([file]));
 
   const downloadAll = useCallback(async () => {
     if (results.length < 2) return;
@@ -84,7 +86,6 @@ export default function WebpToPng() {
 
   return (
     <div className="space-y-6">
-      <PasteToast show={pasteToast} />
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}

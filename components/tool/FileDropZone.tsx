@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
-import { Upload, X, AlertCircle } from "lucide-react";
+import { Upload, X, AlertCircle, FileText, ImageIcon, Smartphone, Lock } from "lucide-react";
 
 interface FileDropZoneProps {
   accept: string;
@@ -15,6 +15,33 @@ function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/** Derive a deduplicated, uppercase list of format labels from the accept string. */
+function parseFormats(accept: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of accept.split(",")) {
+    const ext = raw.trim().replace(/^\./, "").toLowerCase();
+    // Normalise aliases
+    const label =
+      ext === "jpeg" ? "JPG" :
+      ext === "heif" ? "HEIC" :
+      ext.toUpperCase();
+    if (!seen.has(label)) {
+      seen.add(label);
+      out.push(label);
+    }
+  }
+  return out;
+}
+
+/** Pick a sensible icon from the accept string. */
+function DropIcon({ accept }: { accept: string }) {
+  if (accept.includes("pdf")) return <FileText className="h-6 w-6 text-primary" />;
+  if (accept.includes("heic") || accept.includes("heif"))
+    return <Smartphone className="h-6 w-6 text-primary" />;
+  return <ImageIcon className="h-6 w-6 text-primary" />;
 }
 
 type DropState = "idle" | "hover" | "loaded" | "error";
@@ -32,16 +59,17 @@ export default function FileDropZone({
   const [errorMsg, setErrorMsg] = useState("");
 
   const acceptedExtensions = accept.split(",").map((s) => s.trim().toLowerCase());
+  const formatLabels = parseFormats(accept);
 
   const validate = useCallback(
     (files: File[]): string | null => {
       for (const file of files) {
         const ext = "." + file.name.split(".").pop()?.toLowerCase();
         if (!acceptedExtensions.some((a) => a === ext || a === file.type)) {
-          return `"${file.name}" is not a supported format. Accepted: ${accept}`;
+          return `"${file.name}" is not a supported format.`;
         }
         if (maxSizeMB && file.size > maxSizeMB * 1024 * 1024) {
-          return `"${file.name}" exceeds the ${maxSizeMB} MB size limit.`;
+          return `"${file.name}" exceeds the ${maxSizeMB} MB limit.`;
         }
       }
       return null;
@@ -91,16 +119,16 @@ export default function FileDropZone({
   }, []);
 
   const stateStyles: Record<DropState, string> = {
-    idle: "border-border hover:border-primary/60 hover:bg-muted/30",
-    hover: "border-primary bg-primary/5",
-    loaded: "border-primary bg-primary/5",
+    idle: "border-border hover:border-primary/50 hover:bg-primary/[0.02]",
+    hover: "border-primary bg-primary/5 scale-[1.01]",
+    loaded: "border-primary/60 bg-primary/5",
     error: "border-destructive bg-destructive/5",
   };
 
   return (
     <div className={`relative ${className}`}>
       <div
-        className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-all cursor-pointer ${stateStyles[state]}`}
+        className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-all duration-200 cursor-pointer ${stateStyles[state]}`}
         onDragOver={(e) => { e.preventDefault(); setState("hover"); }}
         onDragLeave={() => setState(loadedFiles.length ? "loaded" : "idle")}
         onDrop={handleDrop}
@@ -153,19 +181,38 @@ export default function FileDropZone({
         ) : (
           <div className="flex flex-col items-center gap-3">
             <div className="rounded-full bg-primary/10 p-3">
-              <Upload className="h-6 w-6 text-primary" />
+              <DropIcon accept={accept} />
             </div>
             <div>
               <p className="font-medium text-foreground">
-                {state === "hover" ? "Drop files here" : "Drag & drop files here"}
+                {state === "hover" ? "Drop it here" : "Drag & drop files here"}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 or <span className="text-primary underline">click to browse</span>
               </p>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Accepted: {accept}
-              {maxSizeMB ? ` · Max ${maxSizeMB} MB` : ""}
+
+            {/* Format pills */}
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {formatLabels.map((fmt) => (
+                <span
+                  key={fmt}
+                  className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                >
+                  {fmt}
+                </span>
+              ))}
+              {maxSizeMB && (
+                <span className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs text-muted-foreground">
+                  Max {maxSizeMB} MB
+                </span>
+              )}
+            </div>
+
+            {/* Privacy line */}
+            <p className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
+              <Lock className="h-3 w-3 shrink-0" />
+              Files stay in your browser — nothing is uploaded
             </p>
           </div>
         )}

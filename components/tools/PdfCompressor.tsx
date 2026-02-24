@@ -6,6 +6,7 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { compressPdf } from "@/lib/processors";
+import { addToast } from "@/lib/toast";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import JSZip from "jszip";
 import { Package } from "lucide-react";
@@ -43,11 +44,20 @@ export default function PdfCompressor() {
         });
       } catch (err) {
         console.error(`Failed to process ${file.name}:`, err);
+        addToast(`Failed to compress ${file.name}`, "error");
       }
     }
 
     setResults(processed);
     setIsProcessing(false);
+    if (processed.length === 1) {
+      const r = processed[0];
+      const pct = Math.round((1 - r.size / r.originalSize) * 100);
+      if (pct > 0) addToast(`PDF compressed — ${pct}% smaller`, "success");
+      else addToast("PDF compression complete", "success");
+    } else if (processed.length > 1) {
+      addToast(`${processed.length} PDFs compressed`, "success");
+    }
   }, []);
 
   const downloadAll = useCallback(async () => {

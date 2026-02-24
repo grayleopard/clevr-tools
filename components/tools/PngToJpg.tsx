@@ -6,11 +6,11 @@ import DownloadCard from "@/components/tool/DownloadCard";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
-import { PasteToast } from "@/components/tool/PasteToast";
 import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { toJpg } from "@/lib/processors";
+import { addToast } from "@/lib/toast";
 import { truncateFilename } from "@/lib/utils";
 
 interface Result {
@@ -45,16 +45,21 @@ export default function PngToJpg() {
       try {
         const blob = await toJpg(file, quality);
         const baseName = file.name.replace(/\.png$/i, "");
-        setResult({
+        const r = {
           url: URL.createObjectURL(blob),
           filename: `${baseName}.jpg`,
           originalName: file.name,
           originalUrl: URL.createObjectURL(file),
           size: blob.size,
           originalSize: file.size,
-        });
+        };
+        setResult(r);
+        const pct = Math.round((1 - r.size / r.originalSize) * 100);
+        if (pct > 0) addToast(`Converted to JPG — ${pct}% smaller`, "success");
+        else addToast("Converted to JPG", "success");
       } catch (err) {
         console.error("Conversion failed:", err);
+        addToast("Conversion failed. Please try again.", "error");
       } finally {
         setIsProcessing(false);
       }
@@ -62,7 +67,7 @@ export default function PngToJpg() {
     [quality]
   );
 
-  const { pasteToast } = usePasteImage((file) => handleFiles([file]));
+  usePasteImage((file) => handleFiles([file]));
 
   const reset = useCallback(() => {
     setResult((prev) => {
@@ -77,7 +82,6 @@ export default function PngToJpg() {
 
   return (
     <div className="space-y-6">
-      <PasteToast show={pasteToast} />
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
