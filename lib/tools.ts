@@ -2,7 +2,7 @@ export interface Tool {
   slug: string;
   name: string;
   shortDescription: string;
-  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools';
+  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text';
   route: string;
   acceptedFormats: string[];
   icon: string;
@@ -386,6 +386,117 @@ export const tools: Tool[] = [
     relatedTools: ['word-to-pdf', 'pdf-compressor', 'split-pdf'],
     badge: 'new',
   },
+  // ─── Text Tools ───────────────────────────────────────────────────────────
+  {
+    slug: 'word-counter',
+    name: 'Word Counter',
+    shortDescription: 'Count words, characters, sentences, paragraphs, and more — in real time.',
+    category: 'text',
+    route: '/text/word-counter',
+    acceptedFormats: [],
+    icon: 'Hash',
+    metaTitle: 'Word Counter — Count Words & Characters Free Online | clevr.tools',
+    metaDescription:
+      'Free online word counter. Count words, characters, sentences, paragraphs, and lines in real time. Calculate reading time and speaking time. No signup required.',
+    seoContent: `
+      <h2>Free Online Word Counter</h2>
+      <p>Whether you're writing an essay with a strict word limit, crafting a blog post targeting a specific length, or checking that a social media caption fits within a character limit, our word counter gives you the numbers you need instantly. Paste any text and see words, characters, sentences, paragraphs, reading time, and speaking time update in real time — no button to click, no page to reload.</p>
+      <h2>Why Word Count Matters</h2>
+      <p>Academic submissions, grant applications, and journalist pitches often have strict word count requirements — going over or under can mean rejection. Blog posts targeting SEO typically perform best between 1,500–2,500 words. Twitter/X allows 280 characters, Instagram captions 2,200, LinkedIn posts 3,000. Reading time estimates help readers know what they're committing to — research shows that displaying "5 min read" at the top of an article increases click-through rates. This tool handles all of these use cases from a single input.</p>
+      <h2>Reading Time and Speaking Time</h2>
+      <p>Reading time is calculated at 238 words per minute — the average silent reading speed for adults based on academic research. Speaking time uses 150 words per minute, a comfortable conversational pace suitable for podcasts, presentations, and speeches. Both figures give you a practical sense of how long it will take your audience to engage with your content, helping you calibrate length for the medium.</p>
+    `,
+    relatedTools: ['case-converter', 'lorem-generator', 'remove-line-breaks'],
+    badge: 'popular',
+  },
+  {
+    slug: 'case-converter',
+    name: 'Case Converter',
+    shortDescription: 'Convert text between uppercase, lowercase, title case, camelCase, and more.',
+    category: 'text',
+    route: '/text/case-converter',
+    acceptedFormats: [],
+    icon: 'CaseSensitive',
+    metaTitle: 'Case Converter — Uppercase, Lowercase, Title Case & More | clevr.tools',
+    metaDescription:
+      'Free online case converter. Convert text to uppercase, lowercase, title case, sentence case, camelCase, PascalCase, snake_case, kebab-case, and more. Instant, no signup.',
+    seoContent: `
+      <h2>Free Online Case Converter</h2>
+      <p>Text case conversion is a daily task for developers, writers, and content managers. This tool converts any text between ten common case formats instantly — no copy-paste-retype cycle needed. Paste your text, click the target format, and copy the result to your clipboard. Everything runs in your browser with no data sent anywhere.</p>
+      <h2>Programming Case Formats</h2>
+      <p>Coding conventions vary by language and framework. JavaScript and TypeScript use camelCase for variables and PascalCase for classes and components. Python uses snake_case for variables and functions. URLs, CSS class names, and command-line arguments use kebab-case. Configuration keys and package names sometimes use dot.case. Having a quick converter eliminates the mental overhead of reformatting between standards when moving text between systems, renaming variables, or writing documentation.</p>
+      <h2>Writing and Content Case Formats</h2>
+      <p>Title Case capitalizes the first letter of every word — the standard for headlines, headings, and proper nouns in English-language publishing. Sentence case capitalizes only the first word of each sentence, which is the default for body text and most UI strings. UPPER CASE is used for acronyms, emphasis, and certain legal and regulatory contexts. Toggle Case flips the case of every character, a quick way to undo an accidental Caps Lock or create stylized text for creative use.</p>
+    `,
+    relatedTools: ['word-counter', 'remove-line-breaks', 'text-to-slug'],
+    badge: 'new',
+  },
+  {
+    slug: 'lorem-generator',
+    name: 'Lorem Ipsum Generator',
+    shortDescription: 'Generate placeholder text by paragraphs, sentences, or word count.',
+    category: 'text',
+    route: '/text/lorem-generator',
+    acceptedFormats: [],
+    icon: 'AlignLeft',
+    metaTitle: 'Lorem Ipsum Generator — Free Placeholder Text Online | clevr.tools',
+    metaDescription:
+      'Generate lorem ipsum placeholder text free. Choose paragraphs, sentences, or words. Copy instantly. No signup — generate realistic Latin filler text for design and development.',
+    seoContent: `
+      <h2>Free Lorem Ipsum Generator</h2>
+      <p>Lorem ipsum placeholder text is the standard filler content for visual design, web development, and print layout. It lets designers and developers work on typography, spacing, and layout without waiting for real content — and without the distraction of meaningful words pulling focus away from the visual elements being evaluated. This generator produces properly structured lorem ipsum text in paragraphs, sentences, or individual words on demand.</p>
+      <h2>The Origin of Lorem Ipsum</h2>
+      <p>Lorem ipsum text is derived from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (On the Ends of Good and Evil) by the Roman statesman Cicero, written in 45 BC. The scrambled version used today has been the industry's standard dummy text since the 1960s, when Letraset sheets popularized it for dry-transfer lettering. It was further spread by desktop publishing software like Aldus PageMaker in the 1980s. Its nonsensical Latin origins are exactly what make it useful — recognizable enough to signal "placeholder" while remaining unreadable enough not to distract.</p>
+      <h2>When to Use Placeholder Text</h2>
+      <p>Lorem ipsum is appropriate in wireframes, mockups, and prototypes — anywhere real copy doesn't exist yet and visual structure is what's being evaluated. In client presentations, it prevents feedback about specific word choices when the goal is to get layout approval. In development, it fills database fixtures, demo accounts, and test environments with realistic-looking text. The key is to replace it with real content before any user-facing launch — search engines penalize lorem ipsum as thin or duplicate content.</p>
+    `,
+    relatedTools: ['word-counter', 'case-converter', 'remove-line-breaks'],
+    badge: 'new',
+  },
+  {
+    slug: 'remove-line-breaks',
+    name: 'Remove Line Breaks',
+    shortDescription: 'Clean up messy text — remove line breaks, extra spaces, and empty lines.',
+    category: 'text',
+    route: '/text/remove-line-breaks',
+    acceptedFormats: [],
+    icon: 'Eraser',
+    metaTitle: 'Remove Line Breaks Online Free — Clean Up Text | clevr.tools',
+    metaDescription:
+      'Remove line breaks, extra spaces, and empty lines from text online free. Clean up text copied from PDFs, emails, or documents. Instant, no signup required.',
+    seoContent: `
+      <h2>Remove Line Breaks & Extra Spaces Online</h2>
+      <p>Text copied from PDFs, scanned documents, email threads, terminal output, or online articles frequently contains unwanted line breaks, double spaces, and empty lines that make it unusable in other contexts. Pasting such text into a form field, email body, or database typically preserves all that invisible whitespace, creating formatting problems that require tedious manual cleanup. This tool automates that cleanup in a single click.</p>
+      <h2>Common Use Cases</h2>
+      <p>PDF text extraction is notoriously prone to inserting hard line breaks at the end of each visual line, turning continuous paragraphs into dozens of short fragments. Email forwarding chains accumulate indentation and quote markers. Terminal logs mix command output with prompt characters. Spreadsheet exports contain inconsistent spacing between fields. The Remove Line Breaks operation joins all these fragments back into proper continuous text, while Remove Extra Spaces normalizes inconsistent whitespace that results from other formatting issues.</p>
+      <h2>Working With the Tools</h2>
+      <p>Each cleaning operation is applied separately so you can chain them in any order. "Remove Line Breaks" replaces each newline with a single space and collapses multiple spaces. "Remove Empty Lines" preserves the paragraph structure of intentional line breaks while eliminating the blank lines between them. "Clean All" applies all operations at once for the fastest single-click cleanup. "Trim Each Line" is useful for pasted code or lists where you want to normalize indentation without losing the line structure.</p>
+    `,
+    relatedTools: ['word-counter', 'case-converter', 'text-to-slug'],
+    badge: 'new',
+  },
+  {
+    slug: 'text-to-slug',
+    name: 'Text to Slug',
+    shortDescription: 'Convert any text to a clean, URL-friendly slug instantly.',
+    category: 'text',
+    route: '/text/text-to-slug',
+    acceptedFormats: [],
+    icon: 'Link2',
+    metaTitle: 'Text to Slug Converter — Free URL Slug Generator | clevr.tools',
+    metaDescription:
+      'Convert text to a URL-friendly slug instantly. Handles accented characters, spaces, symbols. Real-time output, copy to clipboard. Free, no signup required.',
+    seoContent: `
+      <h2>Free Text to URL Slug Converter</h2>
+      <p>A URL slug is the human-readable part of a URL that identifies a specific page — the "how-to-make-sourdough-bread" in "yoursite.com/recipes/how-to-make-sourdough-bread". Good slugs are all lowercase, contain only letters, numbers, and hyphens, and accurately reflect the page's content. This converter turns any title, heading, or phrase into a clean, properly-formatted slug in real time as you type.</p>
+      <h2>SEO Impact of URL Slugs</h2>
+      <p>URL slugs are one of the few remaining on-page SEO signals that search engines weigh directly. Google's own documentation recommends using words in URLs and avoiding parameter-heavy URLs. A keyword-rich, human-readable slug helps both search engines and users understand page content before clicking. Slugs also appear in search results snippets, and shorter, cleaner URLs consistently show higher click-through rates than long, parameter-laden alternatives. When publishing a blog post, article, or product page, getting the slug right before publication matters — changing a URL after it's indexed requires 301 redirects to preserve SEO value.</p>
+      <h2>Handling International Characters</h2>
+      <p>Accented characters (é, ü, ñ, ø, etc.) are normalized to their ASCII equivalents using Unicode NFD decomposition before the slug is generated. This means "Crème brûlée" becomes "creme-brulee" rather than containing encoded Unicode sequences in the URL. The result is a slug that works correctly in all browsers, tools, and file systems without any special encoding or escaping required.</p>
+    `,
+    relatedTools: ['case-converter', 'remove-line-breaks', 'word-counter'],
+    badge: 'new',
+  },
   // ─── Not-yet-built tools ───────────────────────────────────────────────────
   {
     slug: 'url-encoder',
@@ -445,5 +556,6 @@ export const toolCategories = [
   { id: 'convert' as const, label: 'Convert', icon: 'ArrowLeftRight' },
   { id: 'tools' as const, label: 'PDF & File Tools', icon: 'FileStack' },
   { id: 'generate' as const, label: 'Generate', icon: 'Sparkles' },
+  { id: 'text' as const, label: 'Text Tools', icon: 'Type' },
   { id: 'ai' as const, label: 'AI Tools', icon: 'Bot' },
 ];
