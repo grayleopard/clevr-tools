@@ -341,6 +341,51 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['jpg-to-pdf', 'merge-pdf', 'png-to-jpg'],
   },
+  // ─── Word ↔ PDF ───────────────────────────────────────────────────────────
+  {
+    slug: 'word-to-pdf',
+    name: 'Word to PDF Converter',
+    shortDescription: 'Convert .docx Word documents to PDF — 100% in your browser.',
+    category: 'convert',
+    route: '/convert/word-to-pdf',
+    acceptedFormats: ['.docx', '.doc'],
+    icon: 'FileText',
+    metaTitle: 'Convert Word to PDF Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Convert Word documents (.docx) to PDF online free. Preview your document, choose page size and margins. No upload — processes entirely in your browser, files never leave your device.',
+    seoContent: `
+      <h2>Convert Word to PDF Without Sending Files to a Server</h2>
+      <p>Most online Word to PDF converters upload your document to a remote server, process it there, and return a download link. This means your document — including any confidential content, personal data, legal text, or proprietary information — leaves your device and passes through someone else's infrastructure. clevr.tools converts your Word document to PDF entirely in your browser using JavaScript. Your file never leaves your device, at any point in the process.</p>
+      <h2>How It Works</h2>
+      <p>Your .docx file is parsed in-browser using Mammoth.js, which extracts the document content — paragraphs, headings, bold and italic text, lists, and tables — and converts it to clean HTML. That HTML is then rendered with Word-like typography (serif font, 12pt body text, proper heading hierarchy) and converted to a PDF using html2canvas and jsPDF. The result is a clean, readable PDF that accurately represents your Word document's content and structure.</p>
+      <h2>What's Preserved and What Isn't</h2>
+      <p>Text content, headings (H1–H6), bold, italic, bullet and numbered lists, tables, and basic formatting are faithfully converted. Complex Word features like custom macros, tracked changes, form fields, and advanced layout elements (text boxes, floating images) may not render perfectly in every case — this is a fundamental limitation of browser-based conversion without the full Word rendering engine. For documents where pixel-perfect fidelity matters, Microsoft Word's built-in "Export to PDF" function is the most reliable option. For standard documents, reports, letters, and resumes, this tool produces excellent results instantly and privately.</p>
+    `,
+    relatedTools: ['pdf-to-word', 'pdf-compressor', 'merge-pdf'],
+    badge: 'new',
+  },
+  {
+    slug: 'pdf-to-word',
+    name: 'PDF to Word Converter',
+    shortDescription: 'Extract text from PDFs and convert to editable .docx files.',
+    category: 'convert',
+    route: '/convert/pdf-to-word',
+    acceptedFormats: ['.pdf'],
+    icon: 'FileText',
+    metaTitle: 'Convert PDF to Word Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Convert PDF to Word (.docx) online free. Extracts text, detects headings and paragraphs, generates an editable document. No upload — 100% browser-based, files stay private.',
+    seoContent: `
+      <h2>Turn Static PDFs Into Editable Word Documents</h2>
+      <p>PDFs are designed to be read, not edited. Converting a PDF back to Word lets you modify the content, reuse text in other documents, correct errors in a scanned report, update a contract, or extract data for further use. This tool extracts text content from your PDF using PDF.js and reconstructs it as an editable .docx file you can open in Microsoft Word, Google Docs, LibreOffice, or any other word processor.</p>
+      <h2>Structure Detection</h2>
+      <p>PDF files don't store document structure — they're essentially instructions for drawing characters at specific coordinates on a page. This tool analyzes the text content to infer structure: larger-than-average text is classified as headings (H1, H2, H3 depending on relative size), bold and italic formatting is detected from font names, consistent indentation patterns are detected as lists, and large gaps between text blocks are treated as paragraph breaks. The result is a structured Word document rather than a flat text dump.</p>
+      <h2>What to Expect</h2>
+      <p>Text-based PDFs (created from Word, InDesign, or similar tools) convert with high fidelity. Scanned PDFs (image-based, no embedded text layer) cannot have text extracted without OCR — this tool will produce a document with no content for such files. Complex multi-column layouts may produce text in a different reading order than expected, since PDF stores text by position rather than reading order. For most standard documents — reports, articles, contracts, and letters — the output is clean, accurate, and immediately usable.</p>
+    `,
+    relatedTools: ['word-to-pdf', 'pdf-compressor', 'split-pdf'],
+    badge: 'new',
+  },
   // ─── Not-yet-built tools ───────────────────────────────────────────────────
   {
     slug: 'url-encoder',

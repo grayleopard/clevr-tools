@@ -13,6 +13,7 @@ import {
   Scissors,
   RotateCw,
   Sparkles,
+  FileOutput,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import AdSlot from "@/components/tool/AdSlot";
@@ -23,7 +24,7 @@ import { formatBytes, truncateFilename } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type FileType = "png" | "jpg" | "webp" | "heic" | "pdf" | "unknown";
+type FileType = "png" | "jpg" | "webp" | "heic" | "pdf" | "docx" | "unknown";
 type ActionId =
   | "compress-image"
   | "to-jpg"
@@ -32,7 +33,9 @@ type ActionId =
   | "compress-pdf"
   | "pdf-to-jpg"
   | "split-pdf"
-  | "rotate-pdf";
+  | "rotate-pdf"
+  | "word-to-pdf"
+  | "pdf-to-word";
 type Stage = "idle" | "detected";
 
 interface DetectedFile {
@@ -49,7 +52,8 @@ const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
   jpg: ["compress-image", "to-png", "to-webp"],
   webp: ["to-png", "to-jpg"],
   heic: ["to-jpg"],
-  pdf: ["compress-pdf", "pdf-to-jpg", "split-pdf", "rotate-pdf"],
+  pdf: ["compress-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "rotate-pdf"],
+  docx: ["word-to-pdf"],
   unknown: [],
 };
 
@@ -109,6 +113,18 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
     description: "Rotate pages individually or all at once",
     accent: "text-blue-600 dark:text-blue-400",
   },
+  "word-to-pdf": {
+    icon: FileOutput,
+    name: "Convert to PDF",
+    description: "Export Word document as a PDF file",
+    accent: "text-blue-600 dark:text-blue-400",
+  },
+  "pdf-to-word": {
+    icon: FileText,
+    name: "Convert to Word",
+    description: "Extract text into an editable .docx file",
+    accent: "text-green-600 dark:text-green-400",
+  },
 };
 
 // ─── Route mapping ────────────────────────────────────────────────────────────
@@ -123,6 +139,8 @@ function getRoute(fileType: FileType, actionId: ActionId): string {
     case "pdf-to-jpg":     return "/convert/pdf-to-jpg";
     case "split-pdf":      return "/tools/split-pdf";
     case "rotate-pdf":     return "/tools/rotate-pdf";
+    case "word-to-pdf":    return "/convert/word-to-pdf";
+    case "pdf-to-word":    return "/convert/pdf-to-word";
   }
 }
 
@@ -137,12 +155,18 @@ function detectFileType(file: File): FileType {
   if (mime === "image/heic" || mime === "image/heif" || ext === "heic" || ext === "heif")
     return "heic";
   if (mime === "application/pdf" || ext === "pdf") return "pdf";
+  if (
+    ext === "docx" || ext === "doc" ||
+    mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+    mime === "application/msword"
+  ) return "docx";
   return "unknown";
 }
 
 function FileTypeIcon({ type, className }: { type: FileType; className?: string }) {
   switch (type) {
     case "pdf":  return <FileText className={className} />;
+    case "docx": return <FileOutput className={className} />;
     case "heic": return <Smartphone className={className} />;
     default:     return <FileImage className={className} />;
   }
@@ -199,7 +223,7 @@ function IdleView({
       </div>
 
       <div className="flex flex-wrap justify-center gap-1.5">
-        {["PNG", "JPG", "WebP", "HEIC", "PDF"].map((fmt) => (
+        {["PNG", "JPG", "WebP", "HEIC", "PDF", "DOCX"].map((fmt) => (
           <span
             key={fmt}
             className="rounded-full border border-border bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
@@ -449,7 +473,7 @@ export default function SmartConverter() {
     }
 
     const type = detectFileType(file);
-    const isPreviewable = ["png", "jpg", "webp"].includes(type);
+    const isPreviewable = (["png", "jpg", "webp"] as FileType[]).includes(type);
     let previewUrl: string | null = null;
     let dimensions: { width: number; height: number } | null = null;
 
@@ -598,7 +622,7 @@ export default function SmartConverter() {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.pdf"
+        accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.pdf,.docx,.doc"
         className="hidden"
         onChange={handleFileInput}
       />
