@@ -134,12 +134,7 @@ function detectFileType(file: File): FileType {
   if (mime === "image/png" || ext === "png") return "png";
   if (mime === "image/jpeg" || ext === "jpg" || ext === "jpeg") return "jpg";
   if (mime === "image/webp" || ext === "webp") return "webp";
-  if (
-    mime === "image/heic" ||
-    mime === "image/heif" ||
-    ext === "heic" ||
-    ext === "heif"
-  )
+  if (mime === "image/heic" || mime === "image/heif" || ext === "heic" || ext === "heif")
     return "heic";
   if (mime === "application/pdf" || ext === "pdf") return "pdf";
   return "unknown";
@@ -147,12 +142,9 @@ function detectFileType(file: File): FileType {
 
 function FileTypeIcon({ type, className }: { type: FileType; className?: string }) {
   switch (type) {
-    case "pdf":
-      return <FileText className={className} />;
-    case "heic":
-      return <Smartphone className={className} />;
-    default:
-      return <FileImage className={className} />;
+    case "pdf":  return <FileText className={className} />;
+    case "heic": return <Smartphone className={className} />;
+    default:     return <FileImage className={className} />;
   }
 }
 
@@ -186,7 +178,6 @@ function IdleView({
           : "border-border bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
       }`}
     >
-      {/* Animated upload icon */}
       <div className="relative animate-bob">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
           <Upload className="h-7 w-7 text-primary" />
@@ -202,10 +193,8 @@ function IdleView({
         </p>
         <p className="text-sm text-muted-foreground">
           or{" "}
-          <span className="text-primary underline underline-offset-2">
-            click to browse
-          </span>{" "}
-          · paste with Ctrl+V
+          <span className="text-primary underline underline-offset-2">click to browse</span>
+          {" "}· paste with Ctrl+V
         </p>
       </div>
 
@@ -225,10 +214,12 @@ function IdleView({
 
 function DetectedView({
   detected,
+  navigatingAction,
   onAction,
   onReset,
 }: {
   detected: DetectedFile;
+  navigatingAction: ActionId | null;
   onAction: (id: ActionId) => void;
   onReset: () => void;
 }) {
@@ -236,10 +227,11 @@ function DetectedView({
   const isPreviewable = detected.previewUrl !== null;
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="animate-in fade-in duration-250">
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-        {/* File info card */}
-        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+
+        {/* File info card — slides in from the left */}
+        <div className="animate-in fade-in slide-in-from-left-3 duration-300 flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
           {/* Thumbnail or icon */}
           <div className="flex items-center justify-center overflow-hidden rounded-lg bg-muted/40 h-36">
             {isPreviewable ? (
@@ -247,34 +239,38 @@ function DetectedView({
               <img
                 src={detected.previewUrl!}
                 alt={detected.file.name}
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain animate-in fade-in zoom-in-95 duration-300"
               />
             ) : (
               <FileTypeIcon
                 type={detected.type}
-                className="h-12 w-12 text-muted-foreground"
+                className="h-12 w-12 text-muted-foreground animate-in zoom-in-75 fade-in duration-200"
               />
             )}
           </div>
 
           {/* Metadata */}
           <div className="min-w-0 space-y-1.5">
-            <p
-              className="truncate text-sm font-semibold text-foreground"
-              title={detected.file.name}
-            >
+            <p className="truncate text-sm font-semibold text-foreground" title={detected.file.name}>
               {truncateFilename(detected.file.name, 28)}
             </p>
             <div className="flex flex-wrap gap-1.5">
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary uppercase">
+              {/* Badge pops in with a slight delay after the card */}
+              <span
+                className="animate-in zoom-in-75 fade-in duration-200 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary uppercase"
+                style={{ animationDelay: "80ms" }}
+              >
                 {detected.type === "unknown" ? "File" : detected.type}
               </span>
-              <span className="text-xs text-muted-foreground self-center">
+              <span
+                className="animate-in fade-in duration-200 text-xs text-muted-foreground self-center"
+                style={{ animationDelay: "100ms" }}
+              >
                 {formatBytes(detected.file.size)}
               </span>
             </div>
             {detected.dimensions && (
-              <p className="text-xs text-muted-foreground">
+              <p className="animate-in fade-in duration-200 text-xs text-muted-foreground" style={{ animationDelay: "120ms" }}>
                 {detected.dimensions.width} × {detected.dimensions.height}
               </p>
             )}
@@ -283,18 +279,20 @@ function DetectedView({
           {/* Change file */}
           <button
             onClick={onReset}
-            className="flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground self-start"
+            disabled={navigatingAction !== null}
+            className="flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground self-start disabled:opacity-40"
           >
             <X className="h-3.5 w-3.5" />
             Change file
           </button>
         </div>
 
-        {/* Action cards */}
-        <div className="flex flex-col gap-3">
-          <p className="text-sm font-semibold text-foreground">
-            What do you want to do?
-          </p>
+        {/* Action cards panel — slides in from the right, with stagger per card */}
+        <div
+          className="animate-in fade-in slide-in-from-right-3 duration-300 flex flex-col gap-3"
+          style={{ animationDelay: "50ms" }}
+        >
+          <p className="text-sm font-semibold text-foreground">What do you want to do?</p>
           {actions.length === 0 ? (
             <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
               No tools available for this file type yet.
@@ -306,23 +304,49 @@ function DetectedView({
               {actions.map((actionId, i) => {
                 const def = ACTION_DEFS[actionId];
                 const Icon = def.icon;
+                const isNavigating = navigatingAction === actionId;
+                const isOtherNavigating = navigatingAction !== null && navigatingAction !== actionId;
+
                 return (
                   <button
                     key={actionId}
                     onClick={() => onAction(actionId)}
-                    style={{ animationDelay: `${i * 65}ms` }}
-                    className="animate-in fade-in slide-in-from-bottom-2 duration-300 group flex items-start gap-3 rounded-xl border border-border bg-background p-4 text-left transition-all hover:border-primary/40 hover:bg-primary/5 active:scale-[0.98]"
+                    disabled={navigatingAction !== null}
+                    style={{ animationDelay: `${110 + i * 65}ms` }}
+                    className={[
+                      "animate-in fade-in slide-in-from-bottom-2 duration-300",
+                      "group flex items-start gap-3 rounded-xl border bg-background p-4 text-left",
+                      "transition-all duration-150",
+                      isNavigating
+                        ? "border-primary/50 bg-primary/5 scale-[0.98] shadow-sm"
+                        : isOtherNavigating
+                        ? "border-border opacity-35 cursor-default"
+                        : "border-border hover:border-primary/40 hover:bg-primary/5 active:scale-[0.98]",
+                    ].join(" ")}
                   >
-                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted transition-colors group-hover:bg-primary/10">
-                      <Icon className={`h-4 w-4 ${def.accent}`} />
+                    <div
+                      className={[
+                        "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
+                        isNavigating
+                          ? "bg-primary/10"
+                          : "bg-muted group-hover:bg-primary/10",
+                      ].join(" ")}
+                    >
+                      {isNavigating ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                      ) : (
+                        <Icon className={`h-4 w-4 ${def.accent}`} />
+                      )}
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-foreground">
-                        {def.name}
+                        {isNavigating ? "Opening…" : def.name}
                       </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
-                        {def.description}
-                      </p>
+                      {!isNavigating && (
+                        <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
+                          {def.description}
+                        </p>
+                      )}
                     </div>
                   </button>
                 );
@@ -347,8 +371,15 @@ export default function SmartConverter() {
   const [dropZoneDragging, setDropZoneDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Animation states
+  const [isIdleExiting, setIsIdleExiting] = useState(false);
+  const [isDetectedExiting, setIsDetectedExiting] = useState(false);
+  const [navigatingAction, setNavigatingAction] = useState<ActionId | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef(0);
+  // stageRef lets processFile read current stage without adding it as a dep
+  const stageRef = useRef<Stage>("idle");
 
   // ── Full-page drag-and-drop ───────────────────────────────────────────────
 
@@ -362,16 +393,14 @@ export default function SmartConverter() {
       dragCounterRef.current = Math.max(0, dragCounterRef.current - 1);
       if (dragCounterRef.current === 0) setIsPageDragging(false);
     };
-    const handleDragOver = (e: DragEvent) => {
-      e.preventDefault();
-    };
+    const handleDragOver = (e: DragEvent) => { e.preventDefault(); };
     const handleDrop = (e: DragEvent) => {
       e.preventDefault();
       dragCounterRef.current = 0;
       setIsPageDragging(false);
       setDropZoneDragging(false);
       const file = e.dataTransfer?.files[0];
-      if (file) processFile(file);
+      if (file) processFileRef.current(file);
     };
 
     document.addEventListener("dragenter", handleDragEnter);
@@ -384,7 +413,6 @@ export default function SmartConverter() {
       document.removeEventListener("dragover", handleDragOver);
       document.removeEventListener("drop", handleDrop);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── URL cleanup on unmount ────────────────────────────────────────────────
@@ -399,15 +427,29 @@ export default function SmartConverter() {
   // ── Core logic ────────────────────────────────────────────────────────────
 
   const processFile = useCallback(async (file: File) => {
-    setDetected((prev) => {
-      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return null;
-    });
     setError(null);
+    setNavigatingAction(null);
+
+    const prevStage = stageRef.current;
+
+    // Animate current view out before showing the new file
+    if (prevStage === "idle") {
+      setIsIdleExiting(true);
+      await new Promise<void>((r) => setTimeout(r, 130));
+      setIsIdleExiting(false);
+    } else {
+      // Replace detected state: briefly fade it out
+      setIsDetectedExiting(true);
+      await new Promise<void>((r) => setTimeout(r, 130));
+      setDetected((prev) => {
+        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
+        return null;
+      });
+      setIsDetectedExiting(false);
+    }
 
     const type = detectFileType(file);
     const isPreviewable = ["png", "jpg", "webp"].includes(type);
-
     let previewUrl: string | null = null;
     let dimensions: { width: number; height: number } | null = null;
 
@@ -423,37 +465,53 @@ export default function SmartConverter() {
     }
 
     setDetected({ file, type, previewUrl, dimensions });
+    stageRef.current = "detected";
     setStage("detected");
 
     const typeLabel = type === "unknown" ? "File" : type.toUpperCase();
     addToast(`${typeLabel} detected — choose an action below`, "info", 3000);
   }, []);
 
+  // Keep a stable ref so the drag event closure always calls the latest processFile
+  const processFileRef = useRef(processFile);
+  processFileRef.current = processFile;
+
   usePasteImage(processFile);
 
   const handleAction = useCallback(
     (actionId: ActionId) => {
-      if (!detected) return;
-      // Store file for the target tool page to pick up on mount
-      setPendingFile(detected.file);
-      router.push(getRoute(detected.type, actionId));
-      // Clean up SmartConverter state
-      if (detected.previewUrl) URL.revokeObjectURL(detected.previewUrl);
-      setDetected(null);
-      setStage("idle");
-      setError(null);
+      if (!detected || navigatingAction) return;
+      setNavigatingAction(actionId);
+
+      // Brief feedback delay (spinner visible) before navigating
+      setTimeout(() => {
+        setPendingFile(detected.file);
+        router.push(getRoute(detected.type, actionId));
+        if (detected.previewUrl) URL.revokeObjectURL(detected.previewUrl);
+        setDetected(null);
+        setNavigatingAction(null);
+        stageRef.current = "idle";
+        setStage("idle");
+        setError(null);
+      }, 160);
     },
-    [detected, router]
+    [detected, router, navigatingAction]
   );
 
   const reset = useCallback(() => {
-    setDetected((prev) => {
-      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return null;
-    });
-    setError(null);
-    setStage("idle");
-  }, []);
+    if (navigatingAction) return; // don't reset while navigating
+    setIsDetectedExiting(true);
+    setTimeout(() => {
+      setDetected((prev) => {
+        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
+        return null;
+      });
+      setError(null);
+      stageRef.current = "idle";
+      setStage("idle");
+      setIsDetectedExiting(false);
+    }, 200);
+  }, [navigatingAction]);
 
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -473,57 +531,66 @@ export default function SmartConverter() {
         <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-primary/5 backdrop-blur-[1px]">
           <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-primary border-dashed bg-background/80 px-12 py-8 shadow-xl">
             <Upload className="h-8 w-8 text-primary animate-bob" />
-            <p className="text-base font-semibold text-primary">
-              Drop anywhere
-            </p>
+            <p className="text-base font-semibold text-primary">Drop anywhere</p>
           </div>
         </div>
       )}
 
-      {/* Smart converter container */}
       <div className="relative">
         {/* Error banner */}
         {error && (
           <div className="mb-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400">
             {error}
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto shrink-0 opacity-70 hover:opacity-100"
-            >
+            <button onClick={() => setError(null)} className="ml-auto shrink-0 opacity-70 hover:opacity-100">
               <X className="h-3.5 w-3.5" />
             </button>
           </div>
         )}
 
+        {/* Idle view — with exit animation */}
         {stage === "idle" && (
-          <IdleView
-            isDraggingOver={dropZoneDragging}
-            onDragEnter={(e) => {
-              e.stopPropagation();
-              setDropZoneDragging(true);
+          <div
+            className="transition-all ease-out"
+            style={{
+              transitionDuration: "130ms",
+              opacity: isIdleExiting ? 0 : 1,
+              transform: isIdleExiting ? "scale(0.97) translateY(4px)" : "scale(1) translateY(0)",
             }}
-            onDragLeave={(e) => {
-              e.stopPropagation();
-              setDropZoneDragging(false);
-            }}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setDropZoneDragging(false);
-              const file = e.dataTransfer.files[0];
-              if (file) processFile(file);
-            }}
-            onBrowse={() => fileInputRef.current?.click()}
-          />
+          >
+            <IdleView
+              isDraggingOver={dropZoneDragging}
+              onDragEnter={(e) => { e.stopPropagation(); setDropZoneDragging(true); }}
+              onDragLeave={(e) => { e.stopPropagation(); setDropZoneDragging(false); }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDropZoneDragging(false);
+                const file = e.dataTransfer.files[0];
+                if (file) processFile(file);
+              }}
+              onBrowse={() => fileInputRef.current?.click()}
+            />
+          </div>
         )}
 
+        {/* Detected view — with exit animation */}
         {stage === "detected" && detected && (
-          <DetectedView
-            detected={detected}
-            onAction={handleAction}
-            onReset={reset}
-          />
+          <div
+            className="transition-all ease-out"
+            style={{
+              transitionDuration: "200ms",
+              opacity: isDetectedExiting ? 0 : 1,
+              transform: isDetectedExiting ? "translateY(8px)" : "translateY(0)",
+            }}
+          >
+            <DetectedView
+              detected={detected}
+              navigatingAction={navigatingAction}
+              onAction={handleAction}
+              onReset={reset}
+            />
+          </div>
         )}
       </div>
 
