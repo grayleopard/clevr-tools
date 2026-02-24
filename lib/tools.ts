@@ -2,7 +2,7 @@ export interface Tool {
   slug: string;
   name: string;
   shortDescription: string;
-  category: 'compress' | 'convert' | 'generate' | 'ai';
+  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools';
   route: string;
   acceptedFormats: string[];
   icon: string;
@@ -35,7 +35,7 @@ export const tools: Tool[] = [
       <h2>Private by Design</h2>
       <p>Every image is compressed entirely in your browser using the HTML5 Canvas API. Your files are never sent to a server, never stored, and never seen by anyone but you. This makes it safe for confidential client work, proprietary images, personal photos, and anything else you wouldn't want leaving your device.</p>
     `,
-    relatedTools: ['png-to-jpg', 'png-to-webp', 'jpg-to-png'],
+    relatedTools: ['png-to-jpg', 'png-to-webp', 'resize-image'],
     badge: 'popular',
   },
   {
@@ -187,8 +187,161 @@ export const tools: Tool[] = [
       <h2>Limitations to Know</h2>
       <p>This tool is most effective for PDFs padded with verbose metadata and structural overhead. For PDFs that are large primarily because of embedded high-resolution images, size reduction will be modest — image-based PDF compression requires specialist tools that resample or re-encode the embedded images. If your PDF contains scanned documents or photographs, this tool works best combined with a dedicated image compression step beforehand.</p>
     `,
-    relatedTools: ['image-compressor', 'png-to-jpg', 'jpg-to-png'],
+    relatedTools: ['merge-pdf', 'split-pdf', 'pdf-to-jpg'],
   },
+  // ─── New PDF Tools ────────────────────────────────────────────────────────
+  {
+    slug: 'pdf-to-jpg',
+    name: 'PDF to JPG Converter',
+    shortDescription: 'Convert PDF pages to high-quality JPG images — batch supported.',
+    category: 'convert',
+    route: '/convert/pdf-to-jpg',
+    acceptedFormats: ['.pdf'],
+    icon: 'ImageDown',
+    metaTitle: 'Convert PDF to JPG Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Convert PDF pages to JPG images online free. Select page range, adjust quality, preview all pages. Download individually or as ZIP. No upload — 100% browser-based.',
+    seoContent: `
+      <h2>Why Convert PDF to JPG?</h2>
+      <p>PDFs are the universal format for documents, but JPG images are universal for sharing, embedding, and displaying content. Converting PDF pages to JPG lets you share individual slides or pages via email or messaging apps, embed document content in presentations and web pages, use PDF content in image editors, and create thumbnail previews of multi-page reports. JPG is the format that works everywhere images are accepted.</p>
+      <h2>Quality and Page Selection</h2>
+      <p>The quality slider controls the JPG compression applied to each rendered page — higher quality produces sharper, larger files ideal for archiving or professional use, while lower quality creates smaller files perfect for web thumbnails or quick sharing. The page range selector lets you extract just the pages you need rather than converting an entire document, saving time and storage on long PDFs.</p>
+      <h2>How It Works</h2>
+      <p>Each PDF page is rendered to an HTML5 Canvas element using PDF.js — Mozilla's open-source PDF rendering library used in Firefox. The canvas is exported as a JPEG at your chosen quality. All processing happens entirely in your browser: no pages, no text, and no document content is ever transmitted to a server. Your PDFs and their contents stay completely private throughout the conversion process.</p>
+    `,
+    relatedTools: ['pdf-compressor', 'merge-pdf', 'jpg-to-pdf'],
+    badge: 'popular',
+  },
+  {
+    slug: 'jpg-to-pdf',
+    name: 'JPG to PDF Converter',
+    shortDescription: 'Combine JPG, PNG & WebP images into a single PDF document.',
+    category: 'convert',
+    route: '/convert/jpg-to-pdf',
+    acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp'],
+    icon: 'FileText',
+    metaTitle: 'Convert JPG to PDF Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Convert JPG, PNG, and WebP images to PDF online free. Drag to reorder pages, choose page size, add margins. No upload — processes entirely in your browser.',
+    seoContent: `
+      <h2>Combine Images into a Professional PDF</h2>
+      <p>Converting images to PDF is one of the most common document tasks — assembling scanned receipts, combining photo scans of a multi-page form, packaging multiple screenshots into a single shareable file, or creating a presentation-ready document from individual image files. This tool accepts JPG, PNG, and WebP images and combines them into a single, properly-formatted PDF in seconds.</p>
+      <h2>Page Layout Control</h2>
+      <p>Choose between A4 (international standard), US Letter (North American standard), or "Fit to Image" mode that creates a page sized exactly to each image's dimensions. Portrait and landscape orientations are supported, and an optional margin adds professional whitespace around each image. Drag-to-reorder lets you arrange images in any sequence before generating the PDF — no re-uploading required.</p>
+      <h2>Private, Client-Side Processing</h2>
+      <p>All PDF creation happens in your browser using pdf-lib, a pure JavaScript PDF library. Your images are never sent to any server — they're read locally, embedded into the PDF structure in memory, and the result is downloaded directly to your device. This makes it safe for scanned identification documents, private correspondence, financial statements, and any image content you'd prefer to keep off the internet.</p>
+    `,
+    relatedTools: ['pdf-compressor', 'png-to-pdf', 'merge-pdf'],
+    badge: 'popular',
+  },
+  {
+    slug: 'merge-pdf',
+    name: 'Merge PDF',
+    shortDescription: 'Combine multiple PDF files into one — drag to reorder.',
+    category: 'tools',
+    route: '/tools/merge-pdf',
+    acceptedFormats: ['.pdf'],
+    icon: 'GitMerge',
+    metaTitle: 'Merge PDF Files Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Merge multiple PDF files into one online free. Drag to reorder, see page counts. No upload — combines PDFs entirely in your browser using pdf-lib.',
+    seoContent: `
+      <h2>Why Merge PDFs?</h2>
+      <p>Merging PDF files is one of the most frequent document tasks in modern workflows: combining chapters into a complete report, assembling contract addenda into a single file, merging bank statements for expense reporting, or packaging multiple form submissions into one document for a records system. A single merged PDF is easier to email, archive, print, and review than a collection of individual files.</p>
+      <h2>Reorder Before Merging</h2>
+      <p>Drag any PDF up or down to set the final page order before generating the merged file. Each card shows the filename, page count, and file size so you can confirm everything is in order. The merge produces a standard PDF file readable by Adobe Acrobat, Preview, every browser, and every mobile PDF viewer — with all original formatting, fonts, images, and bookmarks preserved.</p>
+      <h2>Completely Private</h2>
+      <p>PDF merging happens entirely in your browser using pdf-lib, an open-source JavaScript library. No file is ever uploaded to a server — not even temporarily. Your PDFs could contain legal contracts, medical records, financial statements, or anything else sensitive, and they will never leave your device. This is the fundamental privacy advantage of browser-based document processing over cloud-based alternatives.</p>
+    `,
+    relatedTools: ['split-pdf', 'pdf-compressor', 'rotate-pdf'],
+    badge: 'popular',
+  },
+  {
+    slug: 'split-pdf',
+    name: 'Split PDF',
+    shortDescription: 'Split a PDF into individual pages or custom page ranges.',
+    category: 'tools',
+    route: '/tools/split-pdf',
+    acceptedFormats: ['.pdf'],
+    icon: 'Scissors',
+    metaTitle: 'Split PDF Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Split PDF into individual pages or custom page ranges online free. Preview page thumbnails, select exactly what you need. No upload — 100% browser-based.',
+    seoContent: `
+      <h2>Extract Exactly the Pages You Need</h2>
+      <p>PDF documents often contain more pages than you need to share or work with: a 50-page report where you only need pages 3–7, a scanned book where you want a specific chapter, a legal document where you need to extract individual exhibits. PDF splitting lets you extract precisely the content you need without editing the original, creating focused documents for each recipient or purpose.</p>
+      <h2>Three Split Modes</h2>
+      <p>Split into all individual pages (one PDF per page), extract a custom page range using range notation like "1-5, 8, 11-15", or visually select specific pages by clicking thumbnails. Multiple extracted pages can be bundled into a ZIP archive for convenient download, or individual page PDFs can be downloaded one at a time. All original page content — text, images, formatting, and annotations — is preserved in every extracted page.</p>
+      <h2>How PDF Splitting Works</h2>
+      <p>Page extraction uses pdf-lib to read the source PDF and copy selected pages into new PDF documents. Visual page previews are rendered by PDF.js, the same engine used in Firefox. All processing runs locally in your browser — no pages of your PDF are sent to any server. This guarantees privacy for confidential documents, legal files, patient records, and any other sensitive content you need to split and share.</p>
+    `,
+    relatedTools: ['merge-pdf', 'rotate-pdf', 'pdf-compressor'],
+  },
+  {
+    slug: 'rotate-pdf',
+    name: 'Rotate PDF',
+    shortDescription: 'Rotate PDF pages individually or all at once.',
+    category: 'tools',
+    route: '/tools/rotate-pdf',
+    acceptedFormats: ['.pdf'],
+    icon: 'RotateCw',
+    metaTitle: 'Rotate PDF Pages Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Rotate PDF pages online free. Fix upside-down or sideways pages individually or all at once. Preview thumbnails before saving. No upload — browser-based.',
+    seoContent: `
+      <h2>Fix Rotated PDF Pages</h2>
+      <p>Incorrectly oriented PDF pages are a common problem: scanned documents that come out sideways, PDFs created from photos taken in landscape mode, presentations exported with mixed orientations, or signed contracts where some pages are upside-down. Sending a rotated PDF looks unprofessional and is frustrating to read — this tool fixes rotation problems permanently in a few clicks without re-scanning or re-creating the document.</p>
+      <h2>Per-Page Control</h2>
+      <p>Each page is shown as a thumbnail. Click any page to rotate it 90° clockwise — clicking repeatedly cycles through all four orientations (0°, 90°, 180°, 270°). Use "Rotate All" to apply the same rotation to every page at once, or rotate individual pages when only some need adjustment. A rotation indicator shows the current orientation of each page before you apply changes.</p>
+      <h2>Non-Destructive Metadata Rotation</h2>
+      <p>PDF rotation is stored as a metadata property on each page rather than re-rendering content. This means the rotation is applied instantly regardless of PDF complexity, and the original page content (vectors, text, images) is preserved at full quality. The output PDF is a standard, widely-compatible file that opens correctly in all PDF readers — Adobe Acrobat, Preview, browsers, and mobile apps alike.</p>
+    `,
+    relatedTools: ['merge-pdf', 'split-pdf', 'pdf-compressor'],
+  },
+  {
+    slug: 'resize-image',
+    name: 'Image Resizer',
+    shortDescription: 'Resize images by dimensions, presets, or target file size.',
+    category: 'tools',
+    route: '/tools/resize-image',
+    acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp'],
+    icon: 'Scaling',
+    metaTitle: 'Resize Images Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Resize images online free. Set exact dimensions, use social media presets, or target a specific file size. Batch support, aspect ratio lock. No upload required.',
+    seoContent: `
+      <h2>Three Ways to Resize</h2>
+      <p>Different use cases call for different resizing approaches. Exact dimensions mode lets you set precise pixel widths and heights with an aspect ratio lock that automatically calculates the proportional dimension — essential for UI design, web assets, and any context with strict size requirements. Preset mode provides ready-made dimensions for common social media formats (Instagram, Facebook, Twitter), passport photos, and standard web sizes so you don't need to memorize specifications. Target file size mode iteratively adjusts compression until your image meets an exact kilobyte limit — useful for applications with strict upload size requirements.</p>
+      <h2>Quality Without Distortion</h2>
+      <p>All resizing uses the HTML5 Canvas API with bicubic-equivalent scaling to produce smooth, artifact-free results. Aspect ratio locking prevents the stretching and distortion that occurs when width and height are changed independently. For batch resizing, the same settings apply to all files — useful when standardizing a collection of product photos, profile pictures, or presentation assets to consistent dimensions.</p>
+      <h2>Private Browser-Based Processing</h2>
+      <p>Image resizing happens entirely in your browser. Files are drawn to an HTML5 Canvas element and re-exported — no pixel data is ever transmitted to a server. Batch processing runs sequentially in memory, and all blob URLs are released after download. Your photos — including faces, locations, documents, and private content — never leave your device during any step of the process.</p>
+    `,
+    relatedTools: ['image-compressor', 'png-to-jpg', 'jpg-to-png'],
+    badge: 'new',
+  },
+  {
+    slug: 'png-to-pdf',
+    name: 'PNG to PDF Converter',
+    shortDescription: 'Convert PNG images to a PDF document — drag to reorder.',
+    category: 'convert',
+    route: '/convert/png-to-pdf',
+    acceptedFormats: ['.png'],
+    icon: 'FileText',
+    metaTitle: 'Convert PNG to PDF Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Convert PNG images to PDF online free. Combine multiple PNGs into one PDF, drag to reorder pages, choose page size and margins. No upload required.',
+    seoContent: `
+      <h2>PNG to PDF for Documents and Presentations</h2>
+      <p>PNG is the preferred format for screenshots, diagrams, flowcharts, and any image with sharp edges or text — making it the natural choice for document content that started as image captures. Converting PNG files to PDF creates a properly formatted, distributable document from your images: screenshots of reports, exported presentation slides, scanned pages saved as PNG, or any collection of images that needs to be packaged into a single professional document.</p>
+      <h2>Lossless Embedding</h2>
+      <p>Unlike JPEG, PNG uses lossless compression — every pixel is preserved exactly. When embedded in a PDF, PNG images retain full fidelity with no additional compression artifacts introduced during the conversion. This matters for screenshots with text, diagrams with fine lines, and any image where sharpness and legibility are critical. The PDF output is identical in visual quality to the original PNG source files.</p>
+      <h2>Page Layout and Ordering</h2>
+      <p>Drag your PNG files into any order before generating the PDF. Choose A4, US Letter, or image-fitted page sizes, and toggle margins for a clean professional look. All conversion happens in your browser using pdf-lib — no file is ever sent to a server. Your PNG files stay on your device from start to finish, keeping screenshots of private content, proprietary diagrams, and sensitive documents completely secure.</p>
+    `,
+    relatedTools: ['jpg-to-pdf', 'merge-pdf', 'png-to-jpg'],
+  },
+  // ─── Not-yet-built tools ───────────────────────────────────────────────────
   {
     slug: 'url-encoder',
     name: 'URL Encoder / Decoder',
@@ -245,6 +398,7 @@ export function getRelatedTools(tool: Tool): Tool[] {
 export const toolCategories = [
   { id: 'compress' as const, label: 'Compress', icon: 'Minimize2' },
   { id: 'convert' as const, label: 'Convert', icon: 'ArrowLeftRight' },
+  { id: 'tools' as const, label: 'PDF & File Tools', icon: 'FileStack' },
   { id: 'generate' as const, label: 'Generate', icon: 'Sparkles' },
   { id: 'ai' as const, label: 'AI Tools', icon: 'Bot' },
 ];

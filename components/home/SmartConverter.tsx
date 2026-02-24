@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Upload,
   FileText,
@@ -14,6 +15,8 @@ import {
   ArrowRight,
   RefreshCw,
   Sparkles,
+  Scissors,
+  RotateCw,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
@@ -40,7 +43,10 @@ type ActionId =
   | "to-jpg"
   | "to-png"
   | "to-webp"
-  | "compress-pdf";
+  | "compress-pdf"
+  | "pdf-to-jpg"
+  | "split-pdf"
+  | "rotate-pdf";
 type Stage = "idle" | "detected" | "processing" | "done";
 
 interface DetectedFile {
@@ -67,7 +73,7 @@ const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
   jpg: ["compress-image", "to-png", "to-webp"],
   webp: ["to-png", "to-jpg"],
   heic: ["to-jpg"],
-  pdf: ["compress-pdf"],
+  pdf: ["compress-pdf", "pdf-to-jpg", "split-pdf", "rotate-pdf"],
   unknown: [],
 };
 
@@ -109,6 +115,24 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
     description: "Strip metadata and reduce file size",
     accent: "text-red-600 dark:text-red-400",
   },
+  "pdf-to-jpg": {
+    icon: FileImage,
+    name: "Convert to JPG",
+    description: "Extract each page as a JPG image",
+    accent: "text-amber-600 dark:text-amber-400",
+  },
+  "split-pdf": {
+    icon: Scissors,
+    name: "Split PDF",
+    description: "Extract pages or split into separate files",
+    accent: "text-purple-600 dark:text-purple-400",
+  },
+  "rotate-pdf": {
+    icon: RotateCw,
+    name: "Rotate PDF",
+    description: "Rotate pages individually or all at once",
+    accent: "text-blue-600 dark:text-blue-400",
+  },
 };
 
 const PROCESSING_LABELS: Record<ActionId, string> = {
@@ -117,6 +141,15 @@ const PROCESSING_LABELS: Record<ActionId, string> = {
   "to-png": "Converting to PNG…",
   "to-webp": "Converting to WebP…",
   "compress-pdf": "Compressing PDF…",
+  "pdf-to-jpg": "Opening tool…",
+  "split-pdf": "Opening tool…",
+  "rotate-pdf": "Opening tool…",
+};
+
+const NAVIGATE_ACTIONS: Partial<Record<ActionId, string>> = {
+  "pdf-to-jpg": "/convert/pdf-to-jpg",
+  "split-pdf": "/tools/split-pdf",
+  "rotate-pdf": "/tools/rotate-pdf",
 };
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
@@ -488,6 +521,7 @@ function DoneView({
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function SmartConverter() {
+  const router = useRouter();
   const [stage, setStage] = useState<Stage>("idle");
   const [detected, setDetected] = useState<DetectedFile | null>(null);
   const [result, setResult] = useState<ProcessResult | null>(null);
@@ -590,6 +624,14 @@ export default function SmartConverter() {
   const handleAction = useCallback(
     async (actionId: ActionId) => {
       if (!detected) return;
+
+      // Navigation actions — take user to the dedicated tool page
+      const navRoute = NAVIGATE_ACTIONS[actionId];
+      if (navRoute) {
+        router.push(navRoute);
+        return;
+      }
+
       setError(null);
       setProcessingLabel(PROCESSING_LABELS[actionId]);
       setStage("processing");
@@ -627,6 +669,8 @@ export default function SmartConverter() {
             blob = await compressPdf(detected.file);
             filename = `${baseName}-compressed.pdf`;
             break;
+          default:
+            return; // Navigation actions are handled above
         }
 
         const toolSlug = getToolSlug(detected.type, actionId);
@@ -660,7 +704,7 @@ export default function SmartConverter() {
         setStage("detected");
       }
     },
-    [detected]
+    [detected, router]
   );
 
   const backToDetected = useCallback(() => {
