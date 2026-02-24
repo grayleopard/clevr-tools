@@ -54,9 +54,8 @@ export default function RootLayout({
         </ThemeProvider>
 
         {/* Google Analytics GA4 */}
-        {/* TODO: Replace G-XXXXXXXXXX with actual GA4 measurement ID */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          src="https://www.googletagmanager.com/gtag/js?id=G-X161SLKN61"
           strategy="afterInteractive"
         />
         <Script id="gtag-init" strategy="afterInteractive">
@@ -64,7 +63,7 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXXXX');
+            gtag('config', 'G-X161SLKN61');
           `}
         </Script>
       </body>
