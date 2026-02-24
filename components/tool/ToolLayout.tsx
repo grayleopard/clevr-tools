@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ToolCard from "@/components/tool/ToolCard";
 import AdSlot from "@/components/tool/AdSlot";
-import { getRelatedTools } from "@/lib/tools";
+import { getRelatedTools, toolCategories } from "@/lib/tools";
 import type { Tool } from "@/lib/tools";
 
 interface ToolLayoutProps {
@@ -15,10 +15,10 @@ interface ToolLayoutProps {
 export default function ToolLayout({ tool, children, structuredData }: ToolLayoutProps) {
   const defaultStructuredData = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
+    "@type": "WebApplication",
     name: tool.name,
     description: tool.metaDescription,
-    applicationCategory: "BrowserApplication",
+    applicationCategory: "UtilityApplication",
     operatingSystem: "Any",
     offers: {
       "@type": "Offer",
@@ -26,10 +26,17 @@ export default function ToolLayout({ tool, children, structuredData }: ToolLayou
       priceCurrency: "USD",
     },
     url: `https://clevr.tools${tool.route}`,
+    creator: {
+      "@type": "Organization",
+      name: "clevr.tools",
+      url: "https://clevr.tools",
+    },
   };
 
   const jsonLd = structuredData ?? defaultStructuredData;
   const relatedTools = getRelatedTools(tool);
+  const categoryLabel =
+    toolCategories.find((c) => c.id === tool.category)?.label ?? tool.category;
 
   return (
     <>
@@ -44,7 +51,7 @@ export default function ToolLayout({ tool, children, structuredData }: ToolLayou
           <div className="border-b border-border bg-muted/20">
             <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                <span className="capitalize">{tool.category}</span>
+                <span>{categoryLabel}</span>
                 <span>/</span>
                 <span>{tool.name}</span>
               </div>

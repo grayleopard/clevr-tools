@@ -11,12 +11,9 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "clevr.tools — Free Online File Utilities",
-    template: "%s | clevr.tools",
-  },
+  title: "clevr.tools — Free Online File & Text Tools",
   description:
-    "Free online file utilities: compress images, convert formats, generate QR codes, and more. All processing happens in your browser — your files never leave your device.",
+    "Free online file and text utilities: compress images, convert formats, generate QR codes, count words, convert case, and more. All processing happens in your browser — your files and text never leave your device.",
   metadataBase: new URL("https://clevr.tools"),
   openGraph: {
     type: "website",

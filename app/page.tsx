@@ -6,9 +6,9 @@ import Footer from "@/components/layout/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "clevr.tools — Free Online File Utilities",
+  title: "clevr.tools — Free Online File & Text Tools",
   description:
-    "Free browser-based tools: compress images, convert formats, generate QR codes, and more. No signup. Your files never leave your device.",
+    "Free browser-based file and text tools: compress images, convert formats, generate QR codes, count words, convert case, and more. No signup. Nothing ever leaves your device.",
   alternates: {
     canonical: "https://clevr.tools",
   },
