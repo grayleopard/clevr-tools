@@ -27,6 +27,12 @@ const PAGE_WIDTH_MM: Record<PageSize, Record<Orientation, number>> = {
   letter: { portrait: 215.9, landscape: 279.4 },
 };
 
+// Content width in pixels for html2canvas rendering (96 DPI equivalent)
+const PAGE_WIDTH_PX: Record<PageSize, Record<Orientation, number>> = {
+  a4:     { portrait: 794, landscape: 1123 },
+  letter: { portrait: 816, landscape: 1056 },
+};
+
 const WORD_STYLES = `
   * { box-sizing: border-box; }
   body, div { margin: 0; padding: 0; }
@@ -129,10 +135,13 @@ export default function WordToPdf() {
       contentEl.innerHTML = html;
       container.appendChild(contentEl);
 
-      // Mount off-screen
-      container.style.position = "absolute";
-      container.style.left = "-9999px";
-      container.style.top = "0";
+      // Mount off-screen — use fixed positioning far above viewport
+      // so the element has a real layout width for html2canvas
+      const contentWidthPx = PAGE_WIDTH_PX[pageSize][orientation];
+      container.style.position = "fixed";
+      container.style.top = "-99999px";
+      container.style.left = "0";
+      container.style.width = `${contentWidthPx}px`;
       document.body.appendChild(container);
 
       try {
@@ -144,7 +153,13 @@ export default function WordToPdf() {
           margin: marginValues,
           filename,
           image: { type: "jpeg" as const, quality: 0.98 },
-          html2canvas: { scale: 2, logging: false, useCORS: true },
+          html2canvas: {
+            scale: 2,
+            logging: false,
+            useCORS: true,
+            width: contentWidthPx,
+            windowWidth: contentWidthPx,
+          },
           jsPDF: { unit: "mm", format: pageFmt, orientation },
         };
 

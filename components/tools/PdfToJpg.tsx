@@ -193,22 +193,31 @@ export default function PdfToJpg() {
 
       {pdfEntries.length > 0 && !isLoadingThumbs && results.length === 0 && (
         <div className="space-y-4">
-          {pdfEntries.map((entry, fi) => (
-            <div key={fi} className="space-y-3">
-              {pdfEntries.length > 1 && (
-                <p className="text-sm font-semibold">{truncateFilename(entry.file.name, 40)} — {entry.pageCount} pages</p>
-              )}
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
-                {entry.thumbnails.map((thumb, pi) => (
-                  <div key={pi} className="relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={thumb} alt={`Page ${pi + 1}`} className="w-full rounded-md border border-border object-contain bg-white" />
-                    <span className="absolute bottom-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white">{pi + 1}</span>
-                  </div>
-                ))}
-              </div>
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border bg-muted/20 px-4 py-2.5">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                Input — {pdfEntries.reduce((s, e) => s + e.pageCount, 0)} page{pdfEntries.reduce((s, e) => s + e.pageCount, 0) !== 1 ? "s" : ""} loaded
+              </p>
             </div>
-          ))}
+            <div className="p-4 space-y-4">
+              {pdfEntries.map((entry, fi) => (
+                <div key={fi} className="space-y-3">
+                  {pdfEntries.length > 1 && (
+                    <p className="text-sm font-semibold">{truncateFilename(entry.file.name, 40)} — {entry.pageCount} pages</p>
+                  )}
+                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+                    {entry.thumbnails.map((thumb, pi) => (
+                      <div key={pi} className="relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={thumb} alt={`Page ${pi + 1}`} className="w-full rounded-md border border-border object-contain bg-white" />
+                        <span className="absolute bottom-1 right-1 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white">{pi + 1}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
           <button
             onClick={handleConvert}
             className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
@@ -227,37 +236,61 @@ export default function PdfToJpg() {
       {/* Results */}
       {results.length > 0 && !isConverting && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">{results.length} pages converted</h2>
+          {/* Success banner */}
+          <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 dark:border-green-900/40 dark:bg-green-950/20">
+            <FileImage className="h-4 w-4 text-green-600 dark:text-green-400 shrink-0" />
+            <p className="text-sm font-medium text-green-700 dark:text-green-400">
+              {results.length} page{results.length !== 1 ? "s" : ""} converted to JPG successfully
+            </p>
             <button
               onClick={reset}
-              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="ml-auto flex items-center gap-1.5 text-xs font-medium text-green-700 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 transition-colors"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Start over
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-            {results.map((r, i) => (
-              <a
-                key={i}
-                href={r.url}
-                download={r.filename}
-                onClick={() => { setDownloaded(true); addToast("Downloading…", "info", 1500); }}
-                className="group relative overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/40 hover:shadow-sm"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={r.url} alt={r.filename} className="w-full object-contain bg-white" />
-                <div className="p-2">
-                  <p className="truncate text-xs font-medium text-foreground">{r.filename}</p>
-                  <p className="text-xs text-muted-foreground">{formatBytes(r.size)}</p>
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center bg-primary/80 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
-                  <Download className="h-6 w-6 text-white" />
-                </div>
-              </a>
-            ))}
+
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border bg-muted/20 px-4 py-2.5">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                Output — {results.length} JPG image{results.length !== 1 ? "s" : ""}
+              </p>
+              {results.length > 1 && (
+                <button
+                  onClick={downloadAll}
+                  className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Package className="h-3.5 w-3.5" />
+                  Download ZIP
+                </button>
+              )}
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                {results.map((r, i) => (
+                  <a
+                    key={i}
+                    href={r.url}
+                    download={r.filename}
+                    onClick={() => { setDownloaded(true); addToast("Downloading…", "info", 1500); }}
+                    className="group relative overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/40 hover:shadow-sm"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={r.url} alt={r.filename} className="w-full object-contain bg-white" />
+                    <div className="p-2">
+                      <p className="truncate text-xs font-medium text-foreground">{r.filename}</p>
+                      <p className="text-xs text-muted-foreground">{formatBytes(r.size)}</p>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-primary/80 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl">
+                      <Download className="h-6 w-6 text-white" />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
+
           {results.length > 1 && (
             <button
               onClick={downloadAll}
