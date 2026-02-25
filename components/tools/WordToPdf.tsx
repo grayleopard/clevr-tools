@@ -27,57 +27,27 @@ const PAGE_WIDTH_MM: Record<PageSize, Record<Orientation, number>> = {
   letter: { portrait: 215.9, landscape: 279.4 },
 };
 
-// Content width in pixels for html2canvas rendering (96 DPI equivalent)
+// Content width/height in pixels for the hidden iframe (96 DPI equivalent)
 const PAGE_WIDTH_PX: Record<PageSize, Record<Orientation, number>> = {
   a4:     { portrait: 794, landscape: 1123 },
   letter: { portrait: 816, landscape: 1056 },
 };
+const PAGE_HEIGHT_PX: Record<PageSize, Record<Orientation, number>> = {
+  a4:     { portrait: 1123, landscape: 794 },
+  letter: { portrait: 1056, landscape: 816 },
+};
 
-// Regex for CSS color functions that html2canvas cannot parse.
-// Browsers internally convert oklch() to lab() in getComputedStyle,
-// which crashes html2canvas with "Attempting to parse unsupported color function 'lab'".
-const MODERN_COLOR_RE = /\b(?:lab|lch|oklch|oklab)\s*\(|\bcolor-mix\s*\(|\bcolor\s*\(display-/;
-
-/**
- * Walk every element in `root` and override any computed color that uses a
- * modern CSS color function with a safe hex fallback.  Must be called AFTER
- * the container is in the live DOM so getComputedStyle returns real values.
- */
-function sanitizeModernColors(root: HTMLElement): void {
-  const safe = (raw: string, fallback: string) =>
-    MODERN_COLOR_RE.test(raw) ? fallback : null;
-
-  const walk = (el: Element) => {
-    const h = el as HTMLElement;
-    const cs = window.getComputedStyle(el);
-
-    const color = cs.getPropertyValue("color");
-    const fix = safe(color, "#000000");
-    if (fix) h.style.setProperty("color", fix, "important");
-
-    const bg = cs.getPropertyValue("background-color");
-    const bgFix = safe(bg, el === root ? "#ffffff" : "transparent");
-    if (bgFix) h.style.setProperty("background-color", bgFix, "important");
-
-    for (const side of ["top", "right", "bottom", "left"] as const) {
-      const bc = cs.getPropertyValue(`border-${side}-color`);
-      const bcFix = safe(bc, "#cccccc");
-      if (bcFix) h.style.setProperty(`border-${side}-color`, bcFix, "important");
-    }
-
-    const outline = cs.getPropertyValue("outline-color");
-    const outlineFix = safe(outline, "transparent");
-    if (outlineFix) h.style.setProperty("outline-color", outlineFix, "important");
-
-    for (const child of el.children) walk(child);
-  };
-
-  walk(root);
-}
-
-const WORD_STYLES = `
-  * { box-sizing: border-box; }
-  body, div { margin: 0; padding: 0; }
+// Stylesheet written into the isolated iframe — ONLY safe hex colors,
+// zero Tailwind CSS, zero CSS custom properties.
+// This is what the iframe body actually renders (mammoth HTML goes inside <body>).
+const IFRAME_STYLES = `
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 12pt; line-height: 1.5;
+    color: #000000; background: #ffffff;
+  }
   h1 { font-size: 20pt; font-weight: bold; margin: 0 0 10pt; line-height: 1.3; }
   h2 { font-size: 16pt; font-weight: bold; margin: 12pt 0 6pt; line-height: 1.3; }
   h3 { font-size: 13pt; font-weight: bold; margin: 10pt 0 4pt; line-height: 1.3; }
@@ -90,12 +60,14 @@ const WORD_STYLES = `
   em, i { font-style: italic; }
   u { text-decoration: underline; }
   table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 11pt; }
-  td, th { border: 1px solid #aaa; padding: 4pt 8pt; vertical-align: top; }
+  td, th { border: 1px solid #aaaaaa; padding: 4pt 8pt; vertical-align: top; }
   th { background: #f0f0f0; font-weight: bold; }
-  a { color: #1155CC; text-decoration: underline; }
-  blockquote { margin: 8pt 0 8pt 20pt; padding-left: 10pt; border-left: 3px solid #ccc; color: #555; }
+  a { color: #1155cc; text-decoration: underline; }
+  blockquote { margin: 8pt 0 8pt 20pt; padding-left: 10pt; border-left: 3px solid #cccccc; color: #555555; }
   pre, code { font-family: 'Courier New', Courier, monospace; font-size: 10pt; background: #f5f5f5; padding: 2pt 4pt; border-radius: 2px; }
+  img { max-width: 100%; height: auto; }
 `;
+
 
 interface Result {
   url: string;
@@ -155,44 +127,46 @@ export default function WordToPdf() {
       setPreviewHtml(html);
       setProgress("Rendering PDF…");
 
-      // Build the styled container
       const marginValues = MARGIN_MAP[margins];
       const pageFmt = pageSize === "a4" ? "a4" : "letter";
+      const contentWidthPx  = PAGE_WIDTH_PX[pageSize][orientation];
+      const contentHeightPx = PAGE_HEIGHT_PX[pageSize][orientation];
 
-      const container = document.createElement("div");
-      container.style.cssText = [
-        "font-family: Georgia, 'Times New Roman', serif",
-        "font-size: 12pt",
-        "line-height: 1.5",
-        "color: #000",
-        "background: #fff",
-        "width: 100%",
-      ].join(";");
-
-      const styleEl = document.createElement("style");
-      styleEl.textContent = WORD_STYLES;
-      container.appendChild(styleEl);
-
-      const contentEl = document.createElement("div");
-      contentEl.innerHTML = html;
-      container.appendChild(contentEl);
-
-      // Mount off-screen — use fixed positioning far above viewport
-      // so the element has a real layout width for html2canvas
-      const contentWidthPx = PAGE_WIDTH_PX[pageSize][orientation];
-      container.style.position = "fixed";
-      container.style.top = "-99999px";
-      container.style.left = "0";
-      container.style.width = `${contentWidthPx}px`;
-      document.body.appendChild(container);
+      // === IFRAME ISOLATION APPROACH ===
+      // Render inside a hidden <iframe> that has its own clean document with
+      // zero Tailwind CSS.  html2canvas resolves computed styles via
+      // element.ownerDocument.defaultView — the iframe's window — so it never
+      // sees Tailwind's oklch() custom properties, which browsers expose as
+      // lab() in getComputedStyle and which crash html2canvas.
+      const iframe = document.createElement("iframe");
+      iframe.setAttribute("aria-hidden", "true");
+      iframe.style.cssText = [
+        "position: fixed",
+        "top: -99999px",
+        "left: 0",
+        `width: ${contentWidthPx}px`,
+        `height: ${contentHeightPx}px`,
+        "border: none",
+        "visibility: hidden",
+        "pointer-events: none",
+      ].join("; ");
+      document.body.appendChild(iframe);
 
       try {
-        // CRITICAL: sanitize modern CSS color functions (lab, oklch, oklab, etc.)
-        // BEFORE html2canvas reads computed styles.  The site uses oklch() via
-        // Tailwind v4 CSS variables; browsers expose these as lab() values in
-        // getComputedStyle, which crashes html2canvas with an unsupported-color
-        // parse error.  Overriding them with safe hex fallbacks prevents the crash.
-        sanitizeModernColors(container);
+        const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
+        if (!iframeDoc) throw new Error("Could not access iframe document");
+
+        // Write a self-contained HTML document with only safe hex colors
+        iframeDoc.open();
+        iframeDoc.write(
+          `<!DOCTYPE html><html><head><meta charset="utf-8">` +
+          `<style>${IFRAME_STYLES}</style></head>` +
+          `<body>${html}</body></html>`
+        );
+        iframeDoc.close();
+
+        // Yield one tick so the iframe has time to lay out
+        await new Promise<void>((r) => setTimeout(r, 60));
 
         const html2pdf = (await import("html2pdf.js")).default;
         const baseName = file.name.replace(/\.(docx?|doc)$/i, "");
@@ -205,7 +179,7 @@ export default function WordToPdf() {
           html2canvas: {
             scale: 2,
             logging: false,
-            useCORS: true,
+            useCORS: false,          // same-origin iframe — no CORS needed
             width: contentWidthPx,
             windowWidth: contentWidthPx,
             backgroundColor: "#ffffff",
@@ -215,9 +189,11 @@ export default function WordToPdf() {
 
         let pdfBlob: Blob;
         try {
-          pdfBlob = await html2pdf().set(opt).from(container).outputPdf("blob");
+          pdfBlob = await html2pdf()
+            .set(opt)
+            .from(iframeDoc.body)    // render from the isolated iframe body
+            .outputPdf("blob");
         } catch (renderErr) {
-          // html2canvas / jsPDF render failure — give the user an actionable message
           console.error("PDF render failed:", renderErr);
           const msg =
             renderErr instanceof Error && renderErr.message
@@ -244,8 +220,8 @@ export default function WordToPdf() {
           addToast("Converted to PDF successfully", "success");
         }
       } finally {
-        if (document.body.contains(container)) {
-          document.body.removeChild(container);
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
         }
       }
     } catch (err) {
