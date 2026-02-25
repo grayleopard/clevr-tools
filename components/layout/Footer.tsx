@@ -17,6 +17,9 @@ export default function Footer() {
             All file processing happens in your browser. Your files never leave your device.
           </p>
           <nav className="flex items-center gap-4 text-xs text-muted-foreground">
+            <Link href="/about" className="hover:text-foreground transition-colors">
+              About
+            </Link>
             <Link href="/privacy" className="hover:text-foreground transition-colors">
               Privacy
             </Link>

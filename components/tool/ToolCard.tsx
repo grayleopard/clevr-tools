@@ -24,6 +24,10 @@ import {
   AlignLeft,
   Eraser,
   Type,
+  Braces,
+  Replace,
+  ArrowUpDown,
+  Binary,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -53,6 +57,10 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   AlignLeft,
   Eraser,
   Type,
+  Braces,
+  Replace,
+  ArrowUpDown,
+  Binary,
 };
 
 export default function ToolCard({ tool }: { tool: Tool }) {

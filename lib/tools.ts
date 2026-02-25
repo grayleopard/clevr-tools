@@ -2,7 +2,7 @@ export interface Tool {
   slug: string;
   name: string;
   shortDescription: string;
-  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text';
+  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text' | 'dev';
   route: string;
   acceptedFormats: string[];
   icon: string;
@@ -497,6 +497,88 @@ export const tools: Tool[] = [
     relatedTools: ['case-converter', 'remove-line-breaks', 'word-counter'],
     badge: 'new',
   },
+  // ─── Character Counter ───────────────────────────────────────────────────
+  {
+    slug: 'character-counter',
+    name: 'Character Counter',
+    shortDescription: 'Count characters, words, and lines. See real-time limits for Twitter, Instagram, SMS, and more.',
+    category: 'text',
+    route: '/text/character-counter',
+    acceptedFormats: [],
+    icon: 'Hash',
+    metaTitle: 'Character Counter Online — Count Characters Free | clevr.tools',
+    metaDescription: 'Free online character counter. Count characters with and without spaces, words, sentences, and lines. See real-time character limits for Twitter, Instagram, SMS, meta descriptions, and more.',
+    seoContent: `<h2>Why Character Count Matters</h2>
+<p>Whether you're writing a tweet, crafting an SMS, or optimizing a meta description for SEO, character limits define what you can say. Going over the limit means your message gets cut off, your tweet gets truncated, or your meta description gets replaced by Google's own snippet.</p>
+<p>Different platforms have different limits: Twitter/X allows 280 characters per post, SMS messages are typically limited to 160 characters (longer messages get split into multiple segments), and SEO best practices suggest keeping meta descriptions under 160 characters for optimal display in search results.</p>
+<p>Our character counter updates in real time as you type, so you always know exactly where you stand. It tracks raw character count, characters without spaces, word count, sentence count, and line count — plus it shows you your character usage against the most common platform limits with a visual indicator.</p>`,
+    relatedTools: ['word-counter', 'case-converter', 'text-to-slug'],
+  },
+  // ─── Dev Tools ──────────────────────────────────────────────────────────
+  {
+    slug: 'json-formatter',
+    name: 'JSON Formatter',
+    shortDescription: 'Format, validate, and minify JSON. Instant error detection with line numbers.',
+    category: 'dev',
+    route: '/dev/json-formatter',
+    acceptedFormats: [],
+    icon: 'Braces',
+    metaTitle: 'JSON Formatter & Validator Online Free | clevr.tools',
+    metaDescription: 'Free online JSON formatter, validator, and beautifier. Paste JSON to format it with proper indentation, validate it for errors, or minify it. Instant error detection with line numbers.',
+    seoContent: `<h2>Format and Validate JSON Online</h2>
+<p>JSON (JavaScript Object Notation) is the universal data format for APIs, configuration files, and data exchange. When working with raw JSON from an API response, a database export, or a config file, it's often minified — stripped of all whitespace to save bandwidth. That makes it nearly impossible to read or debug.</p>
+<p>This JSON formatter instantly beautifies minified JSON with proper indentation, making nested objects and arrays easy to navigate. It also validates your JSON as you paste it, catching syntax errors like missing commas, unclosed brackets, or incorrect data types — with the exact position of the error so you can fix it fast.</p>
+<p>Use the minify option to do the reverse: compact JSON into a single line for use in API calls, environment variables, or anywhere you need to minimize payload size.</p>`,
+    relatedTools: ['base64', 'url-encoder'],
+  },
+  {
+    slug: 'find-and-replace',
+    name: 'Find & Replace',
+    shortDescription: 'Find and replace text online. Supports plain text, case-sensitive, and regex modes.',
+    category: 'text',
+    route: '/text/find-and-replace',
+    acceptedFormats: [],
+    icon: 'Replace',
+    metaTitle: 'Find and Replace Text Online Free | clevr.tools',
+    metaDescription: 'Free online find and replace tool. Replace text, fix repeated typos, and batch-edit documents. Supports case-sensitive search, whole word matching, and regular expressions.',
+    seoContent: `<h2>Find and Replace Text Online</h2>
+<p>Need to fix a repeated typo across a long document, replace all instances of a name, or batch-edit a list of URLs? This tool lets you find any text and replace it with something else — across your entire pasted content in one click.</p>
+<p>Beyond simple text replacement, it supports regular expressions for advanced users who need to match patterns rather than literal strings. Use regex to find phone numbers, email addresses, dates in a specific format, or anything else that follows a predictable pattern — then replace them all at once.</p>
+<p>The match counter updates in real time as you type your search term, so you always know how many replacements will be made before you apply them.</p>`,
+    relatedTools: ['word-counter', 'sort-lines', 'remove-line-breaks'],
+  },
+  {
+    slug: 'sort-lines',
+    name: 'Sort Lines',
+    shortDescription: 'Sort lines of text alphabetically, by length, randomly, or remove duplicates.',
+    category: 'text',
+    route: '/text/sort-lines',
+    acceptedFormats: [],
+    icon: 'ArrowUpDown',
+    metaTitle: 'Sort Lines Online Free — Alphabetically, by Length | clevr.tools',
+    metaDescription: 'Free online line sorter. Sort lines alphabetically A-Z or Z-A, sort by length, randomize order, or remove duplicate lines instantly.',
+    seoContent: `<h2>Sort Lines of Text Online</h2>
+<p>Sorting lines of text is a surprisingly common task: alphabetizing a list of names, ordering URLs, deduplicating a set of keywords, or randomizing the order of items for a quiz or drawing. This tool handles it all without needing to open a spreadsheet or write a script.</p>
+<p>Paste any multi-line content — a list, a CSV column, a set of tags, or exported data — and sort it instantly. The tool handles case-insensitive alphabetical sorting by default, so "Apple" and "apple" sort together rather than being separated by ASCII value differences.</p>
+<p>The "Remove Duplicates" option works independently from sorting, so you can clean up a list without reordering it — or combine it with sorting to get a clean, alphabetized, deduplicated list in one step.</p>`,
+    relatedTools: ['find-and-replace', 'remove-line-breaks', 'word-counter'],
+  },
+  {
+    slug: 'base64',
+    name: 'Base64 Encode / Decode',
+    shortDescription: 'Encode text to Base64 or decode Base64 back to plain text. Handles Unicode.',
+    category: 'dev',
+    route: '/dev/base64',
+    acceptedFormats: [],
+    icon: 'Binary',
+    metaTitle: 'Base64 Encoder / Decoder Online Free | clevr.tools',
+    metaDescription: 'Free online Base64 encoder and decoder. Encode plain text to Base64 or decode Base64 back to readable text. Handles Unicode characters. Instant, bidirectional, no data sent to server.',
+    seoContent: `<h2>Base64 Encoding and Decoding</h2>
+<p>Base64 is an encoding scheme that converts binary data into ASCII text, making it safe to transmit in contexts that only support text — like email, URLs, or JSON payloads. You'll encounter Base64 everywhere in web development: data URIs for embedding images in CSS, Basic Auth headers, JWT tokens, and API responses that include binary data.</p>
+<p>Decoding Base64 is equally common when debugging API responses, inspecting JWT payloads (the middle section of a JWT is Base64-encoded JSON), or reading encoded values from environment variables or config files.</p>
+<p>This tool handles Unicode characters correctly — most naive implementations using just <code>btoa()</code> break on non-ASCII text like accented characters or emoji. Our encoder uses proper UTF-8 encoding so international text is handled correctly in both directions.</p>`,
+    relatedTools: ['json-formatter', 'url-encoder'],
+  },
   // ─── Not-yet-built tools ───────────────────────────────────────────────────
   {
     slug: 'url-encoder',
@@ -557,5 +639,6 @@ export const toolCategories = [
   { id: 'tools' as const, label: 'PDF & File Tools', icon: 'FileStack' },
   { id: 'generate' as const, label: 'Generate', icon: 'Sparkles' },
   { id: 'text' as const, label: 'Text Tools', icon: 'Type' },
+  { id: 'dev' as const, label: 'Dev Tools', icon: 'Code' },
   { id: 'ai' as const, label: 'AI Tools', icon: 'Bot' },
 ];
