@@ -51,7 +51,7 @@ export default function ToolLayout({ tool, children, structuredData }: ToolLayou
           <div className="border-b border-border bg-muted/20">
             <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                <span>{categoryLabel}</span>
+                <span className="dark:text-emerald-400">{categoryLabel}</span>
                 <span>/</span>
                 <span>{tool.name}</span>
               </div>

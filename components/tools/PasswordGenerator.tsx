@@ -283,7 +283,7 @@ export default function PasswordGenerator() {
         ) : (
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-4 py-3">
-              <span className="flex-1 break-all font-mono text-lg select-all">{password}</span>
+              <span className="flex-1 break-all font-mono text-lg select-all dark:text-emerald-500">{password}</span>
               <button
                 onClick={() => handleCopy(password)}
                 className="flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"

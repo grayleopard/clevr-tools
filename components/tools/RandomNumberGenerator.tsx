@@ -197,7 +197,7 @@ export default function RandomNumberGenerator() {
               key={genKey}
               className="flex flex-col items-center gap-3 py-4 animate-in fade-in duration-300"
             >
-              <span className="text-6xl font-bold tabular-nums text-foreground">
+              <span className="text-6xl font-bold tabular-nums text-foreground dark:text-emerald-500">
                 {results[0]}
               </span>
               <button

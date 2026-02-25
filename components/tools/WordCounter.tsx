@@ -55,7 +55,7 @@ function formatTime(seconds: number): string {
 function StatChip({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-card px-4 py-3">
-      <span className="text-xl font-semibold tabular-nums text-foreground">{value}</span>
+      <span className="text-xl font-semibold tabular-nums text-foreground dark:text-emerald-500">{value}</span>
       <span className="text-xs text-muted-foreground">{label}</span>
     </div>
   );

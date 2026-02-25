@@ -79,7 +79,7 @@ export default function ToolCard({ tool }: { tool: Tool }) {
   return (
     <Link
       href={tool.route}
-      className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+      className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:hover:border-emerald-500/40 dark:hover:shadow-[0_0_20px_rgba(16,185,129,0.06)]"
     >
       <div className="flex items-start justify-between">
         <div className="rounded-lg bg-primary/10 p-2.5">
@@ -88,7 +88,7 @@ export default function ToolCard({ tool }: { tool: Tool }) {
         {tool.badge && (
           <Badge
             variant={tool.badge === "popular" ? "default" : "secondary"}
-            className="text-xs capitalize"
+            className="text-xs capitalize dark:bg-emerald-500/10 dark:text-emerald-400"
           >
             {tool.badge}
           </Badge>

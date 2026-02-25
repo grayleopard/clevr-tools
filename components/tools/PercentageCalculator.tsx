@@ -234,7 +234,7 @@ export default function PercentageCalculator() {
             result === "Cannot divide by zero"
               ? "text-red-500 text-lg"
               : result
-                ? "text-foreground"
+                ? "text-foreground dark:text-emerald-500"
                 : "text-muted-foreground/30"
           }`}
         >

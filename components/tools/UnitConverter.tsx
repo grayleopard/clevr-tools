@@ -384,7 +384,7 @@ export default function UnitConverter() {
               type="number"
               value={toValue}
               onChange={(e) => handleToChange(e.target.value)}
-              className={inputClass}
+              className={`${inputClass} dark:text-emerald-500`}
               placeholder="0"
             />
             <select
