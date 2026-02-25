@@ -33,6 +33,48 @@ const PAGE_WIDTH_PX: Record<PageSize, Record<Orientation, number>> = {
   letter: { portrait: 816, landscape: 1056 },
 };
 
+// Regex for CSS color functions that html2canvas cannot parse.
+// Browsers internally convert oklch() to lab() in getComputedStyle,
+// which crashes html2canvas with "Attempting to parse unsupported color function 'lab'".
+const MODERN_COLOR_RE = /\b(?:lab|lch|oklch|oklab)\s*\(|\bcolor-mix\s*\(|\bcolor\s*\(display-/;
+
+/**
+ * Walk every element in `root` and override any computed color that uses a
+ * modern CSS color function with a safe hex fallback.  Must be called AFTER
+ * the container is in the live DOM so getComputedStyle returns real values.
+ */
+function sanitizeModernColors(root: HTMLElement): void {
+  const safe = (raw: string, fallback: string) =>
+    MODERN_COLOR_RE.test(raw) ? fallback : null;
+
+  const walk = (el: Element) => {
+    const h = el as HTMLElement;
+    const cs = window.getComputedStyle(el);
+
+    const color = cs.getPropertyValue("color");
+    const fix = safe(color, "#000000");
+    if (fix) h.style.setProperty("color", fix, "important");
+
+    const bg = cs.getPropertyValue("background-color");
+    const bgFix = safe(bg, el === root ? "#ffffff" : "transparent");
+    if (bgFix) h.style.setProperty("background-color", bgFix, "important");
+
+    for (const side of ["top", "right", "bottom", "left"] as const) {
+      const bc = cs.getPropertyValue(`border-${side}-color`);
+      const bcFix = safe(bc, "#cccccc");
+      if (bcFix) h.style.setProperty(`border-${side}-color`, bcFix, "important");
+    }
+
+    const outline = cs.getPropertyValue("outline-color");
+    const outlineFix = safe(outline, "transparent");
+    if (outlineFix) h.style.setProperty("outline-color", outlineFix, "important");
+
+    for (const child of el.children) walk(child);
+  };
+
+  walk(root);
+}
+
 const WORD_STYLES = `
   * { box-sizing: border-box; }
   body, div { margin: 0; padding: 0; }
@@ -145,6 +187,13 @@ export default function WordToPdf() {
       document.body.appendChild(container);
 
       try {
+        // CRITICAL: sanitize modern CSS color functions (lab, oklch, oklab, etc.)
+        // BEFORE html2canvas reads computed styles.  The site uses oklch() via
+        // Tailwind v4 CSS variables; browsers expose these as lab() values in
+        // getComputedStyle, which crashes html2canvas with an unsupported-color
+        // parse error.  Overriding them with safe hex fallbacks prevents the crash.
+        sanitizeModernColors(container);
+
         const html2pdf = (await import("html2pdf.js")).default;
         const baseName = file.name.replace(/\.(docx?|doc)$/i, "");
         const filename = `${baseName}.pdf`;
@@ -159,11 +208,25 @@ export default function WordToPdf() {
             useCORS: true,
             width: contentWidthPx,
             windowWidth: contentWidthPx,
+            backgroundColor: "#ffffff",
           },
           jsPDF: { unit: "mm", format: pageFmt, orientation },
         };
 
-        const pdfBlob: Blob = await html2pdf().set(opt).from(container).outputPdf("blob");
+        let pdfBlob: Blob;
+        try {
+          pdfBlob = await html2pdf().set(opt).from(container).outputPdf("blob");
+        } catch (renderErr) {
+          // html2canvas / jsPDF render failure — give the user an actionable message
+          console.error("PDF render failed:", renderErr);
+          const msg =
+            renderErr instanceof Error && renderErr.message
+              ? renderErr.message
+              : "Rendering failed";
+          throw new Error(
+            `Could not render PDF (${msg}). Try a simpler document or reduce the page content.`
+          );
+        }
 
         const url = URL.createObjectURL(pdfBlob);
         setResult({
@@ -181,12 +244,14 @@ export default function WordToPdf() {
           addToast("Converted to PDF successfully", "success");
         }
       } finally {
-        document.body.removeChild(container);
+        if (document.body.contains(container)) {
+          document.body.removeChild(container);
+        }
       }
     } catch (err) {
       console.error("Word to PDF failed:", err);
       addToast(
-        err instanceof Error ? err.message : "Failed to convert document",
+        err instanceof Error ? err.message : "Failed to convert document — please try again",
         "error"
       );
     } finally {
