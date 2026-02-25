@@ -28,6 +28,11 @@ import {
   Replace,
   ArrowUpDown,
   Binary,
+  KeyRound,
+  Dices,
+  Pipette,
+  Percent,
+  Calculator,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -61,6 +66,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Replace,
   ArrowUpDown,
   Binary,
+  KeyRound,
+  Dices,
+  Pipette,
+  Percent,
+  Calculator,
 };
 
 export default function ToolCard({ tool }: { tool: Tool }) {

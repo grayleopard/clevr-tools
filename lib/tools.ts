@@ -2,7 +2,7 @@ export interface Tool {
   slug: string;
   name: string;
   shortDescription: string;
-  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text' | 'dev';
+  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text' | 'dev' | 'calc';
   route: string;
   acceptedFormats: string[];
   icon: string;
@@ -579,6 +579,95 @@ export const tools: Tool[] = [
 <p>This tool handles Unicode characters correctly — most naive implementations using just <code>btoa()</code> break on non-ASCII text like accented characters or emoji. Our encoder uses proper UTF-8 encoding so international text is handled correctly in both directions.</p>`,
     relatedTools: ['json-formatter', 'url-encoder'],
   },
+  // ─── Generate Tools ──────────────────────────────────────────────────────
+  {
+    slug: 'password-generator',
+    name: 'Password Generator',
+    shortDescription: 'Generate strong, random passwords with custom length and character sets.',
+    category: 'generate',
+    route: '/generate/password',
+    acceptedFormats: [],
+    icon: 'KeyRound',
+    metaTitle: 'Password Generator — Secure Random Passwords Free | clevr.tools',
+    metaDescription: 'Free secure password generator. Create strong, random passwords with custom length (4–128 chars), uppercase, lowercase, numbers, and symbols. Uses cryptographic randomness. No data sent to server.',
+    seoContent: `<h2>Free Secure Password Generator</h2>
+<p>This password generator creates cryptographically secure random passwords using your browser's built-in <code>crypto.getRandomValues()</code> API — the same source of randomness used in encryption software and security tools. Unlike generators that use <code>Math.random()</code>, which is predictable and unsuitable for security purposes, every password created here is truly unpredictable.</p>
+<p>Customize your password length from 4 to 128 characters and choose which character sets to include: uppercase letters, lowercase letters, numbers, and symbols. The "exclude ambiguous characters" option removes look-alike characters like <code>0</code>, <code>O</code>, <code>1</code>, <code>l</code>, and <code>I</code> — useful when you need to type a password manually rather than paste it.</p>
+<h2>What Makes a Strong Password?</h2>
+<p>Password strength comes down to two factors: length and character diversity. A 16-character password using all four character types has roughly 95^16 possible combinations — more than 10^31. That's beyond the reach of any brute-force attack with current technology. By contrast, an 8-character password using only lowercase letters has just 26^8 combinations, which modern hardware can crack in seconds.</p>
+<p>Security experts recommend using a unique password for every account, never reusing passwords, and using a password manager to store them. Generate a long, random password here and let your password manager handle the rest.</p>`,
+    relatedTools: ['qr-code-generator', 'base64', 'random-number'],
+  },
+  {
+    slug: 'random-number',
+    name: 'Random Number Generator',
+    shortDescription: 'Generate random numbers in any range. Supports multiple results, dice, and coin flip.',
+    category: 'generate',
+    route: '/generate/random-number',
+    acceptedFormats: [],
+    icon: 'Dices',
+    metaTitle: 'Random Number Generator — Free Online RNG | clevr.tools',
+    metaDescription: 'Free random number generator. Generate random numbers in any range, pick multiple numbers, flip a coin, or roll dice. Uses cryptographic randomness for true fairness.',
+    seoContent: `<h2>Free Random Number Generator</h2>
+<p>This random number generator uses your browser's <code>crypto.getRandomValues()</code> API to produce truly random numbers — not pseudo-random numbers from a predictable algorithm. That makes it suitable for giveaways, raffles, games, statistical sampling, and any situation where fairness matters.</p>
+<p>Common uses include picking a random winner from a numbered list, selecting a random item from a menu, generating test data, deciding who goes first in a game, or making any decision where you want genuine chance rather than personal bias.</p>
+<h2>How Our Random Number Generator Works</h2>
+<p>Standard programming languages use pseudo-random number generators (PRNGs) seeded by the current time. These are fast and fine for most purposes, but they're mathematically predictable. Our generator uses hardware entropy collected by your operating system — sources like CPU timing jitter, mouse movement, and other unpredictable physical signals. The result is numbers that cannot be predicted or reproduced.</p>`,
+    relatedTools: ['password-generator', 'qr-code-generator'],
+  },
+  // ─── Dev Tools (additional) ─────────────────────────────────────────────
+  {
+    slug: 'color-picker',
+    name: 'Color Picker',
+    shortDescription: 'Pick colors and convert between HEX, RGB, HSL, and HSB formats instantly.',
+    category: 'dev',
+    route: '/dev/color-picker',
+    acceptedFormats: [],
+    icon: 'Pipette',
+    metaTitle: 'Color Picker — HEX, RGB, HSL Converter Free | clevr.tools',
+    metaDescription: 'Free online color picker and converter. Pick any color and instantly get its HEX, RGB, HSL, and HSB values. One-click copy for each format. No ads, no signup.',
+    seoContent: `<h2>Free Online Color Picker</h2>
+<p>Pick any color using the visual color picker and instantly see its value in every common format: HEX for CSS and HTML, RGB for digital design and CSS, HSL for intuitive color adjustments, and HSB/HSV for Photoshop and illustration tools. Every format has a one-click copy button so you can drop the value straight into your code or design tool.</p>
+<p>The recently-used colors panel remembers up to 10 colors you've picked in the current session, so you can easily compare swatches or return to a color you were working with. Edit any input field directly to jump to a specific color — enter a hex code, adjust an RGB channel, or tweak HSL lightness — and all other fields update instantly.</p>
+<h2>HEX, RGB, HSL — Color Formats Explained</h2>
+<p><strong>HEX</strong> (#3B82F6) is the standard format for web development — used in HTML, CSS, SVG, and almost every design tool. It encodes red, green, and blue as two-digit hexadecimal values. <strong>RGB</strong> (rgb(59, 130, 246)) is more readable for developers working directly in CSS and is the native color space for screens. <strong>HSL</strong> (hsl(217, 91%, 60%)) stands for Hue, Saturation, Lightness — it's the most intuitive format for humans since you can adjust brightness or saturation without mentally recalculating all three channels. <strong>HSB/HSV</strong> (Hue, Saturation, Brightness) is commonly used in graphics applications like Photoshop and Figma's color panels.</p>`,
+    relatedTools: ['json-formatter', 'base64'],
+  },
+  // ─── Calculators ───────────────────────────────────────────────────────
+  {
+    slug: 'percentage-calculator',
+    name: 'Percentage Calculator',
+    shortDescription: 'Calculate percentages, percentage change, and what percent X is of Y.',
+    category: 'calc',
+    route: '/calc/percentage',
+    acceptedFormats: [],
+    icon: 'Percent',
+    metaTitle: 'Percentage Calculator — Free Online Percent Tool | clevr.tools',
+    metaDescription: 'Free percentage calculator. Find what X% of Y is, calculate what percent one number is of another, or compute percentage increase and decrease. Instant results.',
+    seoContent: `<h2>Free Percentage Calculator</h2>
+<p>Percentages come up constantly in everyday life — calculating a restaurant tip, figuring out a sale discount, understanding a grade, or working out how much tax to add to a price. This calculator handles three common percentage problems in one place, with results updating in real time as you type.</p>
+<p>No more second-guessing whether you're doing the math right. Enter your numbers, pick the type of calculation, and get the answer — along with the formula used, so you understand how it was calculated and can do it yourself next time.</p>
+<h2>How to Calculate Percentages</h2>
+<p>There are three fundamental percentage calculations. <strong>Finding a percentage of a number</strong>: multiply the number by the percentage and divide by 100. For example, 15% of 200 = (15 / 100) x 200 = 30. <strong>Finding what percentage one number is of another</strong>: divide the part by the whole and multiply by 100. For example, 30 is what % of 200? = (30 / 200) x 100 = 15%. <strong>Percentage change</strong>: subtract the original from the new value, divide by the original, and multiply by 100. For example, 200 to 250 = ((250 - 200) / 200) x 100 = +25%.</p>`,
+    relatedTools: ['unit-converter'],
+  },
+  {
+    slug: 'unit-converter',
+    name: 'Unit Converter',
+    shortDescription: 'Convert between units of length, weight, temperature, volume, area, speed, and data.',
+    category: 'calc',
+    route: '/calc/unit-converter',
+    acceptedFormats: [],
+    icon: 'ArrowLeftRight',
+    metaTitle: 'Unit Converter — Free Online Conversion Tool | clevr.tools',
+    metaDescription: 'Free online unit converter. Convert length, weight, temperature, volume, area, speed, and data units. Instant bidirectional conversion with 60+ units.',
+    seoContent: `<h2>Free Online Unit Converter</h2>
+<p>Convert between units across seven major categories: length (millimeters to miles), weight (milligrams to tons), temperature (Celsius, Fahrenheit, Kelvin), volume (milliliters to gallons), area (square centimeters to acres), speed (meters per second to miles per hour), and digital storage (bits to petabytes). All conversions happen instantly as you type — edit either side and the other updates automatically.</p>
+<p>Whether you're a student working on a physics problem, a home cook converting a recipe from US to metric, or a developer calculating file sizes, this converter handles the math so you don't have to.</p>
+<h2>Common Unit Conversions</h2>
+<p>Some of the most-searched conversions: <strong>1 kg = 2.20462 lbs</strong>, <strong>1 inch = 2.54 cm</strong>, <strong>0 C = 32 F</strong>, <strong>1 mile = 1.60934 km</strong>, <strong>1 gallon = 3.78541 liters</strong>, <strong>1 GB = 1,024 MB</strong>. The unit converter above handles all of these and hundreds more combinations within each category.</p>`,
+    relatedTools: ['percentage-calculator'],
+  },
   // ─── Not-yet-built tools ───────────────────────────────────────────────────
   {
     slug: 'url-encoder',
@@ -640,5 +729,6 @@ export const toolCategories = [
   { id: 'generate' as const, label: 'Generate', icon: 'Sparkles' },
   { id: 'text' as const, label: 'Text Tools', icon: 'Type' },
   { id: 'dev' as const, label: 'Dev Tools', icon: 'Code' },
+  { id: 'calc' as const, label: 'Calculators', icon: 'Calculator' },
   { id: 'ai' as const, label: 'AI Tools', icon: 'Bot' },
 ];
