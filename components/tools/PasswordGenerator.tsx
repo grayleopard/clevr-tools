@@ -97,7 +97,23 @@ function generatePassword(
 
 // ─── Strength calculation ───────────────────────────────────────────────────
 
-type Strength = "weak" | "fair" | "strong" | "very-strong";
+type Strength = "very-weak" | "weak" | "fair" | "strong" | "very-strong" | "overkill";
+
+function getPoolSize(
+  useUppercase: boolean,
+  useLowercase: boolean,
+  useNumbers: boolean,
+  useSymbols: boolean,
+  excludeAmbiguous: boolean
+): number {
+  let poolSize = 0;
+  if (useUppercase) poolSize += UPPER.length;
+  if (useLowercase) poolSize += LOWER.length;
+  if (useNumbers) poolSize += DIGITS.length;
+  if (useSymbols) poolSize += SYMBOLS.length;
+  if (excludeAmbiguous && poolSize > 0) poolSize = Math.max(1, poolSize - 8);
+  return poolSize;
+}
 
 function getStrength(
   length: number,
@@ -106,36 +122,82 @@ function getStrength(
   useNumbers: boolean,
   useSymbols: boolean,
   excludeAmbiguous: boolean
-): { label: string; level: Strength; entropy: number } {
-  let poolSize = 0;
-  if (useUppercase) poolSize += excludeAmbiguous ? UPPER.length - 2 : UPPER.length;
-  if (useLowercase) poolSize += excludeAmbiguous ? LOWER.length - 1 : LOWER.length;
-  if (useNumbers) poolSize += excludeAmbiguous ? DIGITS.length - 2 : DIGITS.length;
-  if (useSymbols) poolSize += SYMBOLS.length;
+): { label: string; level: Strength; entropy: number; poolSize: number } {
+  const poolSize = getPoolSize(useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous);
 
-  if (poolSize === 0) return { label: "None", level: "weak", entropy: 0 };
+  if (poolSize === 0) return { label: "None", level: "very-weak", entropy: 0, poolSize: 0 };
 
   const entropy = length * Math.log2(poolSize);
 
-  if (entropy < 40) return { label: "Weak", level: "weak", entropy };
-  if (entropy < 60) return { label: "Fair", level: "fair", entropy };
-  if (entropy < 80) return { label: "Strong", level: "strong", entropy };
-  return { label: "Very Strong", level: "very-strong", entropy };
+  if (entropy < 30) return { label: "Very Weak", level: "very-weak", entropy, poolSize };
+  if (entropy < 50) return { label: "Weak", level: "weak", entropy, poolSize };
+  if (entropy < 70) return { label: "Fair", level: "fair", entropy, poolSize };
+  if (entropy < 90) return { label: "Strong", level: "strong", entropy, poolSize };
+  if (entropy < 120) return { label: "Very Strong", level: "very-strong", entropy, poolSize };
+  return { label: "Overkill", level: "overkill", entropy, poolSize };
 }
 
-const strengthColors: Record<Strength, string> = {
-  weak: "bg-red-500",
-  fair: "bg-orange-500",
-  strong: "bg-green-500",
-  "very-strong": "bg-emerald-600",
+const strengthBarColors: Record<Strength, string> = {
+  "very-weak": "bg-[#EF4444]",
+  weak: "bg-[#F97316]",
+  fair: "bg-[#EAB308]",
+  strong: "bg-[#22C55E]",
+  "very-strong": "bg-[#10B981]",
+  overkill: "bg-primary",
 };
 
-const strengthWidths: Record<Strength, string> = {
-  weak: "w-1/4",
-  fair: "w-2/4",
-  strong: "w-3/4",
-  "very-strong": "w-full",
+const strengthTextColors: Record<Strength, string> = {
+  "very-weak": "text-[#EF4444]",
+  weak: "text-[#F97316]",
+  fair: "text-[#EAB308]",
+  strong: "text-[#22C55E]",
+  "very-strong": "text-[#10B981]",
+  overkill: "text-primary",
 };
+
+const strengthWidthPercent: Record<Strength, string> = {
+  "very-weak": "10%",
+  weak: "25%",
+  fair: "45%",
+  strong: "65%",
+  "very-strong": "82%",
+  overkill: "100%",
+};
+
+// ─── Crack time estimate ────────────────────────────────────────────────────
+
+function getCrackTime(length: number, poolSize: number): string {
+  if (poolSize === 0 || length === 0) return "N/A";
+
+  // Work in log10 space to avoid overflow
+  const logCombinations = length * Math.log10(poolSize);
+  const logGuessesPerSecond = 10; // log10(10 billion)
+  const logSeconds = logCombinations - logGuessesPerSecond;
+
+  // Beyond ~10^13 years = longer than age of universe
+  const logYears = logSeconds - Math.log10(31_557_600); // seconds per year
+  if (logYears > 13) return "longer than the age of the universe";
+
+  // Convert to actual number (safe since logSeconds is manageable)
+  const seconds = Math.pow(10, logSeconds);
+
+  if (seconds < 1) return "Instantly";
+  if (seconds < 60) return `${Math.round(seconds)} seconds`;
+  const minutes = seconds / 60;
+  if (minutes < 60) return `about ${Math.round(minutes)} minutes`;
+  const hours = minutes / 60;
+  if (hours < 24) return `about ${Math.round(hours)} hours`;
+  const days = hours / 24;
+  if (days < 30) return `about ${Math.round(days)} days`;
+  const months = days / 30;
+  if (months < 12) return `about ${Math.round(months)} months`;
+  const years = days / 365.25;
+  if (years < 1000) return `about ${Math.round(years)} years`;
+  if (years < 1e6) return `about ${(years / 1000).toFixed(0)} thousand years`;
+  if (years < 1e9) return `about ${(years / 1e6).toFixed(0)} million years`;
+  if (years < 1e12) return `about ${(years / 1e9).toFixed(0)} billion years`;
+  return `about ${(years / 1e12).toFixed(0)} trillion years`;
+}
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -329,18 +391,29 @@ export default function PasswordGenerator() {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-sm">
             <span className="font-medium">Strength</span>
-            <span className="font-semibold">{strength.label}</span>
+            <span className={`font-semibold ${strengthTextColors[strength.level]}`}>
+              {strength.entropy > 0
+                ? `${strength.label} · ${Math.round(strength.entropy)} bits`
+                : "No characters selected"}
+            </span>
           </div>
           <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-300 ${strengthColors[strength.level]} ${strengthWidths[strength.level]}`}
+              className={`h-full rounded-full transition-all duration-300 ${strengthBarColors[strength.level]}`}
+              style={{ width: strength.entropy > 0 ? strengthWidthPercent[strength.level] : "0%" }}
             />
           </div>
-          <p className="text-xs text-muted-foreground">
-            {strength.entropy > 0
-              ? `~${Math.round(strength.entropy)} bits of entropy`
-              : "No characters selected"}
-          </p>
+          {strength.entropy > 0 && (
+            <div className="mt-2">
+              <span className="text-sm text-muted-foreground">Estimated crack time: </span>
+              <span className="text-sm font-semibold text-foreground">
+                {getCrackTime(length, strength.poolSize)}
+              </span>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                at 10 billion guesses per second
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
