@@ -47,6 +47,9 @@ export default function AboutPage() {
               <li>PDF tools (merge, split, rotate)</li>
               <li>QR code generation</li>
               <li>Text utilities (word counter, case converter, and more)</li>
+              <li>Timers and time tracking (countdown timer, stopwatch, Pomodoro)</li>
+              <li>Developer utilities (UUID generator, URL encoder/decoder, JSON formatter, and more)</li>
+              <li>Calculators (mortgage, BMI, compound interest, GPA, and more)</li>
             </ul>
 
             <p>New tools are added regularly. Built in the USA.</p>

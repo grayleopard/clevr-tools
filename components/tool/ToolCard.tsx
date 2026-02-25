@@ -33,6 +33,18 @@ import {
   Pipette,
   Percent,
   Calculator,
+  Timer,
+  Watch,
+  Brain,
+  Cake,
+  CalendarDays,
+  Fingerprint,
+  Scale,
+  Home,
+  Receipt,
+  Tag,
+  TrendingUp,
+  GraduationCap,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -71,6 +83,18 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Pipette,
   Percent,
   Calculator,
+  Timer,
+  Watch,
+  Brain,
+  Cake,
+  CalendarDays,
+  Fingerprint,
+  Scale,
+  Home,
+  Receipt,
+  Tag,
+  TrendingUp,
+  GraduationCap,
 };
 
 export default function ToolCard({ tool }: { tool: Tool }) {
