@@ -21,53 +21,23 @@ const MARGIN_MAP: Record<Margins, [number, number, number, number]> = {
   wide:    [25.4, 50.8, 25.4, 50.8],
 };
 
-// Page dimensions in mm for preview width calculation
+// Page dimensions in mm — used in the preview label only
 const PAGE_WIDTH_MM: Record<PageSize, Record<Orientation, number>> = {
   a4:     { portrait: 210, landscape: 297 },
   letter: { portrait: 215.9, landscape: 279.4 },
 };
 
-// Content width/height in pixels for the hidden iframe (96 DPI equivalent)
-const PAGE_WIDTH_PX: Record<PageSize, Record<Orientation, number>> = {
-  a4:     { portrait: 794, landscape: 1123 },
-  letter: { portrait: 816, landscape: 1056 },
-};
-const PAGE_HEIGHT_PX: Record<PageSize, Record<Orientation, number>> = {
-  a4:     { portrait: 1123, landscape: 794 },
-  letter: { portrait: 1056, landscape: 816 },
-};
+// pdfmake uses points. 1 mm = 2.8346 pt
+const mmToPt = (mm: number) => Math.round(mm * 2.8346);
 
-// Stylesheet written into the isolated iframe — ONLY safe hex colors,
-// zero Tailwind CSS, zero CSS custom properties.
-// This is what the iframe body actually renders (mammoth HTML goes inside <body>).
-const IFRAME_STYLES = `
-  *, *::before, *::after { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 12pt; line-height: 1.5;
-    color: #000000; background: #ffffff;
-  }
-  h1 { font-size: 20pt; font-weight: bold; margin: 0 0 10pt; line-height: 1.3; }
-  h2 { font-size: 16pt; font-weight: bold; margin: 12pt 0 6pt; line-height: 1.3; }
-  h3 { font-size: 13pt; font-weight: bold; margin: 10pt 0 4pt; line-height: 1.3; }
-  h4 { font-size: 12pt; font-weight: bold; margin: 8pt 0 3pt; }
-  h5, h6 { font-size: 11pt; font-weight: bold; margin: 6pt 0 2pt; }
-  p { margin: 0 0 8pt; line-height: 1.5; }
-  ul, ol { margin: 0 0 8pt 22pt; padding: 0; }
-  li { margin: 2pt 0; line-height: 1.5; }
-  strong, b { font-weight: bold; }
-  em, i { font-style: italic; }
-  u { text-decoration: underline; }
-  table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 11pt; }
-  td, th { border: 1px solid #aaaaaa; padding: 4pt 8pt; vertical-align: top; }
-  th { background: #f0f0f0; font-weight: bold; }
-  a { color: #1155cc; text-decoration: underline; }
-  blockquote { margin: 8pt 0 8pt 20pt; padding-left: 10pt; border-left: 3px solid #cccccc; color: #555555; }
-  pre, code { font-family: 'Courier New', Courier, monospace; font-size: 10pt; background: #f5f5f5; padding: 2pt 4pt; border-radius: 2px; }
-  img { max-width: 100%; height: auto; }
-`;
-
+// Stylesheet for the HTML preview pane only (NOT used for PDF generation).
+// Uses only safe hex colors — no CSS custom properties, no oklch().
+const PREVIEW_STYLES: React.CSSProperties = {
+  fontFamily: "Georgia, 'Times New Roman', serif",
+  fontSize: "12pt",
+  lineHeight: 1.5,
+  color: "#000000",
+};
 
 interface Result {
   url: string;
@@ -99,10 +69,8 @@ export default function WordToPdf() {
     setProgress("Parsing Word document…");
 
     try {
-      // Read file as ArrayBuffer
       const buffer = await file.arrayBuffer();
 
-      // Dynamic import — mammoth is browser-only
       setProgress("Extracting document content…");
       const mammoth = await import("mammoth/mammoth.browser");
 
@@ -123,107 +91,101 @@ export default function WordToPdf() {
         addToast(`${warningCount} formatting element(s) may not render perfectly`, "info");
       }
 
-      // Show preview
       setPreviewHtml(html);
-      setProgress("Rendering PDF…");
+      setProgress("Building PDF…");
 
-      const marginValues = MARGIN_MAP[margins];
-      const pageFmt = pageSize === "a4" ? "a4" : "letter";
-      const contentWidthPx  = PAGE_WIDTH_PX[pageSize][orientation];
-      const contentHeightPx = PAGE_HEIGHT_PX[pageSize][orientation];
+      // === PDFMAKE APPROACH ===
+      // pdfmake generates PDFs from a document definition object.
+      // It has ZERO dependency on html2canvas or CSS getComputedStyle,
+      // so Tailwind v4's oklch() → lab() conversion never causes a crash.
+      const [pdfMakeModule, vfsFontsModule, htmlToPdfmakeModule] = await Promise.all([
+        import("pdfmake/build/pdfmake"),
+        import("pdfmake/build/vfs_fonts"),
+        import("html-to-pdfmake"),
+      ]);
 
-      // === IFRAME ISOLATION APPROACH ===
-      // Render inside a hidden <iframe> that has its own clean document with
-      // zero Tailwind CSS.  html2canvas resolves computed styles via
-      // element.ownerDocument.defaultView — the iframe's window — so it never
-      // sees Tailwind's oklch() custom properties, which browsers expose as
-      // lab() in getComputedStyle and which crash html2canvas.
-      const iframe = document.createElement("iframe");
-      iframe.setAttribute("aria-hidden", "true");
-      iframe.style.cssText = [
-        "position: fixed",
-        "top: -99999px",
-        "left: 0",
-        `width: ${contentWidthPx}px`,
-        `height: ${contentHeightPx}px`,
-        "border: none",
-        "visibility: hidden",
-        "pointer-events: none",
-      ].join("; ");
-      document.body.appendChild(iframe);
+      // CJS modules imported via dynamic import expose exports as `.default`
+      // in ESM context. Handle both patterns defensively.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const pdfMake      = (pdfMakeModule     as any).default ?? pdfMakeModule;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const vfsFonts     = (vfsFontsModule    as any).default ?? vfsFontsModule;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const htmlToPdfmake = (htmlToPdfmakeModule as any).default ?? htmlToPdfmakeModule;
 
-      try {
-        const iframeDoc = iframe.contentDocument ?? iframe.contentWindow?.document;
-        if (!iframeDoc) throw new Error("Could not access iframe document");
+      // Wire in the embedded Roboto font virtual file system
+      pdfMake.vfs = vfsFonts;
 
-        // Write a self-contained HTML document with only safe hex colors
-        iframeDoc.open();
-        iframeDoc.write(
-          `<!DOCTYPE html><html><head><meta charset="utf-8">` +
-          `<style>${IFRAME_STYLES}</style></head>` +
-          `<body>${html}</body></html>`
-        );
-        iframeDoc.close();
+      // Convert the mammoth HTML string into a pdfmake content tree.
+      // html-to-pdfmake handles headings, paragraphs, bold, italic,
+      // underline, lists, tables, and base64 images.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const content = htmlToPdfmake(html, { window: window as any });
 
-        // Yield one tick so the iframe has time to lay out
-        await new Promise<void>((r) => setTimeout(r, 60));
+      // MARGIN_MAP order: [top, right, bottom, left]
+      // pdfmake pageMargins order: [left, top, right, bottom]
+      const mv = MARGIN_MAP[margins];
+      const pageMargins: [number, number, number, number] = [
+        mmToPt(mv[3]), // left
+        mmToPt(mv[0]), // top
+        mmToPt(mv[1]), // right
+        mmToPt(mv[2]), // bottom
+      ];
 
-        const html2pdf = (await import("html2pdf.js")).default;
-        const baseName = file.name.replace(/\.(docx?|doc)$/i, "");
-        const filename = `${baseName}.pdf`;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const docDefinition: any = {
+        pageSize:        pageSize === "a4" ? "A4" : "LETTER",
+        pageOrientation: orientation,
+        pageMargins,
+        content,
+        defaultStyle: {
+          font:       "Roboto",
+          fontSize:   11,
+          lineHeight: 1.4,
+        },
+        styles: {
+          // html-to-pdfmake maps HTML tags to these style names
+          html_h1: { fontSize: 20, bold: true, marginBottom: 8 },
+          html_h2: { fontSize: 16, bold: true, marginBottom: 6 },
+          html_h3: { fontSize: 13, bold: true, marginBottom: 4 },
+          html_h4: { fontSize: 12, bold: true, marginBottom: 3 },
+          html_h5: { fontSize: 11, bold: true, marginBottom: 2 },
+          html_h6: { fontSize: 10, bold: true, marginBottom: 2 },
+          html_p:  { marginBottom: 6 },
+          html_blockquote: { marginLeft: 20, color: "#555555" },
+          html_pre:  { fontSize: 9 },
+          html_code: { fontSize: 9 },
+        },
+      };
 
-        const opt = {
-          margin: marginValues,
-          filename,
-          image: { type: "jpeg" as const, quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            logging: false,
-            useCORS: false,          // same-origin iframe — no CORS needed
-            width: contentWidthPx,
-            windowWidth: contentWidthPx,
-            backgroundColor: "#ffffff",
-          },
-          jsPDF: { unit: "mm", format: pageFmt, orientation },
-        };
+      const baseName = file.name.replace(/\.(docx?|doc)$/i, "");
+      const filename  = `${baseName}.pdf`;
 
-        let pdfBlob: Blob;
+      const pdfBlob = await new Promise<Blob>((resolve, reject) => {
         try {
-          pdfBlob = await html2pdf()
-            .set(opt)
-            .from(iframeDoc.body)    // render from the isolated iframe body
-            .outputPdf("blob");
-        } catch (renderErr) {
-          console.error("PDF render failed:", renderErr);
-          const msg =
-            renderErr instanceof Error && renderErr.message
-              ? renderErr.message
-              : "Rendering failed";
-          throw new Error(
-            `Could not render PDF (${msg}). Try a simpler document or reduce the page content.`
-          );
+          pdfMake.createPdf(docDefinition).getBlob((blob: Blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("pdfmake returned an empty result"));
+          });
+        } catch (err) {
+          reject(err);
         }
+      });
 
-        const url = URL.createObjectURL(pdfBlob);
-        setResult({
-          url,
-          filename,
-          size: pdfBlob.size,
-          originalSize: file.size,
-          originalName: file.name,
-        });
+      const url = URL.createObjectURL(pdfBlob);
+      setResult({
+        url,
+        filename,
+        size:         pdfBlob.size,
+        originalSize: file.size,
+        originalName: file.name,
+      });
 
-        const pct = Math.round((1 - pdfBlob.size / file.size) * 100);
-        if (pct > 0) {
-          addToast(`Converted to PDF — ${pct}% smaller`, "success");
-        } else {
-          addToast("Converted to PDF successfully", "success");
-        }
-      } finally {
-        if (document.body.contains(iframe)) {
-          document.body.removeChild(iframe);
-        }
-      }
+      const pct = Math.round((1 - pdfBlob.size / file.size) * 100);
+      addToast(
+        pct > 0 ? `Converted to PDF — ${pct}% smaller` : "Converted to PDF successfully",
+        "success"
+      );
     } catch (err) {
       console.error("Word to PDF failed:", err);
       addToast(
@@ -326,7 +288,7 @@ export default function WordToPdf() {
             <p className="text-xs text-muted-foreground">
               {margins === "normal" && "1 inch on all sides (standard)"}
               {margins === "narrow" && "0.5 inch on all sides (more content per page)"}
-              {margins === "wide" && "1 inch top/bottom, 2 inch left/right (for binding)"}
+              {margins === "wide"   && "1 inch top/bottom, 2 inch left/right (for binding)"}
             </p>
           </div>
         </div>
@@ -347,7 +309,7 @@ export default function WordToPdf() {
           <div className="max-h-80 overflow-y-auto bg-white p-6">
             <div
               className="text-black text-sm leading-relaxed prose prose-sm max-w-none"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              style={PREVIEW_STYLES}
               dangerouslySetInnerHTML={{ __html: previewHtml }}
             />
           </div>
