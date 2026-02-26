@@ -47,6 +47,29 @@ interface Result {
   originalName: string;
 }
 
+// Recursively strip any `font` / `fontFamily` references injected by
+// html-to-pdfmake from the Word document's CSS styles (e.g. Calibri,
+// Times New Roman). pdfmake only has Roboto in its vfs_fonts bundle, so
+// any other font reference causes "Unknown font format" at PDFFontFactory.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function stripCustomFonts(node: any): void {
+  if (Array.isArray(node)) {
+    node.forEach(stripCustomFonts);
+  } else if (node && typeof node === "object") {
+    delete node.font;
+    if (node.style && typeof node.style === "object") {
+      delete node.style.font;
+      delete node.style.fontFamily;
+    }
+    if (node.text)        stripCustomFonts(node.text);
+    if (node.stack)       stripCustomFonts(node.stack);
+    if (node.ul)          stripCustomFonts(node.ul);
+    if (node.ol)          stripCustomFonts(node.ol);
+    if (node.table?.body) stripCustomFonts(node.table.body);
+    if (node.columns)     stripCustomFonts(node.columns);
+  }
+}
+
 export default function WordToPdf() {
   const [pageSize, setPageSize] = useState<PageSize>("a4");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
@@ -113,19 +136,36 @@ export default function WordToPdf() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const pdfMake       = (pdfMakeModule      as any).default ?? pdfMakeModule;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const vfsFonts      = (vfsFontsModule     as any).default ?? vfsFontsModule;
+      const rawFonts      = (vfsFontsModule     as any);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const htmlToPdfmake = (htmlToPdfmakeModule as any).default ?? htmlToPdfmakeModule;
 
-      // pdfmake v0.3.x uses `virtualfs` (not the old `vfs` property).
-      // Fonts must be loaded via virtualfs.writeFileSync() for each entry.
-      // Setting `pdfMake.vfs = fonts` (the v0.2.x pattern) is silently ignored
-      // in v0.3.x and causes pdfmake to hang waiting for font data.
-      const fontEntries = Object.entries(vfsFonts as Record<string, string>);
-      for (const [filename, data] of fontEntries) {
-        pdfMake.virtualfs.writeFileSync(filename, data);
+      // vfs_fonts export shape varies by pdfmake version and bundler.
+      // Probe all known shapes in order and fall back to the raw module.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const fontDict: Record<string, string> =
+        rawFonts?.pdfMake?.vfs          ??   // v0.2.x CJS shape
+        rawFonts?.vfs                   ??   // some bundler re-exports
+        rawFonts?.default?.pdfMake?.vfs ??   // v0.2.x via ESM default
+        rawFonts?.default?.vfs          ??   // alternate ESM
+        rawFonts?.default               ??   // v0.3.x flat via ESM default
+        rawFonts;                            // v0.3.x flat direct
+
+      // Set pdfMake.vfs (read by PDFFontFactory internally in all versions)
+      pdfMake.vfs = fontDict;
+
+      // Also load via v0.3.x virtualfs API if available — covers both paths
+      if (typeof pdfMake.virtualfs?.writeFileSync === "function") {
+        for (const [name, data] of Object.entries(fontDict)) {
+          pdfMake.virtualfs.writeFileSync(name, data);
+        }
       }
-      console.log("Step 5: fonts loaded into virtualfs —", fontEntries.length, "files");
+
+      const vfsCount = Object.keys(pdfMake.vfs ?? {}).length;
+      console.log("Step 5: pdfMake.vfs loaded:", vfsCount, "font files");
+      if (vfsCount === 0) {
+        console.warn("Step 5 WARNING: vfs is empty — font registration failed, PDF will likely error");
+      }
 
       setProgress("Converting HTML to PDF document…");
       console.log("Step 6: html-to-pdfmake converting…");
@@ -135,6 +175,14 @@ export default function WordToPdf() {
       // underline, lists, tables, and base64 images.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const content = htmlToPdfmake(html, { window: window as any });
+
+      // html-to-pdfmake may embed font names extracted from the Word document
+      // (Calibri, Times New Roman, Arial, etc.) as `font` properties on content
+      // nodes. pdfmake only has Roboto in vfs_fonts, so any other font name
+      // causes "Unknown font format" at PDFFontFactory.open. Strip them all so
+      // everything falls through to the defaultStyle Roboto.
+      stripCustomFonts(content);
+
       console.log("Step 7: html-to-pdfmake done — content items:", Array.isArray(content) ? content.length : typeof content);
 
       // MARGIN_MAP order: [top, right, bottom, left]
