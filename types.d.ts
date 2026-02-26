@@ -1,5 +1,21 @@
 // Module declarations for packages that lack TypeScript types
 
+// window.pdfMake — set globally by the CDN script in WordToPdf.
+// Declared optional so TypeScript's control flow can narrow away `undefined`.
+// Ambient .d.ts files augment globals directly (no `declare global {}` wrapper).
+interface Window {
+  pdfMake?: {
+    vfs: Record<string, string>;
+    fonts: Record<string, unknown>;
+    createPdf(documentDefinition: Record<string, unknown>): {
+      download(filename?: string): void;
+      getBlob(cb: (blob: Blob) => void): void;
+      getBase64(cb: (data: string) => void): void;
+      getDataUrl(cb: (url: string) => void): void;
+    };
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare module "pdfmake/build/pdfmake" {
   const pdfMake: {

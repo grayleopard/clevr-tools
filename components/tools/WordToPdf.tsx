@@ -47,6 +47,42 @@ interface Result {
   originalName: string;
 }
 
+// Load pdfmake v0.2.x from CDN, bypassing Turbopack/bundler entirely.
+// The CDN scripts set window.pdfMake globally with vfs_fonts already wired in,
+// which is the pattern pdfmake's own docs recommend for browser usage.
+// We pin to v0.2.10 (last stable v0.2 release) because vfs_fonts on v0.2.x
+// uses the well-established pdfMake.vfs = { ... } API that Just Works.
+const PDFMAKE_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js";
+const VFS_FONTS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js";
+
+function loadScript(src: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) { resolve(); return; }
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload  = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load: ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+async function loadPdfMake(): Promise<NonNullable<Window["pdfMake"]>> {
+  // Read via `any` to avoid TypeScript narrowing window.pdfMake to `never`
+  // after async boundaries (TS can't track CDN-injected globals across awaits).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const w = window as any;
+  if (w.pdfMake) return w.pdfMake;
+  // Load pdfmake first, then vfs_fonts (order matters — vfs_fonts reads window.pdfMake)
+  await loadScript(PDFMAKE_CDN);
+  await loadScript(VFS_FONTS_CDN);
+  if (!w.pdfMake) {
+    throw new Error("pdfmake CDN scripts loaded but window.pdfMake is undefined");
+  }
+  console.log("pdfMake loaded from CDN — vfs font files:", Object.keys(w.pdfMake.vfs ?? {}).length);
+  return w.pdfMake;
+}
+
 // Recursively strip any `font` / `fontFamily` references injected by
 // html-to-pdfmake from the Word document's CSS styles (e.g. Calibri,
 // Times New Roman). pdfmake only has Roboto in its vfs_fonts bundle, so
@@ -120,55 +156,19 @@ export default function WordToPdf() {
       setPreviewHtml(html);
       setProgress("Loading PDF libraries…");
 
-      // === PDFMAKE APPROACH ===
-      // pdfmake generates PDFs from a document definition object.
-      // It has ZERO dependency on html2canvas or CSS getComputedStyle,
-      // so Tailwind v4's oklch() → lab() conversion never causes a crash.
-      const [pdfMakeModule, vfsFontsModule, htmlToPdfmakeModule] = await Promise.all([
-        import("pdfmake/build/pdfmake"),
-        import("pdfmake/build/vfs_fonts"),
+      // Load pdfmake from CDN (bypasses Turbopack vfs_fonts bundling issues)
+      // and html-to-pdfmake from npm (pure JS function, no font dependencies).
+      console.log("Step 4: loading pdfmake from CDN + html-to-pdfmake…");
+      const [pdfMake, htmlToPdfmakeModule] = await Promise.all([
+        loadPdfMake(),
         import("html-to-pdfmake"),
       ]);
-      console.log("Step 4: pdfmake libraries loaded");
-
-      // CJS modules imported via dynamic import expose exports as `.default`
-      // in ESM context. Handle both patterns defensively.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pdfMake       = (pdfMakeModule      as any).default ?? pdfMakeModule;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const rawFonts      = (vfsFontsModule     as any);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const htmlToPdfmake = (htmlToPdfmakeModule as any).default ?? htmlToPdfmakeModule;
-
-      // vfs_fonts export shape varies by pdfmake version and bundler.
-      // Probe all known shapes in order and fall back to the raw module.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const fontDict: Record<string, string> =
-        rawFonts?.pdfMake?.vfs          ??   // v0.2.x CJS shape
-        rawFonts?.vfs                   ??   // some bundler re-exports
-        rawFonts?.default?.pdfMake?.vfs ??   // v0.2.x via ESM default
-        rawFonts?.default?.vfs          ??   // alternate ESM
-        rawFonts?.default               ??   // v0.3.x flat via ESM default
-        rawFonts;                            // v0.3.x flat direct
-
-      // Set pdfMake.vfs (read by PDFFontFactory internally in all versions)
-      pdfMake.vfs = fontDict;
-
-      // Also load via v0.3.x virtualfs API if available — covers both paths
-      if (typeof pdfMake.virtualfs?.writeFileSync === "function") {
-        for (const [name, data] of Object.entries(fontDict)) {
-          pdfMake.virtualfs.writeFileSync(name, data);
-        }
-      }
-
-      const vfsCount = Object.keys(pdfMake.vfs ?? {}).length;
-      console.log("Step 5: pdfMake.vfs loaded:", vfsCount, "font files");
-      if (vfsCount === 0) {
-        console.warn("Step 5 WARNING: vfs is empty — font registration failed, PDF will likely error");
-      }
+      console.log("Step 4: libraries ready — vfs font files:", Object.keys(pdfMake.vfs ?? {}).length);
 
       setProgress("Converting HTML to PDF document…");
-      console.log("Step 6: html-to-pdfmake converting…");
+      console.log("Step 5: html-to-pdfmake converting…");
 
       // Convert the mammoth HTML string into a pdfmake content tree.
       // html-to-pdfmake handles headings, paragraphs, bold, italic,
@@ -183,7 +183,7 @@ export default function WordToPdf() {
       // everything falls through to the defaultStyle Roboto.
       stripCustomFonts(content);
 
-      console.log("Step 7: html-to-pdfmake done — content items:", Array.isArray(content) ? content.length : typeof content);
+      console.log("Step 6: html-to-pdfmake done — content items:", Array.isArray(content) ? content.length : typeof content);
 
       // MARGIN_MAP order: [top, right, bottom, left]
       // pdfmake pageMargins order: [left, top, right, bottom]
@@ -220,13 +220,13 @@ export default function WordToPdf() {
           html_code: { fontSize: 9 },
         },
       };
-      console.log("Step 8: doc definition ready — pageSize:", docDefinition.pageSize, "orientation:", docDefinition.pageOrientation);
+      console.log("Step 7: doc definition ready — pageSize:", docDefinition.pageSize, "orientation:", docDefinition.pageOrientation);
 
       const baseName = file.name.replace(/\.(docx?|doc)$/i, "");
       const filename  = `${baseName}.pdf`;
 
       setProgress("Generating PDF…");
-      console.log("Step 9: pdfmake generating PDF blob…");
+      console.log("Step 8: pdfmake generating PDF blob…");
 
       const pdfBlob = await Promise.race([
         new Promise<Blob>((resolve, reject) => {
@@ -246,7 +246,7 @@ export default function WordToPdf() {
           )
         ),
       ]);
-      console.log("Step 10: PDF blob created — size:", pdfBlob.size);
+      console.log("Step 9: PDF blob created — size:", pdfBlob.size);
 
       const url = URL.createObjectURL(pdfBlob);
       setResult({
