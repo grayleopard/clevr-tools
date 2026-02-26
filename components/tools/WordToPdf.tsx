@@ -66,12 +66,14 @@ export default function WordToPdf() {
     setResult(null);
     setDownloaded(false);
     setPreviewHtml(null);
-    setProgress("Parsing Word document…");
+    setProgress("Reading file…");
 
     try {
+      console.log("Step 1: reading file buffer…");
       const buffer = await file.arrayBuffer();
 
       setProgress("Extracting document content…");
+      console.log("Step 2: mammoth converting .docx to HTML…");
       const mammoth = await import("mammoth/mammoth.browser");
 
       const { value: html, messages } = await mammoth.convertToHtml(
@@ -85,6 +87,7 @@ export default function WordToPdf() {
           ],
         }
       );
+      console.log("Step 3: mammoth done — HTML length:", html.length);
 
       const warningCount = messages.filter((m) => m.type === "warning").length;
       if (warningCount > 0) {
@@ -92,7 +95,7 @@ export default function WordToPdf() {
       }
 
       setPreviewHtml(html);
-      setProgress("Building PDF…");
+      setProgress("Loading PDF libraries…");
 
       // === PDFMAKE APPROACH ===
       // pdfmake generates PDFs from a document definition object.
@@ -103,24 +106,36 @@ export default function WordToPdf() {
         import("pdfmake/build/vfs_fonts"),
         import("html-to-pdfmake"),
       ]);
+      console.log("Step 4: pdfmake libraries loaded");
 
       // CJS modules imported via dynamic import expose exports as `.default`
       // in ESM context. Handle both patterns defensively.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const pdfMake      = (pdfMakeModule     as any).default ?? pdfMakeModule;
+      const pdfMake       = (pdfMakeModule      as any).default ?? pdfMakeModule;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const vfsFonts     = (vfsFontsModule    as any).default ?? vfsFontsModule;
+      const vfsFonts      = (vfsFontsModule     as any).default ?? vfsFontsModule;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const htmlToPdfmake = (htmlToPdfmakeModule as any).default ?? htmlToPdfmakeModule;
 
-      // Wire in the embedded Roboto font virtual file system
-      pdfMake.vfs = vfsFonts;
+      // pdfmake v0.3.x uses `virtualfs` (not the old `vfs` property).
+      // Fonts must be loaded via virtualfs.writeFileSync() for each entry.
+      // Setting `pdfMake.vfs = fonts` (the v0.2.x pattern) is silently ignored
+      // in v0.3.x and causes pdfmake to hang waiting for font data.
+      const fontEntries = Object.entries(vfsFonts as Record<string, string>);
+      for (const [filename, data] of fontEntries) {
+        pdfMake.virtualfs.writeFileSync(filename, data);
+      }
+      console.log("Step 5: fonts loaded into virtualfs —", fontEntries.length, "files");
+
+      setProgress("Converting HTML to PDF document…");
+      console.log("Step 6: html-to-pdfmake converting…");
 
       // Convert the mammoth HTML string into a pdfmake content tree.
       // html-to-pdfmake handles headings, paragraphs, bold, italic,
       // underline, lists, tables, and base64 images.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const content = htmlToPdfmake(html, { window: window as any });
+      console.log("Step 7: html-to-pdfmake done — content items:", Array.isArray(content) ? content.length : typeof content);
 
       // MARGIN_MAP order: [top, right, bottom, left]
       // pdfmake pageMargins order: [left, top, right, bottom]
@@ -157,20 +172,33 @@ export default function WordToPdf() {
           html_code: { fontSize: 9 },
         },
       };
+      console.log("Step 8: doc definition ready — pageSize:", docDefinition.pageSize, "orientation:", docDefinition.pageOrientation);
 
       const baseName = file.name.replace(/\.(docx?|doc)$/i, "");
       const filename  = `${baseName}.pdf`;
 
-      const pdfBlob = await new Promise<Blob>((resolve, reject) => {
-        try {
-          pdfMake.createPdf(docDefinition).getBlob((blob: Blob) => {
-            if (blob) resolve(blob);
-            else reject(new Error("pdfmake returned an empty result"));
-          });
-        } catch (err) {
-          reject(err);
-        }
-      });
+      setProgress("Generating PDF…");
+      console.log("Step 9: pdfmake generating PDF blob…");
+
+      const pdfBlob = await Promise.race([
+        new Promise<Blob>((resolve, reject) => {
+          try {
+            pdfMake.createPdf(docDefinition).getBlob((blob: Blob) => {
+              if (blob) resolve(blob);
+              else reject(new Error("pdfmake returned an empty result"));
+            });
+          } catch (err) {
+            reject(err);
+          }
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error("PDF generation timed out after 30 seconds. Try a smaller document.")),
+            30_000
+          )
+        ),
+      ]);
+      console.log("Step 10: PDF blob created — size:", pdfBlob.size);
 
       const url = URL.createObjectURL(pdfBlob);
       setResult({
