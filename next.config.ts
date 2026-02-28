@@ -34,6 +34,15 @@ const nextConfig: NextConfig = {
     inlineCss: true,
     optimizeCss: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/files/image-resizer",
+        destination: "/tools/resize-image",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     const headers = [
       {
