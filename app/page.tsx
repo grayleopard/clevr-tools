@@ -1,8 +1,18 @@
-import { tools, toolCategories } from "@/lib/tools";
-import ToolCard from "@/components/tool/ToolCard";
+import Link from "next/link";
+import { getToolBySlug } from "@/lib/tools";
+import { siteCategories, getCategoryToolCount } from "@/lib/site-structure";
 import SmartConverter from "@/components/home/SmartConverter";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { Badge } from "@/components/ui/badge";
+import {
+  FolderOpen,
+  Code,
+  Calculator,
+  Clock,
+  Keyboard,
+  ArrowRight,
+} from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,30 +24,34 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
-  const liveTools = tools.filter((t) => t.live !== false);
-  const categories = toolCategories.filter((cat) =>
-    liveTools.some((t) => t.category === cat.id)
-  );
+const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  files: FolderOpen,
+  "text-code": Code,
+  calculate: Calculator,
+  time: Clock,
+  type: Keyboard,
+};
 
+export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        {/* Hero — Smart Converter */}
+        {/* Hero */}
         <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent">
           <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
-            {/* Headline */}
             <div className="mb-8 text-center">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
-                <span>100% Free · No Signup · Files stay in your browser</span>
+                <span>100% Free &middot; No Signup &middot; Files stay in your browser</span>
               </div>
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                Drop any file.{" "}
-                <span className="text-primary">We&apos;ll handle the rest.</span>
+                Fast, free tools for everyday tasks.
               </h1>
               <p className="mt-3 text-muted-foreground sm:text-lg">
-                Free file tools powered by your browser. No upload. No signup. No BS.
+                Files &middot; Text &middot; Calculators &middot; Timers &middot; Typing
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                All processing happens in your browser. No uploads, no accounts.
               </p>
             </div>
 
@@ -46,27 +60,80 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Tools grid — browsing + SEO */}
+        {/* Category grid */}
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
           <p className="mb-6 text-sm text-muted-foreground">
-            Or browse all tools:
+            Browse by category:
           </p>
-          {categories.map((cat) => {
-            const catTools = liveTools.filter((t) => t.category === cat.id);
-            if (catTools.length === 0) return null;
-            return (
-              <div key={cat.id} className="mb-12">
-                <h2 className="mb-5 text-lg font-semibold capitalize tracking-tight text-foreground">
-                  {cat.label}
-                </h2>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {catTools.map((tool) => (
-                    <ToolCard key={tool.slug} tool={tool} />
-                  ))}
+          <div className="grid gap-5 sm:grid-cols-2">
+            {siteCategories.map((cat) => {
+              const Icon = categoryIcons[cat.id] ?? FolderOpen;
+              const toolCount = getCategoryToolCount(cat);
+
+              return (
+                <div
+                  key={cat.id}
+                  className="flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
+                >
+                  {/* Category header */}
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="rounded-lg bg-primary/10 p-2.5">
+                      <Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight text-foreground">
+                        {cat.label}
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        {cat.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Featured tools */}
+                  <ul className="mb-4 flex-1 space-y-1">
+                    {cat.featuredSlugs.map((slug) => {
+                      const tool = getToolBySlug(slug);
+                      if (!tool || tool.live === false) return null;
+                      return (
+                        <li key={slug}>
+                          <Link
+                            href={tool.route}
+                            className="group/link flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted"
+                          >
+                            <span className="text-foreground group-hover/link:text-primary transition-colors">
+                              {tool.name}
+                            </span>
+                            {tool.badge && (
+                              <Badge
+                                variant={
+                                  tool.badge === "popular"
+                                    ? "default"
+                                    : "secondary"
+                                }
+                                className="text-[10px] capitalize"
+                              >
+                                {tool.badge}
+                              </Badge>
+                            )}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  {/* View all */}
+                  <Link
+                    href={cat.route}
+                    className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    View all {toolCount} tools
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </section>
       </main>
       <Footer />

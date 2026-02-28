@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { tools } from "@/lib/tools";
+import { siteCategories } from "@/lib/site-structure";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://clevr.tools";
@@ -12,6 +13,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     }));
+
+  const categoryEntries: MetadataRoute.Sitemap = siteCategories.map((cat) => ({
+    url: `${base}${cat.route}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  }));
 
   return [
     {
@@ -26,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    ...categoryEntries,
     ...toolEntries,
   ];
 }
