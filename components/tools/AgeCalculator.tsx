@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { addToast } from "@/lib/toast";
 
 const ZODIAC = [
   { sign: "Capricorn", emoji: "\u2651", end: [1, 19] },

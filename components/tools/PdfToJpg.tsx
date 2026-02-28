@@ -6,7 +6,7 @@ import FileDropZone from "@/components/tool/FileDropZone";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
-import { renderPageThumbnail, renderAllThumbnails, renderPageToJpgBlob, parsePageRange } from "@/lib/pdf-utils";
+import { renderAllThumbnails, renderPageToJpgBlob, parsePageRange } from "@/lib/pdf-utils";
 import { Slider } from "@/components/ui/slider";
 import { Download, Package, FileImage, RotateCcw } from "lucide-react";
 import { formatBytes, truncateFilename } from "@/lib/utils";

@@ -17,7 +17,10 @@ export default function PageDragOverlay({ onFiles }: PageDragOverlayProps) {
   const [isDragging, setIsDragging] = useState(false);
   const counterRef = useRef(0);
   const onFilesRef = useRef(onFiles);
-  onFilesRef.current = onFiles;
+
+  useEffect(() => {
+    onFilesRef.current = onFiles;
+  }, [onFiles]);
 
   useEffect(() => {
     const onEnter = (e: DragEvent) => {

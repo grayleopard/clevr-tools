@@ -1,0 +1,16 @@
+Route: /
+  JS: 1415 KiB
+  CSS: 98.9 KiB
+  Total: 1513.9 KiB
+Route: /compress/image
+  JS: 1415 KiB
+  CSS: 98.9 KiB
+  Total: 1513.9 KiB
+Route: /convert/pdf-to-jpg
+  JS: 1415 KiB
+  CSS: 98.9 KiB
+  Total: 1513.9 KiB
+Route: /convert/word-to-pdf
+  JS: 1415 KiB
+  CSS: 98.9 KiB
+  Total: 1513.9 KiB

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Copy, RefreshCw } from "lucide-react";
 import { addToast } from "@/lib/toast";
 
@@ -51,7 +51,7 @@ function formatUUID(
 type Version = "v4" | "v7";
 
 export default function UUIDGenerator() {
-  const [uuid, setUuid] = useState("");
+  const [uuid, setUuid] = useState(() => generateV4());
   const [version, setVersion] = useState<Version>("v4");
   const [uppercase, setUppercase] = useState(false);
   const [hyphens, setHyphens] = useState(true);
@@ -62,11 +62,6 @@ export default function UUIDGenerator() {
     (v: Version) => (v === "v4" ? generateV4() : generateV7()),
     []
   );
-
-  // Generate on mount
-  useEffect(() => {
-    setUuid(generate(version));
-  }, []);
 
   const handleRegenerate = useCallback(() => {
     setUuid(generate(version));

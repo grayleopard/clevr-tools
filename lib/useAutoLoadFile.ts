@@ -15,7 +15,10 @@ import { takePendingFile } from "./file-handoff";
  */
 export function useAutoLoadFile(onFile: (files: File[]) => void): void {
   const onFileRef = useRef(onFile);
-  onFileRef.current = onFile;
+
+  useEffect(() => {
+    onFileRef.current = onFile;
+  }, [onFile]);
 
   useEffect(() => {
     const file = takePendingFile();
