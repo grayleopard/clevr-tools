@@ -3,14 +3,13 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { RotateCcw, Copy, ChevronDown, ChevronUp, Volume2, VolumeX } from "lucide-react";
 import { addToast } from "@/lib/toast";
-import { english200, english1000, quotes, passages } from "@/lib/word-lists";
+import { english200, quotes, passages, advancedPassages } from "@/lib/word-lists";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TestMode = "time" | "words" | "quote";
 type TestStatus = "idle" | "running" | "finished";
-type WordList = "english200" | "english1000";
-type TextType = "passages" | "words";
+type TextTier = "simple" | "standard" | "advanced";
 
 interface WordResult {
   word: string;
@@ -27,9 +26,6 @@ interface PerSecondData {
 }
 
 interface Settings {
-  wordList: WordList;
-  punctuation: boolean;
-  numbers: boolean;
   smoothCaret: boolean;
   liveWpm: boolean;
   sound: boolean;
@@ -44,59 +40,6 @@ function shuffleArray<T>(arr: T[]): T[] {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
-
-function applyPunctuation(words: string[]): string[] {
-  const puncMarks = [".", ",", "?", "!"];
-  const result: string[] = [];
-
-  for (let i = 0; i < words.length; i++) {
-    let w = words[i];
-    // ~10% chance of capitalizing a word
-    if (Math.random() < 0.1) {
-      w = w.charAt(0).toUpperCase() + w.slice(1);
-    }
-    // ~15% chance of appending punctuation
-    if (Math.random() < 0.15) {
-      const p = puncMarks[Math.floor(Math.random() * puncMarks.length)];
-      w = w + p;
-    }
-    result.push(w);
-  }
-  return result;
-}
-
-function mixNumbers(words: string[]): string[] {
-  const result = [...words];
-  // Replace ~12% of words with random 1-4 digit number strings
-  for (let i = 0; i < result.length; i++) {
-    if (Math.random() < 0.12) {
-      const digits = Math.floor(Math.random() * 4) + 1; // 1-4 digits
-      let num = "";
-      for (let d = 0; d < digits; d++) {
-        num += Math.floor(Math.random() * 10).toString();
-      }
-      result[i] = num;
-    }
-  }
-  return result;
-}
-
-function generateWords(
-  count: number,
-  wordList: WordList,
-  punctuation: boolean,
-  numbers: boolean
-): string[] {
-  const source = wordList === "english200" ? english200 : english1000;
-  let words: string[] = [];
-  while (words.length < count) {
-    words = words.concat(shuffleArray(source));
-  }
-  words = words.slice(0, count);
-  if (numbers) words = mixNumbers(words);
-  if (punctuation) words = applyPunctuation(words);
-  return words;
 }
 
 function generatePassageWords(neededWords: number = 400): string[] {
@@ -213,14 +156,11 @@ function WpmChart({ data }: { data: PerSecondData[] }) {
 export default function TypingTest() {
   // ── Mode state ──
   const [testMode, setTestMode] = useState<TestMode>("time");
-  const [textType, setTextType] = useState<TextType>("passages");
+  const [textTier, setTextTier] = useState<TextTier>("standard");
   const [timeOption, setTimeOption] = useState(30);
   const [wordCountOption, setWordCountOption] = useState(25);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [settings, setSettings] = useState<Settings>({
-    wordList: "english200",
-    punctuation: false,
-    numbers: false,
     smoothCaret: true,
     liveWpm: true,
     sound: false,
@@ -279,7 +219,7 @@ export default function TypingTest() {
   useEffect(() => {
     resetTest(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testMode, textType, timeOption, wordCountOption, settings.wordList, settings.punctuation, settings.numbers]);
+  }, [testMode, textTier, timeOption, wordCountOption]);
 
   // ── Reset test ──
   const resetTest = useCallback((newWords = false) => {
@@ -324,23 +264,41 @@ export default function TypingTest() {
         const quoteWords = q.text.split(/\s+/).filter(Boolean);
         setWords(quoteWords);
         wordListRef.current = quoteWords;
-      } else if (textType === "passages") {
-        // Passages mode: generate enough words (400 for timed, wordCountOption for word mode)
+      } else if (textTier === "simple") {
+        // Simple: shuffled common words, all lowercase, no punctuation
+        const count = testMode === "time" ? 300 : wordCountOption;
+        const result: string[] = [];
+        while (result.length < count) result.push(...shuffleArray(english200));
+        const newWordList = result.slice(0, count);
+        setWords(newWordList);
+        wordListRef.current = newWordList;
+        setCurrentQuote(null);
+      } else if (textTier === "standard") {
+        // Standard: curated passages with natural prose
         const count = testMode === "time" ? 400 : wordCountOption;
         const newWordList = generatePassageWords(count);
         setWords(newWordList);
         wordListRef.current = newWordList;
         setCurrentQuote(null);
       } else {
-        // Words mode: use common word lists with optional punctuation/numbers
+        // Advanced: technical passages with punctuation, numbers, domain vocabulary
         const count = testMode === "time" ? 400 : wordCountOption;
-        const newWordList = generateWords(count, settings.wordList, settings.punctuation, settings.numbers);
+        const shuffled = shuffleArray(advancedPassages);
+        const combined = shuffled.join(' ');
+        const allWords = combined.split(/\s+/).filter(w => w.length > 0);
+        let newWordList: string[];
+        if (allWords.length >= count) {
+          newWordList = allWords.slice(0, count);
+        } else {
+          const doubled = (combined + ' ' + combined).split(/\s+/).filter(w => w.length > 0);
+          newWordList = doubled.slice(0, count);
+        }
         setWords(newWordList);
         wordListRef.current = newWordList;
         setCurrentQuote(null);
       }
     }
-  }, [testMode, textType, timeOption, wordCountOption, settings.wordList, settings.punctuation, settings.numbers]);
+  }, [testMode, textTier, timeOption, wordCountOption]);
 
   // ── Start test ──
   const startTest = useCallback(() => {
@@ -864,20 +822,20 @@ export default function TypingTest() {
               </div>
             )}
 
-            {/* Text type toggle (not shown in quote mode) */}
+            {/* Text complexity tier selector (not shown in quote mode) */}
             {testMode !== "quote" && (
-              <div className="flex items-center gap-1 ml-2 rounded-lg bg-muted p-1">
-                {(["passages", "words"] as TextType[]).map((type) => (
+              <div className="flex items-center gap-1 ml-2">
+                {(["simple", "standard", "advanced"] as TextTier[]).map((tier) => (
                   <button
-                    key={type}
-                    onClick={() => setTextType(type)}
+                    key={tier}
+                    onClick={() => setTextTier(tier)}
                     className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
-                      textType === type
-                        ? "bg-background text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
+                      textTier === tier
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`}
                   >
-                    {type === "passages" ? "Passages" : "Words"}
+                    {tier === "simple" ? "Simple" : tier === "standard" ? "Standard" : "Advanced"}
                   </button>
                 ))}
               </div>
@@ -897,25 +855,6 @@ export default function TypingTest() {
           {settingsOpen && (
             <div className="border-t border-border px-3 py-3">
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                {testMode !== "quote" && textType === "words" && (
-                  <label className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>Word list:</span>
-                    <select
-                      value={settings.wordList}
-                      onChange={(e) => setSettings((s) => ({ ...s, wordList: e.target.value as WordList }))}
-                      className="rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground focus:outline-none"
-                    >
-                      <option value="english200">English 200</option>
-                      <option value="english1000">English 1000</option>
-                    </select>
-                  </label>
-                )}
-                {testMode !== "quote" && textType === "words" && (
-                  <>
-                    <ToggleSetting label="Punctuation" checked={settings.punctuation} onChange={(v) => setSettings((s) => ({ ...s, punctuation: v }))} />
-                    <ToggleSetting label="Numbers" checked={settings.numbers} onChange={(v) => setSettings((s) => ({ ...s, numbers: v }))} />
-                  </>
-                )}
                 <ToggleSetting label="Smooth caret" checked={settings.smoothCaret} onChange={(v) => setSettings((s) => ({ ...s, smoothCaret: v }))} />
                 <ToggleSetting label="Live WPM" checked={settings.liveWpm} onChange={(v) => setSettings((s) => ({ ...s, liveWpm: v }))} />
                 <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer select-none">
