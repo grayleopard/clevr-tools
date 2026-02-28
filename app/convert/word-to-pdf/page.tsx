@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
+import RelatedToolsCluster from "@/components/seo/RelatedToolsCluster";
 import ToolLayout from "@/components/tool/ToolLayout";
 import WordToPdf from "@/components/tools/WordToPdf";
 import { notFound } from "next/navigation";
@@ -36,8 +37,9 @@ export default function WordToPdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <WordToPdf />
+      <FaqSchema items={faqItems} />
+      <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );
 }

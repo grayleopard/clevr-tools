@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
+import RelatedToolsCluster from "@/components/seo/RelatedToolsCluster";
 import ToolLayout from "@/components/tool/ToolLayout";
 import ImagesToPdf from "@/components/tools/ImagesToPdf";
 import { notFound } from "next/navigation";
@@ -36,12 +37,13 @@ export default function PngToPdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <ImagesToPdf
         accept=".png"
         toolSlug="png-to-pdf"
         resetLabel="Convert more PNGs"
       />
+      <FaqSchema items={faqItems} />
+      <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );
 }

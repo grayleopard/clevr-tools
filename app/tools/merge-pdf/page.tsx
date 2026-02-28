@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
+import RelatedToolsCluster from "@/components/seo/RelatedToolsCluster";
 import ToolLayout from "@/components/tool/ToolLayout";
 import MergePdf from "@/components/tools/MergePdf";
 import { notFound } from "next/navigation";
@@ -36,8 +37,9 @@ export default function MergePdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <MergePdf />
+      <FaqSchema items={faqItems} />
+      <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );
 }
