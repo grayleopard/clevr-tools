@@ -5,7 +5,7 @@ import FileDropZone from "@/components/tool/FileDropZone";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
-import JSZip from "jszip";
+
 import { Download, Package, Lock, Unlock, X } from "lucide-react";
 
 interface UploadedImage {
@@ -199,6 +199,7 @@ export default function ImageResizer() {
 
   const downloadAll = useCallback(async () => {
     if (results.length <= 1) return;
+    const JSZip = (await import("jszip")).default;
     const zip = new JSZip();
     for (const r of results) {
       zip.file(r.filename, r.blob);

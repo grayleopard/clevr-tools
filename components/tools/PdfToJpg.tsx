@@ -8,10 +8,8 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { renderPageThumbnail, renderAllThumbnails, renderPageToJpgBlob, parsePageRange } from "@/lib/pdf-utils";
 import { Slider } from "@/components/ui/slider";
-import JSZip from "jszip";
 import { Download, Package, FileImage, RotateCcw } from "lucide-react";
 import { formatBytes, truncateFilename } from "@/lib/utils";
-import { PDFDocument } from "pdf-lib";
 
 interface PageResult {
   blob: Blob;
@@ -53,6 +51,7 @@ export default function PdfToJpg() {
       try {
         const buf = await file.arrayBuffer();
         buffers.push(buf);
+        const { PDFDocument } = await import("pdf-lib");
         const pdfDoc = await PDFDocument.load(buf.slice(0));
         const pageCount = pdfDoc.getPageCount();
         const thumbnails = await renderAllThumbnails(buf, 0.3);
@@ -123,6 +122,7 @@ export default function PdfToJpg() {
 
   const downloadAll = useCallback(async () => {
     if (results.length === 0) return;
+    const JSZip = (await import("jszip")).default;
     const zip = new JSZip();
     for (const r of results) zip.file(r.filename, r.blob);
     const zipBlob = await zip.generateAsync({ type: "blob" });

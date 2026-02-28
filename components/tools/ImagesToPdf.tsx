@@ -9,7 +9,7 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { usePasteImage } from "@/lib/usePasteImage";
 import { addToast } from "@/lib/toast";
-import { PDFDocument, PageSizes } from "pdf-lib";
+import type { PDFDocument } from "pdf-lib";
 import { GripVertical, X } from "lucide-react";
 
 type PageSize = "A4" | "Letter" | "fit";
@@ -115,6 +115,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
     if (files.length === 0) return;
     setIsProcessing(true);
     try {
+      const { PDFDocument, PageSizes } = await import("pdf-lib");
       const pdfDoc = await PDFDocument.create();
       const margin = margins ? 40 : 0;
 

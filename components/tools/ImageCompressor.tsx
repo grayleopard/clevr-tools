@@ -12,7 +12,7 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { compressImage, type ImageOutputFormat } from "@/lib/processors";
 import { addToast } from "@/lib/toast";
-import JSZip from "jszip";
+
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
 
@@ -106,6 +106,7 @@ export default function ImageCompressor() {
 
   const downloadAll = useCallback(async () => {
     if (results.length <= 1) return;
+    const JSZip = (await import("jszip")).default;
     const zip = new JSZip();
     for (const { file } of results) zip.file(file.name, file);
     const blob = await zip.generateAsync({ type: "blob" });

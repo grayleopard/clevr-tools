@@ -12,7 +12,7 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { heicToJpg } from "@/lib/processors";
 import { addToast } from "@/lib/toast";
-import JSZip from "jszip";
+
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
 
@@ -69,6 +69,7 @@ export default function HeicToJpg() {
 
   const downloadAll = useCallback(async () => {
     if (results.length < 2) return;
+    const JSZip = (await import("jszip")).default;
     const zip = new JSZip();
     for (const r of results) {
       const blob = await fetch(r.url).then((res) => res.blob());

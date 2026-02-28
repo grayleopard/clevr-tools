@@ -8,7 +8,7 @@ import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
-import { PDFDocument } from "pdf-lib";
+
 import { GripVertical, X, FileText } from "lucide-react";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
@@ -33,6 +33,7 @@ export default function MergePdf() {
     for (const file of newFiles) {
       try {
         const buf = await file.arrayBuffer();
+        const { PDFDocument } = await import("pdf-lib");
         const pdfDoc = await PDFDocument.load(buf);
         added.push({
           id: Math.random().toString(36).slice(2),
@@ -75,6 +76,7 @@ export default function MergePdf() {
     if (files.length < 2) { addToast("Add at least 2 PDFs to merge", "info"); return; }
     setIsProcessing(true);
     try {
+      const { PDFDocument } = await import("pdf-lib");
       const merged = await PDFDocument.create();
       for (const { file } of files) {
         const buf = await file.arrayBuffer();

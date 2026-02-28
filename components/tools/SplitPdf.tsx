@@ -7,8 +7,6 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { renderAllThumbnails, parsePageRange } from "@/lib/pdf-utils";
-import { PDFDocument } from "pdf-lib";
-import JSZip from "jszip";
 import { Download, Package, RotateCcw, CheckSquare, Square } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
@@ -46,6 +44,7 @@ export default function SplitPdf() {
     try {
       const buf = await f.arrayBuffer();
       arrayBufferRef.current = buf;
+      const { PDFDocument } = await import("pdf-lib");
       const pdfDoc = await PDFDocument.load(buf.slice(0));
       const count = pdfDoc.getPageCount();
       setPageCount(count);
@@ -77,6 +76,7 @@ export default function SplitPdf() {
 
     try {
       const buf = arrayBufferRef.current;
+      const { PDFDocument } = await import("pdf-lib");
       const srcDoc = await PDFDocument.load(buf.slice(0));
       const baseName = file.name.replace(/\.pdf$/i, "");
 
@@ -128,6 +128,7 @@ export default function SplitPdf() {
 
   const downloadAll = useCallback(async () => {
     if (results.length === 0) return;
+    const JSZip = (await import("jszip")).default;
     const zip = new JSZip();
     for (const r of results) zip.file(r.filename, r.blob);
     const zipBlob = await zip.generateAsync({ type: "blob" });

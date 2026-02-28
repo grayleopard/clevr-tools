@@ -9,7 +9,7 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { renderAllThumbnails } from "@/lib/pdf-utils";
-import { PDFDocument, degrees } from "pdf-lib";
+
 import { RotateCw } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
@@ -42,6 +42,7 @@ export default function RotatePdf() {
       arrayBufferRef.current = buf;
 
       // Get existing rotations from pdf-lib
+      const { PDFDocument } = await import("pdf-lib");
       const pdfDoc = await PDFDocument.load(buf.slice(0));
       const existing = pdfDoc.getPages().map((p) => p.getRotation().angle);
       setExistingRotations(existing);
@@ -91,6 +92,7 @@ export default function RotatePdf() {
     setIsProcessing(true);
     try {
       const buf = arrayBufferRef.current;
+      const { PDFDocument, degrees } = await import("pdf-lib");
       const pdfDoc = await PDFDocument.load(buf.slice(0));
       const pdfPages = pdfDoc.getPages();
 

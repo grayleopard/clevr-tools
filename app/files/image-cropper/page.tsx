@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { getToolBySlug } from "@/lib/tools";
 import ToolLayout from "@/components/tool/ToolLayout";
-import ImageCropper from "@/components/tools/ImageCropper";
 import { notFound } from "next/navigation";
+
+const ImageCropper = dynamic(() => import("@/components/tools/ImageCropper"), {
+  loading: () => <div className="animate-pulse rounded-xl bg-muted/30 h-96" />,
+});
 
 const tool = getToolBySlug("image-cropper")!;
 
