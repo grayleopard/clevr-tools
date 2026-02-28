@@ -11,6 +11,13 @@
     "perf:after": "bash scripts/perf/run-local-perf.sh after",
     "perf:route-bytes": "node scripts/perf/route-bytes.mjs / /compress/image /convert/pdf-to-jpg"
   },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "not dead"
+  ],
   "dependencies": {
     "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.1",
