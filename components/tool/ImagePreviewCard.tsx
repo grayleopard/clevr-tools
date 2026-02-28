@@ -61,6 +61,7 @@ export default function ImagePreviewCard({
               </div>
             ) : (
               <>
+                {/* eslint-disable-next-line @next/next/no-img-element -- local object URL previews from user files */}
                 <img
                   src={originalUrl}
                   alt={`Original: ${originalName}`}
@@ -91,6 +92,7 @@ export default function ImagePreviewCard({
             onClick={() => setLightbox({ src: processedUrl, label: processedName })}
             className="group relative w-full cursor-zoom-in overflow-hidden rounded-lg border border-primary/25 bg-primary/5"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element -- local object URL previews from user files */}
             <img
               src={processedUrl}
               alt={`Result: ${processedName}`}
@@ -128,6 +130,7 @@ export default function ImagePreviewCard({
               <X className="h-5 w-5" />
               <span className="text-sm">Close</span>
             </button>
+            {/* eslint-disable-next-line @next/next/no-img-element -- lightbox renders selected local preview URL */}
             <img
               src={lightbox.src}
               alt={lightbox.label}
