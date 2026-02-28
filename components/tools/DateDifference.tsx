@@ -1,12 +1,9 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { addToast } from "@/lib/toast";
 
 function countBusinessDays(start: Date, end: Date): number {
   let count = 0;
-  const d = new Date(start);
-  const endTime = end.getTime();
   const direction = start <= end ? 1 : -1;
   const actualStart = direction === 1 ? start : end;
   const actualEnd = direction === 1 ? end : start;

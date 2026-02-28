@@ -1,10 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 import { CheckCircle2 } from "lucide-react";
-import { getToolBySlug, getRelatedTools } from "@/lib/tools";
-import ToolCard from "@/components/tool/ToolCard";
 import AdSlot from "@/components/tool/AdSlot";
+
+const LazyRelatedToolsPanel = dynamic(
+  () => import("@/components/tool/RelatedToolsPanel"),
+  { ssr: false }
+);
 
 interface PostDownloadStateProps {
   toolSlug: string;
@@ -19,9 +23,6 @@ export default function PostDownloadState({
   onReset,
   redownloadSlot,
 }: PostDownloadStateProps) {
-  const tool = getToolBySlug(toolSlug);
-  const relatedTools = tool ? getRelatedTools(tool).slice(0, 3) : [];
-
   return (
     <div className="space-y-6">
       {/* Success card */}
@@ -48,22 +49,12 @@ export default function PostDownloadState({
         </button>
 
         {/* Secondary re-download */}
-        {redownloadSlot && (
+      {redownloadSlot && (
           <div className="text-xs text-muted-foreground">{redownloadSlot}</div>
         )}
       </div>
 
-      {/* You might also need */}
-      {relatedTools.length > 0 && (
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-muted-foreground">You might also need:</p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {relatedTools.map((t) => (
-              <ToolCard key={t.slug} tool={t} />
-            ))}
-          </div>
-        </div>
-      )}
+      <LazyRelatedToolsPanel toolSlug={toolSlug} />
 
       {/* Ad */}
       <AdSlot className="h-[90px]" />

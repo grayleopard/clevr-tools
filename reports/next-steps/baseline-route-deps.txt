@@ -1,0 +1,198 @@
+Route: /
+  JS total from manifest chunks: 1722.6 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    272.2 KiB  static/chunks/3578-f9d0ba3040247eb6.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    9.1 KiB  static/chunks/app/layout-75127b89cfe7bae3.js
+    8.8 KiB  static/chunks/app/page-f734da739775a7b8.js
+    3.8 KiB  static/chunks/webpack-66441513db1b808e.js
+    0.5 KiB  static/chunks/main-app-d571cd6dbeb68b23.js
+  Top dependencies:
+    @radix-ui/react-accordion
+    @radix-ui/react-alert-dialog
+    @radix-ui/react-avatar
+    @radix-ui/react-checkbox
+    @radix-ui/react-collapsible
+    @radix-ui/react-context-menu
+    @radix-ui/react-dialog
+    @radix-ui/react-dropdown-menu
+    @radix-ui/react-form
+    @radix-ui/react-hover-card
+    @radix-ui/react-label
+    @radix-ui/react-menubar
+    @radix-ui/react-navigation-menu
+    @radix-ui/react-one-time-password-field
+    @radix-ui/react-password-toggle-field
+    @radix-ui/react-popover
+    @radix-ui/react-portal
+    @radix-ui/react-progress
+    @radix-ui/react-radio-group
+    @radix-ui/react-scroll-area
+
+Route: /compress/image
+  JS total from manifest chunks: 2368.6 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    436.1 KiB  static/chunks/3127-5117c72927a98422.js
+    272.2 KiB  static/chunks/3578-f9d0ba3040247eb6.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    88.5 KiB  static/chunks/552-8c73553232337490.js
+    51.6 KiB  static/chunks/3410-9b3bb5d1ffceb25f.js
+    26.4 KiB  static/chunks/6780-1a80cf36e474f088.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    15.7 KiB  static/chunks/3344-f0ae290a841616d5.js
+    9.5 KiB  static/chunks/6186-848223631cdb7cfb.js
+  Top dependencies:
+    @radix-ui/react-accordion
+    @radix-ui/react-alert-dialog
+    @radix-ui/react-avatar
+    @radix-ui/react-checkbox
+    @radix-ui/react-collapsible
+    @radix-ui/react-context-menu
+    @radix-ui/react-dialog
+    @radix-ui/react-dropdown-menu
+    @radix-ui/react-form
+    @radix-ui/react-hover-card
+    @radix-ui/react-label
+    @radix-ui/react-menubar
+    @radix-ui/react-navigation-menu
+    @radix-ui/react-one-time-password-field
+    @radix-ui/react-password-toggle-field
+    @radix-ui/react-popover
+    @radix-ui/react-portal
+    @radix-ui/react-progress
+    @radix-ui/react-radio-group
+    @radix-ui/react-scroll-area
+
+Route: /convert/pdf-to-jpg
+  JS total from manifest chunks: 1775.8 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    272.2 KiB  static/chunks/3578-f9d0ba3040247eb6.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    26.4 KiB  static/chunks/6780-1a80cf36e474f088.js
+    17.7 KiB  static/chunks/app/convert/pdf-to-jpg/page-9583fde255e33041.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    9.1 KiB  static/chunks/9089-345d1940d0a3de5a.js
+    9.1 KiB  static/chunks/app/layout-75127b89cfe7bae3.js
+    8.8 KiB  static/chunks/app/page-f734da739775a7b8.js
+    3.8 KiB  static/chunks/webpack-66441513db1b808e.js
+  Top dependencies:
+    @radix-ui/react-accordion
+    @radix-ui/react-alert-dialog
+    @radix-ui/react-avatar
+    @radix-ui/react-checkbox
+    @radix-ui/react-collapsible
+    @radix-ui/react-context-menu
+    @radix-ui/react-dialog
+    @radix-ui/react-dropdown-menu
+    @radix-ui/react-form
+    @radix-ui/react-hover-card
+    @radix-ui/react-label
+    @radix-ui/react-menubar
+    @radix-ui/react-navigation-menu
+    @radix-ui/react-one-time-password-field
+    @radix-ui/react-password-toggle-field
+    @radix-ui/react-popover
+    @radix-ui/react-portal
+    @radix-ui/react-progress
+    @radix-ui/react-radio-group
+    @radix-ui/react-scroll-area
+
+Route: /convert/word-to-pdf
+  JS total from manifest chunks: 1876.8 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    272.2 KiB  static/chunks/3578-f9d0ba3040247eb6.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    88.5 KiB  static/chunks/552-8c73553232337490.js
+    26.4 KiB  static/chunks/6780-1a80cf36e474f088.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    15.7 KiB  static/chunks/3344-f0ae290a841616d5.js
+    14.5 KiB  static/chunks/app/convert/word-to-pdf/page-aa8abb29de2eed07.js
+    9.1 KiB  static/chunks/9089-345d1940d0a3de5a.js
+    9.1 KiB  static/chunks/app/layout-75127b89cfe7bae3.js
+  Top dependencies:
+    @radix-ui/react-accordion
+    @radix-ui/react-alert-dialog
+    @radix-ui/react-avatar
+    @radix-ui/react-checkbox
+    @radix-ui/react-collapsible
+    @radix-ui/react-context-menu
+    @radix-ui/react-dialog
+    @radix-ui/react-dropdown-menu
+    @radix-ui/react-form
+    @radix-ui/react-hover-card
+    @radix-ui/react-label
+    @radix-ui/react-menubar
+    @radix-ui/react-navigation-menu
+    @radix-ui/react-one-time-password-field
+    @radix-ui/react-password-toggle-field
+    @radix-ui/react-popover
+    @radix-ui/react-portal
+    @radix-ui/react-progress
+    @radix-ui/react-radio-group
+    @radix-ui/react-scroll-area
+
+Shared chunks across selected routes (count>=2):
+  839.9 KiB  4x  static/chunks/ed9f2dc4-82bc85789c334053.js
+  272.2 KiB  4x  static/chunks/3578-f9d0ba3040247eb6.js
+  267.0 KiB  4x  static/chunks/5459-b3d145f30dbffb13.js
+  193.8 KiB  4x  static/chunks/4bd1b696-e5d7c65570c947b7.js
+  110.0 KiB  4x  static/chunks/polyfills-42372ed130431b0a.js
+  88.5 KiB  2x  static/chunks/552-8c73553232337490.js
+  26.4 KiB  3x  static/chunks/6780-1a80cf36e474f088.js
+  17.4 KiB  4x  static/chunks/6792-0757b9ac1a0188a4.js
+  15.7 KiB  2x  static/chunks/3344-f0ae290a841616d5.js
+  9.1 KiB  3x  static/chunks/9089-345d1940d0a3de5a.js
+  9.1 KiB  4x  static/chunks/app/layout-75127b89cfe7bae3.js
+  8.8 KiB  4x  static/chunks/app/page-f734da739775a7b8.js
+  3.8 KiB  4x  static/chunks/webpack-66441513db1b808e.js
+  0.5 KiB  4x  static/chunks/main-app-d571cd6dbeb68b23.js
+
+Dependencies appearing on multiple selected routes (count>=2):
+  4x  @radix-ui/react-accordion
+  4x  @radix-ui/react-alert-dialog
+  4x  @radix-ui/react-avatar
+  4x  @radix-ui/react-checkbox
+  4x  @radix-ui/react-collapsible
+  4x  @radix-ui/react-context-menu
+  4x  @radix-ui/react-dialog
+  4x  @radix-ui/react-dropdown-menu
+  4x  @radix-ui/react-form
+  4x  @radix-ui/react-hover-card
+  4x  @radix-ui/react-label
+  4x  @radix-ui/react-menubar
+  4x  @radix-ui/react-navigation-menu
+  4x  @radix-ui/react-one-time-password-field
+  4x  @radix-ui/react-password-toggle-field
+  4x  @radix-ui/react-popover
+  4x  @radix-ui/react-portal
+  4x  @radix-ui/react-progress
+  4x  @radix-ui/react-radio-group
+  4x  @radix-ui/react-scroll-area
+  4x  @radix-ui/react-select
+  4x  @radix-ui/react-slider
+  4x  @radix-ui/react-switch
+  4x  @radix-ui/react-tabs
+  4x  @radix-ui/react-toast
+  4x  @radix-ui/react-toggle
+  4x  @radix-ui/react-toggle-group
+  4x  @radix-ui/react-toolbar
+  4x  @radix-ui/react-tooltip
+  4x  app/globals.css
+  4x  components/home/SmartConverterDeferred.tsx
+  4x  components/layout/ClientOverlays.tsx
+  4x  components/layout/ThemeToggle.tsx
+  4x  next
+  4x  next-themes

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Slider } from "@/components/ui/slider";
 import QRCode from "qrcode";
 import { Download } from "lucide-react";
 import PostDownloadState from "@/components/tool/PostDownloadState";
@@ -190,6 +189,7 @@ export default function QrCodeGenerator() {
         <div className="rounded-xl border border-border bg-card p-5 flex flex-col items-center justify-center gap-4">
           {dataUrl ? (
             <>
+              {/* eslint-disable-next-line @next/next/no-img-element -- QR preview uses generated data URL */}
               <img
                 src={dataUrl}
                 alt="QR Code preview"

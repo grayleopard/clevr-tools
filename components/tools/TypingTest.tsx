@@ -171,11 +171,11 @@ export default function TypingTest() {
   const [words, setWords] = useState<string[]>([]);
   const [wordIndex, setWordIndex] = useState(0);
   const [currentInput, setCurrentInput] = useState("");
-  const [wordResults, setWordResults] = useState<WordResult[]>([]);
+  const [, setWordResults] = useState<WordResult[]>([]);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [elapsed, setElapsed] = useState(0);
+  const [, setElapsed] = useState(0);
   const [liveWpm, setLiveWpm] = useState(0);
-  const [liveRawWpm, setLiveRawWpm] = useState(0);
+  const [, setLiveRawWpm] = useState(0);
   const [liveAccuracy, setLiveAccuracy] = useState(100);
   const [perSecondData, setPerSecondData] = useState<PerSecondData[]>([]);
   const [caretPos, setCaretPos] = useState<{ left: number; top: number } | null>(null);
@@ -429,7 +429,7 @@ export default function TypingTest() {
     const charIdx = currentInputRef.current.length;
 
     // Try exact char position first
-    let charEl = wordsContainerRef.current.querySelector(
+    const charEl = wordsContainerRef.current.querySelector(
       `[data-word="${idx}"][data-char="${charIdx}"]`
     ) as HTMLElement | null;
 

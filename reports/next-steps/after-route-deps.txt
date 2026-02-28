@@ -1,0 +1,114 @@
+Route: /
+  JS total from manifest chunks: 1449.3 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    9.1 KiB  static/chunks/app/layout-75127b89cfe7bae3.js
+    7.7 KiB  static/chunks/app/page-ec61ea80e125a09d.js
+    3.8 KiB  static/chunks/webpack-d666c8c470534951.js
+    0.5 KiB  static/chunks/main-app-d571cd6dbeb68b23.js
+  Top dependencies:
+    app/globals.css
+    components/home/SmartConverterDeferred.tsx
+    components/layout/ClientOverlays.tsx
+    components/layout/ThemeToggle.tsx
+    next
+    next-themes
+
+Route: /compress/image
+  JS total from manifest chunks: 2011.1 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    436.1 KiB  static/chunks/3127-5117c72927a98422.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    55.7 KiB  static/chunks/677-321ab97965fd516e.js
+    25.9 KiB  static/chunks/8409-de5726a4a278d28f.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    10.9 KiB  static/chunks/5010-9a70ea57c8964497.js
+    10.2 KiB  static/chunks/8801-f13ed7f77464ccbf.js
+    9.1 KiB  static/chunks/9089-345d1940d0a3de5a.js
+    9.1 KiB  static/chunks/app/layout-75127b89cfe7bae3.js
+  Top dependencies:
+    app/globals.css
+    components/home/SmartConverterDeferred.tsx
+    components/layout/ClientOverlays.tsx
+    components/layout/ThemeToggle.tsx
+    components/tools/ImageCompressor.tsx
+    next
+    next-themes
+
+Route: /convert/pdf-to-jpg
+  JS total from manifest chunks: 1517.6 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    25.9 KiB  static/chunks/8409-de5726a4a278d28f.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    17.1 KiB  static/chunks/app/convert/pdf-to-jpg/page-9a1ef208e5d0cdf3.js
+    10.2 KiB  static/chunks/8801-f13ed7f77464ccbf.js
+    9.1 KiB  static/chunks/9089-345d1940d0a3de5a.js
+    9.1 KiB  static/chunks/app/layout-75127b89cfe7bae3.js
+    7.7 KiB  static/chunks/app/page-ec61ea80e125a09d.js
+    6.1 KiB  static/chunks/2065-d29f35302db0fc45.js
+  Top dependencies:
+    app/globals.css
+    components/home/SmartConverterDeferred.tsx
+    components/layout/ClientOverlays.tsx
+    components/layout/ThemeToggle.tsx
+    components/tools/PdfToJpg.tsx
+    next
+    next-themes
+
+Route: /convert/word-to-pdf
+  JS total from manifest chunks: 1503.3 KiB
+  Top chunks:
+    839.9 KiB  static/chunks/ed9f2dc4-82bc85789c334053.js
+    267.0 KiB  static/chunks/5459-b3d145f30dbffb13.js
+    193.8 KiB  static/chunks/4bd1b696-e5d7c65570c947b7.js
+    110.0 KiB  static/chunks/polyfills-42372ed130431b0a.js
+    25.9 KiB  static/chunks/8409-de5726a4a278d28f.js
+    19.0 KiB  static/chunks/app/convert/word-to-pdf/page-d3deef8ad2e19dde.js
+    17.4 KiB  static/chunks/6792-0757b9ac1a0188a4.js
+    9.1 KiB  static/chunks/9089-345d1940d0a3de5a.js
+    9.1 KiB  static/chunks/app/layout-75127b89cfe7bae3.js
+    7.7 KiB  static/chunks/app/page-ec61ea80e125a09d.js
+    3.8 KiB  static/chunks/webpack-d666c8c470534951.js
+    0.5 KiB  static/chunks/main-app-d571cd6dbeb68b23.js
+  Top dependencies:
+    app/globals.css
+    components/home/SmartConverterDeferred.tsx
+    components/layout/ClientOverlays.tsx
+    components/layout/ThemeToggle.tsx
+    components/tools/WordToPdf.tsx
+    next
+    next-themes
+
+Shared chunks across selected routes (count>=2):
+  839.9 KiB  4x  static/chunks/ed9f2dc4-82bc85789c334053.js
+  267.0 KiB  4x  static/chunks/5459-b3d145f30dbffb13.js
+  193.8 KiB  4x  static/chunks/4bd1b696-e5d7c65570c947b7.js
+  110.0 KiB  4x  static/chunks/polyfills-42372ed130431b0a.js
+  25.9 KiB  3x  static/chunks/8409-de5726a4a278d28f.js
+  17.4 KiB  4x  static/chunks/6792-0757b9ac1a0188a4.js
+  10.2 KiB  2x  static/chunks/8801-f13ed7f77464ccbf.js
+  9.1 KiB  3x  static/chunks/9089-345d1940d0a3de5a.js
+  9.1 KiB  4x  static/chunks/app/layout-75127b89cfe7bae3.js
+  7.7 KiB  4x  static/chunks/app/page-ec61ea80e125a09d.js
+  6.1 KiB  2x  static/chunks/2065-d29f35302db0fc45.js
+  3.8 KiB  4x  static/chunks/webpack-d666c8c470534951.js
+  0.5 KiB  4x  static/chunks/main-app-d571cd6dbeb68b23.js
+
+Dependencies appearing on multiple selected routes (count>=2):
+  4x  app/globals.css
+  4x  components/home/SmartConverterDeferred.tsx
+  4x  components/layout/ClientOverlays.tsx
+  4x  components/layout/ThemeToggle.tsx
+  4x  next
+  4x  next-themes

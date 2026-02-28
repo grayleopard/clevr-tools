@@ -13,8 +13,11 @@ import { addToast } from "@/lib/toast";
  */
 export function usePasteImage(onPaste: (file: File) => void): void {
   const onPasteRef = useRef(onPaste);
-  // Keep the ref up-to-date without re-adding the event listener
-  onPasteRef.current = onPaste;
+
+  useEffect(() => {
+    // Keep the ref up-to-date without re-adding the event listener
+    onPasteRef.current = onPaste;
+  }, [onPaste]);
 
   useEffect(() => {
     const handler = (e: ClipboardEvent) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Copy, RefreshCw, Check } from "lucide-react";
 import { addToast } from "@/lib/toast";
 
@@ -40,7 +40,7 @@ function generatePassword(
   let upper = UPPER;
   let lower = LOWER;
   let digits = DIGITS;
-  let symbols = SYMBOLS;
+  const symbols = SYMBOLS;
 
   if (excludeAmbiguous) {
     upper = upper
@@ -208,21 +208,20 @@ export default function PasswordGenerator() {
   const [useNumbers, setUseNumbers] = useState(true);
   const [useSymbols, setUseSymbols] = useState(true);
   const [excludeAmbiguous, setExcludeAmbiguous] = useState(false);
-  const [password, setPassword] = useState("");
   const [copied, setCopied] = useState(false);
   const [multiCount, setMultiCount] = useState<"1" | "5" | "10">("1");
-  const [multiPasswords, setMultiPasswords] = useState<string[]>([]);
+  const [regenNonce, setRegenNonce] = useState(0);
 
   const noCharSets = !useUppercase && !useLowercase && !useNumbers && !useSymbols;
 
-  const regenerate = useCallback(() => {
+  const { password, multiPasswords } = useMemo(() => {
+    void regenNonce;
+
     if (noCharSets) {
-      setPassword("");
-      setMultiPasswords([]);
-      return;
+      return { password: "", multiPasswords: [] as string[] };
     }
+
     const pw = generatePassword(length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous);
-    setPassword(pw);
 
     const count = parseInt(multiCount, 10);
     if (count > 1) {
@@ -230,16 +229,14 @@ export default function PasswordGenerator() {
       for (let i = 0; i < count; i++) {
         pws.push(generatePassword(length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous));
       }
-      setMultiPasswords(pws);
-    } else {
-      setMultiPasswords([]);
+      return { password: pw, multiPasswords: pws };
     }
-  }, [length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous, multiCount, noCharSets]);
+    return { password: pw, multiPasswords: [] as string[] };
+  }, [length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous, multiCount, noCharSets, regenNonce]);
 
-  // Auto-generate on mount and when settings change
-  useEffect(() => {
-    regenerate();
-  }, [regenerate]);
+  const handleRegenerate = useCallback(() => {
+    setRegenNonce((value) => value + 1);
+  }, []);
 
   const strength = useMemo(
     () => getStrength(length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous),
@@ -297,7 +294,7 @@ export default function PasswordGenerator() {
                 Copy
               </button>
               <button
-                onClick={regenerate}
+                onClick={handleRegenerate}
                 className="flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 title="Regenerate"
               >
@@ -456,7 +453,7 @@ export default function PasswordGenerator() {
               </div>
             ))}
             <button
-              onClick={regenerate}
+              onClick={handleRegenerate}
               className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
             >
               <RefreshCw className="h-3.5 w-3.5" />
