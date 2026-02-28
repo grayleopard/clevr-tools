@@ -10,6 +10,7 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { truncateFilename } from "@/lib/utils";
 import { loadPdfMake } from "@/lib/pdfmake-loader";
+import { sanitizePreviewHtml } from "@/lib/sanitize-preview-html.mjs";
 
 type PageSize = "a4" | "letter";
 type Orientation = "portrait" | "landscape";
@@ -118,7 +119,7 @@ export default function WordToPdf() {
         addToast(`${warningCount} formatting element(s) may not render perfectly`, "info");
       }
 
-      setPreviewHtml(html);
+      setPreviewHtml(sanitizePreviewHtml(html));
       setProgress("Loading PDF libraries…");
 
       // Load bundled pdfmake + vfs fonts and html-to-pdfmake.
