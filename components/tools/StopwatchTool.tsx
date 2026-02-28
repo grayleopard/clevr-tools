@@ -47,9 +47,9 @@ export default function StopwatchTool() {
     }
   }, [elapsed, status]);
 
-  const tick = useCallback(() => {
+  const tick = useCallback(function tickFrame() {
     setElapsed(Date.now() - startTimeRef.current + elapsedAtPauseRef.current);
-    rafRef.current = requestAnimationFrame(tick);
+    rafRef.current = requestAnimationFrame(tickFrame);
   }, []);
 
   const handleStart = useCallback(() => {

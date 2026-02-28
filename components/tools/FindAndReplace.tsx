@@ -16,39 +16,33 @@ export default function FindAndReplace() {
   const [regexMode, setRegexMode] = useState(false);
   const [wholeWord, setWholeWord] = useState(false);
   const [output, setOutput] = useState("");
-  const [regexError, setRegexError] = useState("");
+
+  const regexState = useMemo(() => {
+    if (!findText) return { regex: null as RegExp | null, error: "" };
+    try {
+      const flags = caseSensitive ? "g" : "gi";
+      let pattern = regexMode ? findText : escapeRegex(findText);
+      if (wholeWord) pattern = `\\b${pattern}\\b`;
+      return { regex: new RegExp(pattern, flags), error: "" };
+    } catch (e) {
+      return { regex: null as RegExp | null, error: e instanceof Error ? e.message : "Invalid regex" };
+    }
+  }, [findText, caseSensitive, regexMode, wholeWord]);
 
   const matchCount = useMemo(() => {
-    if (!findText || !sourceText) return 0;
-    try {
-      const flags = caseSensitive ? "g" : "gi";
-      let pattern = regexMode ? findText : escapeRegex(findText);
-      if (wholeWord) pattern = `\\b${pattern}\\b`;
-      const regex = new RegExp(pattern, flags);
-      const matches = sourceText.match(regex);
-      setRegexError("");
-      return matches ? matches.length : 0;
-    } catch (e) {
-      setRegexError(e instanceof Error ? e.message : "Invalid regex");
-      return 0;
-    }
-  }, [sourceText, findText, caseSensitive, regexMode, wholeWord]);
+    if (!sourceText || !findText || !regexState.regex) return 0;
+    const matches = sourceText.match(regexState.regex);
+    return matches ? matches.length : 0;
+  }, [sourceText, findText, regexState.regex]);
+
+  const regexError = regexState.error;
 
   const handleReplace = useCallback(() => {
-    if (!findText || !sourceText) return;
-    try {
-      const flags = caseSensitive ? "g" : "gi";
-      let pattern = regexMode ? findText : escapeRegex(findText);
-      if (wholeWord) pattern = `\\b${pattern}\\b`;
-      const regex = new RegExp(pattern, flags);
-      const result = sourceText.replace(regex, replaceText);
-      setOutput(result);
-      setRegexError("");
-      addToast(`Replaced ${matchCount} match${matchCount !== 1 ? "es" : ""}`, "success");
-    } catch (e) {
-      setRegexError(e instanceof Error ? e.message : "Invalid regex");
-    }
-  }, [sourceText, findText, replaceText, caseSensitive, regexMode, wholeWord, matchCount]);
+    if (!findText || !sourceText || !regexState.regex) return;
+    const result = sourceText.replace(regexState.regex, replaceText);
+    setOutput(result);
+    addToast(`Replaced ${matchCount} match${matchCount !== 1 ? "es" : ""}`, "success");
+  }, [findText, sourceText, regexState.regex, replaceText, matchCount]);
 
   const handlePaste = useCallback(async () => {
     try {
@@ -65,7 +59,6 @@ export default function FindAndReplace() {
     setFindText("");
     setReplaceText("");
     setOutput("");
-    setRegexError("");
   }, []);
 
   const handleCopyOutput = useCallback(async () => {

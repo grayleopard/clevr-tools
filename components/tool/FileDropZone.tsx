@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
-import { Upload, X, AlertCircle, FileText, ImageIcon, Smartphone, Lock } from "lucide-react";
+import { useRef, useState, useCallback, useMemo } from "react";
+import { X, AlertCircle, FileText, ImageIcon, Smartphone, Lock } from "lucide-react";
 
 interface FileDropZoneProps {
   accept: string;
@@ -58,7 +58,10 @@ export default function FileDropZone({
   const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const acceptedExtensions = accept.split(",").map((s) => s.trim().toLowerCase());
+  const acceptedExtensions = useMemo(
+    () => accept.split(",").map((s) => s.trim().toLowerCase()),
+    [accept]
+  );
   const formatLabels = parseFormats(accept);
 
   const validate = useCallback(
@@ -74,7 +77,7 @@ export default function FileDropZone({
       }
       return null;
     },
-    [accept, acceptedExtensions, maxSizeMB]
+    [acceptedExtensions, maxSizeMB]
   );
 
   const handleFiles = useCallback(
