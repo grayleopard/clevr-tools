@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import MergePdf from "@/components/tools/MergePdf";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("merge-pdf")!;
+const faqItems = getToolFaqs("merge-pdf");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -33,6 +36,7 @@ export default function MergePdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
+      <FaqSchema items={faqItems} />
       <MergePdf />
     </ToolLayout>
   );
