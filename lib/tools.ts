@@ -862,24 +862,6 @@ export const tools: Tool[] = [
   },
   // ─── Files Tools ──────────────────────────────────────────────────────────
   {
-    slug: 'image-resizer',
-    name: 'Image Resizer',
-    shortDescription: 'Resize images to exact dimensions or social media presets. Supports batch processing.',
-    category: 'files',
-    route: '/files/image-resizer',
-    acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
-    icon: 'Maximize2',
-    metaTitle: 'Free Image Resizer — Resize Images Online | clevr.tools',
-    metaDescription: 'Resize any image to exact dimensions or social media presets. Supports JPG, PNG, WebP. Free, fast, and private — no uploads to servers.',
-    seoContent: `<h2>Free Online Image Resizer</h2>
-<p>Resizing an image adjusts its pixel dimensions — the number of horizontal and vertical pixels that make up the image. A 1920×1080 image has just under 2.1 million pixels; resizing it to 960×540 halves both dimensions and reduces the file to about one quarter the area. Most applications and platforms have specific image dimension requirements: Instagram posts must be at least 1080 pixels wide, YouTube thumbnails should be 1280×720, and passport photos have strict size requirements. This tool lets you resize to any dimensions or choose from common social media presets.</p>
-<p>Aspect ratio refers to the proportional relationship between width and height. A 1920×1080 image has a 16:9 aspect ratio — the same as most modern screens and TVs. Locking the aspect ratio while resizing prevents distortion: if you change the width, the height adjusts automatically to maintain proportions. Unlocking allows you to stretch or squash the image to any dimensions, which can be useful for specific platform requirements that don't match the original's proportions.</p>
-<h2>Social Media Image Size Guide</h2>
-<p>Different platforms and uses have specific optimal dimensions. Instagram posts display best at 1080×1080 (square) or 1080×1350 (portrait). Instagram Stories and Reels use 1080×1920 (9:16 vertical). Facebook cover photos should be 820×312 pixels. YouTube thumbnails are 1280×720 (16:9). LinkedIn banner images work best at 1584×396. For professional uses, passport photos require 600×600 pixels. When in doubt, using the highest quality original and resizing down produces better results than scaling up (which can create blurry images).`,
-    relatedTools: ['image-compressor', 'png-to-jpg', 'heic-to-jpg'],
-    badge: 'new',
-  },
-  {
     slug: 'image-cropper',
     name: 'Image Cropper',
     shortDescription: 'Crop images with precision. Freeform or aspect ratio presets including circle crop.',
@@ -894,7 +876,7 @@ export const tools: Tool[] = [
 <p>Aspect ratios constrain the crop selection to specific proportional shapes. The 1:1 ratio produces a perfect square — ideal for Instagram posts and profile pictures. The 16:9 ratio matches most screens and YouTube thumbnails. The 9:16 ratio is for vertical video and Instagram Stories. The 4:3 ratio is traditional photography. Locking to an aspect ratio ensures your crop will fit exactly into a target format without letterboxing or black bars.</p>
 <h2>Circle Crop for Profile Pictures</h2>
 <p>Many social platforms display profile pictures as circles — Facebook, LinkedIn, Twitter, Google. The circle crop option removes the corners of your image with a transparent mask, producing a PNG file where the corners are transparent rather than white or black. Upload the result directly as your profile picture without needing to rely on the platform's cropping tool, which often doesn't give you fine control over positioning.</p>`,
-    relatedTools: ['image-compressor', 'image-resizer', 'png-to-jpg'],
+    relatedTools: ['image-compressor', 'resize-image', 'png-to-jpg'],
     badge: 'new',
   },
   {

@@ -21,7 +21,7 @@ export const siteCategories: SiteCategory[] = [
     description: "Compress, convert, and transform files directly in your browser.",
     featuredSlugs: [
       "image-compressor",
-      "image-resizer",
+      "resize-image",
       "pdf-to-jpg",
       "merge-pdf",
       "word-to-pdf",
@@ -57,7 +57,7 @@ export const siteCategories: SiteCategory[] = [
       },
       {
         label: "Create & Edit",
-        slugs: ["image-resizer", "image-cropper", "invoice-generator"],
+        slugs: ["resize-image", "image-cropper", "invoice-generator"],
       },
     ],
   },
