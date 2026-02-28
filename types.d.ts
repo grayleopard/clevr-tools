@@ -16,7 +16,6 @@ interface Window {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare module "pdfmake/build/pdfmake" {
   const pdfMake: {
     vfs: Record<string, string>;
@@ -31,13 +30,11 @@ declare module "pdfmake/build/pdfmake" {
   export = pdfMake;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare module "pdfmake/build/vfs_fonts" {
   const vfs: Record<string, string>;
   export = vfs;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare module "html-to-pdfmake" {
   function htmlToPdfmake(
     html: string,
