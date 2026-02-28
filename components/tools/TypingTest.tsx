@@ -244,6 +244,7 @@ export default function TypingTest() {
   const currentWordIndexRef = useRef(0);
   const currentInputRef = useRef("");
   const wordWindowStartRef = useRef(0);
+  const typedWordsRef = useRef<string[]>([]);
 
   // ── Other refs ──
   const startTimeRef = useRef(0);
@@ -299,6 +300,7 @@ export default function TypingTest() {
     currentWordIndexRef.current = 0;
     currentInputRef.current = "";
     wordWindowStartRef.current = 0;
+    typedWordsRef.current = [];
 
     correctCharsRef.current = 0;
     totalCharsRef.current = 0;
@@ -375,6 +377,57 @@ export default function TypingTest() {
   const finishTest = useCallback(() => {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
     if (statsTimerRef.current) { clearInterval(statsTimerRef.current); statsTimerRef.current = null; }
+
+    // Save whatever is currently being typed for the current word
+    typedWordsRef.current[currentWordIndexRef.current] = currentInputRef.current;
+
+    // Build wordResults from typedWordsRef for the results screen
+    const builtResults: WordResult[] = [];
+    const wordList = wordListRef.current;
+    // Only count words up to the current word index (words the user reached)
+    const wordsReached = currentWordIndexRef.current;
+    for (let i = 0; i < wordsReached; i++) {
+      const word = wordList[i] ?? "";
+      const typed = typedWordsRef.current[i] ?? "";
+      builtResults.push({
+        word,
+        typed,
+        correct: typed === word,
+        rawWpm: 0, // per-word WPM not tracked in new model
+      });
+    }
+    wordResultsRef.current = builtResults;
+
+    // Recalculate character stats from typedWordsRef
+    correctCharsRef.current = 0;
+    totalCharsRef.current = 0;
+    totalCorrectWordsRef.current = 0;
+    totalIncorrectWordsRef.current = 0;
+    extraCharsRef.current = 0;
+    missedCharsRef.current = 0;
+    for (let i = 0; i < wordsReached; i++) {
+      const word = wordList[i] ?? "";
+      const typed = typedWordsRef.current[i] ?? "";
+      const isCorrect = typed === word;
+      if (isCorrect) {
+        correctCharsRef.current += word.length + 1; // +1 for space
+        totalCorrectWordsRef.current++;
+      } else {
+        let correctInWord = 0;
+        for (let c = 0; c < Math.min(typed.length, word.length); c++) {
+          if (typed[c] === word[c]) correctInWord++;
+        }
+        correctCharsRef.current += correctInWord;
+        totalIncorrectWordsRef.current++;
+        if (typed.length > word.length) {
+          extraCharsRef.current += typed.length - word.length;
+        }
+        if (typed.length < word.length) {
+          missedCharsRef.current += word.length - typed.length;
+        }
+      }
+      totalCharsRef.current += typed.length + 1;
+    }
 
     setStatus("finished");
     setPerSecondData([...perSecondRef.current]);
@@ -468,6 +521,19 @@ export default function TypingTest() {
     }
   }, []);
 
+  // ── Line retreat (scroll window back when backspacing into previous word) ──
+  const checkLineRetreat = useCallback(() => {
+    // If the current word is before the window start, we need to scroll back
+    if (currentWordIndexRef.current < wordWindowStartRef.current) {
+      // Find a good window start: go back to show the current word's row
+      // Simple approach: set window start to the current word index (or a bit before)
+      // We want to show at least one row before the current word
+      const newStart = Math.max(0, currentWordIndexRef.current);
+      wordWindowStartRef.current = newStart;
+      setWordWindowStart(newStart);
+    }
+  }, []);
+
   // ── Sync React state from refs (called after every keystroke) ──
   const renderState = useCallback(() => {
     setWordIndex(currentWordIndexRef.current);
@@ -530,9 +596,20 @@ export default function TypingTest() {
       if (!currentWord && e.key !== "Backspace") return;
 
       if (e.key === "Backspace" || e.key === "Delete") {
-        // Remove last character from current word input (do NOT go back to previous word)
+        if (currentInputRef.current.length === 0 && currentWordIndexRef.current > 0) {
+          // Backspace into previous word
+          typedWordsRef.current[currentWordIndexRef.current] = "";
+          currentWordIndexRef.current -= 1;
+          currentInputRef.current = typedWordsRef.current[currentWordIndexRef.current] ?? "";
+          // Handle window scroll back if needed
+          checkLineRetreat();
+          renderState();
+          return;
+        }
+        // Remove last character from current word input
         if (currentInputRef.current.length > 0) {
           currentInputRef.current = currentInputRef.current.slice(0, -1);
+          typedWordsRef.current[currentWordIndexRef.current] = currentInputRef.current;
           renderState();
         }
         return;
@@ -542,44 +619,14 @@ export default function TypingTest() {
         const typed = currentInputRef.current;
         if (typed.length === 0) return; // Don't skip empty
 
-        // Record result
-        const isCorrect = typed === currentWord;
-        const elapsedForWord = (Date.now() - wordStartTimeRef.current) / 1000;
-        const wordRawWpm = elapsedForWord > 0 ? (typed.length / 5) / (elapsedForWord / 60) : 0;
-
-        const result: WordResult = {
-          word: currentWord,
-          typed,
-          correct: isCorrect,
-          rawWpm: wordRawWpm,
-        };
-        wordResultsRef.current.push(result);
-
-        if (isCorrect) {
-          correctCharsRef.current += currentWord.length + 1; // +1 for space
-          totalCorrectWordsRef.current++;
-        } else {
-          let correctInWord = 0;
-          for (let i = 0; i < Math.min(typed.length, currentWord.length); i++) {
-            if (typed[i] === currentWord[i]) correctInWord++;
-          }
-          correctCharsRef.current += correctInWord;
-          totalIncorrectWordsRef.current++;
-
-          if (typed.length > currentWord.length) {
-            extraCharsRef.current += typed.length - currentWord.length;
-          }
-          if (typed.length < currentWord.length) {
-            missedCharsRef.current += currentWord.length - typed.length;
-          }
-        }
-        totalCharsRef.current += typed.length + 1;
+        // Store typed input for this word
+        typedWordsRef.current[currentWordIndexRef.current] = typed;
 
         wordStartTimeRef.current = Date.now();
 
         // Advance to next word
         currentWordIndexRef.current += 1;
-        currentInputRef.current = "";
+        currentInputRef.current = typedWordsRef.current[currentWordIndexRef.current] ?? "";
 
         // Check if test is done (word count or quote mode)
         if ((testMode === "words" || testMode === "quote") && currentWordIndexRef.current >= wordList.length) {
@@ -599,6 +646,7 @@ export default function TypingTest() {
         // Allow a few extra chars beyond word length
         if (currentInputRef.current.length < currentWord.length + 8) {
           currentInputRef.current += e.key;
+          typedWordsRef.current[currentWordIndexRef.current] = currentInputRef.current;
           renderState();
         }
         return;
@@ -607,7 +655,7 @@ export default function TypingTest() {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [settings.sound, testMode, startTest, finishTest, resetTest, checkLineAdvance, renderState]);
+  }, [settings.sound, testMode, startTest, finishTest, resetTest, checkLineAdvance, checkLineRetreat, renderState]);
 
   // ── Focus click handler ──
   const handleContainerClick = useCallback(() => {
@@ -892,13 +940,17 @@ export default function TypingTest() {
               const absIdx = wordWindowStart + visIdx;
               const isCurrentWord = absIdx === wordIndex;
               const isPastWord = absIdx < wordIndex;
-              const pastResult = isPastWord ? wordResultsRef.current[absIdx] : null;
+
+              // For completed words, get what was typed from typedWordsRef
+              const pastTyped = isPastWord ? (typedWordsRef.current[absIdx] ?? "") : "";
 
               // Word-level classes
               let wordClassName = "inline-block mr-[0.5em]";
               if (isCurrentWord) {
                 wordClassName += " bg-primary/5 rounded-sm px-0.5";
-              } else if (isPastWord && pastResult && !pastResult.correct) {
+              }
+              // No bg highlight for completed words — only underline if incorrect
+              if (isPastWord && pastTyped !== word) {
                 wordClassName += " underline decoration-red-400/60";
               }
 
@@ -911,18 +963,15 @@ export default function TypingTest() {
                   {word.split("").map((char, charIdx) => {
                     let cls = "text-foreground/30"; // upcoming (untyped)
 
-                    if (isPastWord && pastResult) {
-                      if (pastResult.correct) {
-                        cls = "text-foreground/40"; // completed correct word
+                    if (isPastWord) {
+                      // Completed word: faded green/red per character
+                      if (charIdx < pastTyped.length) {
+                        cls = pastTyped[charIdx] === char
+                          ? "text-green-500/60"
+                          : "text-red-400/70";
                       } else {
-                        // Completed incorrect word — show per-char coloring
-                        if (charIdx < pastResult.typed.length) {
-                          cls = pastResult.typed[charIdx] === char
-                            ? "text-foreground/40"
-                            : "text-red-400";
-                        } else {
-                          cls = "text-red-400"; // missed chars
-                        }
+                        // Not typed (user typed fewer chars than word length)
+                        cls = "text-red-400/40 underline";
                       }
                     } else if (isCurrentWord) {
                       if (charIdx < currentInput.length) {
@@ -945,7 +994,13 @@ export default function TypingTest() {
                       </span>
                     );
                   })}
-                  {/* Extra typed characters beyond word length */}
+                  {/* Extra typed characters beyond word length (completed words) */}
+                  {isPastWord && pastTyped.length > word.length &&
+                    pastTyped.slice(word.length).split("").map((c, i) => (
+                      <span key={`extra-${i}`} className="text-red-400/70">{c}</span>
+                    ))
+                  }
+                  {/* Extra typed characters beyond word length (current word) */}
                   {isCurrentWord && currentInput.length > word.length &&
                     currentInput.slice(word.length).split("").map((c, i) => (
                       <span key={`extra-${i}`} className="text-red-500">{c}</span>
@@ -1015,6 +1070,7 @@ export default function TypingTest() {
                 currentWordIndexRef.current = 0;
                 currentInputRef.current = "";
                 wordWindowStartRef.current = 0;
+                typedWordsRef.current = [];
                 setWordWindowStart(0);
                 setWordIndex(0);
                 setCurrentInput("");
