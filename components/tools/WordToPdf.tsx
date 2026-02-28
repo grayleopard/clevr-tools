@@ -10,7 +10,7 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { truncateFilename } from "@/lib/utils";
 import { loadPdfMake } from "@/lib/pdfmake-loader";
-import { sanitizePreviewHtml } from "@/lib/sanitize-preview-html.mjs";
+import { sanitizeWordPreviewHtml } from "@/lib/security/word-preview-sanitizer.mjs";
 
 type PageSize = "a4" | "letter";
 type Orientation = "portrait" | "landscape";
@@ -119,10 +119,10 @@ export default function WordToPdf() {
         addToast(`${warningCount} formatting element(s) may not render perfectly`, "info");
       }
 
-      setPreviewHtml(sanitizePreviewHtml(html));
+      setPreviewHtml(sanitizeWordPreviewHtml(html));
       setProgress("Loading PDF libraries…");
 
-      // Load bundled pdfmake + vfs fonts and html-to-pdfmake.
+      // Load locally bundled pdfmake and html-to-pdfmake.
       console.log("Step 4: loading pdfmake + html-to-pdfmake…");
       const [pdfMake, htmlToPdfmakeModule] = await Promise.all([
         loadPdfMake(),
@@ -351,6 +351,7 @@ export default function WordToPdf() {
             <div
               className="text-black text-sm leading-relaxed prose prose-sm max-w-none"
               style={PREVIEW_STYLES}
+              // `previewHtml` is sanitized through `sanitizeWordPreviewHtml` before state is set.
               dangerouslySetInnerHTML={{ __html: previewHtml }}
             />
           </div>
