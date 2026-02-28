@@ -3,13 +3,14 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { RotateCcw, Copy, ChevronDown, ChevronUp, Volume2, VolumeX } from "lucide-react";
 import { addToast } from "@/lib/toast";
-import { english200, english1000, quotes } from "@/lib/word-lists";
+import { english200, english1000, quotes, passages } from "@/lib/word-lists";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TestMode = "time" | "words" | "quote";
 type TestStatus = "idle" | "running" | "finished";
 type WordList = "english200" | "english1000";
+type TextType = "passages" | "words";
 
 interface WordResult {
   word: string;
@@ -96,6 +97,17 @@ function generateWords(
   if (numbers) words = mixNumbers(words);
   if (punctuation) words = applyPunctuation(words);
   return words;
+}
+
+function generatePassageWords(neededWords: number = 400): string[] {
+  const shuffled = [...passages].sort(() => Math.random() - 0.5);
+  const combined = shuffled.join(' ');
+  const words = combined.split(/\s+/).filter(w => w.length > 0);
+  // Return enough words for even a 120s test (300+ words is safe)
+  if (words.length >= neededWords) return words.slice(0, neededWords);
+  // If somehow not enough, repeat
+  const doubled = (combined + ' ' + combined).split(/\s+/).filter(w => w.length > 0);
+  return doubled.slice(0, neededWords);
 }
 
 function clamp(val: number, min: number, max: number) {
@@ -201,6 +213,7 @@ function WpmChart({ data }: { data: PerSecondData[] }) {
 export default function TypingTest() {
   // ── Mode state ──
   const [testMode, setTestMode] = useState<TestMode>("time");
+  const [textType, setTextType] = useState<TextType>("passages");
   const [timeOption, setTimeOption] = useState(30);
   const [wordCountOption, setWordCountOption] = useState(25);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -266,7 +279,7 @@ export default function TypingTest() {
   useEffect(() => {
     resetTest(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testMode, timeOption, wordCountOption, settings.wordList, settings.punctuation, settings.numbers]);
+  }, [testMode, textType, timeOption, wordCountOption, settings.wordList, settings.punctuation, settings.numbers]);
 
   // ── Reset test ──
   const resetTest = useCallback((newWords = false) => {
@@ -311,15 +324,23 @@ export default function TypingTest() {
         const quoteWords = q.text.split(/\s+/).filter(Boolean);
         setWords(quoteWords);
         wordListRef.current = quoteWords;
+      } else if (textType === "passages") {
+        // Passages mode: generate enough words (400 for timed, wordCountOption for word mode)
+        const count = testMode === "time" ? 400 : wordCountOption;
+        const newWordList = generatePassageWords(count);
+        setWords(newWordList);
+        wordListRef.current = newWordList;
+        setCurrentQuote(null);
       } else {
-        const count = testMode === "time" ? 200 : wordCountOption;
+        // Words mode: use common word lists with optional punctuation/numbers
+        const count = testMode === "time" ? 400 : wordCountOption;
         const newWordList = generateWords(count, settings.wordList, settings.punctuation, settings.numbers);
         setWords(newWordList);
         wordListRef.current = newWordList;
         setCurrentQuote(null);
       }
     }
-  }, [testMode, timeOption, wordCountOption, settings.wordList, settings.punctuation, settings.numbers]);
+  }, [testMode, textType, timeOption, wordCountOption, settings.wordList, settings.punctuation, settings.numbers]);
 
   // ── Start test ──
   const startTest = useCallback(() => {
@@ -843,6 +864,25 @@ export default function TypingTest() {
               </div>
             )}
 
+            {/* Text type toggle (not shown in quote mode) */}
+            {testMode !== "quote" && (
+              <div className="flex items-center gap-1 ml-2 rounded-lg bg-muted p-1">
+                {(["passages", "words"] as TextType[]).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setTextType(type)}
+                    className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                      textType === type
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {type === "passages" ? "Passages" : "Words"}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Settings toggle */}
             <button
               onClick={() => setSettingsOpen(!settingsOpen)}
@@ -857,7 +897,7 @@ export default function TypingTest() {
           {settingsOpen && (
             <div className="border-t border-border px-3 py-3">
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                {testMode !== "quote" && (
+                {testMode !== "quote" && textType === "words" && (
                   <label className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span>Word list:</span>
                     <select
@@ -870,7 +910,7 @@ export default function TypingTest() {
                     </select>
                   </label>
                 )}
-                {testMode !== "quote" && (
+                {testMode !== "quote" && textType === "words" && (
                   <>
                     <ToggleSetting label="Punctuation" checked={settings.punctuation} onChange={(v) => setSettings((s) => ({ ...s, punctuation: v }))} />
                     <ToggleSetting label="Numbers" checked={settings.numbers} onChange={(v) => setSettings((s) => ({ ...s, numbers: v }))} />
