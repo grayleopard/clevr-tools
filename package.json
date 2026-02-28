@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "perf:baseline": "bash scripts/perf/run-local-perf.sh baseline",
+    "perf:after": "bash scripts/perf/run-local-perf.sh after",
+    "perf:route-bytes": "node scripts/perf/route-bytes.mjs / /compress/image /convert/pdf-to-jpg"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",

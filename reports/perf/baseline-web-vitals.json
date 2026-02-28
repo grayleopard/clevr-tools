@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-02-28T18:13:46.799Z",
+  "durationMs": 16258,
+  "chromeBin": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "measurements": [
+    {
+      "url": "http://127.0.0.1:3000/",
+      "fcpMs": 1012,
+      "lcpMs": 1012,
+      "cls": 0.001,
+      "tbtMs": 25,
+      "lcpSelector": "main.flex-1 > section.border-b.border-border > div.mx-auto.max-w-4xl > div.mb-8.text-center > h1.text-3xl.font-semibold",
+      "lcpText": "Fast, free, private tools for everyday tasks.",
+      "lcpSize": 26400,
+      "totalJsTransferKB": 421.9,
+      "firstPartyJsTransferKB": 421.9,
+      "coveredScriptKB": 1548.5,
+      "usedScriptKB": 1548.5,
+      "unusedScriptKB": 0,
+      "firstPartyCoveredScriptKB": 1103.9,
+      "firstPartyUnusedScriptKB": 0,
+      "renderBlockingCss": [
+        {
+          "name": "http://127.0.0.1:3000/_next/static/chunks/40b8750f7ed9d6d3.css",
+          "transferKB": 17.6,
+          "durationMs": 695,
+          "startMs": 171
+        }
+      ],
+      "navTimings": {
+        "responseEnd": 199.29999995231628,
+        "domContentLoaded": 886.7999999523163,
+        "load": 2076.399999856949
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3000/compress/image",
+      "fcpMs": 976,
+      "lcpMs": 976,
+      "cls": 0.007,
+      "tbtMs": 42,
+      "lcpSelector": "div.flex.min-h-screen > main.flex-1 > div.border-b.border-border > div.mx-auto.max-w-4xl > p.mt-2.text-muted-foreground",
+      "lcpText": "Compress JPG, PNG & WebP images without losing quality.",
+      "lcpSize": 15615,
+      "totalJsTransferKB": 397.4,
+      "firstPartyJsTransferKB": 397.4,
+      "coveredScriptKB": 2153.4,
+      "usedScriptKB": 1595,
+      "unusedScriptKB": 558.4,
+      "firstPartyCoveredScriptKB": 1264.1,
+      "firstPartyUnusedScriptKB": 116.1,
+      "renderBlockingCss": [
+        {
+          "name": "http://127.0.0.1:3000/_next/static/chunks/40b8750f7ed9d6d3.css",
+          "transferKB": 17.6,
+          "durationMs": 687,
+          "startMs": 178
+        }
+      ],
+      "navTimings": {
+        "responseEnd": 205.89999985694885,
+        "domContentLoaded": 874,
+        "load": 3397
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3000/convert/pdf-to-jpg",
+      "fcpMs": 996,
+      "lcpMs": 996,
+      "cls": 0.005,
+      "tbtMs": 13,
+      "lcpSelector": "div.flex.min-h-screen > main.flex-1 > div.border-t.border-border > div.mx-auto.max-w-4xl > p",
+      "lcpText": "PDFs are the universal format for documents, but JPG images are universal for sharing, embedding, and displaying content",
+      "lcpSize": 32220,
+      "totalJsTransferKB": 193.1,
+      "firstPartyJsTransferKB": 193.1,
+      "coveredScriptKB": 1648.6,
+      "usedScriptKB": 1093.6,
+      "unusedScriptKB": 555,
+      "firstPartyCoveredScriptKB": 759.3,
+      "firstPartyUnusedScriptKB": 116.1,
+      "renderBlockingCss": [
+        {
+          "name": "http://127.0.0.1:3000/_next/static/chunks/40b8750f7ed9d6d3.css",
+          "transferKB": 17.6,
+          "durationMs": 702,
+          "startMs": 183
+        }
+      ],
+      "navTimings": {
+        "responseEnd": 196.59999990463257,
+        "domContentLoaded": 892.7000000476837,
+        "load": 2127.5999999046326
+      }
+    }
+  ]
+}
