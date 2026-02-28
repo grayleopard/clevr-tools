@@ -11,7 +11,8 @@
     "perf:baseline": "bash scripts/perf/run-local-perf.sh baseline",
     "perf:after": "bash scripts/perf/run-local-perf.sh after",
     "perf:route-bytes": "node scripts/perf/route-bytes.mjs / /compress/image /convert/pdf-to-jpg",
-    "test": "node --test"
+    "test": "node --test",
+    "test:bundle-budget": "node scripts/perf/check-bundle-budget.mjs"
   },
   "browserslist": [
     "last 2 Chrome versions",
