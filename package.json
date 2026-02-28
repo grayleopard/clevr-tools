@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:security": "node scripts/security/test-word-preview-sanitizer.mjs",
     "perf:baseline": "bash scripts/perf/run-local-perf.sh baseline",
     "perf:after": "bash scripts/perf/run-local-perf.sh after",
     "perf:route-bytes": "node scripts/perf/route-bytes.mjs / /compress/image /convert/pdf-to-jpg"
@@ -22,6 +23,7 @@
     "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dompurify": "^3.3.1",
     "docx": "^9.6.0",
     "geist": "^1.7.0",
     "heic2any": "^0.0.4",
