@@ -3,6 +3,8 @@
  * Only used in "use client" components — never runs server-side.
  */
 
+import { parsePageRange as parsePageRangeImpl } from "@/lib/parse-page-range.mjs";
+
 let workerConfigured = false;
 
 async function getPdfJs() {
@@ -105,23 +107,5 @@ export async function renderPageToJpgBlob(
 
 /** Parse a page range string like "1-3, 5, 7-9" into 0-based page indices. */
 export function parsePageRange(input: string, maxPages: number): number[] {
-  const trimmed = input.trim().toLowerCase();
-  if (!trimmed || trimmed === "all") {
-    return Array.from({ length: maxPages }, (_, i) => i);
-  }
-
-  const set = new Set<number>();
-  for (const part of trimmed.split(",")) {
-    const t = part.trim();
-    const rangeMatch = t.match(/^(\d+)-(\d+)$/);
-    if (rangeMatch) {
-      const start = Math.max(1, parseInt(rangeMatch[1]));
-      const end = Math.min(maxPages, parseInt(rangeMatch[2]));
-      for (let i = start; i <= end; i++) set.add(i - 1);
-    } else {
-      const n = parseInt(t);
-      if (!isNaN(n) && n >= 1 && n <= maxPages) set.add(n - 1);
-    }
-  }
-  return Array.from(set).sort((a, b) => a - b);
+  return parsePageRangeImpl(input, maxPages);
 }
