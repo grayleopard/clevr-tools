@@ -21,11 +21,11 @@
 | `/` | Render-blocking CSS | 1 request | 0 | eliminated |
 | `/compress/image` | FCP | 976 ms | 364 ms | -612 ms |
 | `/compress/image` | LCP | 976 ms | 364 ms | -612 ms |
-| `/compress/image` | TBT | 42 ms | 44 ms | +2 ms |
+| `/compress/image` | TBT | 42 ms | 38 ms | -4 ms |
 | `/compress/image` | Render-blocking CSS | 1 request | 0 | eliminated |
 | `/convert/pdf-to-jpg` | FCP | 996 ms | 360 ms | -636 ms |
 | `/convert/pdf-to-jpg` | LCP | 996 ms | 360 ms | -636 ms |
-| `/convert/pdf-to-jpg` | TBT | 13 ms | 14 ms | +1 ms |
+| `/convert/pdf-to-jpg` | TBT | 13 ms | 16 ms | +3 ms |
 | `/convert/pdf-to-jpg` | Render-blocking CSS | 1 request | 0 | eliminated |
 
 ## Bundle/route bytes (build output approximation)

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-02-28T18:22:59.406Z",
-  "durationMs": 14693,
+  "generatedAt": "2026-02-28T18:27:03.852Z",
+  "durationMs": 14735,
   "chromeBin": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "measurements": [
     {
@@ -21,9 +21,9 @@
       "firstPartyUnusedScriptKB": 0,
       "renderBlockingCss": [],
       "navTimings": {
-        "responseEnd": 535.2999999523163,
-        "domContentLoaded": 539.2000000476837,
-        "load": 1594.2000000476837
+        "responseEnd": 527.5,
+        "domContentLoaded": 531.1999998092651,
+        "load": 1591.3999998569489
       }
     },
     {
@@ -31,7 +31,7 @@
       "fcpMs": 364,
       "lcpMs": 364,
       "cls": 0.007,
-      "tbtMs": 44,
+      "tbtMs": 38,
       "lcpSelector": "div.flex.min-h-screen > main.flex-1 > div.border-b.border-border > div.mx-auto.max-w-4xl > p.mt-2.text-muted-foreground",
       "lcpText": "Compress JPG, PNG & WebP images without losing quality.",
       "lcpSize": 15615,
@@ -44,9 +44,9 @@
       "firstPartyUnusedScriptKB": 117.9,
       "renderBlockingCss": [],
       "navTimings": {
-        "responseEnd": 573.2999999523163,
-        "domContentLoaded": 576.4000000953674,
-        "load": 2817.5
+        "responseEnd": 573.0999999046326,
+        "domContentLoaded": 576.2999999523163,
+        "load": 2818.0999999046326
       }
     },
     {
@@ -54,7 +54,7 @@
       "fcpMs": 360,
       "lcpMs": 360,
       "cls": 0.005,
-      "tbtMs": 14,
+      "tbtMs": 16,
       "lcpSelector": "div.flex.min-h-screen > main.flex-1 > div.border-t.border-border > div.mx-auto.max-w-4xl > p",
       "lcpText": "PDFs are the universal format for documents, but JPG images are universal for sharing, embedding, and displaying content",
       "lcpSize": 32220,
@@ -67,9 +67,9 @@
       "firstPartyUnusedScriptKB": 117.9,
       "renderBlockingCss": [],
       "navTimings": {
-        "responseEnd": 537.6000001430511,
-        "domContentLoaded": 540.5,
-        "load": 1718.6000001430511
+        "responseEnd": 535.8999998569489,
+        "domContentLoaded": 538.5999999046326,
+        "load": 1718.5999999046326
       }
     }
   ]
