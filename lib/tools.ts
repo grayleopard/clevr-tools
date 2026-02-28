@@ -2,7 +2,7 @@ export interface Tool {
   slug: string;
   name: string;
   shortDescription: string;
-  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text' | 'dev' | 'calc' | 'time';
+  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text' | 'dev' | 'calc' | 'time' | 'type';
   route: string;
   acceptedFormats: string[];
   icon: string;
@@ -361,29 +361,7 @@ export const tools: Tool[] = [
       <h2>What's Preserved and What Isn't</h2>
       <p>Text content, headings (H1–H6), bold, italic, bullet and numbered lists, tables, and basic formatting are faithfully converted. Complex Word features like custom macros, tracked changes, form fields, and advanced layout elements (text boxes, floating images) may not render perfectly in every case — this is a fundamental limitation of browser-based conversion without the full Word rendering engine. For documents where pixel-perfect fidelity matters, Microsoft Word's built-in "Export to PDF" function is the most reliable option. For standard documents, reports, letters, and resumes, this tool produces excellent results instantly and privately.</p>
     `,
-    relatedTools: ['pdf-to-word', 'pdf-compressor', 'merge-pdf'],
-    badge: 'new',
-  },
-  {
-    slug: 'pdf-to-word',
-    name: 'PDF to Word Converter',
-    shortDescription: 'Extract text from PDFs and convert to editable .docx files.',
-    category: 'convert',
-    route: '/convert/pdf-to-word',
-    acceptedFormats: ['.pdf'],
-    icon: 'FileText',
-    metaTitle: 'Convert PDF to Word Online Free — No Signup | clevr.tools',
-    metaDescription:
-      'Convert PDF to Word (.docx) online free. Extracts text, detects headings and paragraphs, generates an editable document. No upload — 100% browser-based, files stay private.',
-    seoContent: `
-      <h2>Turn Static PDFs Into Editable Word Documents</h2>
-      <p>PDFs are designed to be read, not edited. Converting a PDF back to Word lets you modify the content, reuse text in other documents, correct errors in a scanned report, update a contract, or extract data for further use. This tool extracts text content from your PDF using PDF.js and reconstructs it as an editable .docx file you can open in Microsoft Word, Google Docs, LibreOffice, or any other word processor.</p>
-      <h2>Structure Detection</h2>
-      <p>PDF files don't store document structure — they're essentially instructions for drawing characters at specific coordinates on a page. This tool analyzes the text content to infer structure: larger-than-average text is classified as headings (H1, H2, H3 depending on relative size), bold and italic formatting is detected from font names, consistent indentation patterns are detected as lists, and large gaps between text blocks are treated as paragraph breaks. The result is a structured Word document rather than a flat text dump.</p>
-      <h2>What to Expect</h2>
-      <p>Text-based PDFs (created from Word, InDesign, or similar tools) convert with high fidelity. Scanned PDFs (image-based, no embedded text layer) cannot have text extracted without OCR — this tool will produce a document with no content for such files. Complex multi-column layouts may produce text in a different reading order than expected, since PDF stores text by position rather than reading order. For most standard documents — reports, articles, contracts, and letters — the output is clean, accurate, and immediately usable.</p>
-    `,
-    relatedTools: ['word-to-pdf', 'pdf-compressor', 'split-pdf'],
+    relatedTools: ['pdf-compressor', 'merge-pdf'],
     badge: 'new',
   },
   // ─── Text Tools ───────────────────────────────────────────────────────────
@@ -864,6 +842,28 @@ export const tools: Tool[] = [
     seoContent: `<h2>Free GPA Calculator</h2><p>Calculate your semester GPA by entering each course's credit hours and letter grade. The standard 4.0 GPA scale assigns points from 4.0 (A/A+) down to 0.0 (F). Your GPA is the weighted average of all grade points, weighted by credit hours: GPA = Sum(credit hours * grade points) / Sum(credit hours). A 3-credit A is worth more toward your GPA than a 1-credit A.</p><p>The cumulative GPA section lets you factor in your existing GPA and credit hours to calculate what your new overall GPA will be after adding this semester's results. Use this to plan which grades you need in order to reach academic honors thresholds (typically 3.5 for Dean's List, 3.9+ for summa cum laude).</p>`,
     relatedTools: ['percentage-calculator', 'age-calculator'],
   },
+  // ─── Typing ────────────────────────────────────────────────────────────────
+  {
+    slug: 'typing-test',
+    name: 'Typing Test',
+    shortDescription: 'Test your typing speed and accuracy. See WPM, accuracy, consistency, and a live performance chart.',
+    category: 'type',
+    route: '/type/typing-test',
+    acceptedFormats: [],
+    icon: 'Keyboard',
+    metaTitle: 'Free Typing Test — Check Your Typing Speed | clevr.tools',
+    metaDescription: 'Test your typing speed and accuracy with our free online typing test. See your WPM, accuracy, and consistency with detailed stats and a live performance chart.',
+    seoContent: `<h2>Free Online Typing Test</h2>
+<p>A typing test measures two things: speed (words per minute) and accuracy (percentage of correct keystrokes). Speed without accuracy is meaningless — a professional typing test weights both. WPM is calculated using the standard 5-character word definition: your total correct characters (including spaces) divided by 5, divided by the time in minutes. This standardization lets you compare scores across different texts — a passage full of short words isn't "easier" than one with long words when measured this way.</p>
+<p>Average typing speeds vary significantly by age, profession, and practice. Most adults type between 30–45 WPM with moderate accuracy. Office workers who type regularly often reach 60–75 WPM. Professional typists, transcriptionists, and programmers typically type at 80–100+ WPM. World record speeds exceed 200 WPM, though these are rare outliers requiring years of dedicated practice. Knowing your baseline speed is the first step to improving it.</p>
+<p>Consistency is as important as peak speed. A typist who averages 70 WPM with high consistency (smooth, even rhythm) is more productive than one who bursts at 90 WPM and crashes. Our consistency score measures the coefficient of variation in your per-word speed — the closer to 100%, the more even your rhythm.</p>
+<h2>How to Improve Your Typing Speed</h2>
+<p>The single most important technique is proper finger placement. Keep your fingers on the home row (left: ASDF, right: JKL;) and let each finger be responsible for specific keys above and below. Hunt-and-peck typists plateau at 30–40 WPM because visual scanning limits speed. Touch typing removes this ceiling — once your fingers know where the keys are, your brain can process words faster than your eyes can find individual keys.</p>
+<p>Focus on accuracy first, speed second. Many beginners try to type as fast as possible and develop sloppy habits that are hard to unlearn. Set a target accuracy of 95%+ before trying to increase speed. Your WPM will naturally increase as your muscle memory improves. Short daily practice sessions (15–20 minutes) are more effective than infrequent marathon sessions — consistency of practice beats intensity.</p>
+<p>Use the results chart to identify patterns. If your WPM drops sharply at specific seconds, you're hitting unfamiliar letter combinations or losing concentration. If your accuracy is high but speed is low, you're being overly cautious — try to relax and trust your fingers. Take multiple tests in a session and watch your average improve as you warm up. Most typists are 10–15% faster at the end of a session than the beginning.</p>`,
+    relatedTools: ['word-counter', 'character-counter', 'stopwatch'],
+    badge: 'popular',
+  },
 ];
 
 export function getToolBySlug(slug: string): Tool | undefined {
@@ -886,6 +886,7 @@ export const toolCategories = [
   { id: 'convert' as const, label: 'Convert', icon: 'ArrowLeftRight' },
   { id: 'tools' as const, label: 'PDF & File Tools', icon: 'FileStack' },
   { id: 'generate' as const, label: 'Generate', icon: 'Sparkles' },
+  { id: 'type' as const, label: 'Type', icon: 'Keyboard' },
   { id: 'time' as const, label: 'Time & Timers', icon: 'Timer' },
   { id: 'text' as const, label: 'Text Tools', icon: 'Type' },
   { id: 'dev' as const, label: 'Dev Tools', icon: 'Code' },

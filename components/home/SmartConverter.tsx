@@ -34,8 +34,7 @@ type ActionId =
   | "pdf-to-jpg"
   | "split-pdf"
   | "rotate-pdf"
-  | "word-to-pdf"
-  | "pdf-to-word";
+  | "word-to-pdf";
 type Stage = "idle" | "detected";
 
 interface DetectedFile {
@@ -52,7 +51,7 @@ const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
   jpg: ["compress-image", "to-png", "to-webp"],
   webp: ["to-png", "to-jpg"],
   heic: ["to-jpg"],
-  pdf: ["compress-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "rotate-pdf"],
+  pdf: ["compress-pdf", "pdf-to-jpg", "split-pdf", "rotate-pdf"],
   docx: ["word-to-pdf"],
   unknown: [],
 };
@@ -119,12 +118,6 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
     description: "Export Word document as a PDF file",
     accent: "text-blue-600 dark:text-blue-400",
   },
-  "pdf-to-word": {
-    icon: FileText,
-    name: "Convert to Word",
-    description: "Extract text into an editable .docx file",
-    accent: "text-green-600 dark:text-green-400",
-  },
 };
 
 // ─── Route mapping ────────────────────────────────────────────────────────────
@@ -140,7 +133,6 @@ function getRoute(fileType: FileType, actionId: ActionId): string {
     case "split-pdf":      return "/tools/split-pdf";
     case "rotate-pdf":     return "/tools/rotate-pdf";
     case "word-to-pdf":    return "/convert/word-to-pdf";
-    case "pdf-to-word":    return "/convert/pdf-to-word";
   }
 }
 
