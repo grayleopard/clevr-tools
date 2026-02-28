@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
-import Script from "next/script";
-import { ToastContainer } from "@/components/ui/ToastContainer";
+import ClientOverlays from "@/components/layout/ClientOverlays";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "clevr.tools — Free Online File & Text Tools",
@@ -33,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={`${geistSans.variable} font-sans antialiased`}>
+      <body className={`${GeistSans.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -41,22 +35,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <ToastContainer />
+          <ClientOverlays />
         </ThemeProvider>
-
-        {/* Google Analytics GA4 */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-X161SLKN61"
-          strategy="afterInteractive"
-        />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-X161SLKN61');
-          `}
-        </Script>
       </body>
     </html>
   );
