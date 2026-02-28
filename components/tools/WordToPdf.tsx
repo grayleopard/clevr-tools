@@ -9,6 +9,7 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { truncateFilename } from "@/lib/utils";
+import { loadPdfMake } from "@/lib/pdfmake-loader";
 
 type PageSize = "a4" | "letter";
 type Orientation = "portrait" | "landscape";
@@ -45,42 +46,6 @@ interface Result {
   size: number;
   originalSize: number;
   originalName: string;
-}
-
-// Load pdfmake v0.2.x from CDN, bypassing Turbopack/bundler entirely.
-// The CDN scripts set window.pdfMake globally with vfs_fonts already wired in,
-// which is the pattern pdfmake's own docs recommend for browser usage.
-// We pin to v0.2.10 (last stable v0.2 release) because vfs_fonts on v0.2.x
-// uses the well-established pdfMake.vfs = { ... } API that Just Works.
-const PDFMAKE_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js";
-const VFS_FONTS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js";
-
-function loadScript(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) { resolve(); return; }
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload  = () => resolve();
-    script.onerror = () => reject(new Error(`Failed to load: ${src}`));
-    document.head.appendChild(script);
-  });
-}
-
-async function loadPdfMake(): Promise<NonNullable<Window["pdfMake"]>> {
-  // Read via `any` to avoid TypeScript narrowing window.pdfMake to `never`
-  // after async boundaries (TS can't track CDN-injected globals across awaits).
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  if (w.pdfMake) return w.pdfMake;
-  // Load pdfmake first, then vfs_fonts (order matters — vfs_fonts reads window.pdfMake)
-  await loadScript(PDFMAKE_CDN);
-  await loadScript(VFS_FONTS_CDN);
-  if (!w.pdfMake) {
-    throw new Error("pdfmake CDN scripts loaded but window.pdfMake is undefined");
-  }
-  console.log("pdfMake loaded from CDN — vfs font files:", Object.keys(w.pdfMake.vfs ?? {}).length);
-  return w.pdfMake;
 }
 
 // Recursively strip any `font` / `fontFamily` references injected by
@@ -156,9 +121,8 @@ export default function WordToPdf() {
       setPreviewHtml(html);
       setProgress("Loading PDF libraries…");
 
-      // Load pdfmake from CDN (bypasses Turbopack vfs_fonts bundling issues)
-      // and html-to-pdfmake from npm (pure JS function, no font dependencies).
-      console.log("Step 4: loading pdfmake from CDN + html-to-pdfmake…");
+      // Load bundled pdfmake + vfs fonts and html-to-pdfmake.
+      console.log("Step 4: loading pdfmake + html-to-pdfmake…");
       const [pdfMake, htmlToPdfmakeModule] = await Promise.all([
         loadPdfMake(),
         import("html-to-pdfmake"),
