@@ -46,39 +46,30 @@ function shuffleArray<T>(arr: T[]): T[] {
 }
 
 function applyPunctuation(words: string[]): string[] {
-  const endPunc = [".", ",", ";", "?", "!"];
+  const puncMarks = [".", ",", "?", "!"];
   const result: string[] = [];
-  let sentenceStart = true;
 
   for (let i = 0; i < words.length; i++) {
     let w = words[i];
-    if (sentenceStart) {
+    // ~10% chance of capitalizing a word
+    if (Math.random() < 0.1) {
       w = w.charAt(0).toUpperCase() + w.slice(1);
-      sentenceStart = false;
     }
-    // ~20% chance of punctuation after a word
-    if (Math.random() < 0.2 && i < words.length - 1) {
-      const p = endPunc[Math.floor(Math.random() * endPunc.length)];
+    // ~15% chance of appending punctuation
+    if (Math.random() < 0.15) {
+      const p = puncMarks[Math.floor(Math.random() * puncMarks.length)];
       w = w + p;
-      if (p === "." || p === "?" || p === "!") sentenceStart = true;
     }
     result.push(w);
-  }
-  // Ensure last word ends with period
-  if (result.length > 0) {
-    const last = result[result.length - 1];
-    if (!/[.?!]$/.test(last)) {
-      result[result.length - 1] = last + ".";
-    }
   }
   return result;
 }
 
 function mixNumbers(words: string[]): string[] {
   const result = [...words];
-  // Insert number strings at ~10% of positions
+  // Replace ~12% of words with random 1-4 digit number strings
   for (let i = 0; i < result.length; i++) {
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.12) {
       const digits = Math.floor(Math.random() * 4) + 1; // 1-4 digits
       let num = "";
       for (let d = 0; d < digits; d++) {
@@ -237,7 +228,7 @@ export default function TypingTest() {
   const [caretPos, setCaretPos] = useState<{ left: number; top: number } | null>(null);
   const [wordWindowStart, setWordWindowStart] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
-  const [currentQuote, setCurrentQuote] = useState<{ text: string; author: string } | null>(null);
+  const [currentQuote, setCurrentQuote] = useState<{ text: string; attribution: string } | null>(null);
 
   // ── Authoritative mutable refs for input system ──
   const wordListRef = useRef<string[]>([]);
@@ -354,21 +345,39 @@ export default function TypingTest() {
       }, 200);
     }
 
-    // Stats timer (every second for chart data)
+    // Stats timer (every second for chart data) — reads ONLY from refs to avoid stale closures
     statsTimerRef.current = setInterval(() => {
-      const elapsedSec = Math.floor((Date.now() - startTimeRef.current) / 1000);
-      if (elapsedSec > 0) {
-        const wpm = Math.round((correctCharsRef.current / 5) / (elapsedSec / 60));
-        const rawWpm = Math.round((totalCharsRef.current / 5) / (elapsedSec / 60));
-        setLiveWpm(wpm);
-        setLiveRawWpm(rawWpm);
+      const elapsedSeconds = (Date.now() - startTimeRef.current) / 1000;
+      if (elapsedSeconds <= 0) return;
 
-        const total = correctCharsRef.current + (totalCharsRef.current - correctCharsRef.current);
-        const accuracy = total > 0 ? Math.round((correctCharsRef.current / total) * 100) : 100;
-        setLiveAccuracy(accuracy);
-
-        perSecondRef.current.push({ second: elapsedSec, wpm, rawWpm });
+      // Correct chars: fully correct completed words (word + space)
+      let correctChars = 0;
+      let totalTypedChars = 0;
+      for (let i = 0; i < currentWordIndexRef.current; i++) {
+        const expected = wordListRef.current[i];
+        const typed = typedWordsRef.current[i] ?? '';
+        totalTypedChars += typed.length + 1; // +1 for space
+        if (typed === expected) {
+          correctChars += expected.length + 1;
+        }
       }
+      // Partial credit for current word (char-by-char match)
+      const curExpected = wordListRef.current[currentWordIndexRef.current] ?? '';
+      const curTyped = currentInputRef.current;
+      totalTypedChars += curTyped.length;
+      for (let i = 0; i < Math.min(curTyped.length, curExpected.length); i++) {
+        if (curTyped[i] === curExpected[i]) correctChars++;
+      }
+
+      const wpm = Math.round((correctChars / 5) / (elapsedSeconds / 60));
+      const rawWpm = Math.round((totalTypedChars / 5) / (elapsedSeconds / 60));
+      setLiveWpm(wpm);
+      setLiveRawWpm(rawWpm);
+
+      const accuracy = totalTypedChars > 0 ? Math.round((correctChars / totalTypedChars) * 100) : 100;
+      setLiveAccuracy(accuracy);
+
+      perSecondRef.current.push({ second: Math.floor(elapsedSeconds), wpm, rawWpm });
     }, 1000);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testMode, timeOption]);
@@ -1055,7 +1064,7 @@ export default function TypingTest() {
           {/* Quote attribution */}
           {testMode === "quote" && currentQuote && (
             <p className="text-center text-sm text-muted-foreground italic">
-              &mdash; {currentQuote.author}
+              &mdash; {currentQuote.attribution}
             </p>
           )}
 
