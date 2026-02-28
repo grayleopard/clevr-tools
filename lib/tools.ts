@@ -2,7 +2,7 @@ export interface Tool {
   slug: string;
   name: string;
   shortDescription: string;
-  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text' | 'dev' | 'calc' | 'time' | 'type';
+  category: 'compress' | 'convert' | 'generate' | 'ai' | 'tools' | 'text' | 'dev' | 'calc' | 'time' | 'type' | 'files';
   route: string;
   acceptedFormats: string[];
   icon: string;
@@ -58,7 +58,6 @@ export const tools: Tool[] = [
       <p>The quality slider controls how aggressively JPEG discards visual data. For photographs, 85–90% produces results visually indistinguishable from the original at a fraction of the size. For graphics with solid colors, text, or sharp edges, stay above 90% to avoid blocky compression artifacts. Everything processes locally in your browser — no upload, no account required.</p>
     `,
     relatedTools: ['image-compressor', 'jpg-to-png', 'png-to-webp'],
-    badge: 'popular',
   },
   {
     slug: 'qr-code-generator',
@@ -80,7 +79,6 @@ export const tools: Tool[] = [
       <p>Download PNG for screen use — websites, presentations, and digital documents where pixel dimensions are fixed. Download SVG for print: as a vector format, SVG scales to any size without pixelation, making it the right choice for business cards, posters, and signage. For professional print work, 512px or larger PNG, or SVG, ensures crisp scanning at print resolution.</p>
     `,
     relatedTools: ['image-compressor', 'png-to-jpg', 'pdf-compressor'],
-    badge: 'popular',
   },
   {
     slug: 'heic-to-jpg',
@@ -232,7 +230,6 @@ export const tools: Tool[] = [
       <p>All PDF creation happens in your browser using pdf-lib, a pure JavaScript PDF library. Your images are never sent to any server — they're read locally, embedded into the PDF structure in memory, and the result is downloaded directly to your device. This makes it safe for scanned identification documents, private correspondence, financial statements, and any image content you'd prefer to keep off the internet.</p>
     `,
     relatedTools: ['pdf-compressor', 'png-to-pdf', 'merge-pdf'],
-    badge: 'popular',
   },
   {
     slug: 'merge-pdf',
@@ -254,7 +251,6 @@ export const tools: Tool[] = [
       <p>PDF merging happens entirely in your browser using pdf-lib, an open-source JavaScript library. No file is ever uploaded to a server — not even temporarily. Your PDFs could contain legal contracts, medical records, financial statements, or anything else sensitive, and they will never leave your device. This is the fundamental privacy advantage of browser-based document processing over cloud-based alternatives.</p>
     `,
     relatedTools: ['split-pdf', 'pdf-compressor', 'rotate-pdf'],
-    badge: 'popular',
   },
   {
     slug: 'split-pdf',
@@ -863,6 +859,61 @@ export const tools: Tool[] = [
 <p>Use the results chart to identify patterns. If your WPM drops sharply at specific seconds, you're hitting unfamiliar letter combinations or losing concentration. If your accuracy is high but speed is low, you're being overly cautious — try to relax and trust your fingers. Take multiple tests in a session and watch your average improve as you warm up. Most typists are 10–15% faster at the end of a session than the beginning.</p>`,
     relatedTools: ['word-counter', 'character-counter', 'stopwatch'],
     badge: 'popular',
+  },
+  // ─── Files Tools ──────────────────────────────────────────────────────────
+  {
+    slug: 'image-resizer',
+    name: 'Image Resizer',
+    shortDescription: 'Resize images to exact dimensions or social media presets. Supports batch processing.',
+    category: 'files',
+    route: '/files/image-resizer',
+    acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
+    icon: 'Maximize2',
+    metaTitle: 'Free Image Resizer — Resize Images Online | clevr.tools',
+    metaDescription: 'Resize any image to exact dimensions or social media presets. Supports JPG, PNG, WebP. Free, fast, and private — no uploads to servers.',
+    seoContent: `<h2>Free Online Image Resizer</h2>
+<p>Resizing an image adjusts its pixel dimensions — the number of horizontal and vertical pixels that make up the image. A 1920×1080 image has just under 2.1 million pixels; resizing it to 960×540 halves both dimensions and reduces the file to about one quarter the area. Most applications and platforms have specific image dimension requirements: Instagram posts must be at least 1080 pixels wide, YouTube thumbnails should be 1280×720, and passport photos have strict size requirements. This tool lets you resize to any dimensions or choose from common social media presets.</p>
+<p>Aspect ratio refers to the proportional relationship between width and height. A 1920×1080 image has a 16:9 aspect ratio — the same as most modern screens and TVs. Locking the aspect ratio while resizing prevents distortion: if you change the width, the height adjusts automatically to maintain proportions. Unlocking allows you to stretch or squash the image to any dimensions, which can be useful for specific platform requirements that don't match the original's proportions.</p>
+<h2>Social Media Image Size Guide</h2>
+<p>Different platforms and uses have specific optimal dimensions. Instagram posts display best at 1080×1080 (square) or 1080×1350 (portrait). Instagram Stories and Reels use 1080×1920 (9:16 vertical). Facebook cover photos should be 820×312 pixels. YouTube thumbnails are 1280×720 (16:9). LinkedIn banner images work best at 1584×396. For professional uses, passport photos require 600×600 pixels. When in doubt, using the highest quality original and resizing down produces better results than scaling up (which can create blurry images).`,
+    relatedTools: ['image-compressor', 'png-to-jpg', 'heic-to-jpg'],
+    badge: 'new',
+  },
+  {
+    slug: 'image-cropper',
+    name: 'Image Cropper',
+    shortDescription: 'Crop images with precision. Freeform or aspect ratio presets including circle crop.',
+    category: 'files',
+    route: '/files/image-cropper',
+    acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp', '.gif'],
+    icon: 'Crop',
+    metaTitle: 'Free Image Cropper — Crop Images Online | clevr.tools',
+    metaDescription: 'Crop any image with precision. Choose from preset aspect ratios or freeform crop. Supports circle crop, 1:1, 16:9, and more. Free and private.',
+    seoContent: `<h2>Free Online Image Cropper</h2>
+<p>Cropping removes the outer parts of an image to focus on a subject, improve composition, or fit a specific display format. Unlike resizing — which changes an image's dimensions while keeping all its content — cropping changes what content is shown. A portrait photo might be cropped to remove distracting background elements; a landscape shot might be cropped to a square for Instagram. Cropping is one of the most fundamental image editing operations.</p>
+<p>Aspect ratios constrain the crop selection to specific proportional shapes. The 1:1 ratio produces a perfect square — ideal for Instagram posts and profile pictures. The 16:9 ratio matches most screens and YouTube thumbnails. The 9:16 ratio is for vertical video and Instagram Stories. The 4:3 ratio is traditional photography. Locking to an aspect ratio ensures your crop will fit exactly into a target format without letterboxing or black bars.</p>
+<h2>Circle Crop for Profile Pictures</h2>
+<p>Many social platforms display profile pictures as circles — Facebook, LinkedIn, Twitter, Google. The circle crop option removes the corners of your image with a transparent mask, producing a PNG file where the corners are transparent rather than white or black. Upload the result directly as your profile picture without needing to rely on the platform's cropping tool, which often doesn't give you fine control over positioning.</p>`,
+    relatedTools: ['image-compressor', 'image-resizer', 'png-to-jpg'],
+    badge: 'new',
+  },
+  {
+    slug: 'invoice-generator',
+    name: 'Invoice Generator',
+    shortDescription: 'Create professional PDF invoices with line items, taxes, and your logo.',
+    category: 'files',
+    route: '/files/invoice-generator',
+    acceptedFormats: [],
+    icon: 'FileText',
+    metaTitle: 'Free Invoice Generator — Create Professional Invoices | clevr.tools',
+    metaDescription: 'Generate professional PDF invoices for free. Add line items, taxes, discounts, and your logo. Download instantly. No sign-up required.',
+    seoContent: `<h2>Free Professional Invoice Generator</h2>
+<p>An invoice is a legally recognized commercial document that records a transaction between a buyer and a seller. It lists the goods or services provided, quantities, unit prices, and the total amount owed. A professional invoice includes your business information, the client's details, a unique invoice number, the date of issue, payment due date, and clear payment terms. These elements are not just professional courtesies — many jurisdictions require specific information on invoices for them to be legally valid and tax-deductible.</p>
+<p>Invoice numbering creates an auditable trail of all your transactions. A simple sequential system (INV-001, INV-002) works for most freelancers and small businesses. Some businesses use year-prefixed numbers (2026-001) to reset the sequence annually. Consistent numbering makes it easier to reconcile payments, follow up on outstanding invoices, and prepare for tax season. Your accounting software or the client's accounts payable department may also require a unique invoice number to process payment.</p>
+<h2>Professional Invoicing Tips</h2>
+<p>Specify payment terms clearly — "Net 30" means payment is due within 30 days of the invoice date. "Due on receipt" means immediate payment is expected. If you charge late fees, state them explicitly: "A 1.5% monthly fee applies to balances unpaid after 30 days." Including multiple payment methods (bank transfer, PayPal, credit card) reduces friction and helps you get paid faster. For larger projects, consider milestone-based invoicing rather than a single invoice at the end — it protects your cash flow and reduces the client's risk as well.</p>`,
+    relatedTools: ['word-counter', 'pdf-compressor'],
+    badge: 'new',
   },
 ];
 

@@ -46,6 +46,8 @@ import {
   TrendingUp,
   GraduationCap,
   Keyboard,
+  Maximize2,
+  Crop,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -97,6 +99,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   TrendingUp,
   GraduationCap,
   Keyboard,
+  Maximize2,
+  Crop,
 };
 
 export default function ToolCard({ tool }: { tool: Tool }) {

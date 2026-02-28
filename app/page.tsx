@@ -45,13 +45,10 @@ export default function HomePage() {
                 <span>100% Free &middot; No Signup &middot; Files stay in your browser</span>
               </div>
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                Fast, free tools for everyday tasks.
+                Fast, free, private tools for everyday tasks.
               </h1>
               <p className="mt-3 text-muted-foreground sm:text-lg">
-                Files &middot; Text &middot; Calculators &middot; Timers &middot; Typing
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                All processing happens in your browser. No uploads, no accounts.
+                All processing happens in your browser. Your files never leave your device.
               </p>
             </div>
 
@@ -127,7 +124,7 @@ export default function HomePage() {
                     href={cat.route}
                     className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
-                    View all {toolCount} tools
+                    View all {toolCount} {toolCount === 1 ? 'tool' : 'tools'}
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
