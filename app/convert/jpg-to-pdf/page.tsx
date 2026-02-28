@@ -37,12 +37,12 @@ export default function JpgToPdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <ImagesToPdf
         accept=".jpg,.jpeg,.png,.webp"
         toolSlug="jpg-to-pdf"
         resetLabel="Convert more images"
       />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );

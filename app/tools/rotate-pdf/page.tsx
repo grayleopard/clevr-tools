@@ -37,8 +37,8 @@ export default function RotatePdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <RotatePdf />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );

@@ -37,8 +37,8 @@ export default function MergePdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <MergePdf />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );

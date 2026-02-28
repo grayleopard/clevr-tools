@@ -37,8 +37,8 @@ export default function SplitPdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <SplitPdf />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );

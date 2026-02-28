@@ -37,12 +37,12 @@ export default function PngToPdfPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <ImagesToPdf
         accept=".png"
         toolSlug="png-to-pdf"
         resetLabel="Convert more PNGs"
       />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );

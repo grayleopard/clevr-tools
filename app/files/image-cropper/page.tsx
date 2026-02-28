@@ -41,8 +41,8 @@ export default function ImageCropperPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <ImageCropper />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="image" currentPath={tool.route} />
     </ToolLayout>
   );

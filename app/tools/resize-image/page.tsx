@@ -37,8 +37,8 @@ export default function ResizeImagePage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <ImageResizer />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="image" currentPath={tool.route} />
     </ToolLayout>
   );

@@ -37,8 +37,8 @@ export default function QrCodePage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <FaqSchema items={faqItems} />
       <QrCodeGenerator />
+      <FaqSchema items={faqItems} />
       <RelatedToolsCluster category="utility" currentPath={tool.route} />
     </ToolLayout>
   );
