@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { addToast } from "@/lib/toast";
 import { Plus, Trash2, Download, Upload } from "lucide-react";
+import { loadPdfMake } from "@/lib/pdfmake-loader";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -64,41 +65,6 @@ function plus30(): string {
   const d = new Date();
   d.setDate(d.getDate() + 30);
   return d.toISOString().slice(0, 10);
-}
-
-// ─── pdfmake CDN loader ─────────────────────────────────────────────────────
-
-const PDFMAKE_CDN =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js";
-const VFS_FONTS_CDN =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js";
-
-function loadScript(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[src="${src}"]`);
-    if (existing) {
-      resolve();
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error(`Failed to load: ${src}`));
-    document.head.appendChild(script);
-  });
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function loadPdfMake(): Promise<any> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  if (w.pdfMake) return w.pdfMake;
-  await loadScript(PDFMAKE_CDN);
-  await loadScript(VFS_FONTS_CDN);
-  if (!w.pdfMake) {
-    throw new Error("pdfmake CDN scripts loaded but window.pdfMake is undefined");
-  }
-  return w.pdfMake;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
