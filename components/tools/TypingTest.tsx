@@ -498,18 +498,18 @@ export default function TypingTest() {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
       // Ignore non-character keys
-      if (["Shift", "CapsLock", "Escape", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Delete", "Home", "End", "PageUp", "PageDown", "Insert", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"].includes(e.key)) return;
+      if (["Shift", "CapsLock", "Escape", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", "Home", "End", "PageUp", "PageDown", "Insert", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"].includes(e.key)) return;
 
       // If test is finished, ignore
       if (statusRef.current === "finished") return;
 
-      // Always preventDefault for Space and Backspace to prevent double-handling
-      if (e.key === " " || e.key === "Backspace") {
+      // Always preventDefault for Space, Backspace, and Delete to prevent double-handling
+      if (e.key === " " || e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
       }
 
-      // Start on first keypress (not backspace)
-      if (statusRef.current === "idle" && e.key !== "Backspace") {
+      // Start on first keypress (not backspace/delete)
+      if (statusRef.current === "idle" && e.key !== "Backspace" && e.key !== "Delete") {
         startTest();
         setIsFocused(true);
       }
@@ -529,7 +529,7 @@ export default function TypingTest() {
       const currentWord = wordList[wi];
       if (!currentWord && e.key !== "Backspace") return;
 
-      if (e.key === "Backspace") {
+      if (e.key === "Backspace" || e.key === "Delete") {
         // Remove last character from current word input (do NOT go back to previous word)
         if (currentInputRef.current.length > 0) {
           currentInputRef.current = currentInputRef.current.slice(0, -1);
@@ -894,35 +894,43 @@ export default function TypingTest() {
               const isPastWord = absIdx < wordIndex;
               const pastResult = isPastWord ? wordResultsRef.current[absIdx] : null;
 
+              // Word-level classes
+              let wordClassName = "inline-block mr-[0.5em]";
+              if (isCurrentWord) {
+                wordClassName += " bg-primary/5 rounded-sm px-0.5";
+              } else if (isPastWord && pastResult && !pastResult.correct) {
+                wordClassName += " underline decoration-red-400/60";
+              }
+
               return (
                 <span
                   key={`${absIdx}-${word}`}
                   ref={(el) => { wordSpansRef.current[visIdx] = el; }}
-                  className="inline-block mr-[0.5em]"
+                  className={wordClassName}
                 >
                   {word.split("").map((char, charIdx) => {
-                    let className = "text-muted-foreground/40"; // upcoming
+                    let cls = "text-foreground/30"; // upcoming (untyped)
 
                     if (isPastWord && pastResult) {
                       if (pastResult.correct) {
-                        className = "text-muted-foreground/60";
+                        cls = "text-foreground/40"; // completed correct word
                       } else {
-                        // Show per-character coloring for incorrect past words
+                        // Completed incorrect word — show per-char coloring
                         if (charIdx < pastResult.typed.length) {
-                          className = pastResult.typed[charIdx] === char
-                            ? "text-muted-foreground/60"
-                            : "text-red-500";
+                          cls = pastResult.typed[charIdx] === char
+                            ? "text-foreground/40"
+                            : "text-red-400";
                         } else {
-                          className = "text-red-500/50"; // missed
+                          cls = "text-red-400"; // missed chars
                         }
                       }
                     } else if (isCurrentWord) {
                       if (charIdx < currentInput.length) {
-                        className = currentInput[charIdx] === char
-                          ? "text-foreground"
+                        cls = currentInput[charIdx] === char
+                          ? "text-green-500"
                           : "text-red-500";
                       } else {
-                        className = "text-muted-foreground/40";
+                        cls = "text-foreground/30"; // untyped
                       }
                     }
 
@@ -931,24 +939,18 @@ export default function TypingTest() {
                         key={`${absIdx}-${charIdx}`}
                         data-word={absIdx}
                         data-char={charIdx}
-                        className={className}
+                        className={cls}
                       >
                         {char}
                       </span>
                     );
                   })}
                   {/* Extra typed characters beyond word length */}
-                  {isCurrentWord && currentInput.length > word.length && (
-                    <span className="text-red-500/70">
-                      {currentInput.slice(word.length).split("").map((c, i) => (
-                        <span key={`extra-${i}`}>{c}</span>
-                      ))}
-                    </span>
-                  )}
-                  {/* Underline incorrect past words */}
-                  {isPastWord && pastResult && !pastResult.correct && (
-                    <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-red-500/40 rounded" />
-                  )}
+                  {isCurrentWord && currentInput.length > word.length &&
+                    currentInput.slice(word.length).split("").map((c, i) => (
+                      <span key={`extra-${i}`} className="text-red-500">{c}</span>
+                    ))
+                  }
                 </span>
               );
             })}
