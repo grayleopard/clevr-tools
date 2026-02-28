@@ -1,210 +1,207 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
-import DownloadCard from "@/components/tool/DownloadCard";
-import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
-import { usePasteImage } from "@/lib/usePasteImage";
-import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
+import { formatBytes } from "@/lib/utils";
 import JSZip from "jszip";
-import { Package, Lock, Unlock, ArrowRight } from "lucide-react";
-import { formatBytes, truncateFilename } from "@/lib/utils";
+import { Download, Package, Lock, Unlock, X } from "lucide-react";
 
-type ResizeMode = "dimensions" | "presets" | "target";
-
-interface Preset { label: string; w: number; h: number; note?: string; }
-
-const PRESETS: Preset[] = [
-  { label: "Instagram Post", w: 1080, h: 1080, note: "1:1" },
-  { label: "Instagram Story", w: 1080, h: 1920, note: "9:16" },
-  { label: "Facebook Cover", w: 820, h: 312 },
-  { label: "Twitter Header", w: 1500, h: 500 },
-  { label: "LinkedIn Banner", w: 1584, h: 396 },
-  { label: "YouTube Thumbnail", w: 1280, h: 720, note: "HD" },
-  { label: "Passport Photo", w: 600, h: 600, note: "2×2 in" },
-  { label: "Web Banner", w: 1200, h: 628 },
-];
-
-interface Result {
+interface UploadedImage {
+  file: File;
   url: string;
-  filename: string;
-  size: number;
-  originalSize: number;
-  originalName: string;
   width: number;
   height: number;
-  thumbnailUrl: string;
 }
 
-async function resizeImage(
-  file: File,
-  targetW: number,
-  targetH: number,
-  targetKB?: number
-): Promise<{ blob: Blob; width: number; height: number }> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = async () => {
-      URL.revokeObjectURL(url);
-      const canvas = document.createElement("canvas");
-      canvas.width = targetW;
-      canvas.height = targetH;
-      const ctx = canvas.getContext("2d")!;
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(img, 0, 0, targetW, targetH);
-
-      const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
-
-      if (targetKB) {
-        // Binary search for quality to hit target file size
-        const targetBytes = targetKB * 1024;
-        if (mime === "image/png") {
-          // PNG is lossless — just scale dimensions down to hit target
-          const blob = await new Promise<Blob>((res, rej) =>
-            canvas.toBlob((b) => (b ? res(b) : rej(new Error("toBlob failed"))), "image/png")
-          );
-          if (blob.size <= targetBytes) { resolve({ blob, width: targetW, height: targetH }); return; }
-          // Recursively scale down
-          const scaleFactor = Math.sqrt(targetBytes / blob.size);
-          const newW = Math.max(1, Math.round(targetW * scaleFactor));
-          const newH = Math.max(1, Math.round(targetH * scaleFactor));
-          const result = await resizeImage(file, newW, newH, targetKB);
-          resolve(result); return;
-        }
-
-        let low = 0.01, high = 1.0;
-        let best: Blob | null = null;
-        for (let i = 0; i < 8; i++) {
-          const q = (low + high) / 2;
-          const blob = await new Promise<Blob>((res, rej) =>
-            canvas.toBlob((b) => (b ? res(b) : rej(new Error("toBlob failed"))), mime, q)
-          );
-          if (blob.size <= targetBytes) { best = blob; low = q; }
-          else { high = q; }
-        }
-        const finalBlob = best ?? await new Promise<Blob>((res, rej) =>
-          canvas.toBlob((b) => (b ? res(b) : rej(new Error("toBlob failed"))), mime, 0.01)
-        );
-        resolve({ blob: finalBlob, width: targetW, height: targetH });
-      } else {
-        const quality = mime === "image/png" ? undefined : 0.88;
-        const blob = await new Promise<Blob>((res, rej) =>
-          canvas.toBlob((b) => (b ? res(b) : rej(new Error("toBlob failed"))), mime, quality)
-        );
-        resolve({ blob, width: targetW, height: targetH });
-      }
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Failed to load image")); };
-    img.src = url;
-  });
+interface ResizedResult {
+  original: UploadedImage;
+  blob: Blob;
+  url: string;
+  width: number;
+  height: number;
+  filename: string;
 }
+
+type OutputFormat = "original" | "jpeg" | "png" | "webp";
+
+interface Preset {
+  label: string;
+  width: number;
+  height: number;
+}
+
+const presets: Preset[] = [
+  { label: "Instagram Post", width: 1080, height: 1080 },
+  { label: "Instagram Story", width: 1080, height: 1920 },
+  { label: "Facebook Cover", width: 820, height: 312 },
+  { label: "Twitter Header", width: 1500, height: 500 },
+  { label: "LinkedIn Banner", width: 1584, height: 396 },
+  { label: "YouTube Thumbnail", width: 1280, height: 720 },
+  { label: "HD", width: 1280, height: 720 },
+  { label: "Full HD", width: 1920, height: 1080 },
+  { label: "4K", width: 3840, height: 2160 },
+  { label: "Passport Photo", width: 600, height: 600 },
+];
+
+const qualityOptions = [
+  { label: "Low", value: 0.6 },
+  { label: "Medium", value: 0.8 },
+  { label: "High", value: 0.92 },
+  { label: "Max", value: 1.0 },
+];
 
 export default function ImageResizer() {
-  const [mode, setMode] = useState<ResizeMode>("dimensions");
-  const [width, setWidth] = useState("800");
-  const [height, setHeight] = useState("600");
+  const [images, setImages] = useState<UploadedImage[]>([]);
+  const [targetWidth, setTargetWidth] = useState(0);
+  const [targetHeight, setTargetHeight] = useState(0);
+  const [percentage, setPercentage] = useState(100);
+  const [usePercentage, setUsePercentage] = useState(false);
   const [lockAspect, setLockAspect] = useState(true);
-  const [targetKB, setTargetKB] = useState("500");
+  const [quality, setQuality] = useState(0.92);
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>("original");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [results, setResults] = useState<Result[]>([]);
-  const [downloaded, setDownloaded] = useState(false);
+  const [results, setResults] = useState<ResizedResult[]>([]);
+  const [activeTab, setActiveTab] = useState<"custom" | "presets">("custom");
 
-  // Original dimensions for aspect ratio lock
-  const originalDimsRef = useRef<{ w: number; h: number } | null>(null);
+  const aspectRatioRef = useRef(1);
 
-  const handleWidthChange = useCallback((val: string) => {
-    setWidth(val);
-    if (lockAspect && originalDimsRef.current) {
-      const { w, h } = originalDimsRef.current;
-      const newH = Math.round(parseInt(val) * (h / w));
-      if (!isNaN(newH)) setHeight(String(newH));
-    }
-  }, [lockAspect]);
+  const handleFiles = useCallback((files: File[]) => {
+    const loaded: UploadedImage[] = [];
+    let remaining = files.length;
 
-  const handleHeightChange = useCallback((val: string) => {
-    setHeight(val);
-    if (lockAspect && originalDimsRef.current) {
-      const { w, h } = originalDimsRef.current;
-      const newW = Math.round(parseInt(val) * (w / h));
-      if (!isNaN(newW)) setWidth(String(newW));
-    }
-  }, [lockAspect]);
-
-  const applyPreset = useCallback((preset: Preset) => {
-    setWidth(String(preset.w));
-    setHeight(String(preset.h));
-    setMode("dimensions");
+    files.forEach((file) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        loaded.push({ file, url, width: img.naturalWidth, height: img.naturalHeight });
+        remaining--;
+        if (remaining === 0) {
+          setImages(loaded);
+          setResults([]);
+          const first = loaded[0];
+          setTargetWidth(first.width);
+          setTargetHeight(first.height);
+          aspectRatioRef.current = first.width / first.height;
+        }
+      };
+      img.src = url;
+    });
   }, []);
 
-  const handleFiles = useCallback(async (files: File[]) => {
+  const handleWidthChange = useCallback(
+    (w: number) => {
+      setTargetWidth(w);
+      if (lockAspect && aspectRatioRef.current > 0) {
+        setTargetHeight(Math.round(w / aspectRatioRef.current));
+      }
+    },
+    [lockAspect]
+  );
+
+  const handleHeightChange = useCallback(
+    (h: number) => {
+      setTargetHeight(h);
+      if (lockAspect && aspectRatioRef.current > 0) {
+        setTargetWidth(Math.round(h * aspectRatioRef.current));
+      }
+    },
+    [lockAspect]
+  );
+
+  const handlePercentageChange = useCallback(
+    (pct: number) => {
+      setPercentage(pct);
+      if (images.length > 0) {
+        const first = images[0];
+        setTargetWidth(Math.round(first.width * (pct / 100)));
+        setTargetHeight(Math.round(first.height * (pct / 100)));
+      }
+    },
+    [images]
+  );
+
+  const applyPreset = useCallback((preset: Preset) => {
+    setTargetWidth(preset.width);
+    setTargetHeight(preset.height);
+    setLockAspect(false);
+    setUsePercentage(false);
+    setActiveTab("custom");
+  }, []);
+
+  const resizeImages = useCallback(async () => {
+    if (images.length === 0 || targetWidth <= 0 || targetHeight <= 0) return;
     setIsProcessing(true);
     setResults([]);
-    setDownloaded(false);
 
-    // Get original dimensions from first file for aspect lock
-    if (files.length > 0 && !originalDimsRef.current) {
-      const img = new Image();
-      const url = URL.createObjectURL(files[0]);
-      await new Promise<void>((resolve) => {
-        img.onload = () => {
-          originalDimsRef.current = { w: img.naturalWidth, h: img.naturalHeight };
-          URL.revokeObjectURL(url);
-          resolve();
-        };
-        img.onerror = () => { URL.revokeObjectURL(url); resolve(); };
-        img.src = url;
-      });
-    }
+    try {
+      const resized: ResizedResult[] = [];
 
-    const processed: Result[] = [];
-    for (const file of files) {
-      try {
-        const w = parseInt(width) || 800;
-        const h = parseInt(height) || 600;
-        const kb = mode === "target" ? parseInt(targetKB) || 500 : undefined;
-
-        const { blob, width: outW, height: outH } = await resizeImage(file, w, h, kb);
-        const ext = file.type === "image/png" ? "png" : "jpg";
-        const baseName = file.name.replace(/\.[^.]+$/, "");
-        const filename = `${baseName}-${outW}x${outH}.${ext}`;
-        const url = URL.createObjectURL(blob);
-        processed.push({
-          url,
-          filename,
-          size: blob.size,
-          originalSize: file.size,
-          originalName: file.name,
-          width: outW,
-          height: outH,
-          thumbnailUrl: url,
+      for (const image of images) {
+        const img = new Image();
+        img.src = image.url;
+        await new Promise<void>((resolve) => {
+          img.onload = () => resolve();
         });
-      } catch (err) {
-        console.error(err);
-        addToast(`Failed to resize ${file.name}`, "error");
+
+        const canvas = document.createElement("canvas");
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext("2d")!;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+        const mimeType =
+          outputFormat === "original" ? image.file.type : `image/${outputFormat}`;
+        const showQuality = mimeType === "image/jpeg" || mimeType === "image/webp";
+
+        const blob = await new Promise<Blob>((resolve) =>
+          canvas.toBlob(
+            (b) => resolve(b!),
+            mimeType,
+            showQuality ? quality : undefined
+          )
+        );
+
+        const ext =
+          outputFormat === "original"
+            ? image.file.name.split(".").pop() || "jpg"
+            : outputFormat;
+        const baseName = image.file.name.replace(/\.[^.]+$/, "");
+        const filename = `${baseName}-${targetWidth}x${targetHeight}.${ext}`;
+
+        resized.push({
+          original: image,
+          blob,
+          url: URL.createObjectURL(blob),
+          width: targetWidth,
+          height: targetHeight,
+          filename,
+        });
       }
-    }
 
-    setResults(processed);
-    setIsProcessing(false);
-    if (processed.length > 0) {
-      addToast(`${processed.length} image${processed.length > 1 ? "s" : ""} resized`, "success");
+      setResults(resized);
+      addToast(
+        resized.length === 1
+          ? `Resized to ${targetWidth} \u00d7 ${targetHeight}`
+          : `${resized.length} images resized`,
+        "success"
+      );
+    } catch (err) {
+      console.error("Resize failed:", err);
+      addToast("Resize failed. Please try again.", "error");
+    } finally {
+      setIsProcessing(false);
     }
-  }, [mode, width, height, targetKB]);
-
-  useAutoLoadFile(handleFiles);
-  usePasteImage((file) => handleFiles([file]));
+  }, [images, targetWidth, targetHeight, quality, outputFormat]);
 
   const downloadAll = useCallback(async () => {
-    if (results.length < 2) return;
+    if (results.length <= 1) return;
     const zip = new JSZip();
     for (const r of results) {
-      const blob = await fetch(r.url).then((res) => res.blob());
-      zip.file(r.filename, blob);
+      zip.file(r.filename, r.blob);
     }
     const zipBlob = await zip.generateAsync({ type: "blob" });
     const url = URL.createObjectURL(zipBlob);
@@ -216,172 +213,313 @@ export default function ImageResizer() {
   }, [results]);
 
   const reset = useCallback(() => {
+    images.forEach((img) => URL.revokeObjectURL(img.url));
     results.forEach((r) => URL.revokeObjectURL(r.url));
+    setImages([]);
     setResults([]);
-    setDownloaded(false);
-    originalDimsRef.current = null;
-  }, [results]);
+    setTargetWidth(0);
+    setTargetHeight(0);
+    setPercentage(100);
+  }, [images, results]);
+
+  const showQualityControl =
+    outputFormat === "jpeg" ||
+    outputFormat === "webp" ||
+    (outputFormat === "original" &&
+      images.length > 0 &&
+      (images[0].file.type === "image/jpeg" || images[0].file.type === "image/webp"));
 
   return (
     <div className="space-y-6">
-      <PageDragOverlay onFiles={handleFiles} />
+      {/* Drop zone */}
+      <FileDropZone
+        accept=".jpg,.jpeg,.png,.webp,.gif"
+        multiple
+        maxSizeMB={50}
+        onFiles={handleFiles}
+      />
 
-      <FileDropZone accept=".jpg,.jpeg,.png,.webp" multiple maxSizeMB={50} onFiles={handleFiles} />
-
-      {/* Mode tabs */}
-      <div className="rounded-xl border border-border bg-card p-5 space-y-5">
-        <div className="flex gap-1.5">
-          {([
-            { id: "dimensions", label: "Custom Size" },
-            { id: "presets", label: "Presets" },
-            { id: "target", label: "Target File Size" },
-          ] as { id: ResizeMode; label: string }[]).map((m) => (
-            <button
-              key={m.id}
-              onClick={() => setMode(m.id)}
-              className={`rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${mode === m.id ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40"}`}
-            >
-              {m.label}
-            </button>
-          ))}
-        </div>
-
-        {mode === "dimensions" && (
-          <div className="space-y-4">
-            <div className="flex items-end gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Width (px)</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={width}
-                  onChange={(e) => handleWidthChange(e.target.value)}
-                  className="w-28 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20"
-                />
+      {images.length > 0 && (
+        <>
+          {/* Original info */}
+          <div className="rounded-xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                Original: {images[0].width} &times; {images[0].height} px
+                {images.length === 1 && (
+                  <span> &middot; {formatBytes(images[0].file.size)}</span>
+                )}
+                {images.length > 1 && (
+                  <span> &middot; {images.length} images</span>
+                )}
               </div>
               <button
-                onClick={() => setLockAspect((l) => !l)}
-                className="mb-2 rounded-lg border border-border p-2 text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors"
-                title={lockAspect ? "Aspect ratio locked" : "Aspect ratio unlocked"}
+                onClick={reset}
+                className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
-                {lockAspect ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+                <X className="h-4 w-4" />
               </button>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Height (px)</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={height}
-                  onChange={(e) => handleHeightChange(e.target.value)}
-                  className="w-28 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20"
-                />
-              </div>
             </div>
-            {lockAspect && (
-              <p className="text-xs text-muted-foreground">Aspect ratio locked — changing one dimension updates the other proportionally.</p>
-            )}
           </div>
-        )}
 
-        {mode === "presets" && (
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-            {PRESETS.map((preset) => (
+          {/* Tabs */}
+          <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="flex border-b border-border">
               <button
-                key={preset.label}
-                onClick={() => applyPreset(preset)}
-                className="group rounded-xl border border-border bg-background p-3 text-left transition-all hover:border-primary/40 hover:bg-primary/5"
+                onClick={() => setActiveTab("custom")}
+                className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
+                  activeTab === "custom"
+                    ? "bg-background text-foreground border-b-2 border-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <p className="text-xs font-semibold text-foreground">{preset.label}</p>
-                <p className="text-xs text-muted-foreground">{preset.w}×{preset.h}</p>
-                {preset.note && <p className="text-xs text-muted-foreground/70">{preset.note}</p>}
+                Custom Size
               </button>
-            ))}
-          </div>
-        )}
+              <button
+                onClick={() => setActiveTab("presets")}
+                className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
+                  activeTab === "presets"
+                    ? "bg-background text-foreground border-b-2 border-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Presets
+              </button>
+            </div>
 
-        {mode === "target" && (
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Target file size (KB)</label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="number"
-                  min={10}
-                  value={targetKB}
-                  onChange={(e) => setTargetKB(e.target.value)}
-                  className="w-28 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20"
-                />
-                <div className="flex gap-1.5">
-                  {["100", "500", "1000"].map((kb) => (
+            <div className="p-5 space-y-5">
+              {activeTab === "custom" && (
+                <>
+                  {/* Percentage toggle */}
+                  <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={usePercentage}
+                      onChange={(e) => {
+                        setUsePercentage(e.target.checked);
+                        if (e.target.checked) {
+                          handlePercentageChange(percentage);
+                        }
+                      }}
+                      className="rounded border-border"
+                    />
+                    Use percentage
+                  </label>
+
+                  {usePercentage ? (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        Scale: {percentage}%
+                      </label>
+                      <input
+                        type="range"
+                        min={1}
+                        max={200}
+                        value={percentage}
+                        onChange={(e) =>
+                          handlePercentageChange(Number(e.target.value))
+                        }
+                        className="w-full accent-primary"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>1%</span>
+                        <span>200%</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 space-y-1">
+                        <label className="text-xs font-medium text-muted-foreground">
+                          Width (px)
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={10000}
+                          value={targetWidth || ""}
+                          onChange={(e) =>
+                            handleWidthChange(Number(e.target.value))
+                          }
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm tabular-nums"
+                        />
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setLockAspect(!lockAspect);
+                          if (!lockAspect && images.length > 0) {
+                            aspectRatioRef.current =
+                              images[0].width / images[0].height;
+                          }
+                        }}
+                        className="mt-5 rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                        title={
+                          lockAspect
+                            ? "Aspect ratio locked"
+                            : "Aspect ratio unlocked"
+                        }
+                      >
+                        {lockAspect ? (
+                          <Lock className="h-4 w-4" />
+                        ) : (
+                          <Unlock className="h-4 w-4" />
+                        )}
+                      </button>
+
+                      <div className="flex-1 space-y-1">
+                        <label className="text-xs font-medium text-muted-foreground">
+                          Height (px)
+                        </label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={10000}
+                          value={targetHeight || ""}
+                          onChange={(e) =>
+                            handleHeightChange(Number(e.target.value))
+                          }
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm tabular-nums"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Quality */}
+                  {showQualityControl && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Quality</label>
+                      <div className="flex gap-2">
+                        {qualityOptions.map((opt) => (
+                          <button
+                            key={opt.value}
+                            onClick={() => setQuality(opt.value)}
+                            className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+                              quality === opt.value
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-border bg-background text-muted-foreground hover:border-primary/40"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Output format */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Output format</label>
+                    <div className="flex gap-2">
+                      {(
+                        ["original", "jpeg", "png", "webp"] as OutputFormat[]
+                      ).map((fmt) => (
+                        <button
+                          key={fmt}
+                          onClick={() => setOutputFormat(fmt)}
+                          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+                            outputFormat === fmt
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border bg-background text-muted-foreground hover:border-primary/40"
+                          }`}
+                        >
+                          {fmt === "original"
+                            ? "Keep original"
+                            : fmt.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {activeTab === "presets" && (
+                <div className="grid grid-cols-2 gap-2">
+                  {presets.map((preset) => (
                     <button
-                      key={kb}
-                      onClick={() => setTargetKB(kb)}
-                      className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors ${targetKB === kb ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40"}`}
+                      key={preset.label}
+                      onClick={() => applyPreset(preset)}
+                      className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2.5 text-sm transition-colors hover:border-primary/40 hover:bg-muted"
                     >
-                      {kb === "1000" ? "1 MB" : `${kb} KB`}
+                      <span className="font-medium text-foreground">
+                        {preset.label}
+                      </span>
+                      <span className="text-xs text-muted-foreground tabular-nums">
+                        {preset.width} &times; {preset.height}
+                      </span>
                     </button>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Uses binary-search quality reduction to get as close to your target as possible. Dimensions from "Custom Size" apply first.
-            </p>
           </div>
-        )}
-      </div>
 
-      {isProcessing && <ProcessingIndicator label="Resizing images…" />}
+          {/* Resize button */}
+          <button
+            onClick={resizeImages}
+            disabled={isProcessing || targetWidth <= 0 || targetHeight <= 0}
+            className="w-full rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isProcessing
+              ? "Resizing\u2026"
+              : `Resize to ${targetWidth} \u00d7 ${targetHeight}`}
+          </button>
+        </>
+      )}
 
-      {results.length > 0 && !isProcessing && !downloaded && (
-        <div className="space-y-3">
+      {/* Processing */}
+      {isProcessing && <ProcessingIndicator label="Resizing images\u2026" />}
+
+      {/* Results */}
+      {results.length > 0 && !isProcessing && (
+        <div className="space-y-4">
           <h2 className="text-sm font-semibold">Results</h2>
           {results.map((r, i) => (
-            <div key={i} className="space-y-2">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{r.originalName}</span>
-                <ArrowRight className="h-3 w-3" />
-                <span className="font-medium text-foreground">{r.width}×{r.height}px</span>
+            <div
+              key={i}
+              className="rounded-xl border border-border bg-card p-4 space-y-3"
+            >
+              <div className="flex items-start gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={r.url}
+                  alt={`Resized ${r.filename}`}
+                  className="h-20 w-20 rounded-lg border border-border object-cover"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {r.filename}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {r.width} &times; {r.height} px &middot;{" "}
+                    {formatBytes(r.blob.size)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Original: {r.original.width} &times; {r.original.height} px
+                    &middot; {formatBytes(r.original.file.size)}
+                  </p>
+                </div>
               </div>
-              <DownloadCard
+              <a
                 href={r.url}
-                filename={r.filename}
-                fileSize={r.size}
-                originalSize={r.originalSize}
-                thumbnailUrl={r.thumbnailUrl}
-                onDownload={() => setDownloaded(true)}
-              />
+                download={r.filename}
+                className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                <Download className="h-4 w-4" />
+                Download
+              </a>
             </div>
           ))}
+
           {results.length > 1 && (
             <button
-              onClick={() => { downloadAll(); setDownloaded(true); }}
+              onClick={downloadAll}
               className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <Package className="h-4 w-4" />
-              Download all as ZIP
+              Download All as ZIP
             </button>
           )}
         </div>
-      )}
-
-      {downloaded && (
-        <PostDownloadState
-          toolSlug="resize-image"
-          resetLabel="Resize another image"
-          onReset={reset}
-          redownloadSlot={
-            results.length === 1 ? (
-              <a href={results[0].url} download={results[0].filename} className="underline hover:text-foreground transition-colors">
-                Re-download {truncateFilename(results[0].filename, 28)}
-              </a>
-            ) : (
-              <button onClick={downloadAll} className="underline hover:text-foreground transition-colors">
-                Re-download all as ZIP
-              </button>
-            )
-          }
-        />
       )}
     </div>
   );
