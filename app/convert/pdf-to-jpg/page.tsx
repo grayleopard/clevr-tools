@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
+import RelatedToolsCluster from "@/components/seo/RelatedToolsCluster";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PdfToJpg from "@/components/tools/PdfToJpg";
 import { notFound } from "next/navigation";
@@ -38,6 +39,7 @@ export default function PdfToJpgPage() {
     <ToolLayout tool={tool}>
       <FaqSchema items={faqItems} />
       <PdfToJpg />
+      <RelatedToolsCluster category="pdf" currentPath={tool.route} />
     </ToolLayout>
   );
 }
