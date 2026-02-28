@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-02-28T18:27:03.852Z",
+  "durationMs": 14735,
+  "chromeBin": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "measurements": [
+    {
+      "url": "http://127.0.0.1:3000/",
+      "fcpMs": 412,
+      "lcpMs": 412,
+      "cls": 0.001,
+      "tbtMs": 27,
+      "lcpSelector": "main.flex-1 > section.border-b.border-border > div.mx-auto.max-w-4xl > div.mb-8.text-center > h1.text-3xl.font-semibold",
+      "lcpText": "Fast, free, private tools for everyday tasks.",
+      "lcpSize": 26400,
+      "totalJsTransferKB": 296,
+      "firstPartyJsTransferKB": 296,
+      "coveredScriptKB": 1106.4,
+      "usedScriptKB": 1106.4,
+      "unusedScriptKB": 0,
+      "firstPartyCoveredScriptKB": 1106.4,
+      "firstPartyUnusedScriptKB": 0,
+      "renderBlockingCss": [],
+      "navTimings": {
+        "responseEnd": 527.5,
+        "domContentLoaded": 531.1999998092651,
+        "load": 1591.3999998569489
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3000/compress/image",
+      "fcpMs": 364,
+      "lcpMs": 364,
+      "cls": 0.007,
+      "tbtMs": 38,
+      "lcpSelector": "div.flex.min-h-screen > main.flex-1 > div.border-b.border-border > div.mx-auto.max-w-4xl > p.mt-2.text-muted-foreground",
+      "lcpText": "Compress JPG, PNG & WebP images without losing quality.",
+      "lcpSize": 15615,
+      "totalJsTransferKB": 419.7,
+      "firstPartyJsTransferKB": 419.7,
+      "coveredScriptKB": 1489.4,
+      "usedScriptKB": 1371.4,
+      "unusedScriptKB": 117.9,
+      "firstPartyCoveredScriptKB": 1489.4,
+      "firstPartyUnusedScriptKB": 117.9,
+      "renderBlockingCss": [],
+      "navTimings": {
+        "responseEnd": 573.0999999046326,
+        "domContentLoaded": 576.2999999523163,
+        "load": 2818.0999999046326
+      }
+    },
+    {
+      "url": "http://127.0.0.1:3000/convert/pdf-to-jpg",
+      "fcpMs": 360,
+      "lcpMs": 360,
+      "cls": 0.005,
+      "tbtMs": 16,
+      "lcpSelector": "div.flex.min-h-screen > main.flex-1 > div.border-t.border-border > div.mx-auto.max-w-4xl > p",
+      "lcpText": "PDFs are the universal format for documents, but JPG images are universal for sharing, embedding, and displaying content",
+      "lcpSize": 32220,
+      "totalJsTransferKB": 188.6,
+      "firstPartyJsTransferKB": 188.6,
+      "coveredScriptKB": 900.3,
+      "usedScriptKB": 782.3,
+      "unusedScriptKB": 117.9,
+      "firstPartyCoveredScriptKB": 900.3,
+      "firstPartyUnusedScriptKB": 117.9,
+      "renderBlockingCss": [],
+      "navTimings": {
+        "responseEnd": 535.8999998569489,
+        "domContentLoaded": 538.5999999046326,
+        "load": 1718.5999999046326
+      }
+    }
+  ]
+}

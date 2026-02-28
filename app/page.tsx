@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getToolBySlug } from "@/lib/tools";
 import { siteCategories, getCategoryToolCount } from "@/lib/site-structure";
-import SmartConverter from "@/components/home/SmartConverter";
+import SmartConverterDeferred from "@/components/home/SmartConverterDeferred";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
@@ -53,7 +53,7 @@ export default function HomePage() {
             </div>
 
             {/* Smart converter */}
-            <SmartConverter />
+            <SmartConverterDeferred />
           </div>
         </section>
 

@@ -379,7 +379,20 @@ function DetectedView({
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export default function SmartConverter() {
+interface SmartConverterProps {
+  deferredBrowseToken?: number;
+  deferredFile?: File | null;
+  deferredFileToken?: number;
+  onDeferredFileHandled?: () => void;
+}
+
+export default function SmartConverter({
+  deferredBrowseToken = 0,
+  deferredFile = null,
+  deferredFileToken = 0,
+  onDeferredFileHandled,
+}: SmartConverterProps = {}) {
+
   const router = useRouter();
   const [stage, setStage] = useState<Stage>("idle");
   const [detected, setDetected] = useState<DetectedFile | null>(null);
@@ -394,6 +407,8 @@ export default function SmartConverter() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef(0);
+  const handledBrowseTokenRef = useRef(0);
+  const handledDeferredFileTokenRef = useRef(0);
   // stageRef lets processFile read current stage without adding it as a dep
   const stageRef = useRef<Stage>("idle");
 
@@ -493,6 +508,23 @@ export default function SmartConverter() {
   processFileRef.current = processFile;
 
   usePasteImage(processFile);
+
+  useEffect(() => {
+    if (!deferredBrowseToken) return;
+    if (handledBrowseTokenRef.current === deferredBrowseToken) return;
+    handledBrowseTokenRef.current = deferredBrowseToken;
+    requestAnimationFrame(() => {
+      fileInputRef.current?.click();
+    });
+  }, [deferredBrowseToken]);
+
+  useEffect(() => {
+    if (!deferredFile || !deferredFileToken) return;
+    if (handledDeferredFileTokenRef.current === deferredFileToken) return;
+    handledDeferredFileTokenRef.current = deferredFileToken;
+    processFile(deferredFile);
+    onDeferredFileHandled?.();
+  }, [deferredFile, deferredFileToken, onDeferredFileHandled, processFile]);
 
   const handleAction = useCallback(
     (actionId: ActionId) => {
