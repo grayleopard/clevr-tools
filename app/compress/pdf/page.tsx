@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PdfCompressor from "@/components/tools/PdfCompressor";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("pdf-compressor")!;
+const faqItems = getToolFaqs("pdf-compressor");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -33,6 +36,7 @@ export default function PdfCompressorPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
+      <FaqSchema items={faqItems} />
       <PdfCompressor />
     </ToolLayout>
   );

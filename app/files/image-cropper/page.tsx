@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import { notFound } from "next/navigation";
 
@@ -9,6 +11,7 @@ const ImageCropper = dynamic(() => import("@/components/tools/ImageCropper"), {
 });
 
 const tool = getToolBySlug("image-cropper")!;
+const faqItems = getToolFaqs("image-cropper");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -37,6 +40,7 @@ export default function ImageCropperPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
+      <FaqSchema items={faqItems} />
       <ImageCropper />
     </ToolLayout>
   );

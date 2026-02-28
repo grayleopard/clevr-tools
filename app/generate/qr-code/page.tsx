@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("qr-code-generator")!;
+const faqItems = getToolFaqs("qr-code-generator");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -33,6 +36,7 @@ export default function QrCodePage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
+      <FaqSchema items={faqItems} />
       <QrCodeGenerator />
     </ToolLayout>
   );
