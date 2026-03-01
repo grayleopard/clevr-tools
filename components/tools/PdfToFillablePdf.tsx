@@ -41,7 +41,7 @@ interface PdfPageLike {
     canvasContext: CanvasRenderingContext2D;
     viewport: PdfViewportLike;
     canvas: HTMLCanvasElement;
-  }) => { promise: Promise<void> };
+  }) => import("pdfjs-dist").RenderTask;
 }
 
 interface PdfLike {
@@ -139,6 +139,23 @@ function normalizeRotationDegrees(rotation: number): number {
   return ((rotation % 360) + 360) % 360;
 }
 
+function normalizeQuarterTurnRotation(rotation: number): 0 | 90 | 180 | 270 {
+  const normalized = normalizeRotationDegrees(rotation);
+  const snapped = Math.round(normalized / 90) * 90;
+  const quarter = ((snapped % 360) + 360) % 360;
+  if (quarter === 90 || quarter === 180 || quarter === 270) return quarter;
+  return 0;
+}
+
+function isRenderCancelledError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    (error as { name?: string }).name === "RenderingCancelledException"
+  );
+}
+
 function nextFieldName(type: FillableFieldType, count: number): string {
   switch (type) {
     case "text":
@@ -181,6 +198,8 @@ export default function PdfToFillablePdf() {
   const pdfBytesRef = useRef<Uint8Array | null>(null);
   const pageInfoRef = useRef<Record<number, { pageWidthPt: number; pageHeightPt: number }>>({});
   const viewportRef = useRef<PdfViewportLike | null>(null);
+  const renderTaskRef = useRef<import("pdfjs-dist").RenderTask | null>(null);
+  const renderSeqRef = useRef(0);
   const fieldCountRef = useRef<Record<FillableFieldType, number>>({
     text: 0,
     checkbox: 0,
@@ -189,14 +208,34 @@ export default function PdfToFillablePdf() {
   });
   const dragRef = useRef<DragState | null>(null);
   const isDev = process.env.NODE_ENV !== "production";
+  const [debugFromQuery, setDebugFromQuery] = useState(false);
+  const isDebugVisible = (isDev && showDebug) || debugFromQuery;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    setDebugFromQuery(params.get("debug") === "1");
+  }, []);
+
+  const cancelRenderTask = useCallback(() => {
+    if (!renderTaskRef.current) return;
+    try {
+      renderTaskRef.current.cancel();
+    } catch {
+      // Ignore cancellation races.
+    }
+    renderTaskRef.current = null;
+  }, []);
 
   const destroyPdf = useCallback(() => {
+    renderSeqRef.current += 1;
+    cancelRenderTask();
     if (pdfRef.current?.destroy) {
       pdfRef.current.destroy();
     }
     pdfRef.current = null;
     viewportRef.current = null;
-  }, []);
+  }, [cancelRenderTask]);
 
   useEffect(() => {
     return () => {
@@ -222,23 +261,27 @@ export default function PdfToFillablePdf() {
       const pdf = pdfRef.current;
       const canvas = canvasRef.current;
       if (!pdf || !canvas) return;
+      const seq = ++renderSeqRef.current;
+      cancelRenderTask();
 
       setIsRenderingPage(true);
       try {
         const page = await pdf.getPage(pageIndex + 1);
-        const sourceRotation = normalizeRotationDegrees(page.rotate || 0);
+        if (seq !== renderSeqRef.current) return;
+
+        const sourceRotation = normalizeQuarterTurnRotation(page.rotate || 0);
         const defaultUpright = sourceRotation !== 0;
         const shouldViewUpright = isViewUprightTouched ? viewUpright : defaultUpright;
         if (!isViewUprightTouched && viewUpright !== defaultUpright) {
           setViewUpright(defaultUpright);
         }
-        const displayRotation = shouldViewUpright ? (360 - sourceRotation) % 360 : 0;
-        const activeRotation = (sourceRotation + displayRotation) % 360;
+        const displayRotation = shouldViewUpright ? (360 - sourceRotation) % 360 : sourceRotation;
+        const viewportRotation = shouldViewUpright ? displayRotation : sourceRotation;
 
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
-        const cssViewport = page.getViewport({ scale: zoom, rotation: activeRotation });
+        const cssViewport = page.getViewport({ scale: zoom, rotation: viewportRotation });
         const dpr = window.devicePixelRatio || 1;
-        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: activeRotation });
+        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: viewportRotation });
 
         canvas.width = Math.max(1, Math.floor(renderViewport.width));
         canvas.height = Math.max(1, Math.floor(renderViewport.height));
@@ -253,11 +296,25 @@ export default function PdfToFillablePdf() {
 
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
-        await page.render({
+        const task = page.render({
           canvasContext: context,
           viewport: renderViewport,
           canvas,
-        }).promise;
+        });
+        renderTaskRef.current = task;
+
+        try {
+          await task.promise;
+        } catch (error) {
+          if (isRenderCancelledError(error)) return;
+          throw error;
+        } finally {
+          if (renderTaskRef.current === task) {
+            renderTaskRef.current = null;
+          }
+        }
+
+        if (seq !== renderSeqRef.current) return;
 
         viewportRef.current = cssViewport;
         pageInfoRef.current[pageIndex] = {
@@ -271,16 +328,19 @@ export default function PdfToFillablePdf() {
           widthCss: cssViewport.width,
           heightCss: cssViewport.height,
           sourceRotation,
-          activeRotation,
+          activeRotation: viewportRotation,
         });
       } catch (error) {
+        if (isRenderCancelledError(error)) return;
         console.error(error);
         addToast("Failed to render PDF page.", "error");
       } finally {
-        setIsRenderingPage(false);
+        if (seq === renderSeqRef.current) {
+          setIsRenderingPage(false);
+        }
       }
     },
-    [isViewUprightTouched, viewUpright, zoom]
+    [cancelRenderTask, isViewUprightTouched, viewUpright, zoom]
   );
 
   const handleFiles = useCallback(
@@ -329,7 +389,11 @@ export default function PdfToFillablePdf() {
   useEffect(() => {
     if (!pdfRef.current || pageCount === 0) return;
     void renderPage(currentPage);
-  }, [currentPage, pageCount, renderPage]);
+    return () => {
+      renderSeqRef.current += 1;
+      cancelRenderTask();
+    };
+  }, [cancelRenderTask, currentPage, pageCount, renderPage]);
 
   const fieldsOnCurrentPage = useMemo(
     () => fields.filter((field) => field.pageIndex === currentPage),
@@ -714,6 +778,13 @@ export default function PdfToFillablePdf() {
                   Placement debug
                 </label>
               )}
+              {isDebugVisible && pageMetrics && (
+                <p className="ml-auto text-[11px] text-muted-foreground">
+                  sourceRotation {pageMetrics.sourceRotation}° · viewUpright{" "}
+                  {String(viewUpright)} · viewportRotation {pageMetrics.activeRotation}° · scale{" "}
+                  {zoom.toFixed(2)}
+                </p>
+              )}
               <p className="w-full text-xs text-muted-foreground">
                 Pick a field type, then click anywhere on the page preview to place it.
               </p>
@@ -779,7 +850,7 @@ export default function PdfToFillablePdf() {
                     );
                   })}
 
-                  {isDev && showDebug && debugPoint && (
+                  {isDebugVisible && debugPoint && (
                     <>
                       <div
                         className="pointer-events-none absolute bg-rose-500/70"
