@@ -136,7 +136,9 @@ test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => 
 
   const uprightToggle = page.getByRole("checkbox", { name: /View upright/i });
   await expect(uprightToggle).toBeChecked();
+  await expect(page.getByText(/page\.rotate 90°/i)).toBeVisible();
   await expect(page.getByText(/sourceRotation 90°/i)).toBeVisible();
+  await expect(page.getByText(/cancelRotation 270°/i)).toBeVisible();
   await expect(page.getByText(/viewUpright true/i)).toBeVisible();
   await expect(page.getByText(/viewportRotation 270°/i)).toBeVisible();
 

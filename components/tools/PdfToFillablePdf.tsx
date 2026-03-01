@@ -22,7 +22,6 @@ import type { FillableFieldDefinition, FillableFieldType } from "@/lib/pdf/filla
 import {
   clampPdfRectToPage,
   getLocalViewportPoint,
-  pdfRectToViewportRect,
   viewportRectToPdfRect,
 } from "@/lib/pdf/field-placement.mjs";
 
@@ -79,12 +78,14 @@ interface DragState {
 }
 
 interface PageMetrics {
+  pageRotate: number;
   pageWidthPt: number;
   pageHeightPt: number;
   widthCss: number;
   heightCss: number;
   sourceRotation: number;
-  activeRotation: number;
+  cancelRotation: number;
+  viewportRotation: number;
 }
 
 interface DebugPoint {
@@ -154,6 +155,27 @@ function isRenderCancelledError(error: unknown): boolean {
     "name" in error &&
     (error as { name?: string }).name === "RenderingCancelledException"
   );
+}
+
+function normalizeViewportRect(
+  viewport: PdfViewportLike,
+  xPt: number,
+  yPt: number,
+  widthPt: number,
+  heightPt: number
+) {
+  const [x1, y1, x2, y2] = viewport.convertToViewportRectangle([
+    xPt,
+    yPt,
+    xPt + widthPt,
+    yPt + heightPt,
+  ]);
+  return {
+    leftPx: Math.min(x1, x2),
+    topPx: Math.min(y1, y2),
+    widthPx: Math.abs(x2 - x1),
+    heightPx: Math.abs(y2 - y1),
+  };
 }
 
 function nextFieldName(type: FillableFieldType, count: number): string {
@@ -269,14 +291,15 @@ export default function PdfToFillablePdf() {
         const page = await pdf.getPage(pageIndex + 1);
         if (seq !== renderSeqRef.current) return;
 
-        const sourceRotation = normalizeQuarterTurnRotation(page.rotate || 0);
-        const defaultUpright = sourceRotation !== 0;
-        const shouldViewUpright = isViewUprightTouched ? viewUpright : defaultUpright;
-        if (!isViewUprightTouched && viewUpright !== defaultUpright) {
-          setViewUpright(defaultUpright);
+        const pageRotate = page.rotate || 0;
+        const sourceRotation = normalizeQuarterTurnRotation(pageRotate);
+        const defaultViewUpright = sourceRotation !== 0;
+        const effectiveViewUpright = isViewUprightTouched ? viewUpright : defaultViewUpright;
+        if (!isViewUprightTouched && viewUpright !== defaultViewUpright) {
+          setViewUpright(defaultViewUpright);
         }
-        const displayRotation = shouldViewUpright ? (360 - sourceRotation) % 360 : sourceRotation;
-        const viewportRotation = shouldViewUpright ? displayRotation : sourceRotation;
+        const cancelRotation = (360 - sourceRotation) % 360;
+        const viewportRotation = effectiveViewUpright ? cancelRotation : sourceRotation;
 
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
         const cssViewport = page.getViewport({ scale: zoom, rotation: viewportRotation });
@@ -323,12 +346,14 @@ export default function PdfToFillablePdf() {
         };
 
         setPageMetrics({
+          pageRotate,
           pageWidthPt: rawViewport.width,
           pageHeightPt: rawViewport.height,
           widthCss: cssViewport.width,
           heightCss: cssViewport.height,
           sourceRotation,
-          activeRotation: viewportRotation,
+          cancelRotation,
+          viewportRotation,
         });
       } catch (error) {
         if (isRenderCancelledError(error)) return;
@@ -366,10 +391,15 @@ export default function PdfToFillablePdf() {
         const pdfjs = await loadPdfJs();
         const loadingTask = pdfjs.getDocument({ data: fileBytes.slice(0) });
         const pdf = (await loadingTask.promise) as unknown as PdfLike;
+        const firstPage = await pdf.getPage(1);
+        const firstSourceRotation = normalizeQuarterTurnRotation(firstPage.rotate || 0);
+        const defaultViewUpright = firstSourceRotation !== 0;
 
         pdfBytesRef.current = fileBytes;
         pdfRef.current = pdf;
         setFile(uploaded);
+        setViewUpright(defaultViewUpright);
+        setIsViewUprightTouched(false);
         setPageCount(pdf.numPages);
         addToast(`Loaded ${uploaded.name} (${pdf.numPages} pages)`, "success", 1800);
       } catch (error) {
@@ -416,13 +446,7 @@ export default function PdfToFillablePdf() {
       if (rect.width === 0 || rect.height === 0) return;
 
       const defaults = FIELD_DEFAULTS[activeFieldType];
-      const sizeAtOrigin = pdfRectToViewportRect({
-        viewport,
-        xPt: 0,
-        yPt: 0,
-        widthPt: defaults.widthPt,
-        heightPt: defaults.heightPt,
-      });
+      const sizeAtOrigin = normalizeViewportRect(viewport, 0, 0, defaults.widthPt, defaults.heightPt);
 
       const local = getLocalViewportPoint({
         clientX: event.clientX,
@@ -491,13 +515,13 @@ export default function PdfToFillablePdf() {
       setSelectedFieldId(field.id);
 
       const containerRect = overlay.getBoundingClientRect();
-      const fieldRect = pdfRectToViewportRect({
+      const fieldRect = normalizeViewportRect(
         viewport,
-        xPt: field.xPt,
-        yPt: field.yPt,
-        widthPt: field.widthPt,
-        heightPt: field.heightPt,
-      });
+        field.xPt,
+        field.yPt,
+        field.widthPt,
+        field.heightPt
+      );
 
       dragRef.current = {
         fieldId: field.id,
@@ -780,9 +804,10 @@ export default function PdfToFillablePdf() {
               )}
               {isDebugVisible && pageMetrics && (
                 <p className="ml-auto text-[11px] text-muted-foreground">
-                  sourceRotation {pageMetrics.sourceRotation}° · viewUpright{" "}
-                  {String(viewUpright)} · viewportRotation {pageMetrics.activeRotation}° · scale{" "}
-                  {zoom.toFixed(2)}
+                  page.rotate {pageMetrics.pageRotate}° · sourceRotation {pageMetrics.sourceRotation}°
+                  {" · "}viewUpright {String(viewUpright)} · cancelRotation{" "}
+                  {pageMetrics.cancelRotation}° · viewportRotation {pageMetrics.viewportRotation}° ·
+                  {" "}scale {zoom.toFixed(2)}
                 </p>
               )}
               <p className="w-full text-xs text-muted-foreground">
@@ -813,13 +838,13 @@ export default function PdfToFillablePdf() {
                     const viewport = viewportRef.current;
                     if (!pageMetrics || !viewport) return null;
 
-                    const rect = pdfRectToViewportRect({
+                    const rect = normalizeViewportRect(
                       viewport,
-                      xPt: field.xPt,
-                      yPt: field.yPt,
-                      widthPt: field.widthPt,
-                      heightPt: field.heightPt,
-                    });
+                      field.xPt,
+                      field.yPt,
+                      field.widthPt,
+                      field.heightPt
+                    );
                     const selected = selectedFieldId === field.id;
 
                     return (
