@@ -1,40 +1,31 @@
 # PDF-to-Fillable Placement Debug
 
-## Current mapping audit
+## Root cause
 
-The regression came from mixed unit systems in the same flow:
+The broken behavior came from mixing coordinate systems:
 
-1. Placement used click coordinates in CSS pixels (`clientX/Y` + `getBoundingClientRect`).
-2. Field dimensions were stored in PDF points.
-3. Overlay rendering and export were not guaranteed to pass through a single shared conversion layer.
-4. Rotation logic introduced additional width/height transforms, which amplified the mismatch and produced distorted overlays (tall/skinny boxes).
+1. Click/drag happened in viewport CSS pixels.
+2. Overlay and export logic mixed normalized values and PDF-point math.
+3. Rotation metadata was not handled with a single transform path, so rendered orientation and exported coordinates diverged.
 
-## Unified model now used
+## Current mapping pipeline
 
-- Position storage: normalized top-left (`nx`, `ny`) in `[0..1]` relative to the displayed page rect.
-- Size storage: PDF points (`widthPt`, `heightPt`) only.
+The tool now uses pdf.js viewport transforms as the single source of truth:
+
+- Render: `page.getViewport({ scale, rotation: neutralRotation })`, where
+  `neutralRotation` resolves to a rotation-neutral value (`0`) for metadata-only rotation inputs.
+- Click to place:
+  - Convert click to viewport-local CSS coordinates.
+  - Convert viewport rectangle to PDF rect with `viewport.convertToPdfPoint`.
 - Overlay render:
-  - `leftPx = nx * rect.width`
-  - `topPx = ny * rect.height`
-  - `widthPx = (widthPt / pageWidthPt) * rect.width`
-  - `heightPx = (heightPt / pageHeightPt) * rect.height`
+  - Convert PDF rect to viewport rect with `viewport.convertToViewportRectangle`.
+- Drag:
+  - Move in viewport CSS space.
+  - Convert dragged viewport rectangle back to PDF rect.
 - Export:
-  - `xPt = nx * pageWidthPt`
-  - `yPt = pageHeightPt - (ny * pageHeightPt) - heightPt`
+  - Source pages are normalized into a new PDF with rotation metadata baked into content and page rotation set to `0`.
+  - Field rects are transformed with the exact same page transform used for content normalization.
 
-## Shared helpers
+## Why this fixes it
 
-Implemented pure conversion helpers in `lib/pdf/field-placement.mjs` and used them in all paths:
-
-- `domPointToNxNy`
-- `pdfPtSizeToCssPx`
-- `cssPxToPdfPtSize`
-- `nxnyToCssPx`
-- `nxnyToPdfPt`
-- `clampNxNyToBounds`
-
-This enforces one coordinate/sizing model for click-to-place, overlay display, drag, resize, and export.
-
-## Rotation handling note
-
-To avoid dual transform paths during this urgent fix, rendering is normalized to upright page orientation (`rotation: 0`) in the tool. A visible note is shown when source PDF metadata indicates rotation. This keeps placement and export consistent until full rotated-page support is reintroduced through the same conversion pipeline.
+Every interaction path now uses the same conversion model (PDF points <-> viewport pixels) and the same rotation basis. That keeps placement stable across zoom, DPR, scrolling, and rotated inputs.
