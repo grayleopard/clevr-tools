@@ -682,24 +682,6 @@ export const tools: Tool[] = [
 <p>JavaScript provides two levels of encoding: <code>encodeURIComponent()</code> encodes almost all special characters and is the right choice for encoding individual query string values. <code>encodeURI()</code> preserves URL structure characters like <code>:</code>, <code>/</code>, <code>?</code>, and <code>#</code>, making it suitable for encoding an entire URL without breaking its structure. This tool supports both modes so you can pick the one that fits your use case.</p>`,
     relatedTools: ['base64', 'json-formatter'],
   },
-  {
-    slug: 'base64-encoder',
-    name: 'Base64 Encoder / Decoder',
-    shortDescription: 'Encode text or files to Base64 and decode back.',
-    category: 'generate',
-    route: '/generate/base64',
-    acceptedFormats: [],
-    icon: 'Code',
-    metaTitle: 'Base64 Encoder & Decoder Online Free | clevr.tools',
-    metaDescription:
-      'Encode text or files to Base64 and decode Base64 strings online for free. No signup, instant results.',
-    seoContent: `
-      <h2>What is Base64?</h2>
-      <p>Base64 is an encoding scheme that represents binary data as ASCII text, commonly used in email attachments and data URIs.</p>
-    `,
-    relatedTools: ['url-encoder', 'qr-code-generator', 'image-compressor'],
-    live: false,
-  },
   // ─── Time Tools ──────────────────────────────────────────────────────────
   {
     slug: 'timer',

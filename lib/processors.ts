@@ -4,9 +4,6 @@
  * Used by both the individual tool components and SmartConverter.
  */
 
-import imageCompression from "browser-image-compression";
-import { PDFDocument } from "pdf-lib";
-
 export type ImageOutputFormat = "original" | "jpeg" | "webp";
 
 /** Compress an image using browser-image-compression */
@@ -15,6 +12,8 @@ export async function compressImage(
   quality = 80,
   outputFormat: ImageOutputFormat = "original"
 ): Promise<{ blob: Blob; ext: string; mimeType: string }> {
+  const { default: imageCompression } = await import("browser-image-compression");
+
   const mimeType =
     outputFormat === "jpeg"
       ? "image/jpeg"
@@ -99,6 +98,8 @@ export async function heicToJpg(file: File, quality = 90): Promise<Blob> {
 
 /** Compress a PDF by stripping metadata and enabling object streams */
 export async function compressPdf(file: File): Promise<Blob> {
+  const { PDFDocument } = await import("pdf-lib");
+
   const arrayBuffer = await file.arrayBuffer();
   const pdfDoc = await PDFDocument.load(arrayBuffer, {
     ignoreEncryption: true,

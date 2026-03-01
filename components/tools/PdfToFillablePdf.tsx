@@ -297,7 +297,16 @@ export default function PdfToFillablePdf() {
         if (!isViewUprightTouched && viewUpright !== defaultViewUpright) {
           setViewUpright(defaultViewUpright);
         }
-        const viewportRotation = effectiveViewUpright ? 0 : sourceRotation;
+
+        // Simplified rotation model:
+        // renderRotation counter-rotates the page's inherent rotation so it appears upright.
+        // For normal PDFs (pageRotate=0): both checked/unchecked give renderRotation=0 (no effect).
+        // For rotated PDFs (pageRotate=90): unchecked=sideways (0), checked=upright (270).
+        let renderRotation = 0;
+        if (effectiveViewUpright && sourceRotation !== 0) {
+          renderRotation = (360 - sourceRotation) % 360;
+        }
+        const viewportRotation = renderRotation;
 
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
         const cssViewport = page.getViewport({ scale: zoom, rotation: viewportRotation });
