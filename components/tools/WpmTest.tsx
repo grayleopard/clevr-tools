@@ -9,6 +9,7 @@ import {
 } from "@/lib/typing-stats";
 import { addToast } from "@/lib/toast";
 import StreakDisplay from "./StreakDisplay";
+import TypingHistory from "./TypingHistory";
 
 // ─── Word Lists ──────────────────────────────────────────────────────────────
 
@@ -203,6 +204,8 @@ export default function WpmTest() {
   const [isNewPB, setIsNewPB] = useState(false);
   const [copied, setCopied] = useState(false);
   const [wordWindowStart, setWordWindowStart] = useState(0);
+  const [historyRefresh, setHistoryRefresh] = useState(0);
+  const [previousBest, setPreviousBest] = useState<number | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -276,6 +279,7 @@ export default function WpmTest() {
       // Check personal best
       const mode = `${duration}s`;
       const pb = getPersonalBest("wpm-test", mode);
+      setPreviousBest(pb ? pb.wpm : null);
       if (!pb || wpm > pb.wpm) {
         setIsNewPB(true);
       }
@@ -294,6 +298,7 @@ export default function WpmTest() {
         timestamp: Date.now(),
       });
       updateStreak();
+      setHistoryRefresh((prev) => prev + 1);
     },
     [duration]
   );
@@ -366,6 +371,9 @@ export default function WpmTest() {
   // Handle keydown on the hidden input
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
+      // Always prevent default — hidden input should never trigger browser actions
+      e.preventDefault();
+
       if (statusRef.current === "done") return;
 
       // Start on first keypress
@@ -380,7 +388,6 @@ export default function WpmTest() {
       }
 
       if (e.key === " ") {
-        e.preventDefault();
         if (statusRef.current !== "running") return;
 
         const word = words[currentWordIndex];
@@ -419,29 +426,30 @@ export default function WpmTest() {
           setCurrentInput((prev) => prev.slice(0, -1));
         }
         // Do NOT go back to previous word
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        // Printable character — handle directly since we preventDefault above
+        if (statusRef.current !== "running" && statusRef.current !== "idle") return;
+        const word = words[currentWordIndex];
+        if (!word) return;
+        if (currentInput.length < word.length + 8) {
+          setCurrentInput((prev) => prev + e.key);
+        }
       }
     },
     [words, currentWordIndex, currentInput, startTimer, checkLineAdvance]
   );
 
+  // onChange is now a no-op since we handle all input via keydown + preventDefault
   const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (statusRef.current === "done") return;
-      const val = e.target.value;
-      // Only accept printable characters, no spaces (handled via keydown)
-      if (val.endsWith(" ")) return;
-      const word = words[currentWordIndex];
-      if (!word) return;
-      // Limit input length
-      if (val.length <= word.length + 8) {
-        setCurrentInput(val);
-      }
+    (_e: React.ChangeEvent<HTMLInputElement>) => {
+      // All input is handled in handleKeyDown to allow preventDefault on all keys
     },
-    [words, currentWordIndex]
+    []
   );
 
   const handleContainerClick = useCallback(() => {
     inputRef.current?.focus();
+    wordsContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setIsFocused(true);
   }, []);
 
@@ -457,6 +465,16 @@ export default function WpmTest() {
       addToast("Failed to copy", "error");
     }
   }, [result, duration, wordSet]);
+
+  // Auto-focus hidden input on mount and after reset
+  useEffect(() => {
+    // Small delay to ensure DOM is ready
+    const t = setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+    return () => clearTimeout(t);
+  }, [words]); // re-focus when words change (i.e. after reset)
 
   // Cleanup
   useEffect(() => {
@@ -652,6 +670,11 @@ export default function WpmTest() {
               New Personal Best!
             </div>
           )}
+          {!isNewPB && previousBest !== null && (
+            <div className="text-sm text-gray-500 mb-4">
+              Personal best: {previousBest} WPM
+            </div>
+          )}
 
           {/* Stats grid */}
           <div className="grid grid-cols-3 gap-4 mb-6">
@@ -698,6 +721,8 @@ export default function WpmTest() {
           </div>
         </div>
       )}
+
+      <TypingHistory tool="wpm-test" refreshTrigger={historyRefresh} />
     </div>
   );
 }

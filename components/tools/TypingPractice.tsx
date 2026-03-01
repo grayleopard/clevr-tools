@@ -11,6 +11,7 @@ import {
 } from "@/lib/typing-stats";
 import { addToast } from "@/lib/toast";
 import StreakDisplay from "./StreakDisplay";
+import TypingHistory from "./TypingHistory";
 
 // ─── Word Lists ──────────────────────────────────────────────────────────────
 
@@ -380,6 +381,8 @@ export default function TypingPractice() {
   } | null>(null);
   const [isNewPB, setIsNewPB] = useState(false);
   const [wordWindowStart, setWordWindowStart] = useState(0);
+  const [historyRefresh, setHistoryRefresh] = useState(0);
+  const [previousBest, setPreviousBest] = useState<number | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const startTimeRef = useRef(0);
@@ -415,6 +418,15 @@ export default function TypingPractice() {
     typedWordsRef.current = [];
     startTimeRef.current = 0;
   }, [category, difficulty, subMode]);
+
+  // Auto-focus hidden input on mount and after reset
+  useEffect(() => {
+    const t = setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+    return () => clearTimeout(t);
+  }, [words]); // re-focus when words change (i.e. after reset)
 
   const recordKeypress = useCallback((key: string, isCorrect: boolean) => {
     const now = Date.now();
@@ -462,6 +474,7 @@ export default function TypingPractice() {
     // Check personal best
     const mode = `${category}-${difficulty}${category === "code" ? `-${subMode}` : ""}`;
     const pb = getPersonalBest("typing-practice", mode);
+    setPreviousBest(pb ? pb.wpm : null);
     if (!pb || wpm > pb.wpm) {
       setIsNewPB(true);
     }
@@ -480,6 +493,7 @@ export default function TypingPractice() {
       timestamp: Date.now(),
     });
     updateStreak();
+    setHistoryRefresh((prev) => prev + 1);
 
     // Update weak keys
     const keyData: Record<
@@ -537,6 +551,9 @@ export default function TypingPractice() {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
+      // Always prevent default — hidden input should never trigger browser actions
+      e.preventDefault();
+
       if (statusRef.current === "done") return;
 
       if (
@@ -550,7 +567,6 @@ export default function TypingPractice() {
       }
 
       if (e.key === " ") {
-        e.preventDefault();
         if (statusRef.current !== "running") return;
 
         const word = words[currentWordIndex];
@@ -593,33 +609,33 @@ export default function TypingPractice() {
           setCurrentInput((prev) => prev.slice(0, -1));
         }
       } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        // Record keypress for tracking
+        // Printable character — handle directly since we preventDefault above
+        if (statusRef.current !== "running" && statusRef.current !== "idle") return;
         const word = words[currentWordIndex];
         if (!word) return;
         const charIdx = currentInput.length;
         const isCorrect = charIdx < word.length && e.key === word[charIdx];
         recordKeypress(e.key, isCorrect);
+        // Manually update input since preventDefault blocks onChange
+        if (currentInput.length < word.length + 8) {
+          setCurrentInput((prev) => prev + e.key);
+        }
       }
     },
     [words, currentWordIndex, currentInput, endTest, checkLineAdvance, recordKeypress]
   );
 
+  // onChange is now a no-op since we handle all input via keydown + preventDefault
   const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (statusRef.current === "done") return;
-      const val = e.target.value;
-      if (val.endsWith(" ")) return;
-      const word = words[currentWordIndex];
-      if (!word) return;
-      if (val.length <= word.length + 8) {
-        setCurrentInput(val);
-      }
+    (_e: React.ChangeEvent<HTMLInputElement>) => {
+      // All input is handled in handleKeyDown to allow preventDefault on all keys
     },
-    [words, currentWordIndex]
+    []
   );
 
   const handleContainerClick = useCallback(() => {
     inputRef.current?.focus();
+    wordsContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     setIsFocused(true);
   }, []);
 
@@ -861,6 +877,11 @@ export default function TypingPractice() {
                 New Personal Best!
               </div>
             )}
+            {!isNewPB && previousBest !== null && (
+              <div className="text-sm text-gray-500 mb-4">
+                Personal best: {previousBest} WPM
+              </div>
+            )}
 
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div>
@@ -951,6 +972,8 @@ export default function TypingPractice() {
           </div>
         </div>
       ) : null}
+
+      <TypingHistory tool="typing-practice" refreshTrigger={historyRefresh} />
     </div>
   );
 }
