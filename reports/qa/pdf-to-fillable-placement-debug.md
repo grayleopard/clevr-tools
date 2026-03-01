@@ -1,33 +1,40 @@
 # PDF-to-Fillable Placement Debug
 
-## Current mapping pipeline (before fix)
+## Current mapping audit
 
-1. Click coordinates were captured from `MouseEvent.clientX/clientY` in the overlay.
-2. The tool converted click position to normalized values via `rect = overlay.getBoundingClientRect()`:
-   - `normalizedX = (clientX - rect.left) / rect.width`
-   - `normalizedY = (clientY - rect.top) / rect.height`
-3. It immediately converted those normalized values to PDF points using:
-   - `x = normalizedX * pageWidth`
-   - `y = pageHeight - normalizedY * pageHeight - fieldHeight`
-4. The resulting absolute `x/y` points were stored in component state and reused for overlay rendering and export.
+The regression came from mixed unit systems in the same flow:
 
-## Assumptions and issues
+1. Placement used click coordinates in CSS pixels (`clientX/Y` + `getBoundingClientRect`).
+2. Field dimensions were stored in PDF points.
+3. Overlay rendering and export were not guaranteed to pass through a single shared conversion layer.
+4. Rotation logic introduced additional width/height transforms, which amplified the mismatch and produced distorted overlays (tall/skinny boxes).
 
-- Assumed a direct 1:1 relationship between displayed page orientation and pdf-lib coordinate space.
-- Did not use a single shared mapper for:
-  - click -> placement
-  - overlay rendering
-  - export conversion
-- Rotation was not modeled in the point transform, so rotated pages could place fields in unexpected locations.
-- Absolute point storage increased drift risk when field dimensions changed and when display transforms differed from page-space assumptions.
+## Unified model now used
 
-## Fix direction implemented
+- Position storage: normalized top-left (`nx`, `ny`) in `[0..1]` relative to the displayed page rect.
+- Size storage: PDF points (`widthPt`, `heightPt`) only.
+- Overlay render:
+  - `leftPx = nx * rect.width`
+  - `topPx = ny * rect.height`
+  - `widthPx = (widthPt / pageWidthPt) * rect.width`
+  - `heightPx = (heightPt / pageHeightPt) * rect.height`
+- Export:
+  - `xPt = nx * pageWidthPt`
+  - `yPt = pageHeightPt - (ny * pageHeightPt) - heightPt`
 
-- Added a single shared mapping module (`lib/pdf/field-placement.mjs`) that handles:
-  - DOM click -> normalized display coordinates -> PDF points
-  - normalized display coordinates -> PDF points for export
-  - PDF points -> DOM rect for overlay rendering
-- Mapping is based on CSS-space `getBoundingClientRect()` to stay stable across zoom, DPR, and scroll.
-- Rotation-aware transforms (`0/90/180/270`) are applied consistently.
-- Field state now stores normalized top-left coordinates (`nx/ny`) plus field dimensions in points, then resolves to PDF points only when exporting.
-- Added a dev-only debug overlay toggle with crosshair and live `(nx, ny, xPt, yPt)` values.
+## Shared helpers
+
+Implemented pure conversion helpers in `lib/pdf/field-placement.mjs` and used them in all paths:
+
+- `domPointToNxNy`
+- `pdfPtSizeToCssPx`
+- `cssPxToPdfPtSize`
+- `nxnyToCssPx`
+- `nxnyToPdfPt`
+- `clampNxNyToBounds`
+
+This enforces one coordinate/sizing model for click-to-place, overlay display, drag, resize, and export.
+
+## Rotation handling note
+
+To avoid dual transform paths during this urgent fix, rendering is normalized to upright page orientation (`rotation: 0`) in the tool. A visible note is shown when source PDF metadata indicates rotation. This keeps placement and export consistent until full rotated-page support is reintroduced through the same conversion pipeline.

@@ -21,10 +21,11 @@ import {
 } from "lucide-react";
 import type { FillableFieldDefinition, FillableFieldType } from "@/lib/pdf/fillable-pdf";
 import {
-  getFieldDisplayNormSize,
-  mapDomPointToPdfPoint,
-  mapNormalizedFieldToPdfPoint,
-  mapPdfFieldToDomRect,
+  clampNxNyToBounds,
+  domPointToNxNy,
+  nxnyToCssPx,
+  nxnyToPdfPt,
+  pdfPtSizeToCssPx,
 } from "@/lib/pdf/field-placement.mjs";
 
 interface PdfLike {
@@ -50,13 +51,10 @@ interface FillableFieldUI {
   pageIndex: number;
   nx: number;
   ny: number;
-  width: number;
-  height: number;
+  widthPt: number;
+  heightPt: number;
   name: string;
   label?: string;
-  pageWidthPt: number;
-  pageHeightPt: number;
-  pageRotation: number;
 }
 
 interface DragState {
@@ -71,18 +69,11 @@ interface DragState {
   maxNy: number;
 }
 
-interface Size2D {
-  width: number;
-  height: number;
-}
-
-interface CurrentPageMetrics {
+interface PageMetrics {
   pageWidthPt: number;
   pageHeightPt: number;
-  pageRotation: number;
-  displayWidthCss: number;
-  displayHeightCss: number;
-  viewport: unknown;
+  widthCss: number;
+  heightCss: number;
 }
 
 interface DebugPoint {
@@ -94,11 +85,11 @@ interface DebugPoint {
   yPt: number;
 }
 
-const FIELD_DEFAULTS: Record<FillableFieldType, Size2D> = {
-  text: { width: 220, height: 28 },
-  checkbox: { width: 18, height: 18 },
-  date: { width: 160, height: 28 },
-  signature: { width: 220, height: 28 },
+const FIELD_DEFAULTS: Record<FillableFieldType, { widthPt: number; heightPt: number }> = {
+  text: { widthPt: 220, heightPt: 28 },
+  checkbox: { widthPt: 18, heightPt: 18 },
+  date: { widthPt: 160, heightPt: 28 },
+  signature: { widthPt: 220, heightPt: 28 },
 };
 
 const FIELD_LABELS: Record<FillableFieldType, string> = {
@@ -133,10 +124,6 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-function normalizeRotation(value: number): number {
-  return ((value % 360) + 360) % 360;
-}
-
 function nextFieldName(type: FillableFieldType, count: number): string {
   switch (type) {
     case "text":
@@ -156,35 +143,12 @@ function fieldLabelForType(type: FillableFieldType): string {
   return FIELD_LABELS[type];
 }
 
-function toExportField(field: FillableFieldUI): FillableFieldDefinition {
-  const mapped = mapNormalizedFieldToPdfPoint({
-    nx: field.nx,
-    ny: field.ny,
-    pdfPageWidth: field.pageWidthPt,
-    pdfPageHeight: field.pageHeightPt,
-    fieldWidthPt: field.width,
-    fieldHeightPt: field.height,
-    pageRotation: field.pageRotation,
-  });
-
-  return {
-    type: field.type,
-    pageIndex: field.pageIndex,
-    x: mapped.xPt,
-    y: mapped.yPt,
-    width: field.width,
-    height: field.height,
-    name: field.name,
-    label: field.label,
-  };
-}
-
 export default function PdfToFillablePdf() {
   const [file, setFile] = useState<File | null>(null);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
-  const [currentPageMetrics, setCurrentPageMetrics] = useState<CurrentPageMetrics | null>(null);
+  const [pageMetrics, setPageMetrics] = useState<PageMetrics | null>(null);
   const [fields, setFields] = useState<FillableFieldUI[]>([]);
   const [activeFieldType, setActiveFieldType] = useState<FillableFieldType>("text");
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
@@ -196,6 +160,7 @@ export default function PdfToFillablePdf() {
   const [downloaded, setDownloaded] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [debugPoint, setDebugPoint] = useState<DebugPoint | null>(null);
+  const [hasRotationSource, setHasRotationSource] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
@@ -242,10 +207,11 @@ export default function PdfToFillablePdf() {
       setIsRenderingPage(true);
       try {
         const page = await pdf.getPage(pageIndex + 1);
-        const unrotatedViewport = page.getViewport({ scale: 1, rotation: 0 });
-        const cssViewport = page.getViewport({ scale: zoom });
+        const sourceViewport = page.getViewport({ scale: 1 });
+        const baseViewport = page.getViewport({ scale: 1, rotation: 0 });
+        const cssViewport = page.getViewport({ scale: zoom, rotation: 0 });
         const dpr = window.devicePixelRatio || 1;
-        const renderViewport = page.getViewport({ scale: zoom * dpr });
+        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: 0 });
 
         canvas.width = Math.max(1, Math.floor(renderViewport.width));
         canvas.height = Math.max(1, Math.floor(renderViewport.height));
@@ -260,20 +226,18 @@ export default function PdfToFillablePdf() {
 
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
-
         await page.render({
           canvasContext: context,
           viewport: renderViewport,
           canvas,
         }).promise;
 
-        setCurrentPageMetrics({
-          pageWidthPt: unrotatedViewport.width,
-          pageHeightPt: unrotatedViewport.height,
-          pageRotation: normalizeRotation(Number(cssViewport.rotation) || 0),
-          displayWidthCss: cssViewport.width,
-          displayHeightCss: cssViewport.height,
-          viewport: cssViewport,
+        setHasRotationSource(((Number(sourceViewport.rotation) || 0) % 360) !== 0);
+        setPageMetrics({
+          pageWidthPt: baseViewport.width,
+          pageHeightPt: baseViewport.height,
+          widthCss: cssViewport.width,
+          heightCss: cssViewport.height,
         });
       } catch (error) {
         console.error(error);
@@ -296,7 +260,8 @@ export default function PdfToFillablePdf() {
       setSelectedFieldId(null);
       setCurrentPage(0);
       setPageCount(0);
-      setCurrentPageMetrics(null);
+      setPageMetrics(null);
+      setHasRotationSource(false);
       setDebugPoint(null);
       fieldCountRef.current = { text: 0, checkbox: 0, date: 0, signature: 0 };
       destroyPdf();
@@ -343,7 +308,7 @@ export default function PdfToFillablePdf() {
 
   const placeField = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      if (!overlayRef.current || !currentPageMetrics) return;
+      if (!overlayRef.current || !pageMetrics) return;
       if ((event.target as HTMLElement).closest("[data-field-id]")) return;
 
       const rect = overlayRef.current.getBoundingClientRect();
@@ -352,75 +317,84 @@ export default function PdfToFillablePdf() {
       fieldCountRef.current[activeFieldType] += 1;
       const nextCount = fieldCountRef.current[activeFieldType];
       const defaults = FIELD_DEFAULTS[activeFieldType];
-      const width = Math.min(defaults.width, currentPageMetrics.pageWidthPt);
-      const height = Math.min(defaults.height, currentPageMetrics.pageHeightPt);
-
-      const mapped = mapDomPointToPdfPoint({
+      const click = domPointToNxNy({
         clientX: event.clientX,
         clientY: event.clientY,
-        canvasRect: rect,
-        cssZoom: zoom,
-        dpr: window.devicePixelRatio || 1,
-        pdfViewport: currentPageMetrics.viewport,
-        pdfPageWidth: currentPageMetrics.pageWidthPt,
-        pdfPageHeight: currentPageMetrics.pageHeightPt,
-        fieldWidthPt: width,
-        fieldHeightPt: height,
-        pageRotation: currentPageMetrics.pageRotation,
+        pageRectCss: rect,
+      });
+      const bounded = clampNxNyToBounds({
+        nx: click.nx,
+        ny: click.ny,
+        pageSizePt: {
+          widthPt: pageMetrics.pageWidthPt,
+          heightPt: pageMetrics.pageHeightPt,
+        },
+        fieldSizePt: {
+          widthPt: defaults.widthPt,
+          heightPt: defaults.heightPt,
+        },
+      });
+      const mapped = nxnyToPdfPt({
+        nx: bounded.nx,
+        ny: bounded.ny,
+        pageSizePt: {
+          widthPt: pageMetrics.pageWidthPt,
+          heightPt: pageMetrics.pageHeightPt,
+        },
+        fieldSizePt: {
+          widthPt: defaults.widthPt,
+          heightPt: defaults.heightPt,
+        },
       });
 
       const id =
         typeof crypto !== "undefined" && "randomUUID" in crypto
           ? crypto.randomUUID()
           : `field-${Date.now()}-${nextCount}`;
-      const fieldName = nextFieldName(activeFieldType, nextCount);
-      const label = fieldLabelForType(activeFieldType);
-
       setFields((previous) => [
         ...previous,
         {
           id,
           type: activeFieldType,
           pageIndex: currentPage,
-          nx: mapped.nx,
-          ny: mapped.ny,
-          width,
-          height,
-          name: fieldName,
-          label,
-          pageWidthPt: currentPageMetrics.pageWidthPt,
-          pageHeightPt: currentPageMetrics.pageHeightPt,
-          pageRotation: currentPageMetrics.pageRotation,
+          nx: bounded.nx,
+          ny: bounded.ny,
+          widthPt: defaults.widthPt,
+          heightPt: defaults.heightPt,
+          name: nextFieldName(activeFieldType, nextCount),
+          label: fieldLabelForType(activeFieldType),
         },
       ]);
       setSelectedFieldId(id);
       setDebugPoint({
-        xCss: clamp(event.clientX - rect.left, 0, rect.width),
-        yCss: clamp(event.clientY - rect.top, 0, rect.height),
-        nx: mapped.nx,
-        ny: mapped.ny,
+        xCss: event.clientX - rect.left,
+        yCss: event.clientY - rect.top,
+        nx: bounded.nx,
+        ny: bounded.ny,
         xPt: mapped.xPt,
         yPt: mapped.yPt,
       });
       revokeResultUrl();
     },
-    [activeFieldType, currentPage, currentPageMetrics, revokeResultUrl, zoom]
+    [activeFieldType, currentPage, pageMetrics, revokeResultUrl]
   );
 
   const handleFieldPointerDown = useCallback(
     (event: React.PointerEvent<HTMLButtonElement>, field: FillableFieldUI) => {
-      if (!overlayRef.current) return;
+      if (!overlayRef.current || !pageMetrics) return;
       event.preventDefault();
       event.stopPropagation();
       setSelectedFieldId(field.id);
 
       const rect = overlayRef.current.getBoundingClientRect();
-      const norm = getFieldDisplayNormSize({
-        pdfPageWidth: field.pageWidthPt,
-        pdfPageHeight: field.pageHeightPt,
-        fieldWidthPt: field.width,
-        fieldHeightPt: field.height,
-        pageRotation: field.pageRotation,
+      const bounds = clampNxNyToBounds({
+        nx: field.nx,
+        ny: field.ny,
+        pageSizePt: {
+          widthPt: pageMetrics.pageWidthPt,
+          heightPt: pageMetrics.pageHeightPt,
+        },
+        fieldSizePt: { widthPt: field.widthPt, heightPt: field.heightPt },
       });
 
       dragRef.current = {
@@ -431,11 +405,11 @@ export default function PdfToFillablePdf() {
         startNy: field.ny,
         rectWidth: rect.width,
         rectHeight: rect.height,
-        maxNx: Math.max(0, 1 - norm.widthNorm),
-        maxNy: Math.max(0, 1 - norm.heightNorm),
+        maxNx: bounds.maxNx,
+        maxNy: bounds.maxNy,
       };
     },
-    []
+    [pageMetrics]
   );
 
   useEffect(() => {
@@ -444,10 +418,8 @@ export default function PdfToFillablePdf() {
       const drag = dragRef.current;
       const dx = event.clientX - drag.startClientX;
       const dy = event.clientY - drag.startClientY;
-      const deltaNx = dx / Math.max(1, drag.rectWidth);
-      const deltaNy = dy / Math.max(1, drag.rectHeight);
-      const nextNx = clamp(drag.startNx + deltaNx, 0, drag.maxNx);
-      const nextNy = clamp(drag.startNy + deltaNy, 0, drag.maxNy);
+      const nextNx = clamp(drag.startNx + dx / Math.max(1, drag.rectWidth), 0, drag.maxNx);
+      const nextNy = clamp(drag.startNy + dy / Math.max(1, drag.rectHeight), 0, drag.maxNy);
 
       setFields((previous) =>
         previous.map((field) =>
@@ -472,15 +444,29 @@ export default function PdfToFillablePdf() {
 
   const updateSelectedField = useCallback(
     (patch: Partial<FillableFieldUI>) => {
-      if (!selectedFieldId) return;
+      if (!selectedFieldId || !pageMetrics) return;
       setFields((previous) =>
-        previous.map((field) =>
-          field.id === selectedFieldId ? { ...field, ...patch } : field
-        )
+        previous.map((field) => {
+          if (field.id !== selectedFieldId) return field;
+          const merged = { ...field, ...patch };
+          const bounded = clampNxNyToBounds({
+            nx: merged.nx,
+            ny: merged.ny,
+            pageSizePt: {
+              widthPt: pageMetrics.pageWidthPt,
+              heightPt: pageMetrics.pageHeightPt,
+            },
+            fieldSizePt: {
+              widthPt: merged.widthPt,
+              heightPt: merged.heightPt,
+            },
+          });
+          return { ...merged, nx: bounded.nx, ny: bounded.ny };
+        })
       );
       revokeResultUrl();
     },
-    [revokeResultUrl, selectedFieldId]
+    [pageMetrics, revokeResultUrl, selectedFieldId]
   );
 
   const removeField = useCallback(
@@ -494,7 +480,7 @@ export default function PdfToFillablePdf() {
 
   const exportFillablePdf = useCallback(async () => {
     const source = pdfBytesRef.current;
-    if (!source || !file) return;
+    if (!source || !file || !pageMetrics) return;
     if (fields.length === 0) {
       addToast("Add at least one field before exporting.", "info");
       return;
@@ -503,10 +489,32 @@ export default function PdfToFillablePdf() {
     setIsExporting(true);
     try {
       const { createFillablePdf } = await import("@/lib/pdf/fillable-pdf.mjs");
-      const outputFields = fields.map(toExportField);
+      const outputFields: FillableFieldDefinition[] = fields.map((field) => {
+        const mapped = nxnyToPdfPt({
+          nx: field.nx,
+          ny: field.ny,
+          pageSizePt: {
+            widthPt: pageMetrics.pageWidthPt,
+            heightPt: pageMetrics.pageHeightPt,
+          },
+          fieldSizePt: {
+            widthPt: field.widthPt,
+            heightPt: field.heightPt,
+          },
+        });
+        return {
+          type: field.type,
+          pageIndex: field.pageIndex,
+          x: mapped.xPt,
+          y: mapped.yPt,
+          width: field.widthPt,
+          height: field.heightPt,
+          name: field.name,
+          label: field.label,
+        };
+      });
       const output = await createFillablePdf(source, outputFields);
-      const outputBytes = Uint8Array.from(output);
-      const blob = new Blob([outputBytes], { type: "application/pdf" });
+      const blob = new Blob([Uint8Array.from(output)], { type: "application/pdf" });
       revokeResultUrl();
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
@@ -518,7 +526,7 @@ export default function PdfToFillablePdf() {
     } finally {
       setIsExporting(false);
     }
-  }, [fields, file, revokeResultUrl]);
+  }, [fields, file, pageMetrics, revokeResultUrl]);
 
   const resetTool = useCallback(() => {
     revokeResultUrl();
@@ -531,51 +539,24 @@ export default function PdfToFillablePdf() {
     setFile(null);
     setPageCount(0);
     setCurrentPage(0);
-    setCurrentPageMetrics(null);
+    setPageMetrics(null);
     setDebugPoint(null);
+    setHasRotationSource(false);
   }, [destroyPdf, revokeResultUrl]);
 
   const handleDimensionInput = useCallback(
-    (key: "width" | "height", value: string) => {
-      if (!selectedField) return;
+    (key: "widthPt" | "heightPt", value: string) => {
+      if (!selectedField || !pageMetrics) return;
       const parsed = Number(value);
       if (!Number.isFinite(parsed)) return;
-      const max = key === "width" ? selectedField.pageWidthPt : selectedField.pageHeightPt;
+      const max = key === "widthPt" ? pageMetrics.pageWidthPt : pageMetrics.pageHeightPt;
       const bounded = clamp(parsed, 8, Math.max(8, max));
-
-      const nextWidth = key === "width" ? bounded : selectedField.width;
-      const nextHeight = key === "height" ? bounded : selectedField.height;
-      const norm = getFieldDisplayNormSize({
-        pdfPageWidth: selectedField.pageWidthPt,
-        pdfPageHeight: selectedField.pageHeightPt,
-        fieldWidthPt: nextWidth,
-        fieldHeightPt: nextHeight,
-        pageRotation: selectedField.pageRotation,
-      });
-
-      const patch: Partial<FillableFieldUI> = {
-        [key]: bounded,
-        nx: clamp(selectedField.nx, 0, Math.max(0, 1 - norm.widthNorm)),
-        ny: clamp(selectedField.ny, 0, Math.max(0, 1 - norm.heightNorm)),
-      };
-      updateSelectedField(patch);
+      updateSelectedField({ [key]: bounded } as Partial<FillableFieldUI>);
     },
-    [selectedField, updateSelectedField]
+    [pageMetrics, selectedField, updateSelectedField]
   );
 
-  const outputFilename = file
-    ? file.name.replace(/\.pdf$/i, "-fillable.pdf")
-    : "fillable.pdf";
-
-  const canvasDisplayRect = useMemo(
-    () => ({
-      left: 0,
-      top: 0,
-      width: currentPageMetrics?.displayWidthCss ?? 0,
-      height: currentPageMetrics?.displayHeightCss ?? 0,
-    }),
-    [currentPageMetrics]
-  );
+  const outputFilename = file ? file.name.replace(/\.pdf$/i, "-fillable.pdf") : "fillable.pdf";
 
   return (
     <div className="space-y-6">
@@ -586,12 +567,14 @@ export default function PdfToFillablePdf() {
         stays private on your device.
       </div>
 
-      <FileDropZone
-        accept=".pdf"
-        multiple={false}
-        maxSizeMB={100}
-        onFiles={handleFiles}
-      />
+      {hasRotationSource && (
+        <div className="rounded-xl border border-amber-300/70 bg-amber-50 px-4 py-3 text-xs text-amber-800 dark:border-amber-500/40 dark:bg-amber-950/20 dark:text-amber-300">
+          This PDF has page rotation metadata. For now, placement normalizes pages to upright
+          rendering so overlay and export stay consistent.
+        </div>
+      )}
+
+      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} />
 
       {isLoadingPdf && <ProcessingIndicator label="Loading PDF preview…" />}
 
@@ -608,9 +591,7 @@ export default function PdfToFillablePdf() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() =>
-                    setZoom((value) => clamp(Number((value - 0.1).toFixed(2)), 0.6, 2))
-                  }
+                  onClick={() => setZoom((value) => clamp(Number((value - 0.1).toFixed(2)), 0.6, 2))}
                   className="rounded-md border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                   aria-label="Zoom out"
                 >
@@ -621,9 +602,7 @@ export default function PdfToFillablePdf() {
                 </span>
                 <button
                   type="button"
-                  onClick={() =>
-                    setZoom((value) => clamp(Number((value + 0.1).toFixed(2)), 0.6, 2))
-                  }
+                  onClick={() => setZoom((value) => clamp(Number((value + 0.1).toFixed(2)), 0.6, 2))}
                   className="rounded-md border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                   aria-label="Zoom in"
                 >
@@ -672,12 +651,8 @@ export default function PdfToFillablePdf() {
               <div
                 className="relative mx-auto"
                 style={{
-                  width: currentPageMetrics?.displayWidthCss
-                    ? `${currentPageMetrics.displayWidthCss}px`
-                    : "fit-content",
-                  minHeight: currentPageMetrics?.displayHeightCss
-                    ? `${currentPageMetrics.displayHeightCss}px`
-                    : "240px",
+                  width: pageMetrics?.widthCss ? `${pageMetrics.widthCss}px` : "fit-content",
+                  minHeight: pageMetrics?.heightCss ? `${pageMetrics.heightCss}px` : "240px",
                 }}
               >
                 <canvas ref={canvasRef} className="block bg-white shadow-sm" />
@@ -687,36 +662,32 @@ export default function PdfToFillablePdf() {
                   className="absolute inset-0"
                   onClick={placeField}
                   style={{
-                    width: currentPageMetrics?.displayWidthCss
-                      ? `${currentPageMetrics.displayWidthCss}px`
-                      : undefined,
-                    height: currentPageMetrics?.displayHeightCss
-                      ? `${currentPageMetrics.displayHeightCss}px`
-                      : undefined,
+                    width: pageMetrics?.widthCss ? `${pageMetrics.widthCss}px` : undefined,
+                    height: pageMetrics?.heightCss ? `${pageMetrics.heightCss}px` : undefined,
                   }}
                 >
                   {fieldsOnCurrentPage.map((field) => {
-                    const mappedPdf = mapNormalizedFieldToPdfPoint({
+                    if (!pageMetrics) return null;
+                    const position = nxnyToCssPx({
                       nx: field.nx,
                       ny: field.ny,
-                      pdfPageWidth: field.pageWidthPt,
-                      pdfPageHeight: field.pageHeightPt,
-                      fieldWidthPt: field.width,
-                      fieldHeightPt: field.height,
-                      pageRotation: field.pageRotation,
+                      pageRectCss: {
+                        width: pageMetrics.widthCss,
+                        height: pageMetrics.heightCss,
+                      },
                     });
-
-                    const domRect = mapPdfFieldToDomRect({
-                      xPt: mappedPdf.xPt,
-                      yPt: mappedPdf.yPt,
-                      pdfPageWidth: field.pageWidthPt,
-                      pdfPageHeight: field.pageHeightPt,
-                      fieldWidthPt: field.width,
-                      fieldHeightPt: field.height,
-                      pageRotation: field.pageRotation,
-                      canvasRect: canvasDisplayRect,
+                    const size = pdfPtSizeToCssPx({
+                      widthPt: field.widthPt,
+                      heightPt: field.heightPt,
+                      pageRectCss: {
+                        width: pageMetrics.widthCss,
+                        height: pageMetrics.heightCss,
+                      },
+                      pageSizePt: {
+                        widthPt: pageMetrics.pageWidthPt,
+                        heightPt: pageMetrics.pageHeightPt,
+                      },
                     });
-
                     const selected = selectedFieldId === field.id;
 
                     return (
@@ -735,10 +706,10 @@ export default function PdfToFillablePdf() {
                             : "border-sky-500/70 bg-sky-500/10 text-sky-700"
                         }`}
                         style={{
-                          left: domRect.left,
-                          top: domRect.top,
-                          width: Math.max(14, domRect.width),
-                          height: Math.max(14, domRect.height),
+                          left: position.leftPx,
+                          top: position.topPx,
+                          width: Math.max(14, size.widthPx),
+                          height: Math.max(14, size.heightPx),
                         }}
                       >
                         <span className="truncate">{field.label || field.name}</span>
@@ -751,21 +722,11 @@ export default function PdfToFillablePdf() {
                     <>
                       <div
                         className="pointer-events-none absolute bg-rose-500/70"
-                        style={{
-                          left: 0,
-                          right: 0,
-                          top: debugPoint.yCss,
-                          height: 1,
-                        }}
+                        style={{ left: 0, right: 0, top: debugPoint.yCss, height: 1 }}
                       />
                       <div
                         className="pointer-events-none absolute bg-rose-500/70"
-                        style={{
-                          top: 0,
-                          bottom: 0,
-                          left: debugPoint.xCss,
-                          width: 1,
-                        }}
+                        style={{ top: 0, bottom: 0, left: debugPoint.xCss, width: 1 }}
                       />
                       <div className="pointer-events-none absolute left-2 bottom-2 rounded bg-black/75 px-2 py-1 text-[10px] text-white">
                         nx {debugPoint.nx.toFixed(3)} · ny {debugPoint.ny.toFixed(3)} · xPt{" "}
@@ -794,9 +755,7 @@ export default function PdfToFillablePdf() {
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    setCurrentPage((value) => Math.min(pageCount - 1, value + 1))
-                  }
+                  onClick={() => setCurrentPage((value) => Math.min(pageCount - 1, value + 1))}
                   disabled={currentPage >= pageCount - 1}
                   className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground disabled:opacity-50"
                 >
@@ -805,7 +764,6 @@ export default function PdfToFillablePdf() {
               </div>
               <p className="text-xs text-muted-foreground">
                 Page {currentPage + 1} of {pageCount}
-                {currentPageMetrics ? ` · rotation ${currentPageMetrics.pageRotation}°` : ""}
               </p>
             </div>
           </section>
@@ -881,28 +839,28 @@ export default function PdfToFillablePdf() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Width</label>
+                    <label className="text-xs font-medium text-muted-foreground">Width (pt)</label>
                     <input
                       type="number"
                       min={8}
-                      value={Math.round(selectedField.width)}
-                      onChange={(event) => handleDimensionInput("width", event.target.value)}
+                      value={Math.round(selectedField.widthPt)}
+                      onChange={(event) => handleDimensionInput("widthPt", event.target.value)}
                       className="w-full rounded-md border border-border bg-background px-2.5 py-2 text-xs outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Height</label>
+                    <label className="text-xs font-medium text-muted-foreground">Height (pt)</label>
                     <input
                       type="number"
                       min={8}
-                      value={Math.round(selectedField.height)}
-                      onChange={(event) => handleDimensionInput("height", event.target.value)}
+                      value={Math.round(selectedField.heightPt)}
+                      onChange={(event) => handleDimensionInput("heightPt", event.target.value)}
                       className="w-full rounded-md border border-border bg-background px-2.5 py-2 text-xs outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20"
                     />
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Drag on canvas to reposition. Size controls are in PDF points.
+                  Positions are normalized in page CSS space. Size is stored in PDF points.
                 </p>
               </div>
             )}
