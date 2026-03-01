@@ -5,7 +5,7 @@ import { getSessions, getWeakKeys, getPersonalBest } from "@/lib/typing-stats";
 import type { TypingSession } from "@/lib/typing-stats";
 
 interface Props {
-  tool: "wpm-test" | "typing-practice" | "race" | "word-blitz" | "code-challenge";
+  tool: "wpm-test" | "typing-practice" | "race" | "word-blitz" | "code-challenge" | "cps-test" | "reaction-time";
   refreshTrigger?: number; // increment to force refresh after new test
 }
 
@@ -46,11 +46,10 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
         avgWpm,
         bestWpm,
       });
-      // Find the overall personal best (max WPM session)
-      const pbSession = fullSessions.reduce(
-        (best, s) => (s.wpm > best.wpm ? s : best),
-        fullSessions[0]
-      );
+      // Find the overall personal best (max WPM session, or min for reaction-time)
+      const pbSession = tool === "reaction-time"
+        ? fullSessions.reduce((best, s) => (s.wpm < best.wpm ? s : best), fullSessions[0])
+        : fullSessions.reduce((best, s) => (s.wpm > best.wpm ? s : best), fullSessions[0]);
       setPb(pbSession);
     } else {
       setStats(null);
@@ -118,7 +117,11 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
                 ? "Complete a round to see your scores here."
                 : tool === "code-challenge"
                   ? "Complete a challenge to see your history here."
-                  : "Complete a practice session to see your progress here."}
+                  : tool === "cps-test"
+                    ? "Complete a CPS test to see your history here."
+                    : tool === "reaction-time"
+                      ? "Complete a reaction time test to see your history here."
+                      : "Complete a practice session to see your progress here."}
         </p>
       </div>
     );
@@ -182,6 +185,28 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
               </span>{" "}
               avg &middot; {stats.totalTests} tests
             </>
+          ) : tool === "cps-test" ? (
+            <>
+              <span className="font-medium text-foreground">
+                {pb?.wpm} CPS
+              </span>{" "}
+              best &middot;{" "}
+              <span className="font-medium text-foreground">
+                {stats.avgWpm} CPS
+              </span>{" "}
+              avg &middot; {stats.totalTests} tests
+            </>
+          ) : tool === "reaction-time" ? (
+            <>
+              <span className="font-medium text-foreground">
+                {pb?.wpm} ms
+              </span>{" "}
+              best &middot;{" "}
+              <span className="font-medium text-foreground">
+                {stats.avgWpm} ms
+              </span>{" "}
+              avg &middot; {stats.totalTests} tests
+            </>
           ) : (
             <>
               {stats.totalTests} sessions &middot;{" "}
@@ -203,7 +228,7 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
             >
               <div className="flex items-center gap-2 min-w-0">
                 <span className="font-medium text-foreground tabular-nums">
-                  {s.wpm} WPM
+                  {s.wpm} {tool === "cps-test" ? "CPS" : tool === "reaction-time" ? "ms" : "WPM"}
                 </span>
                 <span className="text-muted-foreground">
                   {s.accuracy.toFixed(1)}%

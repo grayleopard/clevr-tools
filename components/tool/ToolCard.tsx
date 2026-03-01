@@ -75,6 +75,7 @@ import {
   BookOpen,
   Flag,
   Code2,
+  MousePointer2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -155,6 +156,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   BookOpen,
   Flag,
   Code2,
+  MousePointer2,
 };
 
 export default function ToolCard({ tool }: { tool: Tool }) {

@@ -175,7 +175,7 @@ export const siteCategories: SiteCategory[] = [
     subcategories: [
       {
         label: "Typing",
-        slugs: ["typing-test", "wpm-test", "keyboard-tester", "typing-practice", "race", "word-blitz", "code-challenge"],
+        slugs: ["typing-test", "wpm-test", "keyboard-tester", "typing-practice", "race", "word-blitz", "code-challenge", "cps-test", "reaction-time"],
       },
     ],
   },
