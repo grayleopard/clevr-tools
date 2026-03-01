@@ -5,7 +5,7 @@ import { getSessions, getWeakKeys, getPersonalBest } from "@/lib/typing-stats";
 import type { TypingSession } from "@/lib/typing-stats";
 
 interface Props {
-  tool: "wpm-test" | "typing-practice";
+  tool: "wpm-test" | "typing-practice" | "race" | "word-blitz" | "code-challenge";
   refreshTrigger?: number; // increment to force refresh after new test
 }
 
@@ -112,7 +112,13 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
         <p className="text-sm text-muted-foreground text-center">
           {tool === "wpm-test"
             ? "Complete a test to see your history here."
-            : "Complete a practice session to see your progress here."}
+            : tool === "race"
+              ? "Complete a race to see your history here."
+              : tool === "word-blitz"
+                ? "Complete a round to see your scores here."
+                : tool === "code-challenge"
+                  ? "Complete a challenge to see your history here."
+                  : "Complete a practice session to see your progress here."}
         </p>
       </div>
     );
@@ -128,7 +134,11 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
       {/* Header */}
       <div className="px-4 py-2.5 border-b border-border bg-primary/10 flex items-center justify-between">
         <span className="text-sm font-medium text-foreground">
-          {tool === "wpm-test" ? "Your History" : "Your Progress"}
+          {tool === "wpm-test" || tool === "race" || tool === "code-challenge"
+            ? "Your History"
+            : tool === "word-blitz"
+              ? "Your Scores"
+              : "Your Progress"}
         </span>
         <span className="flex items-center gap-2 transition-opacity duration-150">
           {confirming ? (

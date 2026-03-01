@@ -1,6 +1,6 @@
 export interface TypingSession {
   id: string;
-  tool: string; // 'wpm-test' | 'typing-test' | 'typing-practice' | 'keyboard-tester'
+  tool: string; // 'wpm-test' | 'typing-test' | 'typing-practice' | 'keyboard-tester' | 'race' | 'word-blitz' | 'code-challenge'
   mode: string; // '60s' | 'common-words' | 'javascript' | etc.
   wpm: number;
   accuracy: number;
@@ -9,6 +9,7 @@ export interface TypingSession {
   totalChars: number;
   duration: number; // seconds
   timestamp: number; // Date.now()
+  score?: number; // used by Word Blitz
 }
 
 const STORAGE_KEY = "clevr-typing-stats";

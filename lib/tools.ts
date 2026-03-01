@@ -923,6 +923,63 @@ export const tools: Tool[] = [
     relatedTools: ['typing-test', 'wpm-test', 'keyboard-tester'],
     live: true,
   },
+  {
+    slug: 'race',
+    name: 'Typing Race',
+    shortDescription: 'Race against ghost opponents at different skill levels.',
+    category: 'type',
+    route: '/type/race',
+    acceptedFormats: [],
+    icon: 'Flag',
+    metaTitle: 'Typing Race — Race Against the Clock | clevr.tools',
+    metaDescription: 'Free typing race game. Compete against ghost opponents at five difficulty levels. Track your progress and beat your best time.',
+    seoContent: `<h2>How the Typing Race Works</h2>
+<p>Choose a difficulty level and race against a ghost opponent that types at a fixed WPM. The ghost starts at the same time as you and progresses through the passage at a constant speed. Your goal is to type the passage accurately and finish before the ghost does. Each difficulty level represents a real-world typing speed bracket, from casual (40 WPM) to expert (120 WPM).</p>
+<h2>Choosing the Right Difficulty</h2>
+<p>Start with a difficulty level close to your current WPM. If you consistently beat the ghost, move up a level. Casual (40 WPM) matches the average adult typing speed. Average (60 WPM) is typical for regular computer users. Fast (80 WPM) represents experienced typists. Pro (100 WPM) is professional-level speed, and Expert (120 WPM) is competitive typist territory.</p>
+<h2>Tips for Winning</h2>
+<p>Focus on accuracy over raw speed. Every mistake costs time — correcting errors with backspace is slower than typing correctly the first time. Keep your eyes on the text ahead, not on what you just typed. Maintain a steady rhythm rather than trying to burst through words. Your WPM naturally increases as your accuracy improves.</p>`,
+    relatedTools: ['wpm-test', 'typing-practice', 'word-blitz'],
+    live: true,
+  },
+  {
+    slug: 'word-blitz',
+    name: 'Word Blitz',
+    shortDescription: 'Fast-paced word typing game with streak multipliers.',
+    category: 'type',
+    route: '/type/word-blitz',
+    acceptedFormats: [],
+    icon: 'Zap',
+    metaTitle: 'Word Blitz — Fast-Paced Typing Game | clevr.tools',
+    metaDescription: 'Free typing speed game. Type words fast to build streaks and rack up high scores. Three difficulty levels with 30, 60, and 90 second rounds.',
+    seoContent: `<h2>How Word Blitz Works</h2>
+<p>Words appear one at a time. Type each word correctly to score points. Build a streak by typing consecutive words without errors. The longer your streak, the higher your multiplier — up to 5x for 30+ words in a row. Your final score depends on both speed and accuracy, making every keystroke count.</p>
+<h2>Scoring System</h2>
+<p>Each word is worth points based on its length multiplied by your current streak multiplier. Easy words (4-5 letters) are worth fewer base points but let you build streaks faster. Hard words (8-12 letters) are worth more base points but risk breaking your streak. The optimal strategy balances speed with accuracy to maintain high multipliers.</p>
+<h2>Difficulty Levels</h2>
+<p>Easy mode uses common 4-5 letter words — great for warming up or building confidence. Medium mode introduces 6-8 letter words that require more precise typing. Hard mode features 8-12 letter words including technical vocabulary, testing both typing speed and familiarity with complex words.</p>`,
+    relatedTools: ['wpm-test', 'race', 'typing-practice'],
+    live: true,
+  },
+  {
+    slug: 'code-challenge',
+    name: 'Code Typing Challenge',
+    shortDescription: 'Practice typing real code in JS, Python, TypeScript, and more.',
+    category: 'type',
+    route: '/type/code-challenge',
+    acceptedFormats: [],
+    icon: 'Code2',
+    metaTitle: 'Code Typing Challenge — Typing Practice for Developers | clevr.tools',
+    metaDescription: 'Practice typing real code snippets in JavaScript, Python, TypeScript, HTML, SQL, Go, and Rust. Track your coding WPM and special character accuracy.',
+    seoContent: `<h2>Why Practice Code Typing?</h2>
+<p>Programming involves typing characters rarely used in everyday text — brackets, semicolons, angle brackets, backticks, pipes, and special operators. Regular typing tests don't prepare your fingers for these patterns. Code typing practice builds muscle memory for the exact key combinations you use daily as a developer, directly improving your coding productivity.</p>
+<h2>Languages and Difficulty Levels</h2>
+<p>Choose from seven languages: JavaScript, Python, TypeScript, HTML/CSS, SQL, Go, and Rust. Each language has beginner, intermediate, and advanced snippets. Beginner snippets cover basic syntax and common patterns. Intermediate snippets include real-world functions like debounce, decorators, and error handling. Advanced snippets feature complex patterns like event emitters, store implementations, and generic builders.</p>
+<h2>Special Character Accuracy</h2>
+<p>Your results include a special character accuracy score that tracks how well you type brackets, semicolons, operators, and other programming-specific characters. This metric highlights exactly where your coding typing needs improvement. Most developers find that special character accuracy is 10-20% lower than their regular character accuracy — focused practice closes this gap.</p>`,
+    relatedTools: ['typing-practice', 'wpm-test', 'keyboard-tester'],
+    live: true,
+  },
   // ─── Files Tools ──────────────────────────────────────────────────────────
   {
     slug: 'image-cropper',
