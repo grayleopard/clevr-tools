@@ -9,6 +9,7 @@ export interface FillableFieldDefinition {
   height: number;
   name: string;
   label?: string;
+  placedRotation: number;
 }
 
 export interface FieldSize {

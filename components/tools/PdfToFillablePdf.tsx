@@ -13,6 +13,7 @@ import {
   Download,
   Move,
   PenSquare,
+  RotateCw,
   Type,
   Trash2,
   ZoomIn,
@@ -57,22 +58,19 @@ interface FillableFieldUI {
   heightPt: number;
   name: string;
   label?: string;
+  placedRotation: number;
 }
 
 interface DragState {
   fieldId: string;
-  pageLeft: number;
-  pageTop: number;
-  pageWidth: number;
-  pageHeight: number;
-  pointerOffsetX: number;
-  pointerOffsetY: number;
-  widthPx: number;
-  heightPx: number;
-  widthPt: number;
-  heightPt: number;
-  pageWidthPt: number;
-  pageHeightPt: number;
+  startMouseX: number;
+  startMouseY: number;
+  startFieldX: number;
+  startFieldY: number;
+  fieldWidthPt: number;
+  fieldHeightPt: number;
+  vpWidth: number;
+  vpHeight: number;
 }
 
 interface PageMetrics {
@@ -81,9 +79,7 @@ interface PageMetrics {
   pageHeightPt: number;
   widthCss: number;
   heightCss: number;
-  sourceRotation: number;
-  viewportRotation: number;
-  effectiveViewUpright: boolean;
+  totalRotation: number;
 }
 
 interface DebugPoint {
@@ -134,18 +130,6 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-function normalizeRotationDegrees(rotation: number): number {
-  return ((rotation % 360) + 360) % 360;
-}
-
-function normalizeQuarterTurnRotation(rotation: number): 0 | 90 | 180 | 270 {
-  const normalized = normalizeRotationDegrees(rotation);
-  const snapped = Math.round(normalized / 90) * 90;
-  const quarter = ((snapped % 360) + 360) % 360;
-  if (quarter === 90 || quarter === 180 || quarter === 270) return quarter;
-  return 0;
-}
-
 function isRenderCancelledError(error: unknown): boolean {
   return (
     typeof error === "object" &&
@@ -153,121 +137,6 @@ function isRenderCancelledError(error: unknown): boolean {
     "name" in error &&
     (error as { name?: string }).name === "RenderingCancelledException"
   );
-}
-
-/** CSS transform string to position a rotation:0 canvas inside a visual-size container. */
-function getCssTransform(
-  cssRotationDeg: number,
-  canvasWidthCss: number,
-  canvasHeightCss: number
-): string | undefined {
-  switch (cssRotationDeg) {
-    case 0:
-      return undefined;
-    case 90:
-      return `translateY(${canvasWidthCss}px) rotate(90deg)`;
-    case 180:
-      return `translate(${canvasWidthCss}px, ${canvasHeightCss}px) rotate(180deg)`;
-    case 270:
-      return `translateX(${canvasHeightCss}px) rotate(270deg)`;
-    default:
-      return undefined;
-  }
-}
-
-/** Convert visual overlay coordinates (click position) to raw PDF coordinates. */
-function visualToRawPdf(
-  vx: number,
-  vy: number,
-  cssRotationDeg: number,
-  canvasWidthCss: number,
-  canvasHeightCss: number,
-  zoom: number
-): { pdfX: number; pdfY: number } {
-  let cx: number;
-  let cy: number;
-  switch (cssRotationDeg) {
-    case 90:
-      cx = canvasWidthCss - vy;
-      cy = vx;
-      break;
-    case 180:
-      cx = canvasWidthCss - vx;
-      cy = canvasHeightCss - vy;
-      break;
-    case 270:
-      cx = vy;
-      cy = canvasHeightCss - vx;
-      break;
-    default:
-      cx = vx;
-      cy = vy;
-  }
-  return {
-    pdfX: cx / zoom,
-    pdfY: (canvasHeightCss - cy) / zoom,
-  };
-}
-
-/** Convert raw PDF rect to visual overlay rect for rendering field overlays. */
-function rawPdfToVisualRect(
-  pdfX: number,
-  pdfY: number,
-  pdfW: number,
-  pdfH: number,
-  cssRotationDeg: number,
-  canvasWidthCss: number,
-  canvasHeightCss: number,
-  zoom: number
-): { left: number; top: number; width: number; height: number } {
-  const cx = pdfX * zoom;
-  const cy = canvasHeightCss - (pdfY + pdfH) * zoom;
-  const cw = pdfW * zoom;
-  const ch = pdfH * zoom;
-
-  let vLeft: number;
-  let vTop: number;
-  let vWidth: number;
-  let vHeight: number;
-  switch (cssRotationDeg) {
-    case 90:
-      vLeft = cy;
-      vTop = canvasWidthCss - cx - cw;
-      vWidth = ch;
-      vHeight = cw;
-      break;
-    case 180:
-      vLeft = canvasWidthCss - cx - cw;
-      vTop = canvasHeightCss - cy - ch;
-      vWidth = cw;
-      vHeight = ch;
-      break;
-    case 270:
-      vLeft = canvasHeightCss - cy - ch;
-      vTop = cx;
-      vWidth = ch;
-      vHeight = cw;
-      break;
-    default:
-      vLeft = cx;
-      vTop = cy;
-      vWidth = cw;
-      vHeight = ch;
-  }
-  return { left: vLeft, top: vTop, width: vWidth, height: vHeight };
-}
-
-/** Convert visual field size to raw PDF size (axes swap for 90/270 rotation). */
-function visualSizeToRawPdfSize(
-  visualW: number,
-  visualH: number,
-  cssRotationDeg: number
-): { widthPt: number; heightPt: number } {
-  const isOddQuarter = cssRotationDeg === 90 || cssRotationDeg === 270;
-  return {
-    widthPt: isOddQuarter ? visualH : visualW,
-    heightPt: isOddQuarter ? visualW : visualH,
-  };
 }
 
 function nextFieldName(type: FillableFieldType, count: number): string {
@@ -301,8 +170,7 @@ export default function PdfToFillablePdf() {
   const [isLoadingPdf, setIsLoadingPdf] = useState(false);
   const [isRenderingPage, setIsRenderingPage] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [viewUpright, setViewUpright] = useState(false);
-  const [isViewUprightTouched, setIsViewUprightTouched] = useState(false);
+  const [userRotation, setUserRotation] = useState(0);
   const [showDebug, setShowDebug] = useState(false);
   const [debugPoint, setDebugPoint] = useState<DebugPoint | null>(null);
 
@@ -311,6 +179,8 @@ export default function PdfToFillablePdf() {
   const pdfRef = useRef<PdfLike | null>(null);
   const pdfBytesRef = useRef<Uint8Array | null>(null);
   const pageInfoRef = useRef<Record<number, { pageWidthPt: number; pageHeightPt: number }>>({});
+  const pageInherentRotationRef = useRef<Record<number, number>>({});
+  const userRotationRef = useRef(0);
   const viewportRef = useRef<PdfViewportLike | null>(null);
   const renderTaskRef = useRef<import("pdfjs-dist").RenderTask | null>(null);
   const renderSeqRef = useRef(0);
@@ -357,19 +227,6 @@ export default function PdfToFillablePdf() {
     };
   }, [destroyPdf]);
 
-  const getPageInfo = useCallback(
-    (pageIndex: number) => {
-      const info = pageInfoRef.current[pageIndex];
-      if (info) return info;
-      if (!pageMetrics || pageIndex !== currentPage) return null;
-      return {
-        pageWidthPt: pageMetrics.pageWidthPt,
-        pageHeightPt: pageMetrics.pageHeightPt,
-      };
-    },
-    [currentPage, pageMetrics]
-  );
-
   const renderPage = useCallback(
     async (pageIndex: number) => {
       const pdf = pdfRef.current;
@@ -384,18 +241,15 @@ export default function PdfToFillablePdf() {
         if (seq !== renderSeqRef.current) return;
 
         const pageRotate = page.rotate || 0;
-        const sourceRotation = normalizeQuarterTurnRotation(pageRotate);
-        const defaultViewUpright = sourceRotation !== 0;
-        const effectiveViewUpright = isViewUprightTouched ? viewUpright : defaultViewUpright;
-        if (!isViewUprightTouched && viewUpright !== defaultViewUpright) {
-          setViewUpright(defaultViewUpright);
-        }
+        pageInherentRotationRef.current[pageIndex] = pageRotate;
 
-        // Always render at rotation:0. CSS rotation on the canvas will make it appear upright.
+        const autoCorrection = (360 - pageRotate) % 360;
+        const totalRotation = (autoCorrection + userRotation) % 360;
+
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
-        const cssViewport = page.getViewport({ scale: zoom, rotation: 0 });
+        const cssViewport = page.getViewport({ scale: zoom, rotation: totalRotation });
         const dpr = window.devicePixelRatio || 1;
-        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: 0 });
+        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: totalRotation });
 
         canvas.width = Math.max(1, Math.floor(renderViewport.width));
         canvas.height = Math.max(1, Math.floor(renderViewport.height));
@@ -442,9 +296,7 @@ export default function PdfToFillablePdf() {
           pageHeightPt: rawViewport.height,
           widthCss: cssViewport.width,
           heightCss: cssViewport.height,
-          sourceRotation,
-          viewportRotation: 0,
-          effectiveViewUpright,
+          totalRotation,
         });
       } catch (error) {
         if (isRenderCancelledError(error)) return;
@@ -456,7 +308,7 @@ export default function PdfToFillablePdf() {
         }
       }
     },
-    [cancelRenderTask, isViewUprightTouched, viewUpright, zoom]
+    [cancelRenderTask, userRotation, zoom]
   );
 
   const handleFiles = useCallback(
@@ -470,10 +322,11 @@ export default function PdfToFillablePdf() {
       setCurrentPage(0);
       setPageCount(0);
       setPageMetrics(null);
-      setViewUpright(false);
-      setIsViewUprightTouched(false);
+      setUserRotation(0);
+      userRotationRef.current = 0;
       setDebugPoint(null);
       pageInfoRef.current = {};
+      pageInherentRotationRef.current = {};
       fieldCountRef.current = { text: 0, checkbox: 0, date: 0, signature: 0 };
       destroyPdf();
 
@@ -482,15 +335,10 @@ export default function PdfToFillablePdf() {
         const pdfjs = await loadPdfJs();
         const loadingTask = pdfjs.getDocument({ data: fileBytes.slice(0) });
         const pdf = (await loadingTask.promise) as unknown as PdfLike;
-        const firstPage = await pdf.getPage(1);
-        const firstSourceRotation = normalizeQuarterTurnRotation(firstPage.rotate || 0);
-        const defaultViewUpright = firstSourceRotation !== 0;
 
         pdfBytesRef.current = fileBytes;
         pdfRef.current = pdf;
         setFile(uploaded);
-        setViewUpright(defaultViewUpright);
-        setIsViewUprightTouched(false);
         setPageCount(pdf.numPages);
         addToast(`Loaded ${uploaded.name} (${pdf.numPages} pages)`, "success", 1800);
       } catch (error) {
@@ -526,18 +374,8 @@ export default function PdfToFillablePdf() {
     [fields, selectedFieldId]
   );
 
-  // CSS rotation angle to visually "undo" the page's inherent rotation
-  const effectiveViewUpright = pageMetrics?.effectiveViewUpright ?? false;
-  const cssRotationDeg = effectiveViewUpright
-    ? (360 - (pageMetrics?.sourceRotation ?? 0)) % 360
-    : 0;
-
-  // Visual dimensions (what the user sees after CSS rotation)
-  const isOddQuarterTurn = cssRotationDeg === 90 || cssRotationDeg === 270;
-  const canvasWidthCss = pageMetrics?.widthCss ?? 0;
-  const canvasHeightCss = pageMetrics?.heightCss ?? 0;
-  const visualWidthCss = isOddQuarterTurn ? canvasHeightCss : canvasWidthCss;
-  const visualHeightCss = isOddQuarterTurn ? canvasWidthCss : canvasHeightCss;
+  // Keep userRotationRef in sync for use in callbacks
+  userRotationRef.current = userRotation;
 
   const placeField = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -548,37 +386,24 @@ export default function PdfToFillablePdf() {
       const rect = overlay.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
 
-      // Click position in visual overlay space
+      // Click position in CSS pixels relative to overlay
       const vx = clamp(event.clientX - rect.left, 0, rect.width);
       const vy = clamp(event.clientY - rect.top, 0, rect.height);
 
-      // Convert visual click position to raw PDF coords
-      const { pdfX, pdfY } = visualToRawPdf(
-        vx,
-        vy,
-        cssRotationDeg,
-        pageMetrics.widthCss,
-        pageMetrics.heightCss,
-        zoom
-      );
+      const scale = zoom;
+      const defaults = FIELD_DEFAULTS[activeFieldType];
 
-      // Convert visual field defaults to raw PDF size
-      const visualDefaults = FIELD_DEFAULTS[activeFieldType];
-      const rawSize = visualSizeToRawPdfSize(
-        visualDefaults.widthPt,
-        visualDefaults.heightPt,
-        cssRotationDeg
-      );
+      // Field position in viewport points (scale=1)
+      const x = vx / scale;
+      const y = vy / scale;
 
-      // Anchor field: pdfY is where the click is, adjust so field bottom is at click
-      const clampedRect = clampPdfRectToPage({
-        xPt: pdfX,
-        yPt: pdfY - rawSize.heightPt,
-        widthPt: rawSize.widthPt,
-        heightPt: rawSize.heightPt,
-        pageWidthPt: pageMetrics.pageWidthPt,
-        pageHeightPt: pageMetrics.pageHeightPt,
-      });
+      // Viewport width/height at scale=1
+      const vpWidth = pageMetrics.widthCss / scale;
+      const vpHeight = pageMetrics.heightCss / scale;
+
+      // Clamp to page bounds in viewport points
+      const clampedX = Math.max(0, Math.min(x, vpWidth - defaults.widthPt));
+      const clampedY = Math.max(0, Math.min(y, vpHeight - defaults.heightPt));
 
       fieldCountRef.current[activeFieldType] += 1;
       const nextCount = fieldCountRef.current[activeFieldType];
@@ -593,10 +418,11 @@ export default function PdfToFillablePdf() {
           id,
           type: activeFieldType,
           pageIndex: currentPage,
-          xPt: clampedRect.xPt,
-          yPt: clampedRect.yPt,
-          widthPt: clampedRect.widthPt,
-          heightPt: clampedRect.heightPt,
+          xPt: clampedX,
+          yPt: clampedY,
+          widthPt: defaults.widthPt,
+          heightPt: defaults.heightPt,
+          placedRotation: pageMetrics.totalRotation,
           name: nextFieldName(activeFieldType, nextCount),
           label: fieldLabelForType(activeFieldType),
         },
@@ -607,132 +433,66 @@ export default function PdfToFillablePdf() {
         yCss: vy,
         nx: vx / rect.width,
         ny: vy / rect.height,
-        xPt: clampedRect.xPt,
-        yPt: clampedRect.yPt,
+        xPt: clampedX,
+        yPt: clampedY,
       });
     },
-    [activeFieldType, currentPage, pageMetrics, cssRotationDeg, zoom]
+    [activeFieldType, currentPage, pageMetrics, zoom]
   );
 
   const handleFieldPointerDown = useCallback(
     (event: React.PointerEvent<HTMLButtonElement>, field: FillableFieldUI) => {
       const overlay = overlayRef.current;
-      const info = getPageInfo(field.pageIndex);
-      if (!overlay || !pageMetrics || !info) return;
+      if (!overlay || !pageMetrics) return;
       event.preventDefault();
       event.stopPropagation();
       setSelectedFieldId(field.id);
 
-      const containerRect = overlay.getBoundingClientRect();
-      // Get the field's visual rect to compute pointer offset
-      const fieldVisualRect = rawPdfToVisualRect(
-        field.xPt,
-        field.yPt,
-        field.widthPt,
-        field.heightPt,
-        cssRotationDeg,
-        pageMetrics.widthCss,
-        pageMetrics.heightCss,
-        zoom
-      );
+      const scale = zoom;
+      const vpWidth = pageMetrics.widthCss / scale;
+      const vpHeight = pageMetrics.heightCss / scale;
 
       dragRef.current = {
         fieldId: field.id,
-        pageLeft: containerRect.left,
-        pageTop: containerRect.top,
-        pageWidth: containerRect.width,
-        pageHeight: containerRect.height,
-        pointerOffsetX: event.clientX - (containerRect.left + fieldVisualRect.left),
-        pointerOffsetY: event.clientY - (containerRect.top + fieldVisualRect.top),
-        widthPx: fieldVisualRect.width,
-        heightPx: fieldVisualRect.height,
-        widthPt: field.widthPt,
-        heightPt: field.heightPt,
-        pageWidthPt: info.pageWidthPt,
-        pageHeightPt: info.pageHeightPt,
+        startMouseX: event.clientX,
+        startMouseY: event.clientY,
+        startFieldX: field.xPt,
+        startFieldY: field.yPt,
+        fieldWidthPt: field.widthPt,
+        fieldHeightPt: field.heightPt,
+        vpWidth,
+        vpHeight,
       };
     },
-    [cssRotationDeg, getPageInfo, pageMetrics, zoom]
+    [pageMetrics, zoom]
   );
 
-  // Store latest values in refs so the drag handler (registered once) can access them
-  const cssRotationDegRef = useRef(cssRotationDeg);
-  const pageMetricsRef = useRef(pageMetrics);
+  // Store latest zoom in ref so the drag handler (registered once) can access it
   const zoomRef = useRef(zoom);
-  cssRotationDegRef.current = cssRotationDeg;
-  pageMetricsRef.current = pageMetrics;
   zoomRef.current = zoom;
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
       const drag = dragRef.current;
-      const metrics = pageMetricsRef.current;
-      if (!drag || !metrics) return;
+      if (!drag) return;
 
-      const currentCssRotationDeg = cssRotationDegRef.current;
       const currentZoom = zoomRef.current;
+      const deltaX = (event.clientX - drag.startMouseX) / currentZoom;
+      const deltaY = (event.clientY - drag.startMouseY) / currentZoom;
 
-      // Compute visual position of the field in the overlay
-      const nextVisualLeft = clamp(
-        event.clientX - drag.pageLeft - drag.pointerOffsetX,
-        0,
-        Math.max(0, drag.pageWidth - drag.widthPx)
-      );
-      const nextVisualTop = clamp(
-        event.clientY - drag.pageTop - drag.pointerOffsetY,
-        0,
-        Math.max(0, drag.pageHeight - drag.heightPx)
-      );
+      const newX = drag.startFieldX + deltaX;
+      const newY = drag.startFieldY + deltaY;
 
-      // Convert visual top-left to raw PDF coordinates
-      // The visual rect TL corresponds to a specific canvas/PDF position
-      // We need to find the PDF origin (bottom-left of the field)
-      // Visual TL → visual center-bottom is (vx + vw/2, vy + vh)
-      // But simpler: convert the visual TL point, then account for field size
-      const { pdfX, pdfY } = visualToRawPdf(
-        nextVisualLeft,
-        nextVisualTop,
-        currentCssRotationDeg,
-        metrics.widthCss,
-        metrics.heightCss,
-        currentZoom
-      );
-
-      // The visual top-left maps to a specific corner in PDF space depending on rotation.
-      // For the rawPdfToVisualRect mapping, the visual TL comes from the PDF rect's
-      // top-left in canvas space. Let's work backwards:
-      // In rawPdfToVisualRect, vLeft and vTop are computed from (cx, cy, cw, ch).
-      // We need to find (pdfX, pdfY) such that rawPdfToVisualRect gives us (nextVisualLeft, nextVisualTop).
-      // Instead of inverting the full rect transform, we can use a simpler approach:
-      // Convert two visual corners to get the PDF rect.
-      const corner2 = visualToRawPdf(
-        nextVisualLeft + drag.widthPx,
-        nextVisualTop + drag.heightPx,
-        currentCssRotationDeg,
-        metrics.widthCss,
-        metrics.heightCss,
-        currentZoom
-      );
-
-      const rawXMin = Math.min(pdfX, corner2.pdfX);
-      const rawYMin = Math.min(pdfY, corner2.pdfY);
-
-      const clampedRect = clampPdfRectToPage({
-        xPt: rawXMin,
-        yPt: rawYMin,
-        widthPt: drag.widthPt,
-        heightPt: drag.heightPt,
-        pageWidthPt: drag.pageWidthPt,
-        pageHeightPt: drag.pageHeightPt,
-      });
+      const clampedX = Math.max(0, Math.min(newX, drag.vpWidth - drag.fieldWidthPt));
+      const clampedY = Math.max(0, Math.min(newY, drag.vpHeight - drag.fieldHeightPt));
 
       setFields((previous) =>
         previous.map((field) =>
           field.id === drag.fieldId
             ? {
                 ...field,
-                xPt: clampedRect.xPt,
-                yPt: clampedRect.yPt,
+                xPt: clampedX,
+                yPt: clampedY,
               }
             : field
         )
@@ -754,20 +514,21 @@ export default function PdfToFillablePdf() {
 
   const updateSelectedField = useCallback(
     (patch: Partial<FillableFieldUI>) => {
-      if (!selectedFieldId) return;
+      if (!selectedFieldId || !pageMetrics) return;
+      const scale = zoom;
+      const vpWidth = pageMetrics.widthCss / scale;
+      const vpHeight = pageMetrics.heightCss / scale;
       setFields((previous) =>
         previous.map((field) => {
           if (field.id !== selectedFieldId) return field;
           const merged = { ...field, ...patch };
-          const info = getPageInfo(merged.pageIndex);
-          if (!info) return merged;
           const clamped = clampPdfRectToPage({
             xPt: merged.xPt,
             yPt: merged.yPt,
             widthPt: merged.widthPt,
             heightPt: merged.heightPt,
-            pageWidthPt: info.pageWidthPt,
-            pageHeightPt: info.pageHeightPt,
+            pageWidthPt: vpWidth,
+            pageHeightPt: vpHeight,
           });
           return {
             ...merged,
@@ -779,7 +540,7 @@ export default function PdfToFillablePdf() {
         })
       );
     },
-    [getPageInfo, selectedFieldId]
+    [pageMetrics, selectedFieldId, zoom]
   );
 
   const removeField = useCallback(
@@ -812,6 +573,7 @@ export default function PdfToFillablePdf() {
         height: field.heightPt,
         name: field.name,
         label: field.label,
+        placedRotation: field.placedRotation,
       }));
       const output = await createFillablePdf(source, outputFields);
       const blob = new Blob([new Uint8Array(output)], { type: "application/pdf" });
@@ -838,29 +600,31 @@ export default function PdfToFillablePdf() {
     dragRef.current = null;
     fieldCountRef.current = { text: 0, checkbox: 0, date: 0, signature: 0 };
     pageInfoRef.current = {};
+    pageInherentRotationRef.current = {};
     setFields([]);
     setSelectedFieldId(null);
     setFile(null);
     setPageCount(0);
     setCurrentPage(0);
     setPageMetrics(null);
-    setViewUpright(false);
-    setIsViewUprightTouched(false);
+    setUserRotation(0);
+    userRotationRef.current = 0;
     setDebugPoint(null);
   }, [destroyPdf]);
 
   const handleDimensionInput = useCallback(
     (key: "widthPt" | "heightPt", value: string) => {
-      if (!selectedField) return;
+      if (!selectedField || !pageMetrics) return;
       const parsed = Number(value);
       if (!Number.isFinite(parsed)) return;
-      const info = getPageInfo(selectedField.pageIndex);
-      if (!info) return;
-      const max = key === "widthPt" ? info.pageWidthPt : info.pageHeightPt;
+      const scale = zoom;
+      const vpWidth = pageMetrics.widthCss / scale;
+      const vpHeight = pageMetrics.heightCss / scale;
+      const max = key === "widthPt" ? vpWidth : vpHeight;
       const bounded = clamp(parsed, 8, Math.max(8, max));
       updateSelectedField({ [key]: bounded } as Partial<FillableFieldUI>);
     },
-    [getPageInfo, selectedField, updateSelectedField]
+    [pageMetrics, selectedField, updateSelectedField, zoom]
   );
 
   return (
@@ -887,18 +651,20 @@ export default function PdfToFillablePdf() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <label className="mr-1 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <input
-                    type="checkbox"
-                    checked={viewUpright}
-                    onChange={(event) => {
-                      setIsViewUprightTouched(true);
-                      setViewUpright(event.target.checked);
-                    }}
-                    className="h-3.5 w-3.5 rounded border-border"
-                  />
-                  View upright
-                </label>
+                <button
+                  type="button"
+                  onClick={() => setUserRotation((prev) => (prev + 90) % 360)}
+                  disabled={fieldsOnCurrentPage.length > 0}
+                  title={
+                    fieldsOnCurrentPage.length > 0
+                      ? "Remove all fields on this page to change rotation"
+                      : "Rotate view 90\u00B0"
+                  }
+                  className="rounded-md border border-border p-2 text-muted-foreground hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                  aria-label="Rotate view"
+                >
+                  <RotateCw className="h-4 w-4" />
+                </button>
                 <button
                   type="button"
                   onClick={() => setZoom((value) => clamp(Number((value - 0.1).toFixed(2)), 0.6, 2))}
@@ -954,9 +720,8 @@ export default function PdfToFillablePdf() {
               )}
               {isDebugVisible && pageMetrics && (
                 <p className="ml-auto text-[11px] text-muted-foreground">
-                  page.rotate {pageMetrics.pageRotate}° · sourceRotation {pageMetrics.sourceRotation}°
-                  {" · "}viewUpright {String(viewUpright)} · cssRotation{" "}
-                  {cssRotationDeg}° ·
+                  page.rotate {pageMetrics.pageRotate}° · totalRotation {pageMetrics.totalRotation}°
+                  {" · "}userRotation {userRotation}° ·
                   {" "}scale {zoom.toFixed(2)}
                 </p>
               )}
@@ -966,29 +731,13 @@ export default function PdfToFillablePdf() {
             </div>
 
             <div className="relative overflow-auto rounded-xl border border-border bg-zinc-200/30 p-3">
-              <div
-                className="relative mx-auto"
-                style={{
-                  width: visualWidthCss ? `${visualWidthCss}px` : "fit-content",
-                  minHeight: visualHeightCss ? `${visualHeightCss}px` : "240px",
-                  height: visualHeightCss ? `${visualHeightCss}px` : undefined,
-                  overflow: "hidden",
-                }}
-              >
-                {/* Canvas: raw dimensions at rotation:0, CSS rotated to appear upright */}
+              <div className="relative mx-auto" style={{ width: "fit-content" }}>
                 <canvas
                   ref={canvasRef}
                   className="block bg-white shadow-sm"
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    transformOrigin: "0 0",
-                    transform: getCssTransform(cssRotationDeg, canvasWidthCss, canvasHeightCss),
-                  }}
+                  style={{ display: "block" }}
                 />
 
-                {/* Interaction overlay: VISUAL dimensions, NOT rotated, on top of canvas */}
                 <div
                   ref={overlayRef}
                   data-testid="pdf-fillable-overlay"
@@ -997,24 +746,12 @@ export default function PdfToFillablePdf() {
                     position: "absolute",
                     top: 0,
                     left: 0,
-                    width: "100%",
-                    height: "100%",
+                    width: pageMetrics ? `${pageMetrics.widthCss}px` : undefined,
+                    height: pageMetrics ? `${pageMetrics.heightCss}px` : undefined,
                     cursor: activeFieldType ? "crosshair" : "default",
                   }}
                 >
                   {fieldsOnCurrentPage.map((field) => {
-                    if (!pageMetrics) return null;
-
-                    const rect = rawPdfToVisualRect(
-                      field.xPt,
-                      field.yPt,
-                      field.widthPt,
-                      field.heightPt,
-                      cssRotationDeg,
-                      pageMetrics.widthCss,
-                      pageMetrics.heightCss,
-                      zoom
-                    );
                     const selected = selectedFieldId === field.id;
 
                     return (
@@ -1033,10 +770,10 @@ export default function PdfToFillablePdf() {
                             : "border-sky-500/70 bg-sky-500/10 text-sky-700"
                         }`}
                         style={{
-                          left: rect.left,
-                          top: rect.top,
-                          width: Math.max(14, rect.width),
-                          height: Math.max(14, rect.height),
+                          left: field.xPt * zoom,
+                          top: field.yPt * zoom,
+                          width: Math.max(14, field.widthPt * zoom),
+                          height: Math.max(14, field.heightPt * zoom),
                         }}
                       >
                         <span className="truncate">{field.label || field.name}</span>
