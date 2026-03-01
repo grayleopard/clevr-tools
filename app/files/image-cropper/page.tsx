@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import { getToolBySlug } from "@/lib/tools";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
-import RelatedToolsCluster from "@/components/seo/RelatedToolsCluster";
 import ToolLayout from "@/components/tool/ToolLayout";
 import { notFound } from "next/navigation";
 
@@ -43,7 +42,6 @@ export default function ImageCropperPage() {
     <ToolLayout tool={tool}>
       <ImageCropper />
       <FaqSchema items={faqItems} />
-      <RelatedToolsCluster category="image" currentPath={tool.route} />
     </ToolLayout>
   );
 }
