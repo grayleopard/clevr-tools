@@ -315,6 +315,7 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['merge-pdf', 'split-pdf', 'rotate-pdf'],
     badge: 'new',
+    live: false,
   },
   {
     slug: 'resize-image',
@@ -899,6 +900,277 @@ export const tools: Tool[] = [
 <h2>Professional Invoicing Tips</h2>
 <p>Specify payment terms clearly — "Net 30" means payment is due within 30 days of the invoice date. "Due on receipt" means immediate payment is expected. If you charge late fees, state them explicitly: "A 1.5% monthly fee applies to balances unpaid after 30 days." Including multiple payment methods (bank transfer, PayPal, credit card) reduces friction and helps you get paid faster. For larger projects, consider milestone-based invoicing rather than a single invoice at the end — it protects your cash flow and reduces the client's risk as well.</p>`,
     relatedTools: ['word-counter', 'pdf-compressor'],
+    badge: 'new',
+  },
+  // ─── Financial Calculators ───────────────────────────────────────────────
+  {
+    slug: 'salary',
+    name: 'Salary Calculator',
+    shortDescription: 'Convert hourly pay to annual salary and see your earnings breakdown.',
+    category: 'calc',
+    route: '/calc/salary',
+    acceptedFormats: [],
+    icon: 'DollarSign',
+    metaTitle: 'Salary Calculator — Hourly to Salary & Salary to Hourly | clevr.tools',
+    metaDescription: 'Free salary calculator. Convert hourly wage to annual salary or annual salary to hourly rate. See daily, weekly, bi-weekly, semi-monthly, and monthly breakdowns instantly.',
+    seoContent: `<h2>Free Salary Calculator</h2>
+<p>Whether you're evaluating a job offer, negotiating a raise, or comparing hourly and salaried positions, understanding how your pay translates across different time periods is essential. This calculator instantly converts between hourly and annual pay, showing you the full breakdown: hourly, daily, weekly, bi-weekly, semi-monthly, monthly, and annual figures all at once.</p>
+<p>The calculation accounts for your actual work schedule — adjust hours per week and weeks per year to reflect part-time schedules, unpaid time off, or non-standard work arrangements. The standard assumption is 40 hours per week for 52 weeks, but many workers take unpaid vacation or work non-standard hours.</p>
+<h2>Hourly vs. Salary Comparison</h2>
+<p>Hourly workers are paid for each hour worked and typically receive overtime pay (1.5x) for hours exceeding 40 per week. Salaried employees receive a fixed annual amount regardless of hours worked. When comparing offers, consider the total compensation package including benefits, retirement contributions, health insurance, and paid time off — not just the base pay number.</p>`,
+    relatedTools: ['take-home-pay', 'paycheck', 'tip-calculator'],
+    badge: 'new',
+  },
+  {
+    slug: 'take-home-pay',
+    name: 'Take-Home Pay Calculator',
+    shortDescription: 'Estimate your paycheck after federal, state, and FICA taxes.',
+    category: 'calc',
+    route: '/calc/take-home-pay',
+    acceptedFormats: [],
+    icon: 'Wallet',
+    metaTitle: 'Take-Home Pay Calculator — After-Tax Income Estimator | clevr.tools',
+    metaDescription: 'Free take-home pay calculator. Estimate your paycheck after federal income tax, state tax, Social Security, and Medicare deductions. All 50 states supported.',
+    seoContent: `<h2>Free Take-Home Pay Calculator</h2>
+<p>Your gross salary and your take-home pay are very different numbers. Federal income tax, state income tax, Social Security (6.2%), and Medicare (1.45%) all reduce your paycheck before it hits your bank account. This calculator estimates your net pay after all major deductions, giving you a realistic picture of what you'll actually earn per paycheck.</p>
+<p>Enter your gross annual salary, select your pay frequency, filing status, and state to see a detailed breakdown of each deduction. Pre-tax deductions like 401(k) contributions reduce your taxable income, potentially lowering your tax bill while building retirement savings.</p>
+<h2>Understanding Your Tax Withholding</h2>
+<p>Federal income tax uses a progressive bracket system — you don't pay your top marginal rate on all income, only on the portion that falls within each bracket. FICA taxes (Social Security and Medicare) are flat rates applied to your gross pay, with Social Security capped at $176,100 for 2025. State taxes vary dramatically — nine states have no income tax at all, while others like California can add over 10% on high earners.</p>`,
+    relatedTools: ['salary', 'paycheck', 'mortgage-calculator'],
+    badge: 'new',
+  },
+  {
+    slug: 'loan',
+    name: 'Loan Calculator',
+    shortDescription: 'Calculate monthly loan payments with a full amortization schedule.',
+    category: 'calc',
+    route: '/calc/loan',
+    acceptedFormats: [],
+    icon: 'Landmark',
+    metaTitle: 'Loan Calculator — Monthly Payment & Amortization Schedule | clevr.tools',
+    metaDescription: 'Free loan calculator. Calculate monthly payments for any loan amount, interest rate, and term. View a full amortization schedule showing principal and interest breakdown.',
+    seoContent: `<h2>Free Loan Calculator</h2>
+<p>Calculate the monthly payment for any fixed-rate loan using the standard amortization formula: M = P[r(1+r)^n] / [(1+r)^n - 1], where P is the principal, r is the monthly interest rate, and n is the total number of payments. This formula ensures each payment covers the interest due plus a portion of principal, fully paying off the loan by the end of the term.</p>
+<p>The amortization schedule shows exactly how each payment is split between principal and interest over the life of the loan. Early payments are mostly interest; later payments are mostly principal. Understanding this pattern helps you see how extra payments can dramatically reduce total interest paid.</p>
+<h2>Loan Comparison Tips</h2>
+<p>When comparing loan offers, look beyond the monthly payment. A longer term reduces monthly payments but increases total interest paid — sometimes by tens of thousands of dollars. The total cost of the loan (principal + total interest) is the true measure of what you're paying. Even a 0.5% difference in interest rate can add up to thousands over a 15- or 30-year term.</p>`,
+    relatedTools: ['auto-loan', 'mortgage-calculator', 'amortization'],
+    badge: 'new',
+  },
+  {
+    slug: 'auto-loan',
+    name: 'Auto Loan Calculator',
+    shortDescription: 'Calculate car loan payments with trade-in and term comparison.',
+    category: 'calc',
+    route: '/calc/auto-loan',
+    acceptedFormats: [],
+    icon: 'Car',
+    metaTitle: 'Auto Loan Calculator — Car Payment Estimator Free | clevr.tools',
+    metaDescription: 'Free auto loan calculator. Enter vehicle price, down payment, trade-in value, interest rate, and loan term. Compare monthly payments across different term lengths.',
+    seoContent: `<h2>Free Auto Loan Calculator</h2>
+<p>Estimate your monthly car payment before visiting the dealership. Enter the vehicle price, your down payment, any trade-in value, the interest rate, and choose a loan term to see your monthly payment, total interest, and total cost. The term comparison table shows how different loan lengths affect both your monthly payment and total cost.</p>
+<p>A larger down payment reduces your loan amount and monthly payment, and may qualify you for a better interest rate. Trade-in value is subtracted from the vehicle price before calculating the loan. If you owe more on your current car than its trade-in value (negative equity), that difference gets added to your new loan.</p>
+<h2>Choosing the Right Loan Term</h2>
+<p>Shorter loan terms (24–36 months) mean higher monthly payments but significantly less total interest. Longer terms (60–84 months) lower your monthly payment but cost more overall and increase the risk of being "underwater" — owing more than the car is worth. Financial experts generally recommend keeping auto loans to 48–60 months maximum.</p>`,
+    relatedTools: ['car-payment', 'loan', 'down-payment'],
+    badge: 'new',
+  },
+  {
+    slug: 'credit-card-payoff',
+    name: 'Credit Card Payoff Calculator',
+    shortDescription: 'See how long it takes to pay off credit card debt and the total interest cost.',
+    category: 'calc',
+    route: '/calc/credit-card-payoff',
+    acceptedFormats: [],
+    icon: 'CreditCard',
+    metaTitle: 'Credit Card Payoff Calculator — Debt-Free Date Estimator | clevr.tools',
+    metaDescription: 'Free credit card payoff calculator. Enter your balance, APR, and monthly payment to see months to payoff, total interest, and how paying more saves money.',
+    seoContent: `<h2>Free Credit Card Payoff Calculator</h2>
+<p>Credit card debt compounds monthly, meaning you pay interest on interest. Enter your current balance, APR (Annual Percentage Rate), and monthly payment to see exactly how long it will take to pay off your debt and how much total interest you'll pay. The "what if" comparison table shows how increasing your monthly payment by $25, $50, or $100 dramatically reduces both the payoff time and total interest.</p>
+<p>If your monthly payment barely covers the interest charges, payoff could take decades. Credit card APRs typically range from 15% to 25%, making them one of the most expensive forms of debt. Prioritizing credit card payoff over other financial goals often makes mathematical sense.</p>
+<h2>Strategies to Pay Off Credit Cards Faster</h2>
+<p>The avalanche method targets the highest-APR card first, minimizing total interest paid. The snowball method targets the smallest balance first, providing psychological wins. Both are effective — the best strategy is the one you'll stick with. Even small extra payments make a meaningful difference when interest rates are high.</p>`,
+    relatedTools: ['debt-to-income', 'loan', 'savings-goal'],
+    badge: 'new',
+  },
+  {
+    slug: 'savings-goal',
+    name: 'Savings Goal Calculator',
+    shortDescription: 'Find out how much to save monthly to reach your financial goal.',
+    category: 'calc',
+    route: '/calc/savings-goal',
+    acceptedFormats: [],
+    icon: 'PiggyBank',
+    metaTitle: 'Savings Goal Calculator — Monthly Savings Planner Free | clevr.tools',
+    metaDescription: 'Free savings goal calculator. Enter your savings target, timeline, and current savings to find the monthly contribution needed. Accounts for interest earnings.',
+    seoContent: `<h2>Free Savings Goal Calculator</h2>
+<p>Whether you're saving for a vacation, emergency fund, down payment, or any other financial goal, this calculator tells you exactly how much to set aside each month. Enter your target amount, current savings, expected interest rate, and timeline to get your required monthly contribution. The calculation accounts for compound interest on your savings, so money in a high-yield savings account works harder than cash under a mattress.</p>
+<p>The formula solves for PMT (monthly payment) given a future value target: PMT = (FV - PV × (1+r)^n) × r / [(1+r)^n - 1], where FV is your goal, PV is current savings, r is the monthly interest rate, and n is the number of months.</p>
+<h2>Setting Realistic Savings Goals</h2>
+<p>Financial experts recommend saving 3–6 months of expenses as an emergency fund before targeting other goals. High-yield savings accounts currently offer 4–5% APY, meaningfully reducing the monthly contribution needed for longer-term goals. Break large goals into smaller milestones to stay motivated — saving $100,000 feels overwhelming, but $500/month for 15 years with 5% interest gets you there.</p>`,
+    relatedTools: ['compound-interest', 'retirement', 'down-payment'],
+    badge: 'new',
+  },
+  {
+    slug: 'retirement',
+    name: 'Retirement Calculator',
+    shortDescription: 'Project your retirement savings and estimated monthly retirement income.',
+    category: 'calc',
+    route: '/calc/retirement',
+    acceptedFormats: [],
+    icon: 'TrendingUp',
+    metaTitle: 'Retirement Calculator — Savings Projection Tool Free | clevr.tools',
+    metaDescription: 'Free retirement calculator. Project your retirement savings based on current savings, monthly contributions, and expected returns. See inflation-adjusted values and estimated monthly income.',
+    seoContent: `<h2>Free Retirement Calculator</h2>
+<p>Planning for retirement requires understanding how your savings will grow over decades and what that money will actually be worth when you need it. This calculator projects your retirement savings using compound growth with monthly contributions, then adjusts for inflation to show your purchasing power in today's dollars. The 4% rule estimate shows how much monthly income your savings could sustainably provide.</p>
+<p>The projection uses: FV = PV × (1 + r/12)^n + PMT × [(1 + r/12)^n - 1] / (r/12), where n is months until retirement. The inflation-adjusted value divides by (1 + inflation)^years to show real purchasing power.</p>
+<h2>The 4% Rule</h2>
+<p>The 4% rule suggests you can withdraw 4% of your retirement savings annually (adjusted for inflation each year) with a high probability of your money lasting 30+ years. This translates to dividing your target retirement income by 0.04 to find your savings goal — for example, $60,000/year requires approximately $1.5 million saved. The rule is a starting point, not a guarantee — actual safe withdrawal rates depend on market conditions, asset allocation, and retirement length.</p>`,
+    relatedTools: ['compound-interest', 'investment-return', 'savings-goal'],
+    badge: 'new',
+  },
+  {
+    slug: 'investment-return',
+    name: 'Investment Return Calculator',
+    shortDescription: 'Calculate future investment value with monthly contributions and compound growth.',
+    category: 'calc',
+    route: '/calc/investment-return',
+    acceptedFormats: [],
+    icon: 'BarChart3',
+    metaTitle: 'Investment Return Calculator — Growth Projection Tool Free | clevr.tools',
+    metaDescription: 'Free investment return calculator. Project future value of investments with initial amount, monthly contributions, and compound growth. Year-by-year breakdown included.',
+    seoContent: `<h2>Free Investment Return Calculator</h2>
+<p>See how your investments could grow over time with compound returns and regular contributions. Enter your initial investment, monthly contribution, expected annual return, and investment period to get a year-by-year projection of your portfolio's growth. The calculation compounds monthly: FV = P × (1 + r/12)^(y×12) + PMT × [(1 + r/12)^(y×12) - 1] / (r/12).</p>
+<p>The year-by-year table breaks down starting balance, contributions, earnings, and ending balance for each year, making it easy to see how compound growth accelerates over time. The gap between your total contributions and final balance represents your investment earnings — this gap widens dramatically in later years.</p>
+<h2>Historical Market Returns</h2>
+<p>The S&P 500 has returned approximately 10% annually (about 7% after inflation) over the past century. However, returns vary significantly year to year — individual years range from -40% to +50%. Using a conservative estimate (6–8%) for projections is prudent. Past performance does not guarantee future results, and actual returns depend on your specific investment allocation and timing.</p>`,
+    relatedTools: ['compound-interest', 'retirement', 'savings-goal'],
+    badge: 'new',
+  },
+  {
+    slug: 'debt-to-income',
+    name: 'Debt-to-Income Calculator',
+    shortDescription: 'Calculate your DTI ratio and see how lenders view your debt level.',
+    category: 'calc',
+    route: '/calc/debt-to-income',
+    acceptedFormats: [],
+    icon: 'Scale',
+    metaTitle: 'Debt-to-Income (DTI) Calculator — Free Ratio Tool | clevr.tools',
+    metaDescription: 'Free debt-to-income ratio calculator. Add all your monthly debts and income to calculate your DTI percentage. See how lenders evaluate your ratio for mortgage and loan approval.',
+    seoContent: `<h2>Free Debt-to-Income Calculator</h2>
+<p>Your debt-to-income (DTI) ratio is one of the most important numbers lenders use to evaluate your ability to repay a loan. It's calculated simply: DTI = (Total Monthly Debt Payments / Gross Monthly Income) × 100. A lower DTI means more of your income is available for new loan payments, making you a lower-risk borrower.</p>
+<p>Add all your monthly debt obligations — mortgage/rent, car payments, student loans, credit card minimums, personal loans, and any other recurring debt payments. Divide by your gross (pre-tax) monthly income to get your DTI percentage.</p>
+<h2>What Lenders Look For</h2>
+<p>Most mortgage lenders prefer a DTI below 36%, with no more than 28% going to housing costs (the "front-end" ratio). FHA loans may accept DTI up to 43–50% with compensating factors. For other loans, under 36% is generally considered good, 37–43% is acceptable, and above 43% may make qualification difficult. Reducing your DTI before applying for a major loan can improve your chances and potentially qualify you for better interest rates.</p>`,
+    relatedTools: ['mortgage-calculator', 'credit-card-payoff', 'loan'],
+    badge: 'new',
+  },
+  {
+    slug: 'net-worth',
+    name: 'Net Worth Calculator',
+    shortDescription: 'Calculate your net worth by listing all assets and liabilities.',
+    category: 'calc',
+    route: '/calc/net-worth',
+    acceptedFormats: [],
+    icon: 'Calculator',
+    metaTitle: 'Net Worth Calculator — Track Your Financial Health Free | clevr.tools',
+    metaDescription: 'Free net worth calculator. List your assets (savings, investments, property) and liabilities (loans, credit cards, mortgage) to calculate your total net worth.',
+    seoContent: `<h2>Free Net Worth Calculator</h2>
+<p>Your net worth is the single most comprehensive measure of your financial health: Net Worth = Total Assets - Total Liabilities. Assets include everything you own that has monetary value — bank accounts, investments, retirement accounts, real estate, vehicles, and valuables. Liabilities include everything you owe — mortgages, car loans, student loans, credit card balances, and personal debts.</p>
+<p>Tracking net worth over time is more meaningful than looking at income or savings alone. A high income with high debt can produce a lower net worth than a moderate income with disciplined saving. Calculating your net worth quarterly or annually reveals whether you're building wealth or treading water.</p>
+<h2>Net Worth by Age</h2>
+<p>Average net worth varies dramatically by age due to the compounding effects of time on both savings and debt repayment. It's common to have a negative net worth in your 20s (student loans exceed assets). By your 30s-40s, net worth typically turns positive as retirement accounts grow and debt is paid down. The key metric isn't comparison to others — it's whether your net worth is trending upward over time.</p>`,
+    relatedTools: ['debt-to-income', 'retirement', 'savings-goal'],
+    badge: 'new',
+  },
+  {
+    slug: 'sales-tax',
+    name: 'Sales Tax Calculator',
+    shortDescription: 'Calculate sales tax and total price, or reverse-calculate pre-tax price.',
+    category: 'calc',
+    route: '/calc/sales-tax',
+    acceptedFormats: [],
+    icon: 'Receipt',
+    metaTitle: 'Sales Tax Calculator — Tax Amount & Total Price Free | clevr.tools',
+    metaDescription: 'Free sales tax calculator. Calculate sales tax on any purchase or reverse-calculate the pre-tax price from a total. Includes state tax rate presets for all US states.',
+    seoContent: `<h2>Free Sales Tax Calculator</h2>
+<p>Calculate the sales tax on any purchase by entering the price and tax rate, or work backwards from a receipt total to find the pre-tax amount. The forward calculation is: Tax = Price × Rate / 100, Total = Price + Tax. The reverse calculation is: Pre-Tax Price = Total / (1 + Rate / 100). State tax rate presets let you quickly select the correct rate for your location.</p>
+<p>Sales tax rates in the US vary by state, county, and city. Some states (Oregon, Montana, Delaware, New Hampshire) have no state sales tax. Others, like Tennessee, Louisiana, and Arkansas, have combined state and local rates exceeding 9%. Certain items like groceries or clothing may be exempt or taxed at reduced rates depending on your state.</p>
+<h2>Why Sales Tax Matters</h2>
+<p>Sales tax adds a meaningful percentage to every purchase. On a $30,000 car in a state with 8% sales tax, you're paying $2,400 in tax alone. Understanding your local rate helps with budgeting, comparing prices across state lines, and making informed purchasing decisions — especially for large purchases where even 1–2% difference represents significant money.</p>`,
+    relatedTools: ['tip-calculator', 'discount-calculator', 'percentage-calculator'],
+    badge: 'new',
+  },
+  {
+    slug: 'amortization',
+    name: 'Amortization Calculator',
+    shortDescription: 'View a full loan amortization schedule with optional extra payments.',
+    category: 'calc',
+    route: '/calc/amortization',
+    acceptedFormats: [],
+    icon: 'CalendarCheck',
+    metaTitle: 'Amortization Calculator — Loan Schedule with Extra Payments | clevr.tools',
+    metaDescription: 'Free amortization calculator. Generate a full loan amortization schedule. See how extra monthly payments reduce total interest and shorten your loan term.',
+    seoContent: `<h2>Free Amortization Calculator</h2>
+<p>An amortization schedule shows exactly how each loan payment is divided between principal and interest over the entire life of the loan. This calculator generates the complete month-by-month schedule for any fixed-rate loan, plus shows the impact of optional extra monthly payments. Extra payments go directly toward principal, reducing both the loan term and total interest paid.</p>
+<p>The standard loan payment formula is: M = P[r(1+r)^n] / [(1+r)^n - 1]. Each month, interest is calculated on the remaining balance (Interest = Balance × Monthly Rate), and the rest of the payment goes to principal (Principal = Payment - Interest). As the balance decreases, less goes to interest and more to principal.</p>
+<h2>The Power of Extra Payments</h2>
+<p>Even modest extra payments can save thousands in interest. Adding just $100/month to a $300,000, 30-year mortgage at 6.5% saves over $50,000 in interest and pays off the loan nearly 5 years early. This calculator shows the exact savings so you can decide whether extra payments are the best use of your money compared to investing the difference.</p>`,
+    relatedTools: ['loan', 'mortgage-calculator', 'auto-loan'],
+    badge: 'new',
+  },
+  {
+    slug: 'car-payment',
+    name: 'Car Payment Calculator',
+    shortDescription: 'Estimate monthly car payments with price, down payment, and loan details.',
+    category: 'calc',
+    route: '/calc/car-payment',
+    acceptedFormats: [],
+    icon: 'Car',
+    metaTitle: 'Car Payment Calculator — Monthly Auto Payment Estimator | clevr.tools',
+    metaDescription: 'Free car payment calculator. Enter car price, down payment, interest rate, and loan term to estimate your monthly payment, total interest, and total cost of the vehicle.',
+    seoContent: `<h2>Free Car Payment Calculator</h2>
+<p>Know your monthly car payment before you start shopping. Enter the vehicle price, your down payment, interest rate, and loan term to instantly see your estimated monthly payment, total interest charges, and the total cost of the vehicle over the life of the loan. This helps you set a realistic budget and avoid overextending at the dealership.</p>
+<p>The monthly payment is calculated using the standard amortization formula. A larger down payment directly reduces both your monthly payment and total interest paid. Most financial advisors recommend putting at least 20% down on a car to avoid negative equity.</p>
+<h2>Car Buying Tips</h2>
+<p>Get pre-approved for financing before visiting dealerships — it gives you negotiating leverage and a baseline rate to compare against dealer financing. Focus on the total cost of the vehicle (purchase price + total interest) rather than just the monthly payment. Dealers can make any monthly payment look affordable by extending the loan term, but you'll pay far more in total interest.</p>`,
+    relatedTools: ['auto-loan', 'loan', 'down-payment'],
+    badge: 'new',
+  },
+  {
+    slug: 'paycheck',
+    name: 'Paycheck Calculator',
+    shortDescription: 'Estimate your net paycheck after taxes and deductions per pay period.',
+    category: 'calc',
+    route: '/calc/paycheck',
+    acceptedFormats: [],
+    icon: 'Wallet',
+    metaTitle: 'Paycheck Calculator — Net Pay Per Period Estimator | clevr.tools',
+    metaDescription: 'Free paycheck calculator. Enter your gross pay per period to see estimated deductions for federal tax, state tax, Social Security, and Medicare. All 50 states supported.',
+    seoContent: `<h2>Free Paycheck Calculator</h2>
+<p>See exactly what your paycheck will look like after deductions. Enter your gross pay per pay period, filing status, and state to get an itemized breakdown of federal income tax, state income tax, Social Security, and Medicare withholding. The result shows your estimated net (take-home) pay for each paycheck.</p>
+<p>This calculator uses 2025 federal tax brackets and state tax rates to estimate withholding. Pre-tax deductions like 401(k) contributions and health insurance premiums are subtracted before calculating federal and state income tax, reducing your taxable income.</p>
+<h2>Understanding Your Pay Stub</h2>
+<p>Your gross pay is the total amount earned before any deductions. From that, your employer withholds federal income tax (based on your W-4 filing status and the progressive bracket system), Social Security tax (6.2% up to $176,100), Medicare tax (1.45%), and state income tax (varies by state). The remainder is your net pay — what gets deposited into your bank account. Understanding these deductions helps you verify your pay stub accuracy and plan your budget around actual take-home pay.</p>`,
+    relatedTools: ['salary', 'take-home-pay', 'tip-calculator'],
+    badge: 'new',
+  },
+  {
+    slug: 'down-payment',
+    name: 'Down Payment Calculator',
+    shortDescription: 'Calculate how much to save for a down payment and compare percentages.',
+    category: 'calc',
+    route: '/calc/down-payment',
+    acceptedFormats: [],
+    icon: 'Home',
+    metaTitle: 'Down Payment Calculator — Home Savings Planner Free | clevr.tools',
+    metaDescription: 'Free down payment calculator. Enter home price and down payment percentage to see your savings goal. Compare 5%, 10%, 15%, 20%, and 25% down payment amounts and monthly savings needed.',
+    seoContent: `<h2>Free Down Payment Calculator</h2>
+<p>A down payment is the upfront cash portion of a home purchase. The standard recommendation is 20% to avoid Private Mortgage Insurance (PMI), but many buyers put down 5–15%. This calculator shows the exact dollar amount needed at different percentages, how long it will take to save based on your current savings and monthly savings rate, and a comparison table across common down payment levels.</p>
+<p>The savings timeline is calculated as: Months = (Goal - Current Savings) / Monthly Savings. For a more accurate projection, the calculator can factor in interest earned on savings if you specify an expected rate.</p>
+<h2>Down Payment Trade-Offs</h2>
+<p>A larger down payment means a smaller loan, lower monthly payments, no PMI (at 20%+), and typically a better interest rate. But it also means more cash tied up in your home and less available for other investments, emergency funds, or home improvements. There's no universally "right" amount — it depends on your financial situation, local market conditions, and how quickly you want to buy. First-time buyer programs, FHA loans (3.5% minimum), and VA loans (0% for veterans) offer lower down payment options.</p>`,
+    relatedTools: ['mortgage-calculator', 'savings-goal', 'auto-loan'],
     badge: 'new',
   },
 ];

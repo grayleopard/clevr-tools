@@ -48,6 +48,14 @@ import {
   Keyboard,
   Maximize2,
   Crop,
+  DollarSign,
+  Wallet,
+  Landmark,
+  Car,
+  CreditCard,
+  PiggyBank,
+  BarChart3,
+  CalendarCheck,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -101,6 +109,14 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Keyboard,
   Maximize2,
   Crop,
+  DollarSign,
+  Wallet,
+  Landmark,
+  Car,
+  CreditCard,
+  PiggyBank,
+  BarChart3,
+  CalendarCheck,
 };
 
 export default function ToolCard({ tool }: { tool: Tool }) {
