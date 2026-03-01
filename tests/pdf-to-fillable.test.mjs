@@ -35,31 +35,27 @@ test("createFillablePdf creates an AcroForm text field", async () => {
   assert.equal(fields[0].getName(), "full_name");
 });
 
-test("createFillablePdf normalizes rotated source pages to rotation 0 when requested", async () => {
+test("createFillablePdf preserves source page rotation metadata", async () => {
   const base = await readFile(fixturePath("sample.pdf"));
   const rotatedInput = await PDFDocument.load(base);
   rotatedInput.getPage(0).setRotation(degrees(90));
   const rotatedBytes = await rotatedInput.save();
 
-  const output = await createFillablePdf(
-    rotatedBytes,
-    [
-      {
-        type: "text",
-        pageIndex: 0,
-        x: 100,
-        y: 100,
-        width: 180,
-        height: 28,
-        name: "rotated_field",
-      },
-    ],
-    { normalizePageRotation: true }
-  );
+  const output = await createFillablePdf(rotatedBytes, [
+    {
+      type: "text",
+      pageIndex: 0,
+      x: 100,
+      y: 100,
+      width: 180,
+      height: 28,
+      name: "rotated_field",
+    },
+  ]);
 
   const pdfDoc = await PDFDocument.load(output);
   const page = pdfDoc.getPage(0);
-  assert.equal(page.getRotation().angle, 0, "Expected exported page rotation to be 0");
+  assert.equal(page.getRotation().angle, 90, "Expected exported page rotation to match source");
 
   const fields = pdfDoc.getForm().getFields();
   assert.equal(fields.length, 1);

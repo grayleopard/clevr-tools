@@ -2,30 +2,25 @@
 
 ## Root cause
 
-The broken behavior came from mixing coordinate systems:
-
-1. Click/drag happened in viewport CSS pixels.
-2. Overlay and export logic mixed normalized values and PDF-point math.
-3. Rotation metadata was not handled with a single transform path, so rendered orientation and exported coordinates diverged.
+Placement drift came from mixing coordinate systems and rotation assumptions between preview and export.
 
 ## Current mapping pipeline
 
-The tool now uses pdf.js viewport transforms as the single source of truth:
+The tool now keeps a single rotation basis across preview and export:
 
-- Render: `page.getViewport({ scale, rotation: neutralRotation })`, where
-  `neutralRotation` resolves to a rotation-neutral value (`0`) for metadata-only rotation inputs.
+- Render: `page.getViewport({ scale, rotation: page.rotate })`
 - Click to place:
   - Convert click to viewport-local CSS coordinates.
   - Convert viewport rectangle to PDF rect with `viewport.convertToPdfPoint`.
 - Overlay render:
-  - Convert PDF rect to viewport rect with `viewport.convertToViewportRectangle`.
+  - Convert stored PDF rect to viewport rect with `viewport.convertToViewportRectangle`.
 - Drag:
   - Move in viewport CSS space.
   - Convert dragged viewport rectangle back to PDF rect.
 - Export:
-  - Source pages are normalized into a new PDF with rotation metadata baked into content and page rotation set to `0`.
-  - Field rects are transformed with the exact same page transform used for content normalization.
+  - Keep original PDF page rotation metadata unchanged.
+  - Add AcroForm fields directly at stored PDF-point coordinates.
 
-## Why this fixes it
+## Why this fixes consistency
 
-Every interaction path now uses the same conversion model (PDF points <-> viewport pixels) and the same rotation basis. That keeps placement stable across zoom, DPR, scrolling, and rotated inputs.
+Preview and export now use the exact same page rotation basis and the same coordinate conversions, so field placement no longer depends on an extra export-time normalization step.

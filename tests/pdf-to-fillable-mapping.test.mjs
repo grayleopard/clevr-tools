@@ -4,7 +4,6 @@ import assert from "node:assert/strict";
 import {
   clampPdfRectToPage,
   getLocalViewportPoint,
-  getNeutralizedRotation,
   mapDomPointToPdfPoint,
   pdfRectToViewportRect,
   viewportRectToPdfRect,
@@ -207,11 +206,4 @@ test("clampPdfRectToPage keeps field dimensions in a sane range", () => {
   approxEqual(clamped.xPt, 300);
   approxEqual(clamped.yPt, 672);
   assert.ok(clamped.heightPt < 700 * 0.2);
-});
-
-test("getNeutralizedRotation inverts quarter turns", () => {
-  assert.equal(getNeutralizedRotation(0), 0);
-  assert.equal(getNeutralizedRotation(90), 0);
-  assert.equal(getNeutralizedRotation(180), 0);
-  assert.equal(getNeutralizedRotation(270), 0);
 });

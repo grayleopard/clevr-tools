@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FileDropZone from "@/components/tool/FileDropZone";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
-import DownloadCard from "@/components/tool/DownloadCard";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
@@ -23,7 +22,6 @@ import type { FillableFieldDefinition, FillableFieldType } from "@/lib/pdf/filla
 import {
   clampPdfRectToPage,
   getLocalViewportPoint,
-  normalizeRotation,
   pdfRectToViewportRect,
   viewportRectToPdfRect,
 } from "@/lib/pdf/field-placement.mjs";
@@ -43,7 +41,7 @@ interface PdfPageLike {
     canvasContext: CanvasRenderingContext2D;
     viewport: PdfViewportLike;
     canvas: HTMLCanvasElement;
-  }) => { promise: Promise<void> };
+  }) => import("pdfjs-dist").RenderTask;
 }
 
 interface PdfLike {
@@ -86,7 +84,7 @@ interface PageMetrics {
   widthCss: number;
   heightCss: number;
   sourceRotation: number;
-  displayRotation: number;
+  activeRotation: number;
 }
 
 interface DebugPoint {
@@ -137,6 +135,27 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
+function normalizeRotationDegrees(rotation: number): number {
+  return ((rotation % 360) + 360) % 360;
+}
+
+function normalizeQuarterTurnRotation(rotation: number): 0 | 90 | 180 | 270 {
+  const normalized = normalizeRotationDegrees(rotation);
+  const snapped = Math.round(normalized / 90) * 90;
+  const quarter = ((snapped % 360) + 360) % 360;
+  if (quarter === 90 || quarter === 180 || quarter === 270) return quarter;
+  return 0;
+}
+
+function isRenderCancelledError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    (error as { name?: string }).name === "RenderingCancelledException"
+  );
+}
+
 function nextFieldName(type: FillableFieldType, count: number): string {
   switch (type) {
     case "text":
@@ -168,19 +187,19 @@ export default function PdfToFillablePdf() {
   const [isLoadingPdf, setIsLoadingPdf] = useState(false);
   const [isRenderingPage, setIsRenderingPage] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [resultUrl, setResultUrl] = useState<string | null>(null);
-  const [resultSize, setResultSize] = useState(0);
-  const [downloaded, setDownloaded] = useState(false);
+  const [viewUpright, setViewUpright] = useState(false);
+  const [isViewUprightTouched, setIsViewUprightTouched] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [debugPoint, setDebugPoint] = useState<DebugPoint | null>(null);
-  const [hasRotationSource, setHasRotationSource] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const pdfRef = useRef<PdfLike | null>(null);
   const pdfBytesRef = useRef<Uint8Array | null>(null);
-  const pageInfoRef = useRef<Record<number, Omit<PageMetrics, "widthCss" | "heightCss">>>({});
+  const pageInfoRef = useRef<Record<number, { pageWidthPt: number; pageHeightPt: number }>>({});
   const viewportRef = useRef<PdfViewportLike | null>(null);
+  const renderTaskRef = useRef<import("pdfjs-dist").RenderTask | null>(null);
+  const renderSeqRef = useRef(0);
   const fieldCountRef = useRef<Record<FillableFieldType, number>>({
     text: 0,
     checkbox: 0,
@@ -189,30 +208,40 @@ export default function PdfToFillablePdf() {
   });
   const dragRef = useRef<DragState | null>(null);
   const isDev = process.env.NODE_ENV !== "production";
+  const [debugFromQuery, setDebugFromQuery] = useState(false);
+  const isDebugVisible = (isDev && showDebug) || debugFromQuery;
 
-  const revokeResultUrl = useCallback(() => {
-    setDownloaded(false);
-    setResultSize(0);
-    setResultUrl((previous) => {
-      if (previous) URL.revokeObjectURL(previous);
-      return null;
-    });
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    setDebugFromQuery(params.get("debug") === "1");
+  }, []);
+
+  const cancelRenderTask = useCallback(() => {
+    if (!renderTaskRef.current) return;
+    try {
+      renderTaskRef.current.cancel();
+    } catch {
+      // Ignore cancellation races.
+    }
+    renderTaskRef.current = null;
   }, []);
 
   const destroyPdf = useCallback(() => {
+    renderSeqRef.current += 1;
+    cancelRenderTask();
     if (pdfRef.current?.destroy) {
       pdfRef.current.destroy();
     }
     pdfRef.current = null;
     viewportRef.current = null;
-  }, []);
+  }, [cancelRenderTask]);
 
   useEffect(() => {
     return () => {
-      revokeResultUrl();
       destroyPdf();
     };
-  }, [destroyPdf, revokeResultUrl]);
+  }, [destroyPdf]);
 
   const getPageInfo = useCallback(
     (pageIndex: number) => {
@@ -222,8 +251,6 @@ export default function PdfToFillablePdf() {
       return {
         pageWidthPt: pageMetrics.pageWidthPt,
         pageHeightPt: pageMetrics.pageHeightPt,
-        sourceRotation: pageMetrics.sourceRotation,
-        displayRotation: pageMetrics.displayRotation,
       };
     },
     [currentPage, pageMetrics]
@@ -234,17 +261,27 @@ export default function PdfToFillablePdf() {
       const pdf = pdfRef.current;
       const canvas = canvasRef.current;
       if (!pdf || !canvas) return;
+      const seq = ++renderSeqRef.current;
+      cancelRenderTask();
 
       setIsRenderingPage(true);
       try {
         const page = await pdf.getPage(pageIndex + 1);
-        const sourceRotation = normalizeRotation(page.rotate || 0);
-        const displayRotation = 0;
+        if (seq !== renderSeqRef.current) return;
+
+        const sourceRotation = normalizeQuarterTurnRotation(page.rotate || 0);
+        const defaultUpright = sourceRotation !== 0;
+        const shouldViewUpright = isViewUprightTouched ? viewUpright : defaultUpright;
+        if (!isViewUprightTouched && viewUpright !== defaultUpright) {
+          setViewUpright(defaultUpright);
+        }
+        const displayRotation = shouldViewUpright ? (360 - sourceRotation) % 360 : sourceRotation;
+        const viewportRotation = shouldViewUpright ? displayRotation : sourceRotation;
 
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
-        const cssViewport = page.getViewport({ scale: zoom, rotation: displayRotation });
+        const cssViewport = page.getViewport({ scale: zoom, rotation: viewportRotation });
         const dpr = window.devicePixelRatio || 1;
-        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: displayRotation });
+        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: viewportRotation });
 
         canvas.width = Math.max(1, Math.floor(renderViewport.width));
         canvas.height = Math.max(1, Math.floor(renderViewport.height));
@@ -259,37 +296,51 @@ export default function PdfToFillablePdf() {
 
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
-        await page.render({
+        const task = page.render({
           canvasContext: context,
           viewport: renderViewport,
           canvas,
-        }).promise;
+        });
+        renderTaskRef.current = task;
+
+        try {
+          await task.promise;
+        } catch (error) {
+          if (isRenderCancelledError(error)) return;
+          throw error;
+        } finally {
+          if (renderTaskRef.current === task) {
+            renderTaskRef.current = null;
+          }
+        }
+
+        if (seq !== renderSeqRef.current) return;
 
         viewportRef.current = cssViewport;
         pageInfoRef.current[pageIndex] = {
           pageWidthPt: rawViewport.width,
           pageHeightPt: rawViewport.height,
-          sourceRotation,
-          displayRotation,
         };
 
-        setHasRotationSource(sourceRotation !== 0);
         setPageMetrics({
           pageWidthPt: rawViewport.width,
           pageHeightPt: rawViewport.height,
           widthCss: cssViewport.width,
           heightCss: cssViewport.height,
           sourceRotation,
-          displayRotation,
+          activeRotation: viewportRotation,
         });
       } catch (error) {
+        if (isRenderCancelledError(error)) return;
         console.error(error);
         addToast("Failed to render PDF page.", "error");
       } finally {
-        setIsRenderingPage(false);
+        if (seq === renderSeqRef.current) {
+          setIsRenderingPage(false);
+        }
       }
     },
-    [zoom]
+    [cancelRenderTask, isViewUprightTouched, viewUpright, zoom]
   );
 
   const handleFiles = useCallback(
@@ -298,13 +349,13 @@ export default function PdfToFillablePdf() {
       if (!uploaded) return;
 
       setIsLoadingPdf(true);
-      revokeResultUrl();
       setFields([]);
       setSelectedFieldId(null);
       setCurrentPage(0);
       setPageCount(0);
       setPageMetrics(null);
-      setHasRotationSource(false);
+      setViewUpright(false);
+      setIsViewUprightTouched(false);
       setDebugPoint(null);
       pageInfoRef.current = {};
       fieldCountRef.current = { text: 0, checkbox: 0, date: 0, signature: 0 };
@@ -330,7 +381,7 @@ export default function PdfToFillablePdf() {
         setIsLoadingPdf(false);
       }
     },
-    [destroyPdf, revokeResultUrl]
+    [destroyPdf]
   );
 
   useAutoLoadFile(handleFiles);
@@ -338,7 +389,11 @@ export default function PdfToFillablePdf() {
   useEffect(() => {
     if (!pdfRef.current || pageCount === 0) return;
     void renderPage(currentPage);
-  }, [currentPage, pageCount, renderPage]);
+    return () => {
+      renderSeqRef.current += 1;
+      cancelRenderTask();
+    };
+  }, [cancelRenderTask, currentPage, pageCount, renderPage]);
 
   const fieldsOnCurrentPage = useMemo(
     () => fields.filter((field) => field.pageIndex === currentPage),
@@ -421,9 +476,8 @@ export default function PdfToFillablePdf() {
         xPt: clampedRect.xPt,
         yPt: clampedRect.yPt,
       });
-      revokeResultUrl();
     },
-    [activeFieldType, currentPage, pageMetrics, revokeResultUrl]
+    [activeFieldType, currentPage, pageMetrics]
   );
 
   const handleFieldPointerDown = useCallback(
@@ -514,7 +568,6 @@ export default function PdfToFillablePdf() {
     const handlePointerUp = () => {
       if (!dragRef.current) return;
       dragRef.current = null;
-      revokeResultUrl();
     };
 
     window.addEventListener("pointermove", handlePointerMove);
@@ -523,7 +576,7 @@ export default function PdfToFillablePdf() {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [revokeResultUrl]);
+  }, []);
 
   const updateSelectedField = useCallback(
     (patch: Partial<FillableFieldUI>) => {
@@ -551,25 +604,25 @@ export default function PdfToFillablePdf() {
           };
         })
       );
-      revokeResultUrl();
     },
-    [getPageInfo, revokeResultUrl, selectedFieldId]
+    [getPageInfo, selectedFieldId]
   );
 
   const removeField = useCallback(
     (fieldId: string) => {
       setFields((previous) => previous.filter((field) => field.id !== fieldId));
       if (selectedFieldId === fieldId) setSelectedFieldId(null);
-      revokeResultUrl();
     },
-    [revokeResultUrl, selectedFieldId]
+    [selectedFieldId]
   );
 
-  const exportFillablePdf = useCallback(async () => {
+  const outputFilename = file ? file.name.replace(/\.pdf$/i, "-fillable.pdf") : "fillable.pdf";
+
+  const downloadFillablePdf = useCallback(async () => {
     const source = pdfBytesRef.current;
     if (!source || !file) return;
     if (fields.length === 0) {
-      addToast("Add at least one field before exporting.", "info");
+      addToast("Add at least one field before downloading.", "info");
       return;
     }
 
@@ -586,25 +639,26 @@ export default function PdfToFillablePdf() {
         name: field.name,
         label: field.label,
       }));
-      const output = await createFillablePdf(source, outputFields, {
-        normalizePageRotation: true,
-      });
-      const blob = new Blob([Uint8Array.from(output)], { type: "application/pdf" });
-      revokeResultUrl();
+      const output = await createFillablePdf(source, outputFields);
+      const blob = new Blob([new Uint8Array(output)], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
-      setResultUrl(url);
-      setResultSize(blob.size);
-      addToast("Fillable PDF created.", "success");
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = outputFilename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      addToast("Download started.", "success");
     } catch (error) {
       console.error(error);
-      addToast("Failed to export fillable PDF.", "error");
+      addToast("Failed to generate fillable PDF.", "error");
     } finally {
       setIsExporting(false);
     }
-  }, [fields, file, revokeResultUrl]);
+  }, [fields, file, outputFilename]);
 
   const resetTool = useCallback(() => {
-    revokeResultUrl();
     destroyPdf();
     pdfBytesRef.current = null;
     dragRef.current = null;
@@ -616,9 +670,10 @@ export default function PdfToFillablePdf() {
     setPageCount(0);
     setCurrentPage(0);
     setPageMetrics(null);
+    setViewUpright(false);
+    setIsViewUprightTouched(false);
     setDebugPoint(null);
-    setHasRotationSource(false);
-  }, [destroyPdf, revokeResultUrl]);
+  }, [destroyPdf]);
 
   const handleDimensionInput = useCallback(
     (key: "widthPt" | "heightPt", value: string) => {
@@ -634,8 +689,6 @@ export default function PdfToFillablePdf() {
     [getPageInfo, selectedField, updateSelectedField]
   );
 
-  const outputFilename = file ? file.name.replace(/\.pdf$/i, "-fillable.pdf") : "fillable.pdf";
-
   return (
     <div className="space-y-6">
       <PageDragOverlay onFiles={handleFiles} />
@@ -644,12 +697,6 @@ export default function PdfToFillablePdf() {
         Add fillable fields to any PDF. Everything runs in your browser, so your PDF
         stays private on your device.
       </div>
-
-      {hasRotationSource && (
-        <div className="rounded-xl border border-emerald-300/70 bg-emerald-50 px-4 py-3 text-xs text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-950/20 dark:text-emerald-300">
-          Rotation handled automatically for this PDF.
-        </div>
-      )}
 
       <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} />
 
@@ -666,6 +713,18 @@ export default function PdfToFillablePdf() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                <label className="mr-1 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    checked={viewUpright}
+                    onChange={(event) => {
+                      setIsViewUprightTouched(true);
+                      setViewUpright(event.target.checked);
+                    }}
+                    className="h-3.5 w-3.5 rounded border-border"
+                  />
+                  View upright
+                </label>
                 <button
                   type="button"
                   onClick={() => setZoom((value) => clamp(Number((value - 0.1).toFixed(2)), 0.6, 2))}
@@ -718,6 +777,13 @@ export default function PdfToFillablePdf() {
                   />
                   Placement debug
                 </label>
+              )}
+              {isDebugVisible && pageMetrics && (
+                <p className="ml-auto text-[11px] text-muted-foreground">
+                  sourceRotation {pageMetrics.sourceRotation}° · viewUpright{" "}
+                  {String(viewUpright)} · viewportRotation {pageMetrics.activeRotation}° · scale{" "}
+                  {zoom.toFixed(2)}
+                </p>
               )}
               <p className="w-full text-xs text-muted-foreground">
                 Pick a field type, then click anywhere on the page preview to place it.
@@ -784,7 +850,7 @@ export default function PdfToFillablePdf() {
                     );
                   })}
 
-                  {isDev && showDebug && debugPoint && (
+                  {isDebugVisible && debugPoint && (
                     <>
                       <div
                         className="pointer-events-none absolute bg-rose-500/70"
@@ -934,12 +1000,12 @@ export default function PdfToFillablePdf() {
             <div className="space-y-3 rounded-xl border border-border bg-card p-4">
               <button
                 type="button"
-                onClick={exportFillablePdf}
+                onClick={downloadFillablePdf}
                 disabled={fields.length === 0 || isExporting}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Download className="h-4 w-4" />
-                Export Fillable PDF
+                {isExporting ? "Generating…" : "Download Fillable PDF"}
               </button>
               <button
                 type="button"
@@ -950,23 +1016,6 @@ export default function PdfToFillablePdf() {
               </button>
             </div>
           </aside>
-        </div>
-      )}
-
-      {isExporting && <ProcessingIndicator label="Building fillable PDF…" />}
-
-      {resultUrl && (
-        <DownloadCard
-          href={resultUrl}
-          filename={outputFilename}
-          fileSize={resultSize}
-          onDownload={() => setDownloaded(true)}
-        />
-      )}
-
-      {downloaded && (
-        <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-900/40 dark:bg-green-950/20 dark:text-green-400">
-          Download complete. You can continue editing fields and export again.
         </div>
       )}
 
