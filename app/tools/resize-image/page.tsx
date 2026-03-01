@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
-import RelatedToolsCluster from "@/components/seo/RelatedToolsCluster";
 import ToolLayout from "@/components/tool/ToolLayout";
 import ImageResizer from "@/components/tools/ImageResizer";
 import { notFound } from "next/navigation";
@@ -39,7 +38,6 @@ export default function ResizeImagePage() {
     <ToolLayout tool={tool}>
       <ImageResizer />
       <FaqSchema items={faqItems} />
-      <RelatedToolsCluster category="image" currentPath={tool.route} />
     </ToolLayout>
   );
 }
