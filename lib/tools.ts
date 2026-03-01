@@ -295,6 +295,28 @@ export const tools: Tool[] = [
     relatedTools: ['merge-pdf', 'split-pdf', 'pdf-compressor'],
   },
   {
+    slug: 'pdf-to-fillable',
+    name: 'PDF to Fillable PDF',
+    shortDescription: 'Add fillable fields to any PDF — runs in your browser. Nothing is uploaded.',
+    category: 'tools',
+    route: '/tools/pdf-to-fillable',
+    acceptedFormats: ['.pdf'],
+    icon: 'FileStack',
+    metaTitle: 'PDF to Fillable PDF Online Free — No Signup | clevr.tools',
+    metaDescription:
+      'Create fillable PDF forms online for free. Add text fields, checkboxes, date fields, and signature boxes in your browser. Private local processing, no upload.',
+    seoContent: `
+      <h2>Create Fillable Forms Without Uploading Your PDF</h2>
+      <p>Turning a static PDF into a form usually means opening desktop software or uploading files to a cloud service. This tool lets you add form fields directly in your browser using visual placement and instant export. Everything runs locally, so your PDF stays private on your device from start to finish.</p>
+      <h2>Visual Field Placement</h2>
+      <p>Upload a PDF, choose a field type, click to place it, then drag or resize as needed. You can add text inputs, checkboxes, date fields, and signature fields across multiple pages. A side panel keeps your field list organized so you can quickly rename, edit, or remove fields before exporting.</p>
+      <h2>AcroForm Output Compatibility</h2>
+      <p>The exported file uses standard PDF AcroForm fields supported by major PDF readers, including Adobe Acrobat, browser viewers, and many mobile apps. This makes it practical for contracts, onboarding forms, internal checklists, and any workflow that needs editable PDF fields without exposing documents to external servers.</p>
+    `,
+    relatedTools: ['merge-pdf', 'split-pdf', 'rotate-pdf'],
+    badge: 'new',
+  },
+  {
     slug: 'resize-image',
     name: 'Image Resizer',
     shortDescription: 'Resize images by dimensions, presets, or target file size.',
