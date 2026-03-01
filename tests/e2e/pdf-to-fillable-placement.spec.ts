@@ -138,9 +138,8 @@ test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => 
   await expect(uprightToggle).toBeChecked();
   await expect(page.getByText(/page\.rotate 90°/i)).toBeVisible();
   await expect(page.getByText(/sourceRotation 90°/i)).toBeVisible();
-  await expect(page.getByText(/cancelRotation 270°/i)).toBeVisible();
   await expect(page.getByText(/viewUpright true/i)).toBeVisible();
-  await expect(page.getByText(/viewportRotation 270°/i)).toBeVisible();
+  await expect(page.getByText(/viewportRotation 0°/i)).toBeVisible();
 
   await uprightToggle.uncheck();
   await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
@@ -154,7 +153,7 @@ test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => 
   await uprightToggle.check();
   await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
   await expect(page.getByText(/viewUpright true/i)).toBeVisible();
-  await expect(page.getByText(/viewportRotation 270°/i)).toBeVisible();
+  await expect(page.getByText(/viewportRotation 0°/i)).toBeVisible();
   await expect
     .poll(async () => {
       const box = await overlay.boundingBox();

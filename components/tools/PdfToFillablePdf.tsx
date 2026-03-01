@@ -84,7 +84,6 @@ interface PageMetrics {
   widthCss: number;
   heightCss: number;
   sourceRotation: number;
-  cancelRotation: number;
   viewportRotation: number;
 }
 
@@ -298,8 +297,7 @@ export default function PdfToFillablePdf() {
         if (!isViewUprightTouched && viewUpright !== defaultViewUpright) {
           setViewUpright(defaultViewUpright);
         }
-        const cancelRotation = (360 - sourceRotation) % 360;
-        const viewportRotation = effectiveViewUpright ? cancelRotation : sourceRotation;
+        const viewportRotation = effectiveViewUpright ? 0 : sourceRotation;
 
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
         const cssViewport = page.getViewport({ scale: zoom, rotation: viewportRotation });
@@ -352,7 +350,6 @@ export default function PdfToFillablePdf() {
           widthCss: cssViewport.width,
           heightCss: cssViewport.height,
           sourceRotation,
-          cancelRotation,
           viewportRotation,
         });
       } catch (error) {
@@ -805,8 +802,8 @@ export default function PdfToFillablePdf() {
               {isDebugVisible && pageMetrics && (
                 <p className="ml-auto text-[11px] text-muted-foreground">
                   page.rotate {pageMetrics.pageRotate}° · sourceRotation {pageMetrics.sourceRotation}°
-                  {" · "}viewUpright {String(viewUpright)} · cancelRotation{" "}
-                  {pageMetrics.cancelRotation}° · viewportRotation {pageMetrics.viewportRotation}° ·
+                  {" · "}viewUpright {String(viewUpright)} · viewportRotation{" "}
+                  {pageMetrics.viewportRotation}° ·
                   {" "}scale {zoom.toFixed(2)}
                 </p>
               )}
