@@ -86,32 +86,42 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "Is PDF to Fillable PDF free to use?",
       answer:
-        "Yes. PDF to Fillable PDF is free and online, runs in your browser, and keeps your files private on your device.",
+        "Yes. PDF to Fillable PDF is free and online. It runs in your browser and keeps documents private on your device.",
     },
     {
-      question: "Do I need to upload files to create fillable fields?",
+      question: "Do I need an account to use PDF to Fillable PDF?",
       answer:
-        "No upload is needed. This free online tool works in your browser so private documents stay local while you add fields.",
+        "No account is required. You can open the tool online, edit fields in your browser, and export a private fillable PDF for free.",
     },
     {
       question: "What field types can I add in v1?",
       answer:
-        "You can add text, checkbox, date, and signature fields in this free online editor that runs in your browser and keeps files private.",
+        "Version 1 supports text fields, checkboxes, date fields, and signature fields. Field placement is manual and runs in your browser with private local processing.",
     },
     {
       question: "Can I move or resize fields before exporting?",
       answer:
-        "Yes. You can drag and resize fields before export, and this free online flow runs in your browser with private local processing.",
+        "Yes. You can drag fields on the page preview and adjust width and height before export. The full workflow is free, online, in your browser, and private.",
     },
     {
       question: "Will the exported form open in standard PDF apps?",
       answer:
-        "Yes. The output uses standard PDF form fields, and this free online workflow runs in your browser while private files never leave your device.",
+        "Yes. The output uses standard AcroForm fields that major PDF readers support. You can create the form free online in your browser while keeping documents private.",
     },
     {
-      question: "Does PDF to Fillable PDF work on mobile?",
+      question: "Can I add a signature field to a PDF?",
       answer:
-        "Yes. Basic placement works on modern mobile browsers, and the free online process still runs in your browser to keep files private.",
+        "Yes. Select the Signature field type, click to place it, and rename it as needed. This free online editor runs in your browser and keeps the PDF private on your device.",
+    },
+    {
+      question: "Can I make a scanned PDF fillable?",
+      answer:
+        "Yes, by placing fields manually on top of the scanned page. The process is free, online, in your browser, and private, but it does not auto-detect form boxes in v1.",
+    },
+    {
+      question: "Does this upload my PDF?",
+      answer:
+        "No. Your file is processed locally in your browser and is not uploaded to a server by this tool. That keeps the workflow private while still being free and online.",
     },
   ],
   "pdf-compressor": [
