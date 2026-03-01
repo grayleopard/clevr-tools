@@ -71,10 +71,25 @@ async function uploadAndPlaceAt(
   expect(longSideNorm).toBeGreaterThan(0.02);
   expect(longSideNorm).toBeLessThan(0.85);
 
-  await page.getByRole("button", { name: /Export Fillable PDF/i }).click();
-  const downloadLink = page.locator('main a[href^="blob:"][download$=".pdf"]').first();
-  await expect(downloadLink).toBeVisible({ timeout: 20_000 });
-  await expect(downloadLink).toHaveAttribute("href", /blob:/);
+  const [download] = await Promise.all([
+    page.waitForEvent("download", { timeout: 20_000 }),
+    page.getByRole("button", { name: /Download Fillable PDF/i }).click(),
+  ]);
+
+  const outputPath = await download.path();
+  expect(outputPath).toBeTruthy();
+  const outputBytes = await fs.readFile(outputPath!);
+  const outputPdf = await PDFDocument.load(outputBytes);
+  const fields = outputPdf.getForm().getFields();
+  expect(fields.length).toBeGreaterThan(0);
+
+  const firstFieldRect = fields[0].acroField.getWidgets()[0].getRectangle();
+  const firstPage = outputPdf.getPage(0);
+  const { width: pageWidth, height: pageHeight } = firstPage.getSize();
+  expect(firstFieldRect.x).toBeGreaterThanOrEqual(0);
+  expect(firstFieldRect.y).toBeGreaterThanOrEqual(0);
+  expect(firstFieldRect.x + firstFieldRect.width).toBeLessThanOrEqual(pageWidth + 1);
+  expect(firstFieldRect.y + firstFieldRect.height).toBeLessThanOrEqual(pageHeight + 1);
 }
 
 test("/tools/pdf-to-fillable places a field and exports", async ({ page }) => {
@@ -83,5 +98,34 @@ test("/tools/pdf-to-fillable places a field and exports", async ({ page }) => {
 
 test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => {
   const rotatedFixture = await createRotatedFixture();
+
+  await page.goto("/tools/pdf-to-fillable", { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+
+  const input = page.locator('main input[type="file"]').first();
+  await expect(input).toBeAttached();
+  await input.setInputFiles(rotatedFixture);
+
+  const overlay = page.locator('[data-testid="pdf-fillable-overlay"]').first();
+  await expect(overlay).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
+
+  const uprightToggle = page.getByRole("checkbox", { name: /View upright/i });
+  await expect(uprightToggle).toBeChecked();
+
+  const uprightBox = await overlay.boundingBox();
+  expect(uprightBox).not.toBeNull();
+  expect(uprightBox!.width).toBeGreaterThan(uprightBox!.height);
+
+  await uprightToggle.uncheck();
+  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
+
+  const rawBox = await overlay.boundingBox();
+  expect(rawBox).not.toBeNull();
+  expect(rawBox!.height).toBeGreaterThan(rawBox!.width);
+
+  await uprightToggle.check();
+  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
+
   await uploadAndPlaceAt(page, rotatedFixture, 0.25, 0.25);
 });

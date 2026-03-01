@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FileDropZone from "@/components/tool/FileDropZone";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
-import DownloadCard from "@/components/tool/DownloadCard";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
@@ -84,6 +83,8 @@ interface PageMetrics {
   pageHeightPt: number;
   widthCss: number;
   heightCss: number;
+  sourceRotation: number;
+  activeRotation: number;
 }
 
 interface DebugPoint {
@@ -134,6 +135,10 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
+function normalizeRotationDegrees(rotation: number): number {
+  return ((rotation % 360) + 360) % 360;
+}
+
 function nextFieldName(type: FillableFieldType, count: number): string {
   switch (type) {
     case "text":
@@ -165,9 +170,8 @@ export default function PdfToFillablePdf() {
   const [isLoadingPdf, setIsLoadingPdf] = useState(false);
   const [isRenderingPage, setIsRenderingPage] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [resultUrl, setResultUrl] = useState<string | null>(null);
-  const [resultSize, setResultSize] = useState(0);
-  const [downloaded, setDownloaded] = useState(false);
+  const [viewUpright, setViewUpright] = useState(false);
+  const [isViewUprightTouched, setIsViewUprightTouched] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [debugPoint, setDebugPoint] = useState<DebugPoint | null>(null);
 
@@ -186,15 +190,6 @@ export default function PdfToFillablePdf() {
   const dragRef = useRef<DragState | null>(null);
   const isDev = process.env.NODE_ENV !== "production";
 
-  const revokeResultUrl = useCallback(() => {
-    setDownloaded(false);
-    setResultSize(0);
-    setResultUrl((previous) => {
-      if (previous) URL.revokeObjectURL(previous);
-      return null;
-    });
-  }, []);
-
   const destroyPdf = useCallback(() => {
     if (pdfRef.current?.destroy) {
       pdfRef.current.destroy();
@@ -205,10 +200,9 @@ export default function PdfToFillablePdf() {
 
   useEffect(() => {
     return () => {
-      revokeResultUrl();
       destroyPdf();
     };
-  }, [destroyPdf, revokeResultUrl]);
+  }, [destroyPdf]);
 
   const getPageInfo = useCallback(
     (pageIndex: number) => {
@@ -232,12 +226,19 @@ export default function PdfToFillablePdf() {
       setIsRenderingPage(true);
       try {
         const page = await pdf.getPage(pageIndex + 1);
-        const pageRotation = page.rotate || 0;
+        const sourceRotation = normalizeRotationDegrees(page.rotate || 0);
+        const defaultUpright = sourceRotation !== 0;
+        const shouldViewUpright = isViewUprightTouched ? viewUpright : defaultUpright;
+        if (!isViewUprightTouched && viewUpright !== defaultUpright) {
+          setViewUpright(defaultUpright);
+        }
+        const displayRotation = shouldViewUpright ? (360 - sourceRotation) % 360 : 0;
+        const activeRotation = (sourceRotation + displayRotation) % 360;
 
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
-        const cssViewport = page.getViewport({ scale: zoom, rotation: pageRotation });
+        const cssViewport = page.getViewport({ scale: zoom, rotation: activeRotation });
         const dpr = window.devicePixelRatio || 1;
-        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: pageRotation });
+        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: activeRotation });
 
         canvas.width = Math.max(1, Math.floor(renderViewport.width));
         canvas.height = Math.max(1, Math.floor(renderViewport.height));
@@ -269,6 +270,8 @@ export default function PdfToFillablePdf() {
           pageHeightPt: rawViewport.height,
           widthCss: cssViewport.width,
           heightCss: cssViewport.height,
+          sourceRotation,
+          activeRotation,
         });
       } catch (error) {
         console.error(error);
@@ -277,7 +280,7 @@ export default function PdfToFillablePdf() {
         setIsRenderingPage(false);
       }
     },
-    [zoom]
+    [isViewUprightTouched, viewUpright, zoom]
   );
 
   const handleFiles = useCallback(
@@ -286,12 +289,13 @@ export default function PdfToFillablePdf() {
       if (!uploaded) return;
 
       setIsLoadingPdf(true);
-      revokeResultUrl();
       setFields([]);
       setSelectedFieldId(null);
       setCurrentPage(0);
       setPageCount(0);
       setPageMetrics(null);
+      setViewUpright(false);
+      setIsViewUprightTouched(false);
       setDebugPoint(null);
       pageInfoRef.current = {};
       fieldCountRef.current = { text: 0, checkbox: 0, date: 0, signature: 0 };
@@ -317,7 +321,7 @@ export default function PdfToFillablePdf() {
         setIsLoadingPdf(false);
       }
     },
-    [destroyPdf, revokeResultUrl]
+    [destroyPdf]
   );
 
   useAutoLoadFile(handleFiles);
@@ -408,9 +412,8 @@ export default function PdfToFillablePdf() {
         xPt: clampedRect.xPt,
         yPt: clampedRect.yPt,
       });
-      revokeResultUrl();
     },
-    [activeFieldType, currentPage, pageMetrics, revokeResultUrl]
+    [activeFieldType, currentPage, pageMetrics]
   );
 
   const handleFieldPointerDown = useCallback(
@@ -501,7 +504,6 @@ export default function PdfToFillablePdf() {
     const handlePointerUp = () => {
       if (!dragRef.current) return;
       dragRef.current = null;
-      revokeResultUrl();
     };
 
     window.addEventListener("pointermove", handlePointerMove);
@@ -510,7 +512,7 @@ export default function PdfToFillablePdf() {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [revokeResultUrl]);
+  }, []);
 
   const updateSelectedField = useCallback(
     (patch: Partial<FillableFieldUI>) => {
@@ -538,25 +540,25 @@ export default function PdfToFillablePdf() {
           };
         })
       );
-      revokeResultUrl();
     },
-    [getPageInfo, revokeResultUrl, selectedFieldId]
+    [getPageInfo, selectedFieldId]
   );
 
   const removeField = useCallback(
     (fieldId: string) => {
       setFields((previous) => previous.filter((field) => field.id !== fieldId));
       if (selectedFieldId === fieldId) setSelectedFieldId(null);
-      revokeResultUrl();
     },
-    [revokeResultUrl, selectedFieldId]
+    [selectedFieldId]
   );
 
-  const exportFillablePdf = useCallback(async () => {
+  const outputFilename = file ? file.name.replace(/\.pdf$/i, "-fillable.pdf") : "fillable.pdf";
+
+  const downloadFillablePdf = useCallback(async () => {
     const source = pdfBytesRef.current;
     if (!source || !file) return;
     if (fields.length === 0) {
-      addToast("Add at least one field before exporting.", "info");
+      addToast("Add at least one field before downloading.", "info");
       return;
     }
 
@@ -574,22 +576,25 @@ export default function PdfToFillablePdf() {
         label: field.label,
       }));
       const output = await createFillablePdf(source, outputFields);
-      const blob = new Blob([Uint8Array.from(output)], { type: "application/pdf" });
-      revokeResultUrl();
+      const blob = new Blob([new Uint8Array(output)], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
-      setResultUrl(url);
-      setResultSize(blob.size);
-      addToast("Fillable PDF created.", "success");
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = outputFilename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      addToast("Download started.", "success");
     } catch (error) {
       console.error(error);
-      addToast("Failed to export fillable PDF.", "error");
+      addToast("Failed to generate fillable PDF.", "error");
     } finally {
       setIsExporting(false);
     }
-  }, [fields, file, revokeResultUrl]);
+  }, [fields, file, outputFilename]);
 
   const resetTool = useCallback(() => {
-    revokeResultUrl();
     destroyPdf();
     pdfBytesRef.current = null;
     dragRef.current = null;
@@ -601,8 +606,10 @@ export default function PdfToFillablePdf() {
     setPageCount(0);
     setCurrentPage(0);
     setPageMetrics(null);
+    setViewUpright(false);
+    setIsViewUprightTouched(false);
     setDebugPoint(null);
-  }, [destroyPdf, revokeResultUrl]);
+  }, [destroyPdf]);
 
   const handleDimensionInput = useCallback(
     (key: "widthPt" | "heightPt", value: string) => {
@@ -617,8 +624,6 @@ export default function PdfToFillablePdf() {
     },
     [getPageInfo, selectedField, updateSelectedField]
   );
-
-  const outputFilename = file ? file.name.replace(/\.pdf$/i, "-fillable.pdf") : "fillable.pdf";
 
   return (
     <div className="space-y-6">
@@ -644,6 +649,18 @@ export default function PdfToFillablePdf() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                <label className="mr-1 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    checked={viewUpright}
+                    onChange={(event) => {
+                      setIsViewUprightTouched(true);
+                      setViewUpright(event.target.checked);
+                    }}
+                    className="h-3.5 w-3.5 rounded border-border"
+                  />
+                  View upright
+                </label>
                 <button
                   type="button"
                   onClick={() => setZoom((value) => clamp(Number((value - 0.1).toFixed(2)), 0.6, 2))}
@@ -912,12 +929,12 @@ export default function PdfToFillablePdf() {
             <div className="space-y-3 rounded-xl border border-border bg-card p-4">
               <button
                 type="button"
-                onClick={exportFillablePdf}
+                onClick={downloadFillablePdf}
                 disabled={fields.length === 0 || isExporting}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Download className="h-4 w-4" />
-                Export Fillable PDF
+                {isExporting ? "Generating…" : "Download Fillable PDF"}
               </button>
               <button
                 type="button"
@@ -928,23 +945,6 @@ export default function PdfToFillablePdf() {
               </button>
             </div>
           </aside>
-        </div>
-      )}
-
-      {isExporting && <ProcessingIndicator label="Building fillable PDF…" />}
-
-      {resultUrl && (
-        <DownloadCard
-          href={resultUrl}
-          filename={outputFilename}
-          fileSize={resultSize}
-          onDownload={() => setDownloaded(true)}
-        />
-      )}
-
-      {downloaded && (
-        <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-900/40 dark:bg-green-950/20 dark:text-green-400">
-          Download complete. You can continue editing fields and export again.
         </div>
       )}
 
