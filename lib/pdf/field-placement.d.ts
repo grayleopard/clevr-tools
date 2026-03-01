@@ -20,10 +20,6 @@ export interface PdfRectPt {
   heightPt: number;
 }
 
-export function normalizeRotation(value: number): 0 | 90 | 180 | 270;
-
-export function getNeutralizedRotation(sourceRotation: number): number;
-
 export function getLocalViewportPoint(params: {
   clientX: number;
   clientY: number;

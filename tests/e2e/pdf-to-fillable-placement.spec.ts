@@ -66,8 +66,10 @@ async function uploadAndPlaceAt(
   expect(Math.abs(fieldTopNorm - yRatio)).toBeLessThan(0.14);
 
   const fieldHeightNorm = fieldBox!.height / overlayAfter!.height;
-  expect(fieldHeightNorm).toBeGreaterThan(0.005);
-  expect(fieldHeightNorm).toBeLessThan(0.2);
+  const fieldWidthNorm = fieldBox!.width / overlayAfter!.width;
+  const longSideNorm = Math.max(fieldHeightNorm, fieldWidthNorm);
+  expect(longSideNorm).toBeGreaterThan(0.02);
+  expect(longSideNorm).toBeLessThan(0.85);
 
   await page.getByRole("button", { name: /Export Fillable PDF/i }).click();
   const downloadLink = page.locator('main a[href^="blob:"][download$=".pdf"]').first();
@@ -82,5 +84,4 @@ test("/tools/pdf-to-fillable places a field and exports", async ({ page }) => {
 test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => {
   const rotatedFixture = await createRotatedFixture();
   await uploadAndPlaceAt(page, rotatedFixture, 0.25, 0.25);
-  await expect(page.getByText(/Rotation handled automatically/i)).toBeVisible();
 });

@@ -16,14 +16,9 @@ export interface FieldSize {
   height: number;
 }
 
-export interface FillablePdfOptions {
-  normalizePageRotation?: boolean;
-}
-
 export function getDefaultFieldSize(type: FillableFieldType): FieldSize;
 
 export function createFillablePdf(
   input: Uint8Array | ArrayBuffer,
-  fields: FillableFieldDefinition[],
-  options?: FillablePdfOptions
+  fields: FillableFieldDefinition[]
 ): Promise<Uint8Array>;

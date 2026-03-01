@@ -23,7 +23,6 @@ import type { FillableFieldDefinition, FillableFieldType } from "@/lib/pdf/filla
 import {
   clampPdfRectToPage,
   getLocalViewportPoint,
-  normalizeRotation,
   pdfRectToViewportRect,
   viewportRectToPdfRect,
 } from "@/lib/pdf/field-placement.mjs";
@@ -85,8 +84,6 @@ interface PageMetrics {
   pageHeightPt: number;
   widthCss: number;
   heightCss: number;
-  sourceRotation: number;
-  displayRotation: number;
 }
 
 interface DebugPoint {
@@ -173,13 +170,12 @@ export default function PdfToFillablePdf() {
   const [downloaded, setDownloaded] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
   const [debugPoint, setDebugPoint] = useState<DebugPoint | null>(null);
-  const [hasRotationSource, setHasRotationSource] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const pdfRef = useRef<PdfLike | null>(null);
   const pdfBytesRef = useRef<Uint8Array | null>(null);
-  const pageInfoRef = useRef<Record<number, Omit<PageMetrics, "widthCss" | "heightCss">>>({});
+  const pageInfoRef = useRef<Record<number, { pageWidthPt: number; pageHeightPt: number }>>({});
   const viewportRef = useRef<PdfViewportLike | null>(null);
   const fieldCountRef = useRef<Record<FillableFieldType, number>>({
     text: 0,
@@ -222,8 +218,6 @@ export default function PdfToFillablePdf() {
       return {
         pageWidthPt: pageMetrics.pageWidthPt,
         pageHeightPt: pageMetrics.pageHeightPt,
-        sourceRotation: pageMetrics.sourceRotation,
-        displayRotation: pageMetrics.displayRotation,
       };
     },
     [currentPage, pageMetrics]
@@ -238,13 +232,12 @@ export default function PdfToFillablePdf() {
       setIsRenderingPage(true);
       try {
         const page = await pdf.getPage(pageIndex + 1);
-        const sourceRotation = normalizeRotation(page.rotate || 0);
-        const displayRotation = 0;
+        const pageRotation = page.rotate || 0;
 
         const rawViewport = page.getViewport({ scale: 1, rotation: 0 });
-        const cssViewport = page.getViewport({ scale: zoom, rotation: displayRotation });
+        const cssViewport = page.getViewport({ scale: zoom, rotation: pageRotation });
         const dpr = window.devicePixelRatio || 1;
-        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: displayRotation });
+        const renderViewport = page.getViewport({ scale: zoom * dpr, rotation: pageRotation });
 
         canvas.width = Math.max(1, Math.floor(renderViewport.width));
         canvas.height = Math.max(1, Math.floor(renderViewport.height));
@@ -269,18 +262,13 @@ export default function PdfToFillablePdf() {
         pageInfoRef.current[pageIndex] = {
           pageWidthPt: rawViewport.width,
           pageHeightPt: rawViewport.height,
-          sourceRotation,
-          displayRotation,
         };
 
-        setHasRotationSource(sourceRotation !== 0);
         setPageMetrics({
           pageWidthPt: rawViewport.width,
           pageHeightPt: rawViewport.height,
           widthCss: cssViewport.width,
           heightCss: cssViewport.height,
-          sourceRotation,
-          displayRotation,
         });
       } catch (error) {
         console.error(error);
@@ -304,7 +292,6 @@ export default function PdfToFillablePdf() {
       setCurrentPage(0);
       setPageCount(0);
       setPageMetrics(null);
-      setHasRotationSource(false);
       setDebugPoint(null);
       pageInfoRef.current = {};
       fieldCountRef.current = { text: 0, checkbox: 0, date: 0, signature: 0 };
@@ -586,9 +573,7 @@ export default function PdfToFillablePdf() {
         name: field.name,
         label: field.label,
       }));
-      const output = await createFillablePdf(source, outputFields, {
-        normalizePageRotation: true,
-      });
+      const output = await createFillablePdf(source, outputFields);
       const blob = new Blob([Uint8Array.from(output)], { type: "application/pdf" });
       revokeResultUrl();
       const url = URL.createObjectURL(blob);
@@ -617,7 +602,6 @@ export default function PdfToFillablePdf() {
     setCurrentPage(0);
     setPageMetrics(null);
     setDebugPoint(null);
-    setHasRotationSource(false);
   }, [destroyPdf, revokeResultUrl]);
 
   const handleDimensionInput = useCallback(
@@ -644,12 +628,6 @@ export default function PdfToFillablePdf() {
         Add fillable fields to any PDF. Everything runs in your browser, so your PDF
         stays private on your device.
       </div>
-
-      {hasRotationSource && (
-        <div className="rounded-xl border border-emerald-300/70 bg-emerald-50 px-4 py-3 text-xs text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-950/20 dark:text-emerald-300">
-          Rotation handled automatically for this PDF.
-        </div>
-      )}
 
       <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} />
 
