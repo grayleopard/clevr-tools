@@ -24,6 +24,7 @@ export const TOOL_ROUTES = [
   "/files/image-cropper",
   "/files/invoice-generator",
   "/tools/merge-pdf",
+  "/tools/pdf-to-fillable",
   "/tools/rotate-pdf",
   "/tools/split-pdf",
   "/text/case-converter",

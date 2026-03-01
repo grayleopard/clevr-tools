@@ -82,6 +82,38 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
         "The limit depends on your device memory. It is still free and online, runs in your browser, and keeps files private.",
     },
   ],
+  "pdf-to-fillable": [
+    {
+      question: "Is PDF to Fillable PDF free to use?",
+      answer:
+        "Yes. PDF to Fillable PDF is free and online, runs in your browser, and keeps your files private on your device.",
+    },
+    {
+      question: "Do I need to upload files to create fillable fields?",
+      answer:
+        "No upload is needed. This free online tool works in your browser so private documents stay local while you add fields.",
+    },
+    {
+      question: "What field types can I add in v1?",
+      answer:
+        "You can add text, checkbox, date, and signature fields in this free online editor that runs in your browser and keeps files private.",
+    },
+    {
+      question: "Can I move or resize fields before exporting?",
+      answer:
+        "Yes. You can drag and resize fields before export, and this free online flow runs in your browser with private local processing.",
+    },
+    {
+      question: "Will the exported form open in standard PDF apps?",
+      answer:
+        "Yes. The output uses standard PDF form fields, and this free online workflow runs in your browser while private files never leave your device.",
+    },
+    {
+      question: "Does PDF to Fillable PDF work on mobile?",
+      answer:
+        "Yes. Basic placement works on modern mobile browsers, and the free online process still runs in your browser to keep files private.",
+    },
+  ],
   "pdf-compressor": [
     {
       question: "Is PDF compression free to use?",
