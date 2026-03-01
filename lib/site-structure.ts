@@ -10,6 +10,9 @@ export interface SiteCategory {
   subcategories: {
     label: string;
     slugs: string[];
+    /** Optional "See all" link for subcategories with more items than shown */
+    seeAllRoute?: string;
+    seeAllLabel?: string;
   }[];
 }
 
@@ -144,7 +147,9 @@ export const siteCategories: SiteCategory[] = [
       },
       {
         label: "Unit Converters",
-        slugs: ["convert-length", "convert-weight", "convert-temperature", "convert-volume", "convert-area", "convert-speed", "convert-time", "convert-data", "convert-pressure", "convert-energy", "convert-frequency", "convert-fuel-economy", "convert-angle", "convert-power", "convert-force", "convert-cooking"],
+        slugs: ["convert-length", "convert-weight", "convert-temperature", "convert-volume", "convert-cooking", "convert-data", "convert-speed", "convert-area"],
+        seeAllRoute: "/calculate",
+        seeAllLabel: "See all converters",
       },
     ],
   },

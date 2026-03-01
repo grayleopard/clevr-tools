@@ -24,7 +24,7 @@ function CategoryMenu({
           <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {sub.label}
           </h4>
-          <ul className="space-y-0.5">
+          <ul className={`space-y-0.5 ${sub.seeAllRoute ? "grid grid-cols-2 gap-x-4 gap-y-0.5 space-y-0" : ""}`}>
             {sub.slugs.map((slug) => {
               const tool = getToolBySlug(slug);
               if (!tool || tool.live === false) return null;
@@ -41,6 +41,16 @@ function CategoryMenu({
               );
             })}
           </ul>
+          {sub.seeAllRoute && (
+            <Link
+              href={sub.seeAllRoute}
+              className="mt-2 flex items-center gap-1 px-2 py-1 text-xs text-primary transition-colors hover:text-primary/80"
+              data-close={closeOnClick ? "true" : undefined}
+            >
+              {sub.seeAllLabel ?? "See all"}
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          )}
         </div>
       ))}
     </>
