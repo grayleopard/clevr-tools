@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -40,7 +41,6 @@ export default function RetirementCalculator() {
     let totalContributions = PV;
 
     for (let y = 1; y <= yearsToRetirement; y++) {
-      const yearStart = balance;
       let yearInterest = 0;
       for (let m = 1; m <= 12; m++) {
         const interest = balance * r;
@@ -149,11 +149,11 @@ export default function RetirementCalculator() {
       {result && (
         <>
           {/* Hero */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">
               Projected Savings at Age {parseInt(retirementAge) || 0}
             </p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.nominalValue)}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
@@ -168,7 +168,7 @@ export default function RetirementCalculator() {
               <span className="text-xs text-muted-foreground">Total Invested</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-card px-3 py-3">
-              <span className="text-sm font-semibold tabular-nums text-foreground dark:text-emerald-500">{fmt(result.totalEarnings)}</span>
+              <span className="text-sm font-semibold tabular-nums text-primary">{fmt(result.totalEarnings)}</span>
               <span className="text-xs text-muted-foreground">Investment Gains</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-card px-3 py-3">
@@ -192,17 +192,17 @@ export default function RetirementCalculator() {
           {showTable && (
             <div className="max-h-96 overflow-y-auto rounded-xl border border-border bg-card">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-muted/80 backdrop-blur-sm">
+                <thead className="sticky top-0 bg-primary/10 backdrop-blur-sm">
                   <tr className="border-b border-border">
-                    <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Age</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Contributions</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Year Interest</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Balance</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-foreground">Age</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Contributions</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Year Interest</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Balance</th>
                   </tr>
                 </thead>
                 <tbody>
                   {result.yearData.map((d) => (
-                    <tr key={d.year} className="border-b border-border last:border-0">
+                    <tr key={d.year} className="border-b border-border last:border-0 even:bg-muted/30">
                       <td className="px-3 py-2 text-foreground">{d.age}</td>
                       <td className="px-3 py-2 text-right tabular-nums text-foreground">{fmt(d.contributions)}</td>
                       <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">{fmt(d.interest)}</td>
@@ -219,6 +219,77 @@ export default function RetirementCalculator() {
           </p>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">How Much Should You Save for Retirement?</h2>
+          <p>Fidelity&apos;s benchmarks (based on maintaining your current lifestyle in retirement):</p>
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary/10">
+                  <th className="text-left p-2 font-medium">Age</th>
+                  <th className="text-left p-2 font-medium">Savings Target</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["30", "1x your annual salary"],
+                  ["40", "3x your annual salary"],
+                  ["50", "6x your annual salary"],
+                  ["60", "8x your annual salary"],
+                  ["67", "10x your annual salary"],
+                ].map((row, i) => (
+                  <tr key={i} className="even:bg-muted/30">
+                    {row.map((cell, j) => (
+                      <td key={j} className="p-2">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3">
+            These are targets, not minimums. Your actual need depends on your expected expenses, Social
+            Security benefits, any pension income, and how early you want to retire.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Why Starting Early Matters More Than Saving More</h2>
+          <p>
+            Consider two people, both earning $70,000/year and saving $500/month at 7% annual returns:
+          </p>
+          <p className="mt-3">
+            Person A starts at age 25 and stops at 65 (40 years): ends with ~$1.32M
+          </p>
+          <p className="mt-1">
+            Person B starts at age 35 and stops at 65 (30 years): ends with ~$606K
+          </p>
+          <p className="mt-3">
+            Person A contributed only $60,000 more over their lifetime but ends up with $714,000 more.
+            That&apos;s the power of compound growth over time. Use our{" "}
+            <Link href="/calc/investment-return" className="text-primary underline hover:no-underline">investment return calculator</Link>{" "}
+            to model your own scenario.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">The 4% Rule</h2>
+          <p>
+            The 4% rule, from the Trinity Study, suggests you can withdraw 4% of your portfolio in your
+            first year of retirement and adjust for inflation each year, with historically high probability
+            of not running out of money over 30 years.
+          </p>
+          <p className="mt-3">
+            For example: a $1M portfolio would generate $40,000/year in initial withdrawals, or about
+            $3,333/month. The calculator above uses this rule to estimate your monthly retirement income.
+          </p>
+          <p className="mt-3">
+            Some planners now suggest 3--3.5% for longer retirements or low-yield environments. The 4%
+            figure is a useful starting benchmark, not a guarantee.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

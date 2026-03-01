@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -262,17 +263,17 @@ export default function TakeHomePayCalculator() {
       {result && (
         <>
           {/* Hero result */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Take-Home Pay per Paycheck</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.perPeriodNet)}
             </p>
           </div>
 
           {/* Per-paycheck breakdown */}
           <div className="rounded-xl border border-border bg-card overflow-hidden">
-            <div className="px-4 py-2.5 border-b border-border bg-muted/80">
-              <span className="text-xs font-medium text-muted-foreground">Per Paycheck Breakdown</span>
+            <div className="px-4 py-2.5 border-b border-border bg-primary/10">
+              <span className="text-xs font-medium text-foreground">Per Paycheck Breakdown</span>
             </div>
             <table className="w-full text-sm">
               <tbody>
@@ -282,25 +283,25 @@ export default function TakeHomePayCalculator() {
                     {fmt(result.perPeriodGross)}
                   </td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">Federal Income Tax</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
                     -{fmt(result.perPeriodFederal)}
                   </td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">State Income Tax</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
                     -{fmt(result.perPeriodState)}
                   </td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">Social Security (6.2%)</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
                     -{fmt(result.perPeriodSS)}
                   </td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">Medicare (1.45%)</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
                     -{fmt(result.perPeriodMedicare)}
@@ -316,7 +317,7 @@ export default function TakeHomePayCalculator() {
                 )}
                 <tr>
                   <td className="px-4 py-2.5 font-medium text-foreground">Net Pay</td>
-                  <td className="px-4 py-2.5 text-right tabular-nums font-bold text-foreground dark:text-emerald-500">
+                  <td className="px-4 py-2.5 text-right tabular-nums font-bold text-primary">
                     {fmt(result.perPeriodNet)}
                   </td>
                 </tr>
@@ -345,6 +346,68 @@ export default function TakeHomePayCalculator() {
           </p>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Understanding Your Paycheck Deductions</h2>
+          <p>
+            Every paycheck has several deductions taken out before you receive your money:
+          </p>
+          <p className="mt-3">
+            Federal income tax is the largest deduction for most workers. The US uses a progressive
+            bracket system -- you pay 10% on income up to $11,925, 12% on the next portion, and so on up
+            to 37%. Only income within each bracket is taxed at that rate.
+          </p>
+          <p className="mt-3">
+            Social Security tax is 6.2% of your gross wages, up to $176,100 (2025 wage base). Once you
+            earn above this threshold, Social Security stops being withheld for the year.
+          </p>
+          <p className="mt-3">
+            Medicare tax is 1.45% with no income cap. High earners (over $200K single / $250K married)
+            pay an additional 0.9%.
+          </p>
+          <p className="mt-3">
+            State income tax varies widely. Nine states have no income tax at all. Others range from
+            flat rates (Pennsylvania at 3.07%) to progressive rates as high as 13.3% (California).
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">States With No Income Tax</h2>
+          <p>
+            These states have no individual income tax on wages: Alaska, Florida, Nevada, South Dakota,
+            Tennessee, Texas, Washington, Wyoming. New Hampshire taxes investment income but not wages.
+          </p>
+          <p className="mt-3">
+            Living in a no-income-tax state can meaningfully increase your take-home pay. On a $75,000
+            salary, someone in Texas keeps roughly $3,000--5,000 more per year compared to someone in a
+            mid-rate state like North Carolina (4.5%).
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Marginal vs. Effective Tax Rate</h2>
+          <p>
+            Your marginal rate is the rate on your last dollar of income. Your effective rate is what you
+            actually pay as a percentage of total income -- always lower.
+          </p>
+          <p className="mt-3">
+            Example: A single filer earning $75,000 in 2025 pays:
+          </p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>10% on the first $11,925 = $1,193</li>
+            <li>12% on $11,925--$48,475 = $4,386</li>
+            <li>22% on $48,475--$75,000 = $5,835</li>
+          </ul>
+          <p className="mt-2">
+            Total federal tax: ~$11,413 -- effective rate of ~15.2%, not 22%.
+          </p>
+          <p className="mt-3">
+            You never take home less money by earning more. A raise always increases your net pay.
+            Use our <Link href="/calc/salary" className="text-primary underline hover:no-underline">salary calculator</Link> to
+            convert between hourly and annual figures.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

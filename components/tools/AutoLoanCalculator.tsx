@@ -120,7 +120,7 @@ export default function AutoLoanCalculator() {
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 loanTerm === months
                   ? "bg-primary text-primary-foreground"
-                  : "border border-border bg-background text-foreground hover:bg-muted"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
               {months} mo
@@ -132,9 +132,9 @@ export default function AutoLoanCalculator() {
       {result && (
         <>
           {/* Monthly payment */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Monthly Payment</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.monthlyPayment)}
             </p>
           </div>
@@ -157,23 +157,23 @@ export default function AutoLoanCalculator() {
 
           {/* Term comparison */}
           <div className="rounded-xl border border-border bg-card overflow-hidden">
-            <div className="px-4 py-2.5 border-b border-border bg-muted/80">
-              <span className="text-xs font-medium text-muted-foreground">Term Comparison</span>
+            <div className="px-4 py-2.5 border-b border-border bg-primary/10">
+              <span className="text-xs font-medium text-foreground">Term Comparison</span>
             </div>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Term</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Monthly</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Total Interest</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Total Cost</th>
+                <tr className="border-b border-border bg-primary/10">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-foreground">Term</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Monthly</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Total Interest</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Total Cost</th>
                 </tr>
               </thead>
               <tbody>
                 {result.comparison.map((c) => (
                   <tr
                     key={c.months}
-                    className={`border-b border-border last:border-0 ${
+                    className={`border-b border-border last:border-0 even:bg-muted/30 ${
                       c.months === loanTerm ? "bg-primary/5" : ""
                     }`}
                   >
@@ -193,6 +193,93 @@ export default function AutoLoanCalculator() {
           </div>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">What&apos;s a Good Interest Rate for a Car Loan?</h2>
+          <p>
+            Auto loan rates depend heavily on your credit score and the loan term. General ranges:
+          </p>
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary/10">
+                  <th className="text-left p-2 font-medium">Credit Tier</th>
+                  <th className="text-left p-2 font-medium">Credit Score</th>
+                  <th className="text-left p-2 font-medium">Typical Rate Range</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["Excellent", "720+", "4% - 6%"],
+                  ["Good", "690-719", "6% - 8%"],
+                  ["Fair", "630-689", "8% - 12%"],
+                  ["Poor", "Below 630", "12% - 20%+"],
+                ].map((row, i) => (
+                  <tr key={i} className="even:bg-muted/30">
+                    {row.map((cell, j) => (
+                      <td key={j} className="p-2">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3">
+            These are approximations -- rates vary by lender, whether the car is new or used, and current
+            market conditions. Credit unions often offer lower rates than dealerships. Getting pre-approved
+            before visiting a dealer gives you negotiating power.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">How Loan Term Affects Total Cost</h2>
+          <p>On a $35,000 vehicle at 6.5% interest:</p>
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary/10">
+                  <th className="text-left p-2 font-medium">Term</th>
+                  <th className="text-left p-2 font-medium">Monthly Payment</th>
+                  <th className="text-left p-2 font-medium">Total Interest</th>
+                  <th className="text-left p-2 font-medium">Total Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["36 months", "$1,072", "$3,586", "$38,586"],
+                  ["48 months", "$831", "$4,870", "$39,870"],
+                  ["60 months", "$685", "$6,098", "$41,098"],
+                  ["72 months", "$589", "$7,382", "$42,382"],
+                ].map((row, i) => (
+                  <tr key={i} className="even:bg-muted/30">
+                    {row.map((cell, j) => (
+                      <td key={j} className="p-2">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3">
+            Choosing 72 months instead of 36 cuts your payment by $483/month but costs $3,796 more in
+            interest. More importantly, long-term loans increase the risk of being &quot;underwater&quot; -- owing
+            more than the car is worth as it depreciates.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">The Case for a Down Payment</h2>
+          <p>
+            Making a down payment reduces your loan amount, which means lower monthly payments and less
+            total interest. It also protects against depreciation -- new cars lose 15--20% of their value
+            in the first year. With no down payment, you may owe more than the car is worth within months.
+          </p>
+          <p className="mt-3">
+            A common guideline: put 20% down on a new car, 10% on a used car. Even if you finance the
+            trade-in, factor in the net equity you&apos;re receiving.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

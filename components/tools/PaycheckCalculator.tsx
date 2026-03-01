@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -246,17 +247,17 @@ export default function PaycheckCalculator() {
       {result && (
         <>
           {/* Net pay */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Net Pay per Paycheck</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.netPay)}
             </p>
           </div>
 
           {/* Deductions table */}
           <div className="rounded-xl border border-border bg-card overflow-hidden">
-            <div className="px-4 py-2.5 border-b border-border bg-muted/80">
-              <span className="text-xs font-medium text-muted-foreground">Paycheck Breakdown</span>
+            <div className="px-4 py-2.5 border-b border-border bg-primary/10">
+              <span className="text-xs font-medium text-foreground">Paycheck Breakdown</span>
             </div>
             <table className="w-full text-sm">
               <tbody>
@@ -264,19 +265,19 @@ export default function PaycheckCalculator() {
                   <td className="px-4 py-2.5 text-foreground">Gross Pay</td>
                   <td className="px-4 py-2.5 text-right tabular-nums font-medium text-foreground">{fmt(result.grossPer)}</td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">Federal Income Tax</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">-{fmt(result.perFederal)}</td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">State Income Tax</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">-{fmt(result.perState)}</td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">Social Security (6.2%)</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">-{fmt(result.perSS)}</td>
                 </tr>
-                <tr className="border-b border-border">
+                <tr className="border-b border-border even:bg-muted/30">
                   <td className="px-4 py-2.5 text-muted-foreground">Medicare (1.45%)</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">-{fmt(result.perMedicare)}</td>
                 </tr>
@@ -288,7 +289,7 @@ export default function PaycheckCalculator() {
                 )}
                 <tr>
                   <td className="px-4 py-2.5 font-medium text-foreground">Net Pay</td>
-                  <td className="px-4 py-2.5 text-right tabular-nums font-bold text-foreground dark:text-emerald-500">{fmt(result.netPay)}</td>
+                  <td className="px-4 py-2.5 text-right tabular-nums font-bold text-primary">{fmt(result.netPay)}</td>
                 </tr>
               </tbody>
             </table>
@@ -311,6 +312,46 @@ export default function PaycheckCalculator() {
           </p>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Why Your Paycheck Is Less Than You Expect</h2>
+          <p>A concrete example: $75,000 salary, single filer, no dependents, living in Texas (no state tax):</p>
+          <p className="mt-3">
+            Annual gross: $75,000<br />
+            Bi-weekly gross (/26): $2,885
+          </p>
+          <p className="mt-3">Deductions per paycheck:</p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Federal income tax: ~$497 (effective ~17.2% annual)</li>
+            <li>Social Security (6.2%): $179</li>
+            <li>Medicare (1.45%): $42</li>
+            <li>Total deductions: ~$718</li>
+          </ul>
+          <p className="mt-3">
+            Net paycheck: ~$2,167
+          </p>
+          <p className="mt-3">
+            That&apos;s a 25% reduction from gross. Someone earning $75K &quot;grosses&quot; $2,885 per paycheck but
+            takes home $2,167. For the annual view and state tax breakdowns, see our{" "}
+            <Link href="/calc/take-home-pay" className="text-primary underline hover:no-underline">take-home pay calculator</Link>.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Adjusting Your Withholding</h2>
+          <p>
+            If you consistently get a large tax refund, you&apos;re giving the government an interest-free
+            loan. If you owe money each year, you may face underpayment penalties. The IRS W-4 form
+            controls your withholding -- claiming more allowances reduces withholding (more take-home
+            pay but a smaller refund or potential underpayment), while claiming fewer increases withholding.
+          </p>
+          <p className="mt-3">
+            Use the IRS withholding estimator at irs.gov/W4app to find the right number for your
+            situation. Life changes like marriage, a new job, or a major income change warrant a W-4 review.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

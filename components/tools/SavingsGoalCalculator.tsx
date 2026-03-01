@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -111,9 +112,9 @@ export default function SavingsGoalCalculator() {
       {result && (
         <>
           {/* Monthly needed */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Monthly Savings Needed</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.monthlyNeeded)}
             </p>
           </div>
@@ -141,12 +142,49 @@ export default function SavingsGoalCalculator() {
               <span className="text-xs text-muted-foreground">Total Contributions</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground dark:text-emerald-500">{fmt(result.interestEarned)}</span>
+              <span className="text-sm font-semibold text-primary">{fmt(result.interestEarned)}</span>
               <span className="text-xs text-muted-foreground">Interest Earned</span>
             </div>
           </div>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Building a Savings Plan That Works</h2>
+          <p>The most effective savings systems share a few traits:</p>
+          <p className="mt-3">
+            <strong className="text-foreground">Automate it.</strong> Transfer funds to savings on the same day as your paycheck. You can&apos;t spend
+            what you don&apos;t see. Most banks let you set up recurring automatic transfers.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">Use a high-yield savings account.</strong> As of 2025, many online banks and credit unions offer
+            4--5% APY on savings accounts. Traditional brick-and-mortar banks often offer 0.01--0.1%.
+            This difference compounds significantly over time. For a $20,000 emergency fund, the
+            difference is $800--$1,000 per year in interest.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">Set specific goals, not vague intentions.</strong> &quot;Save $10,000 by December&quot; is more effective
+            than &quot;save more money.&quot; The calculator above shows exactly what monthly contribution you need.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">The Emergency Fund</h2>
+          <p>
+            Financial advisors typically recommend 3--6 months of essential expenses (housing, food,
+            utilities, transportation, minimum debt payments) in an accessible, liquid account. This
+            provides a buffer against job loss, medical expenses, or unexpected repairs without resorting
+            to high-interest credit card debt.
+          </p>
+          <p className="mt-3">
+            If you have variable income or work in a cyclical industry, aim for 6--12 months. Use the
+            calculator above to set a savings goal and see how long it will take to reach it. Once your
+            emergency fund is complete, redirect those monthly contributions toward{" "}
+            <Link href="/calc/retirement" className="text-primary underline hover:no-underline">retirement savings</Link>.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

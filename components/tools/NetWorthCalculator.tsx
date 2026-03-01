@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -100,12 +101,12 @@ export default function NetWorthCalculator() {
   return (
     <div className="space-y-6">
       {/* Net Worth Result */}
-      <div className="text-center rounded-xl border border-border bg-card p-6">
+      <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
         <p className="text-sm text-muted-foreground mb-1">Net Worth</p>
         <p
           className={`text-4xl sm:text-5xl font-bold ${
             result.netWorth >= 0
-              ? "text-foreground dark:text-emerald-500"
+              ? "text-primary"
               : "text-red-600 dark:text-red-400"
           }`}
         >
@@ -138,6 +139,68 @@ export default function NetWorthCalculator() {
           <h3 className="text-sm font-medium text-foreground mb-3">Liabilities (What You Owe)</h3>
           {renderItems(liabilities, "liability")}
         </div>
+      </div>
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Net Worth Benchmarks by Age</h2>
+          <p>Federal Reserve data shows median (midpoint) net worth by age:</p>
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary/10">
+                  <th className="text-left p-2 font-medium">Age Group</th>
+                  <th className="text-left p-2 font-medium">Median Net Worth</th>
+                  <th className="text-left p-2 font-medium">Mean Net Worth</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["Under 35", "$39,000", "$183,000"],
+                  ["35-44", "$135,000", "$550,000"],
+                  ["45-54", "$247,000", "$975,000"],
+                  ["55-64", "$364,000", "$1,567,000"],
+                  ["65-74", "$410,000", "$1,795,000"],
+                  ["75+", "$335,000", "$1,624,000"],
+                ].map((row, i) => (
+                  <tr key={i} className="even:bg-muted/30">
+                    {row.map((cell, j) => (
+                      <td key={j} className="p-2">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3">
+            The gap between median and mean reflects wealth concentration at the top. Median is more
+            representative of a &quot;typical&quot; household. Don&apos;t let benchmarks discourage you -- the goal is
+            steady progress over time.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">The Levers of Net Worth Growth</h2>
+          <p>
+            <strong className="text-foreground">Grow assets:</strong> Max out tax-advantaged accounts (401k, IRA, HSA) before taxable accounts.
+            Contribute enough to get any employer 401k match -- that&apos;s an immediate 50--100% return.
+            Use our{" "}
+            <Link href="/calc/retirement" className="text-primary underline hover:no-underline">retirement calculator</Link>{" "}
+            and{" "}
+            <Link href="/calc/investment-return" className="text-primary underline hover:no-underline">investment return calculator</Link>{" "}
+            to project asset growth over time.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">Reduce liabilities:</strong> Prioritize high-interest debt (credit cards, personal loans).
+            Low-interest debt (mortgages, student loans at below 4%) is lower priority -- your money
+            likely grows faster invested than it saves in interest.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">Avoid lifestyle inflation:</strong> Each raise or windfall can either increase your savings rate or
+            increase your spending. Keeping lifestyle expenses stable while income grows is one of the
+            most reliable paths to building net worth.
+          </p>
+        </section>
       </div>
     </div>
   );

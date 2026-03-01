@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -96,9 +97,9 @@ export default function CarPaymentCalculator() {
       {result && (
         <>
           {/* Monthly payment */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Monthly Payment</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.monthlyPayment)}
             </p>
           </div>
@@ -124,6 +125,32 @@ export default function CarPaymentCalculator() {
           </div>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">How Much Car Can You Afford?</h2>
+          <p>The 20/4/10 rule is a practical guideline:</p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Put at least 20% down</li>
+            <li>Finance for no more than 4 years</li>
+            <li>Keep total car costs (payment + insurance + gas + maintenance) under 10% of gross monthly income</li>
+          </ul>
+          <p className="mt-3">
+            On a $60,000 gross annual salary ($5,000/month), that means total car costs under $500/month.
+            If insurance and gas cost $250/month, your max payment would be $250.
+          </p>
+          <p className="mt-3">
+            This rule is conservative -- many people spend more and manage fine. But stretching too far on
+            a car (a depreciating asset) limits money available for savings and investments.
+          </p>
+          <p className="mt-3">
+            For a more detailed calculation including trade-in value, sales tax, and payment comparisons
+            across different loan terms, see our{" "}
+            <Link href="/calc/auto-loan" className="text-primary underline hover:no-underline">auto loan calculator</Link>.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

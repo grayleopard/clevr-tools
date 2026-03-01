@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -117,13 +118,13 @@ export default function DebtToIncomeCalculator() {
       {result && (
         <>
           {/* DTI result */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Debt-to-Income Ratio</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {result.dti.toFixed(1)}%
             </p>
             <p className={`text-sm font-medium mt-2 ${result.rating.color}`}>
-              {result.rating.label} — {result.rating.description}
+              {result.rating.label} -- {result.rating.description}
             </p>
           </div>
 
@@ -165,6 +166,46 @@ export default function DebtToIncomeCalculator() {
           </div>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">What Lenders Actually Look For</h2>
+          <p>Mortgage lenders use two DTI ratios:</p>
+          <p className="mt-3">
+            <strong className="text-foreground">Front-end ratio:</strong> housing costs (mortgage, taxes, insurance) as a percentage of gross income.
+            Most conventional loans want this below 28%.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">Back-end ratio:</strong> all monthly debt payments as a percentage of gross income. The standard
+            threshold is 43% for conventional loans, though some lenders go up to 50% for FHA loans
+            with compensating factors (large down payment, high credit score).
+          </p>
+          <p className="mt-3">
+            For the best mortgage rates and approval odds, target below 36% total DTI. The 28/36 rule
+            is the classic guideline: keep housing under 28%, total debt under 36%.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">How to Lower Your DTI</h2>
+          <p>There are only two levers: reduce monthly debt payments or increase monthly income.</p>
+          <p className="mt-3">
+            <strong className="text-foreground">Reducing debt:</strong> Paying off a car loan or credit card before applying for a mortgage can
+            meaningfully lower your DTI. Use the{" "}
+            <Link href="/calc/loan" className="text-primary underline hover:no-underline">loan calculator</Link>{" "}
+            to model what an extra payment per month would do to your payoff timeline.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">Increasing income:</strong> A second income stream, raise, or new job with higher pay directly
+            improves your DTI. Lenders typically want to see 2+ years of consistent income in the
+            same field for new employment.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">What won&apos;t lower DTI:</strong> Making extra payments on a mortgage that&apos;s already included in your
+            debt calculation. You&apos;d need to pay it off entirely to remove it from the back-end ratio.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -120,9 +121,9 @@ export default function CreditCardPayoffCalculator() {
       {result ? (
         <>
           {/* Payoff time */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Time to Pay Off</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {formatMonths(result.months)}
             </p>
           </div>
@@ -146,24 +147,24 @@ export default function CreditCardPayoffCalculator() {
           {/* What if you paid more */}
           {extras.length > 0 && extras[0].result && (
             <div className="rounded-xl border border-border bg-card overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-border bg-muted/80">
-                <span className="text-xs font-medium text-muted-foreground">
+              <div className="px-4 py-2.5 border-b border-border bg-primary/10">
+                <span className="text-xs font-medium text-foreground">
                   What If You Paid More?
                 </span>
               </div>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border">
-                    <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Extra/mo</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">New Payment</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Payoff Time</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Interest Saved</th>
+                  <tr className="border-b border-border bg-primary/10">
+                    <th className="px-3 py-2 text-left text-xs font-medium text-foreground">Extra/mo</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">New Payment</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Payoff Time</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Interest Saved</th>
                   </tr>
                 </thead>
                 <tbody>
                   {extras.map((e) =>
                     e.result ? (
-                      <tr key={e.extra} className="border-b border-border last:border-0">
+                      <tr key={e.extra} className="border-b border-border last:border-0 even:bg-muted/30">
                         <td className="px-3 py-2 text-foreground">+{fmt(e.extra)}</td>
                         <td className="px-3 py-2 text-right tabular-nums text-foreground">
                           {fmt((parseFloat(monthlyPayment) || 0) + e.extra)}
@@ -190,6 +191,44 @@ export default function CreditCardPayoffCalculator() {
           </div>
         )
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">The True Cost of Minimum Payments</h2>
+          <p>
+            Many credit card minimum payments are calculated as 2% of your balance or $25, whichever is
+            higher. On a $5,000 balance at 22% APR, paying only the minimum:
+          </p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Takes approximately 9 years to pay off</li>
+            <li>Costs about $4,200 in interest</li>
+            <li>You&apos;d pay back nearly double the original balance</li>
+          </ul>
+          <p className="mt-3">
+            The calculator above shows exactly how much faster you can pay off your balance -- and how much
+            interest you save -- by paying more than the minimum each month.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Debt Payoff Strategies</h2>
+          <p>
+            <strong className="text-foreground">The Avalanche Method:</strong> Pay off the card with the highest interest rate first, while making
+            minimums on others. Mathematically optimal -- you&apos;ll pay less total interest.
+          </p>
+          <p className="mt-3">
+            <strong className="text-foreground">The Snowball Method:</strong> Pay off the smallest balance first, regardless of interest rate.
+            Psychologically motivating -- quick wins help you stay on track.
+          </p>
+          <p className="mt-3">
+            Both work. Research suggests the snowball method may lead to better follow-through because
+            early wins maintain motivation. The best strategy is the one you&apos;ll actually stick to. Once
+            you&apos;ve paid off cards, use our{" "}
+            <Link href="/calc/debt-to-income" className="text-primary underline hover:no-underline">debt-to-income calculator</Link>{" "}
+            to see how your overall financial picture improves.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

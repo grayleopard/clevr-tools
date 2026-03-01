@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -115,9 +116,9 @@ export default function LoanCalculator() {
       {result && (
         <>
           {/* Monthly payment */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Monthly Payment</p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.monthlyPayment)}
             </p>
           </div>
@@ -142,18 +143,18 @@ export default function LoanCalculator() {
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="max-h-96 overflow-y-auto">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-muted/80 backdrop-blur-sm">
+                <thead className="sticky top-0 bg-primary/10 backdrop-blur-sm">
                   <tr className="border-b border-border">
-                    <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Month</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Payment</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Principal</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Interest</th>
-                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Balance</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-foreground">Month</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Payment</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Principal</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Interest</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Balance</th>
                   </tr>
                 </thead>
                 <tbody>
                   {visibleRows.map((row) => (
-                    <tr key={row.month} className="border-b border-border last:border-0">
+                    <tr key={row.month} className="border-b border-border last:border-0 even:bg-muted/30">
                       <td className="px-3 py-2 text-foreground">{row.month}</td>
                       <td className="px-3 py-2 text-right tabular-nums text-foreground">{fmt(row.payment)}</td>
                       <td className="px-3 py-2 text-right tabular-nums text-foreground">{fmt(row.principal)}</td>
@@ -178,6 +179,76 @@ export default function LoanCalculator() {
           )}
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">How Loan Payments Are Calculated</h2>
+          <p>
+            The monthly payment formula is: M = P &times; [r(1+r)^n] / [(1+r)^n - 1]
+          </p>
+          <p className="mt-3">
+            Where P is the principal, r is the monthly interest rate (annual rate / 12), and n is the
+            total number of payments. This formula ensures the loan is exactly paid off with the final
+            payment.
+          </p>
+          <p className="mt-3">
+            In the early months of a loan, most of each payment goes toward interest. As the balance
+            decreases, more of each payment reduces the principal. This is called amortization. Use our{" "}
+            <Link href="/calc/amortization" className="text-primary underline hover:no-underline">amortization calculator</Link>{" "}
+            to see the full month-by-month breakdown.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">How Interest Rate Affects Your Payment</h2>
+          <p>On a $300,000 loan over 30 years:</p>
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary/10">
+                  <th className="text-left p-2 font-medium">Interest Rate</th>
+                  <th className="text-left p-2 font-medium">Monthly Payment</th>
+                  <th className="text-left p-2 font-medium">Total Interest Paid</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["5%", "$1,610", "$279,767"],
+                  ["6%", "$1,799", "$347,515"],
+                  ["7%", "$1,996", "$418,527"],
+                  ["8%", "$2,201", "$492,467"],
+                ].map((row, i) => (
+                  <tr key={i} className="even:bg-muted/30">
+                    {row.map((cell, j) => (
+                      <td key={j} className="p-2">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3">
+            Each 1% increase in rate adds roughly $190--$200/month and $70,000--$75,000 in total interest.
+            This is why rate shopping matters -- even a 0.25% difference saves meaningful money over time.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Tips for Getting a Lower Interest Rate</h2>
+          <p>
+            A higher credit score is the single biggest factor. Lenders offer their best rates to borrowers
+            with scores above 740--760. Even improving from 680 to 720 can save half a percentage point.
+          </p>
+          <p className="mt-3">
+            Shop at least three lenders. Rates vary more than most borrowers realize, even for the same
+            loan amount and credit profile. Pre-approval applications within a 45-day window count as one
+            inquiry for credit scoring purposes.
+          </p>
+          <p className="mt-3">
+            Consider paying points. One discount point costs 1% of the loan amount and typically reduces
+            the rate by 0.25%. Do the math: if you plan to stay in the home long enough, it pays for itself.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

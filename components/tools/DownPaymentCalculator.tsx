@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -76,7 +77,7 @@ export default function DownPaymentCalculator() {
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   downPaymentPercent === pct
                     ? "bg-primary text-primary-foreground"
-                    : "border border-border bg-background text-foreground hover:bg-muted"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
               >
                 {pct}%
@@ -109,16 +110,16 @@ export default function DownPaymentCalculator() {
       {result && (
         <>
           {/* Goal */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">
               Down Payment Goal ({downPaymentPercent}%)
             </p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {fmt(result.goal)}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {result.remaining > 0
-                ? `${fmt(result.remaining)} remaining — ${formatMonths(result.monthsNeeded)} to goal`
+                ? `${fmt(result.remaining)} remaining -- ${formatMonths(result.monthsNeeded)} to goal`
                 : "You have enough saved!"}
             </p>
           </div>
@@ -143,24 +144,24 @@ export default function DownPaymentCalculator() {
 
           {/* Comparison table */}
           <div className="rounded-xl border border-border bg-card overflow-hidden">
-            <div className="px-4 py-2.5 border-b border-border bg-muted/80">
-              <span className="text-xs font-medium text-muted-foreground">Down Payment Comparison</span>
+            <div className="px-4 py-2.5 border-b border-border bg-primary/10">
+              <span className="text-xs font-medium text-foreground">Down Payment Comparison</span>
             </div>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Down %</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Amount</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Loan</th>
-                  <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">Time to Save</th>
-                  <th className="px-3 py-2 text-center text-xs font-medium text-muted-foreground">PMI</th>
+                <tr className="border-b border-border bg-primary/10">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-foreground">Down %</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Amount</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Loan</th>
+                  <th className="px-3 py-2 text-right text-xs font-medium text-foreground">Time to Save</th>
+                  <th className="px-3 py-2 text-center text-xs font-medium text-foreground">PMI</th>
                 </tr>
               </thead>
               <tbody>
                 {result.comparison.map((c) => (
                   <tr
                     key={c.percent}
-                    className={`border-b border-border last:border-0 ${
+                    className={`border-b border-border last:border-0 even:bg-muted/30 ${
                       c.percent === downPaymentPercent ? "bg-primary/5" : ""
                     }`}
                   >
@@ -187,6 +188,68 @@ export default function DownPaymentCalculator() {
           </div>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Down Payment Requirements by Loan Type</h2>
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary/10">
+                  <th className="text-left p-2 font-medium">Loan Type</th>
+                  <th className="text-left p-2 font-medium">Minimum Down</th>
+                  <th className="text-left p-2 font-medium">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["Conventional", "3% - 20%", "<20% requires PMI"],
+                  ["FHA", "3.5%", "Credit score 580+; 10% if below 580"],
+                  ["VA", "0%", "Military/veterans only"],
+                  ["USDA", "0%", "Rural areas; income limits apply"],
+                  ["Jumbo", "10%-20%", "Loans above conforming limits"],
+                ].map((row, i) => (
+                  <tr key={i} className="even:bg-muted/30">
+                    {row.map((cell, j) => (
+                      <td key={j} className="p-2">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3">
+            PMI (private mortgage insurance) is required on conventional loans with less than 20% down.
+            It typically costs 0.5--1.5% of the loan amount annually. On a $400,000 loan, that&apos;s
+            $2,000--$6,000 per year until you reach 20% equity.
+          </p>
+          <p className="mt-3">
+            The PMI cost often makes reaching 20% down worth pursuing -- but if it delays buying by
+            years while rents and home prices rise, the math may favor buying sooner with less down.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Down Payment Assistance Programs</h2>
+          <p>
+            First-time buyers shouldn&apos;t overlook assistance programs. Most states have:
+          </p>
+          <ul className="list-disc pl-5 mt-2 space-y-1">
+            <li>Down payment assistance grants (free money, not repaid)</li>
+            <li>Soft second mortgages (deferred or forgivable loans)</li>
+            <li>Below-market interest rate programs</li>
+          </ul>
+          <p className="mt-3">
+            Search &quot;[your state] down payment assistance&quot; or visit the HUD website for a directory.
+            Income limits apply, but many programs extend to moderate-income buyers. Once you know
+            your target down payment, use our{" "}
+            <Link href="/calc/loan" className="text-primary underline hover:no-underline">loan calculator</Link>{" "}
+            and{" "}
+            <Link href="/calc/amortization" className="text-primary underline hover:no-underline">amortization calculator</Link>{" "}
+            to model the full picture.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }
