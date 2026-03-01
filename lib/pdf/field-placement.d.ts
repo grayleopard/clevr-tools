@@ -1,56 +1,67 @@
-export interface PageRectCss {
+export interface CanvasRectCss {
   left: number;
   top: number;
   width: number;
   height: number;
 }
 
-export interface PageSizePt {
+export interface PdfViewportLike {
+  width: number;
+  height: number;
+  rotation: number;
+  convertToPdfPoint(x: number, y: number): [number, number];
+  convertToViewportRectangle(rect: [number, number, number, number]): [number, number, number, number];
+}
+
+export interface PdfRectPt {
+  xPt: number;
+  yPt: number;
   widthPt: number;
   heightPt: number;
 }
 
-export interface FieldSizePt {
-  widthPt: number;
-  heightPt: number;
-}
+export function normalizeRotation(value: number): 0 | 90 | 180 | 270;
 
-export function domPointToNxNy(params: {
+export function getNeutralizedRotation(sourceRotation: number): number;
+
+export function getLocalViewportPoint(params: {
   clientX: number;
   clientY: number;
-  pageRectCss: PageRectCss;
-}): { nx: number; ny: number };
+  canvasRect: CanvasRectCss;
+}): { xViewport: number; yViewport: number; nx: number; ny: number };
 
-export function pdfPtSizeToCssPx(params: {
-  widthPt: number;
-  heightPt: number;
-  pageRectCss: Pick<PageRectCss, "width" | "height">;
-  pageSizePt: PageSizePt;
-}): { widthPx: number; heightPx: number };
-
-export function cssPxToPdfPtSize(params: {
+export function viewportRectToPdfRect(params: {
+  viewport: PdfViewportLike;
+  leftPx: number;
+  topPx: number;
   widthPx: number;
   heightPx: number;
-  pageRectCss: Pick<PageRectCss, "width" | "height">;
-  pageSizePt: PageSizePt;
-}): { widthPt: number; heightPt: number };
+}): PdfRectPt;
 
-export function nxnyToCssPx(params: {
-  nx: number;
-  ny: number;
-  pageRectCss: Pick<PageRectCss, "width" | "height">;
-}): { leftPx: number; topPx: number };
+export function pdfRectToViewportRect(params: {
+  viewport: PdfViewportLike;
+  xPt: number;
+  yPt: number;
+  widthPt: number;
+  heightPt: number;
+}): { leftPx: number; topPx: number; widthPx: number; heightPx: number };
 
-export function nxnyToPdfPt(params: {
-  nx: number;
-  ny: number;
-  pageSizePt: PageSizePt;
-  fieldSizePt: FieldSizePt;
-}): { xPt: number; yPt: number };
+export function clampPdfRectToPage(params: {
+  xPt: number;
+  yPt: number;
+  widthPt: number;
+  heightPt: number;
+  pageWidthPt: number;
+  pageHeightPt: number;
+}): PdfRectPt;
 
-export function clampNxNyToBounds(params: {
-  nx: number;
-  ny: number;
-  pageSizePt: PageSizePt;
-  fieldSizePt: FieldSizePt;
-}): { nx: number; ny: number; maxNx: number; maxNy: number };
+export function mapDomPointToPdfPoint(params: {
+  clientX: number;
+  clientY: number;
+  canvasRect: CanvasRectCss;
+  pdfViewport: PdfViewportLike;
+  pdfPageWidth: number;
+  pdfPageHeight: number;
+  fieldWidthPt?: number;
+  fieldHeightPt?: number;
+}): { xPt: number; yPt: number; nx: number; ny: number };
