@@ -111,9 +111,9 @@ export const siteCategories: SiteCategory[] = [
     description: "Financial calculators, health tools, and everyday math.",
     featuredSlugs: [
       "salary",
-      "loan",
+      "calorie",
       "take-home-pay",
-      "retirement",
+      "sleep",
       "auto-loan",
       "credit-card-payoff",
     ],
@@ -135,12 +135,16 @@ export const siteCategories: SiteCategory[] = [
         slugs: ["savings-goal", "retirement", "investment-return", "net-worth", "compound-interest"],
       },
       {
-        label: "Health & Life",
-        slugs: ["bmi-calculator", "age-calculator", "gpa-calculator"],
+        label: "Health & Lifestyle",
+        slugs: ["calorie", "macro", "body-fat", "bmi-calculator", "due-date", "ovulation", "ideal-weight", "calories-burned", "sleep", "pace"],
       },
       {
-        label: "Math & Shopping",
-        slugs: ["percentage-calculator", "unit-converter", "date-difference", "sales-tax", "tip-calculator", "discount-calculator"],
+        label: "General",
+        slugs: ["age-calculator", "gpa-calculator", "percentage-calculator", "unit-converter", "date-difference", "sales-tax", "tip-calculator", "discount-calculator"],
+      },
+      {
+        label: "Unit Converters",
+        slugs: ["convert-length", "convert-weight", "convert-temperature", "convert-volume", "convert-area", "convert-speed", "convert-time", "convert-data", "convert-pressure", "convert-energy", "convert-frequency", "convert-fuel-economy", "convert-angle", "convert-power", "convert-force", "convert-cooking"],
       },
     ],
   },

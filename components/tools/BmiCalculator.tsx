@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 
 type Unit = "imperial" | "metric";
 
@@ -82,7 +83,7 @@ export default function BmiCalculator() {
       <div className="flex gap-2">
         <button
           onClick={() => setUnit("imperial")}
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
             unit === "imperial"
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-muted-foreground hover:text-foreground"
@@ -92,7 +93,7 @@ export default function BmiCalculator() {
         </button>
         <button
           onClick={() => setUnit("metric")}
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
             unit === "metric"
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-muted-foreground hover:text-foreground"
@@ -179,15 +180,10 @@ export default function BmiCalculator() {
 
       {result && (
         <>
-          {/* BMI number */}
-          <div className="text-center rounded-xl border border-border bg-card p-6">
-            <p
-              className={`text-4xl sm:text-5xl font-bold ${
-                result.category.label === "Normal"
-                  ? "text-foreground dark:text-emerald-500"
-                  : `${result.category.color} ${result.category.darkColor}`
-              }`}
-            >
+          {/* BMI result card with blue accent */}
+          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
+            <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
+            <p className="text-4xl sm:text-5xl font-bold text-primary">
               {result.bmi}
             </p>
             <span
@@ -228,11 +224,11 @@ export default function BmiCalculator() {
           </div>
 
           {/* Healthy range */}
-          <div className="rounded-xl border border-border bg-muted/20 p-4 text-center">
+          <div className="rounded-xl border border-border bg-primary/5 p-4 text-center">
             <p className="text-sm text-muted-foreground">
               Healthy weight range for your height
             </p>
-            <p className="text-lg font-semibold text-foreground mt-1">
+            <p className="text-lg font-semibold text-primary mt-1">
               {result.healthyRange}
             </p>
           </div>
@@ -247,6 +243,65 @@ export default function BmiCalculator() {
           </p>
         </>
       )}
+
+      {/* SEO Content */}
+      <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">BMI Categories and What They Mean</h2>
+          <div className="overflow-x-auto mt-3">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary/10">
+                  <th className="text-left p-2 font-medium">BMI Range</th>
+                  <th className="text-left p-2 font-medium">Category</th>
+                  <th className="text-left p-2 font-medium">Health Risk</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["Below 18.5", "Underweight", "Increased risk of nutritional deficiency, osteoporosis"],
+                  ["18.5\u201324.9", "Normal weight", "Lowest risk for weight-related health conditions"],
+                  ["25.0\u201329.9", "Overweight", "Elevated risk for cardiovascular disease, type 2 diabetes"],
+                  ["30.0\u201334.9", "Obesity Class I", "High risk for multiple chronic conditions"],
+                  ["35.0\u201339.9", "Obesity Class II", "Very high risk"],
+                  ["40+", "Obesity Class III", "Extremely high risk"],
+                ].map((row, i) => (
+                  <tr key={i} className="even:bg-muted/30">
+                    {row.map((cell, j) => (
+                      <td key={j} className="p-2">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">BMI Limitations</h2>
+          <p>
+            BMI doesn&apos;t distinguish muscle from fat. A highly muscular person (bodybuilder, athlete)
+            may have an &quot;overweight&quot; or &quot;obese&quot; BMI while having very low body fat. Conversely, someone
+            with a &quot;normal&quot; BMI can have high body fat and low muscle (called &quot;normal weight obesity&quot;).
+          </p>
+          <p className="mt-3">
+            BMI also doesn&apos;t account for fat distribution — abdominal fat carries higher health risk
+            than fat stored elsewhere. Use our{" "}
+            <Link href="/calc/body-fat" className="text-primary underline hover:no-underline">body fat calculator</Link>{" "}
+            for a more detailed estimate. BMI is a screening tool, not a diagnostic one. Always consult a
+            healthcare provider for medical advice.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-foreground mb-3">BMI vs. Other Measures</h2>
+          <p>
+            For a more comprehensive picture of your body composition, consider using our{" "}
+            <Link href="/calc/body-fat" className="text-primary underline hover:no-underline">body fat calculator</Link>{" "}
+            which estimates body fat percentage using the Navy method or BMI-based formula. Our{" "}
+            <Link href="/calc/ideal-weight" className="text-primary underline hover:no-underline">ideal weight calculator</Link>{" "}
+            compares multiple medical formulas (Devine, Robinson, Miller, Hamwi) to give you a range of estimates.
+          </p>
+        </section>
+      </div>
     </div>
   );
 }
