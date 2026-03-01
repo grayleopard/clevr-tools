@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getSessions, getWeakKeys, getPersonalBest } from "@/lib/typing-stats";
 import type { TypingSession } from "@/lib/typing-stats";
 
@@ -22,6 +22,8 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
     Record<string, { speed: number; accuracy: number; samples: number }>
   >({});
   const [pb, setPb] = useState<TypingSession | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function loadData() {
     const allSessions = getSessions(tool, 10);
@@ -64,18 +66,28 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshTrigger, tool]);
 
+  function startConfirm() {
+    setConfirming(true);
+    confirmTimerRef.current = setTimeout(() => setConfirming(false), 5000);
+  }
+
+  function cancelConfirm() {
+    if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+    setConfirming(false);
+  }
+
   function handleClear() {
-    if (window.confirm("Clear all typing history? This cannot be undone.")) {
-      try {
-        localStorage.removeItem("clevr-typing-stats");
-      } catch {
-        // ignore
-      }
-      setSessions([]);
-      setStats(null);
-      setWeakKeys({});
-      setPb(null);
+    if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+    try {
+      localStorage.removeItem("clevr-typing-stats");
+    } catch {
+      // ignore
     }
+    setSessions([]);
+    setStats(null);
+    setWeakKeys({});
+    setPb(null);
+    setConfirming(false);
   }
 
   function formatRelativeTime(timestamp: number): string {
@@ -118,12 +130,32 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
         <span className="text-sm font-medium text-foreground">
           {tool === "wpm-test" ? "Your History" : "Your Progress"}
         </span>
-        <button
-          onClick={handleClear}
-          className="text-xs text-muted-foreground hover:text-destructive transition-colors"
-        >
-          Clear History
-        </button>
+        <span className="flex items-center gap-2 transition-opacity duration-150">
+          {confirming ? (
+            <>
+              <span className="text-xs text-muted-foreground">Are you sure?</span>
+              <button
+                onClick={handleClear}
+                className="text-xs text-red-500 hover:text-red-600 font-medium transition-colors"
+              >
+                Yes, clear
+              </button>
+              <button
+                onClick={cancelConfirm}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={startConfirm}
+              className="text-xs text-muted-foreground hover:text-destructive transition-colors"
+            >
+              Clear History
+            </button>
+          )}
+        </span>
       </div>
 
       {/* Stats summary */}
