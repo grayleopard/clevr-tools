@@ -18,6 +18,8 @@ This matrix covers all public tool routes with Playwright smoke checks and adds 
 
 | Category | Route | Route Smoke | Happy Path |
 |---|---|---|---|
+
+| convert | `/convert/heic-to-jpg` | yes | nightly-only E2E (PR CI skip) + deterministic Node quality test |
 | convert | `/convert/heic-to-jpg` | yes | skipped (no stable HEIC fixture/codec guarantee in CI) |
 | convert | `/convert/jpg-to-pdf` | yes | yes (`sample.jpg`) |
 | convert | `/convert/jpg-to-png` | yes | no |
@@ -73,5 +75,9 @@ Stored in `tests/fixtures/`:
 
 ## Notes on skips
 
+<<<<<<< HEAD
+- HEIC UI happy-path conversion is intentionally skipped in PR CI for stability, but a nightly-only Playwright HEIC check runs with longer timeout. Route smoke still validates page health and upload controls in PR CI.
+=======
 - HEIC happy-path conversion is intentionally not executed in CI because stable HEIC fixture decoding depends on browser/runtime codec support. Route smoke still validates page health and upload controls.
+>>>>>>> main
 - Word to PDF happy-path conversion is skipped in CI because browser-only conversion stack (`mammoth` + `html-to-pdfmake` + `pdfmake`) is heavy and has unstable timing in headless automation. Route smoke still validates route health, interactivity, and runtime errors.

@@ -79,11 +79,12 @@ export default function InvoiceGenerator() {
     clientEmail: "",
     clientAddress: "",
     invoiceNumber: "INV-001",
-    invoiceDate: todayStr(),
-    dueDate: plus30(),
+    // Set date fields after mount to avoid server/client hydration drift.
+    invoiceDate: "",
+    dueDate: "",
     currency: "USD",
     lineItems: [
-      { id: generateId(), description: "", quantity: 1, price: 0 },
+      { id: "line-item-1", description: "", quantity: 1, price: 0 },
     ],
     taxRate: 0,
     discount: 0,
@@ -95,6 +96,18 @@ export default function InvoiceGenerator() {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  // ── Initialize dynamic date defaults on client ──
+  useEffect(() => {
+    setData((prev) => {
+      if (prev.invoiceDate && prev.dueDate) return prev;
+      return {
+        ...prev,
+        invoiceDate: prev.invoiceDate || todayStr(),
+        dueDate: prev.dueDate || plus30(),
+      };
+    });
+  }, []);
 
   // ── Load saved sender details from localStorage ──
   useEffect(() => {
