@@ -72,6 +72,7 @@ import {
   Activity,
   Dumbbell,
   Beef,
+  BookOpen,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -149,6 +150,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Activity,
   Dumbbell,
   Beef,
+  BookOpen,
 };
 
 export default function ToolCard({ tool }: { tool: Tool }) {

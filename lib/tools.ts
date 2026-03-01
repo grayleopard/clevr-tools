@@ -865,6 +865,64 @@ export const tools: Tool[] = [
     relatedTools: ['word-counter', 'character-counter', 'stopwatch'],
     badge: 'popular',
   },
+  {
+    slug: 'wpm-test',
+    name: 'WPM Test',
+    shortDescription: 'Measure your typing speed in 60 seconds.',
+    category: 'type',
+    route: '/type/wpm-test',
+    acceptedFormats: [],
+    icon: 'Gauge',
+    metaTitle: 'WPM Test — Check Your Typing Speed | clevr.tools',
+    metaDescription: 'Free online WPM typing test. Find out how fast you type in 60 seconds with our clean, distraction-free speed test.',
+    seoContent: `<h2>Average Typing Speed</h2>
+<p>The average adult types around 40 WPM with moderate accuracy. Office workers who type regularly reach 50–60 WPM, experienced typists hit 65–75 WPM, and professional transcriptionists type at 80–100+ WPM. Competitive typists can exceed 120–200 WPM. Knowing where you stand is the first step to improving.</p>
+<h2>How WPM Is Calculated</h2>
+<p>Industry standard defines 1 word as 5 characters including spaces. Gross WPM equals total characters typed divided by 5, divided by minutes elapsed. Net WPM subtracts errors per minute from Gross WPM. This test uses Net WPM — a more accurate measure of effective typing speed that accounts for mistakes.</p>
+<h2>Tips to Improve</h2>
+<p>Learn touch typing with proper home row placement (ASDF JKL;). Focus on accuracy first — speed follows naturally. Practice daily for 10–15 minutes. Use proper posture with feet flat, wrists level, and elbows at 90 degrees. Don't look at the keyboard — trust muscle memory.</p>`,
+    relatedTools: ['typing-test', 'typing-practice', 'keyboard-tester'],
+    badge: 'popular' as const,
+    live: true,
+  },
+  {
+    slug: 'keyboard-tester',
+    name: 'Keyboard Tester',
+    shortDescription: 'Press any key to verify it registers correctly.',
+    category: 'type',
+    route: '/type/keyboard-tester',
+    acceptedFormats: [],
+    icon: 'Keyboard',
+    metaTitle: 'Keyboard Tester — Test Every Key Online | clevr.tools',
+    metaDescription: 'Free online keyboard tester. Press any key to check it works. See key code, event details, and track which keys have been tested.',
+    seoContent: `<h2>When to Use a Keyboard Tester</h2>
+<p>Use this tool to verify a new keyboard works correctly out of the box, check for dead keys after a spill or physical damage, test N-key rollover for gaming keyboards, diagnose ghosting issues where certain key combinations don't register, and verify function keys and modifier keys are mapping correctly.</p>
+<h2>Understanding Key Events</h2>
+<p>event.key is the character produced by the key press — it changes with modifier keys (Shift turns "a" into "A"). event.code is the physical key location on the keyboard — it stays the same regardless of layout or modifiers ("KeyA" is always the leftmost home-row key). keyCode is a legacy numeric identifier that is deprecated but still used by some older applications.</p>
+<h2>Common Keyboard Problems</h2>
+<p>Ghosting occurs when pressing multiple keys simultaneously causes phantom key presses or dropped inputs. Chattering is when a single key press registers multiple times due to worn switch contacts. Dead keys simply don't register at all — often caused by physical damage, liquid spills, or manufacturing defects.</p>`,
+    relatedTools: ['typing-test', 'wpm-test', 'typing-practice'],
+    live: true,
+  },
+  {
+    slug: 'typing-practice',
+    name: 'Typing Practice',
+    shortDescription: 'Structured typing lessons with per-key performance tracking.',
+    category: 'type',
+    route: '/type/typing-practice',
+    acceptedFormats: [],
+    icon: 'BookOpen',
+    metaTitle: 'Typing Practice — Improve Your Typing Skills | clevr.tools',
+    metaDescription: 'Free typing practice with lessons for common words, programming syntax, and more. Track per-key accuracy with a keyboard heatmap.',
+    seoContent: `<h2>Touch Typing Fundamentals</h2>
+<p>Touch typing is the foundation of fast, accurate typing. Your fingers rest on the home row: left hand on ASDF, right hand on JKL;. Each finger is responsible for specific keys above and below its home position. The index fingers cover the most keys (including the center columns), while the pinkies handle the edges. Thumbs share the space bar. With practice, your fingers learn the positions through muscle memory.</p>
+<h2>Typing Practice for Programmers</h2>
+<p>Programming requires typing characters rarely used in everyday English: brackets, semicolons, angle brackets, backticks, pipes, and special operators. Code typing practice trains your fingers for these uncommon key combinations. JavaScript, Python, HTML/CSS, SQL, and TypeScript each have distinct syntax patterns worth practicing separately.</p>
+<h2>How Long Does It Take to Improve?</h2>
+<p>Most people see measurable improvement within 2–3 weeks of daily 15-minute practice sessions. Moving from 30 to 50 WPM typically takes 4–6 weeks. Breaking 60 WPM requires 2–3 months of consistent practice. Reaching 80+ WPM usually takes 6–12 months. The key is consistency — short daily sessions beat occasional long ones.</p>`,
+    relatedTools: ['typing-test', 'wpm-test', 'keyboard-tester'],
+    live: true,
+  },
   // ─── Files Tools ──────────────────────────────────────────────────────────
   {
     slug: 'image-cropper',

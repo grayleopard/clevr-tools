@@ -171,11 +171,11 @@ export const siteCategories: SiteCategory[] = [
     label: "Type",
     route: "/type",
     description: "Improve your typing speed and accuracy.",
-    featuredSlugs: ["typing-test"],
+    featuredSlugs: ["typing-test", "wpm-test", "keyboard-tester", "typing-practice"],
     subcategories: [
       {
         label: "Typing",
-        slugs: ["typing-test"],
+        slugs: ["typing-test", "wpm-test", "keyboard-tester", "typing-practice"],
       },
     ],
   },
