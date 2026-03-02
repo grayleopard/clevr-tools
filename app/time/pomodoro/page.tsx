@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import PomodoroTool from "@/components/tools/PomodoroTool";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "pomodoro")!;
+const faqItems = getToolFaqs("pomodoro");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <PomodoroTool />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

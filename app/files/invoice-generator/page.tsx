@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import InvoiceGenerator from "@/components/tools/InvoiceGenerator";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("invoice-generator")!;
+const faqItems = getToolFaqs("invoice-generator");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function InvoiceGeneratorPage() {
   return (
     <ToolLayout tool={tool}>
       <InvoiceGenerator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

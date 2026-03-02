@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
 import ToolLayout from "@/components/tool/ToolLayout";
 import CpsTest from "@/components/tools/CpsTest";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
 const tool = getToolBySlug("cps-test")!;
+const faqItems = getToolFaqs("cps-test");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -35,6 +38,7 @@ export default function CpsTestPage() {
   return (
     <ToolLayout tool={tool}>
       <CpsTest />
+      <FaqSchema items={faqItems} />
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">Average Clicks Per Second</h2>

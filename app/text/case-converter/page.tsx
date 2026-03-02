@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import CaseConverter from "@/components/tools/CaseConverter";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("case-converter")!;
+const faqItems = getToolFaqs("case-converter");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function CaseConverterPage() {
   return (
     <ToolLayout tool={tool}>
       <CaseConverter />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import CreditCardPayoffCalculator from "@/components/tools/CreditCardPayoffCalculator";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "credit-card-payoff")!;
+const faqItems = getToolFaqs("credit-card-payoff");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <CreditCardPayoffCalculator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

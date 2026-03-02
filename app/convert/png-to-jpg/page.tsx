@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PngToJpg from "@/components/tools/PngToJpg";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("png-to-jpg")!;
+const faqItems = getToolFaqs("png-to-jpg");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function PngToJpgPage() {
   return (
     <ToolLayout tool={tool}>
       <PngToJpg />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

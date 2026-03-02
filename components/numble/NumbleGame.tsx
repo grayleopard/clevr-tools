@@ -595,6 +595,8 @@ export default function NumbleGame() {
     starDistribution: { 3: 0, 2: 0, 1: 0, 0: 0 },
     history: [],
   });
+  const [closestResult, setClosestResult] = useState<number | null>(null);
+  const [isDeadEnd, setIsDeadEnd] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
   const resetConfirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
@@ -609,6 +611,53 @@ export default function NumbleGame() {
       return () => clearTimeout(timer);
     }
   }, [errorMsg]);
+
+  // Check if any valid operations exist among available numbers
+  function hasValidOperations(availableValues: number[]): boolean {
+    if (availableValues.length < 2) return false;
+    for (let i = 0; i < availableValues.length; i++) {
+      for (let j = 0; j < availableValues.length; j++) {
+        if (i === j) continue;
+        const a = availableValues[i];
+        const b = availableValues[j];
+        // Addition: always valid
+        if (a + b > 0) return true;
+        // Subtraction: valid if a - b > 0
+        if (a - b > 0) return true;
+        // Multiplication: always valid
+        if (a * b > 0) return true;
+        // Division: valid if exact (no remainder) and positive
+        if (b !== 0 && a % b === 0 && a / b > 0) return true;
+      }
+    }
+    return false;
+  }
+
+  // Dead-end detection: runs after tiles change
+  useEffect(() => {
+    if (gameStatus !== "playing" || !puzzle || tiles.length === 0) return;
+
+    const availableTiles = tiles.filter((t) => t.state === "available");
+    const availableValues = availableTiles.map((t) => t.value);
+
+    // Only check after at least one step has been made
+    if (steps.length === 0) return;
+
+    // Condition 1: single number remaining, not target
+    if (availableValues.length === 1 && availableValues[0] !== puzzle.target) {
+      setIsDeadEnd(true);
+      return;
+    }
+
+    // Condition 2: 2+ numbers but no valid operations exist
+    if (availableValues.length >= 2 && !hasValidOperations(availableValues)) {
+      setIsDeadEnd(true);
+      return;
+    }
+
+    setIsDeadEnd(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tiles, gameStatus]);
 
   // Countdown timer
   useEffect(() => {
@@ -639,6 +688,11 @@ export default function NumbleGame() {
       setShowHowToPlay(true);
     }
 
+    // Compute initial closest result from starting numbers
+    const initialClosest = p.numbers.reduce((best, n) =>
+      Math.abs(n - p.target) < Math.abs(best - p.target) ? n : best
+    , p.numbers[0]);
+
     // Restore today's state
     const todayState = getTodayState();
     if (todayState && todayState.date === todayStr) {
@@ -647,30 +701,46 @@ export default function NumbleGame() {
         setGameStatus(todayState.gaveUp ? "gave-up" : "won");
         setStars(todayState.stars);
         initTiles(p.numbers, todayState.steps);
-        setSteps(
-          todayState.steps.map((s, i) => ({
-            ...s,
-            tileIdA: `orig-${i}-a`,
-            tileIdB: `orig-${i}-b`,
-            resultTileId: `result-${i}`,
-          }))
-        );
+        const restoredSteps = todayState.steps.map((s, i) => ({
+          ...s,
+          tileIdA: `orig-${i}-a`,
+          tileIdB: `orig-${i}-b`,
+          resultTileId: `result-${i}`,
+        }));
+        setSteps(restoredSteps);
+        // Restore closestResult from all results + initial numbers
+        let bestClosest = initialClosest;
+        for (const s of todayState.steps) {
+          if (Math.abs(s.result - p.target) < Math.abs(bestClosest - p.target)) {
+            bestClosest = s.result;
+          }
+        }
+        setClosestResult(bestClosest);
       } else if (todayState.steps.length > 0) {
         // In progress — restore
         initTiles(p.numbers, todayState.steps);
-        setSteps(
-          todayState.steps.map((s, i) => ({
-            ...s,
-            tileIdA: `orig-${i}-a`,
-            tileIdB: `orig-${i}-b`,
-            resultTileId: `result-${i}`,
-          }))
-        );
+        const restoredSteps = todayState.steps.map((s, i) => ({
+          ...s,
+          tileIdA: `orig-${i}-a`,
+          tileIdB: `orig-${i}-b`,
+          resultTileId: `result-${i}`,
+        }));
+        setSteps(restoredSteps);
+        // Restore closestResult from all results + initial numbers
+        let bestClosest = initialClosest;
+        for (const s of todayState.steps) {
+          if (Math.abs(s.result - p.target) < Math.abs(bestClosest - p.target)) {
+            bestClosest = s.result;
+          }
+        }
+        setClosestResult(bestClosest);
       } else {
         initTiles(p.numbers, []);
+        setClosestResult(initialClosest);
       }
     } else {
       initTiles(p.numbers, []);
+      setClosestResult(initialClosest);
     }
 
     setStats(getStats());
@@ -806,6 +876,14 @@ export default function NumbleGame() {
     setSelectedTileId(null);
     setSelectedOp(null);
 
+    // Update closest result tracking
+    if (
+      closestResult === null ||
+      Math.abs(result - puzzle.target) < Math.abs(closestResult - puzzle.target)
+    ) {
+      setClosestResult(result);
+    }
+
     const todayStr = getUTCDateString();
     const todayState: NumbleTodayState = {
       puzzleNumber: puzzle.puzzleNumber,
@@ -872,6 +950,7 @@ export default function NumbleGame() {
     setSteps(newSteps);
     setSelectedTileId(null);
     setSelectedOp(null);
+    setIsDeadEnd(false);
 
     if (puzzle) {
       const todayState: NumbleTodayState = {
@@ -911,6 +990,12 @@ export default function NumbleGame() {
     setSteps([]);
     setSelectedTileId(null);
     setSelectedOp(null);
+    setIsDeadEnd(false);
+    // Reset closestResult to initial closest from starting numbers
+    const initialClosest = puzzle.numbers.reduce((best, n) =>
+      Math.abs(n - puzzle.target) < Math.abs(best - puzzle.target) ? n : best
+    , puzzle.numbers[0]);
+    setClosestResult(initialClosest);
     const todayState: NumbleTodayState = {
       puzzleNumber: puzzle.puzzleNumber,
       date: getUTCDateString(),
@@ -1205,6 +1290,123 @@ export default function NumbleGame() {
                     )}
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Dead-end prompt */}
+            {isDeadEnd && closestResult !== null && (
+              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <p className="font-semibold text-amber-900 dark:text-amber-200 text-sm">
+                  {tiles.filter((t) => t.state === "available").length === 1
+                    ? "\ud83d\ude05 No more moves!"
+                    : "\ud83d\ude05 Stuck! No valid operations remaining."}
+                </p>
+                <p className="text-amber-800 dark:text-amber-300 text-sm mt-1">
+                  You reached {closestResult} ({Math.abs(closestResult - puzzle.target)} away from {puzzle.target})
+                  {Math.abs(closestResult - puzzle.target) <= 5
+                    ? " Almost there! Try a different path."
+                    : Math.abs(closestResult - puzzle.target) <= 10
+                      ? " So close!"
+                      : ""}
+                </p>
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={handleUndo}
+                    className="flex-1 px-3 py-2 rounded-lg bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-sm font-medium hover:bg-amber-200 dark:hover:bg-amber-900/70 transition-colors"
+                  >
+                    {"\u21a9"} Undo Last Step
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsDeadEnd(false);
+                      // Trigger reset with confirmation bypass
+                      if (!puzzle) return;
+                      if (resetConfirmTimerRef.current)
+                        clearTimeout(resetConfirmTimerRef.current);
+                      setResetConfirm(false);
+                      initTiles(puzzle.numbers, []);
+                      setSteps([]);
+                      setSelectedTileId(null);
+                      setSelectedOp(null);
+                      const resetClosest = puzzle.numbers.reduce((best, n) =>
+                        Math.abs(n - puzzle.target) < Math.abs(best - puzzle.target) ? n : best
+                      , puzzle.numbers[0]);
+                      setClosestResult(resetClosest);
+                      const todayState: NumbleTodayState = {
+                        puzzleNumber: puzzle.puzzleNumber,
+                        date: getUTCDateString(),
+                        steps: [],
+                        completed: false,
+                        stars: null,
+                        gaveUp: false,
+                        bestResult: null,
+                      };
+                      saveTodayState(todayState);
+                    }}
+                    className="flex-1 px-3 py-2 rounded-lg bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-sm font-medium hover:bg-amber-200 dark:hover:bg-amber-900/70 transition-colors"
+                  >
+                    {"\ud83d\udd04"} Reset
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsDeadEnd(false);
+                      // Trigger give up directly (bypass confirmation)
+                      if (!puzzle) return;
+                      const allResults = steps.map((s) => s.result);
+                      const bestResult =
+                        allResults.length > 0
+                          ? allResults.reduce((best, r) =>
+                              Math.abs(r - puzzle.target) < Math.abs(best - puzzle.target)
+                                ? r
+                                : best
+                            , allResults[0])
+                          : 0;
+                      const earnedStars = computeStars(
+                        steps.length,
+                        puzzle.optimalSteps,
+                        false,
+                        bestResult,
+                        puzzle.target
+                      );
+                      setStars(earnedStars);
+                      setGameStatus("gave-up");
+                      setGiveUpConfirmActive(false);
+
+                      const todayStr = getUTCDateString();
+                      const giveUpState: NumbleTodayState = {
+                        puzzleNumber: puzzle.puzzleNumber,
+                        date: todayStr,
+                        steps: steps.map((s) => ({
+                          a: s.a,
+                          op: s.op,
+                          b: s.b,
+                          result: s.result,
+                        })),
+                        completed: false,
+                        stars: earnedStars,
+                        gaveUp: true,
+                        bestResult,
+                      };
+                      saveTodayState(giveUpState);
+
+                      const entry = {
+                        puzzleNumber: puzzle.puzzleNumber,
+                        date: todayStr,
+                        stars: earnedStars,
+                        steps: steps.length,
+                        optimal: puzzle.optimalSteps,
+                        target: puzzle.target,
+                        solved: false,
+                        gaveUp: true,
+                      };
+                      saveResult(entry, todayStr);
+                      setStats(getStats());
+                    }}
+                    className="flex-1 px-3 py-2 rounded-lg bg-amber-100 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-sm font-medium hover:bg-amber-200 dark:hover:bg-amber-900/70 transition-colors"
+                  >
+                    Show Solution
+                  </button>
+                </div>
               </div>
             )}
 

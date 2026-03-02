@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PercentageCalculator from "@/components/tools/PercentageCalculator";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("percentage-calculator")!;
+const faqItems = getToolFaqs("percentage-calculator");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function PercentageCalculatorPage() {
   return (
     <ToolLayout tool={tool}>
       <PercentageCalculator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

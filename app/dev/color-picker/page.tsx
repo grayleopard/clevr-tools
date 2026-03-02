@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import ColorPicker from "@/components/tools/ColorPicker";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("color-picker")!;
+const faqItems = getToolFaqs("color-picker");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function ColorPickerPage() {
   return (
     <ToolLayout tool={tool}>
       <ColorPicker />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

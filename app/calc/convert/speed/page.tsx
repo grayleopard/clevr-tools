@@ -1,10 +1,13 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import UnitConverterPage from "@/components/tools/UnitConverterPage";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import Link from "next/link";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "convert-speed")!;
+const faqItems = getToolFaqs("convert-speed");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -23,6 +26,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <UnitConverterPage configKey="speed" />
+      <FaqSchema items={faqItems} />
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">Speed Conversion Reference</h2>

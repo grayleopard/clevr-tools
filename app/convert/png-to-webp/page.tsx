@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PngToWebp from "@/components/tools/PngToWebp";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("png-to-webp")!;
+const faqItems = getToolFaqs("png-to-webp");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function PngToWebpPage() {
   return (
     <ToolLayout tool={tool}>
       <PngToWebp />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

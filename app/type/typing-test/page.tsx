@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import TypingTest from "@/components/tools/TypingTest";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("typing-test")!;
+const faqItems = getToolFaqs("typing-test");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function TypingTestPage() {
   return (
     <ToolLayout tool={tool}>
       <TypingTest />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

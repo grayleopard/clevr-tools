@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PasswordGenerator from "@/components/tools/PasswordGenerator";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("password-generator")!;
+const faqItems = getToolFaqs("password-generator");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function PasswordGeneratorPage() {
   return (
     <ToolLayout tool={tool}>
       <PasswordGenerator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

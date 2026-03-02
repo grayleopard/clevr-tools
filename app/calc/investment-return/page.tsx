@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import InvestmentReturnCalculator from "@/components/tools/InvestmentReturnCalculator";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "investment-return")!;
+const faqItems = getToolFaqs("investment-return");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <InvestmentReturnCalculator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

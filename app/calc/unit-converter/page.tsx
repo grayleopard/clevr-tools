@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import UnitConverter from "@/components/tools/UnitConverter";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("unit-converter")!;
+const faqItems = getToolFaqs("unit-converter");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function UnitConverterPage() {
   return (
     <ToolLayout tool={tool}>
       <UnitConverter />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import RemoveLineBreaks from "@/components/tools/RemoveLineBreaks";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("remove-line-breaks")!;
+const faqItems = getToolFaqs("remove-line-breaks");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function RemoveLineBreaksPage() {
   return (
     <ToolLayout tool={tool}>
       <RemoveLineBreaks />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

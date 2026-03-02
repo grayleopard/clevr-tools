@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import RetirementCalculator from "@/components/tools/RetirementCalculator";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "retirement")!;
+const faqItems = getToolFaqs("retirement");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <RetirementCalculator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

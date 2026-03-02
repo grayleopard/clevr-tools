@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import UnitConverterPage from "@/components/tools/UnitConverterPage";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "convert-fuel-economy")!;
+const faqItems = getToolFaqs("convert-fuel-economy");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <UnitConverterPage configKey="fuel-economy" />
+      <FaqSchema items={faqItems} />
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">Understanding Fuel Economy Units</h2>

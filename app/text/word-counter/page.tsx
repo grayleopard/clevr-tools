@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import WordCounter from "@/components/tools/WordCounter";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("word-counter")!;
+const faqItems = getToolFaqs("word-counter");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function WordCounterPage() {
   return (
     <ToolLayout tool={tool}>
       <WordCounter />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

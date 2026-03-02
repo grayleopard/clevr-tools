@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import PaceCalculator from "@/components/tools/PaceCalculator";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "pace")!;
+const faqItems = getToolFaqs("pace");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <PaceCalculator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

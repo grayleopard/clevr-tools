@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import RandomNumberGenerator from "@/components/tools/RandomNumberGenerator";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("random-number")!;
+const faqItems = getToolFaqs("random-number");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function RandomNumberGeneratorPage() {
   return (
     <ToolLayout tool={tool}>
       <RandomNumberGenerator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

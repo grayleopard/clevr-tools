@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import FindAndReplace from "@/components/tools/FindAndReplace";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "find-and-replace")!;
+const faqItems = getToolFaqs("find-and-replace");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <FindAndReplace />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

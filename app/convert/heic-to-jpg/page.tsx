@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import HeicToJpg from "@/components/tools/HeicToJpg";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("heic-to-jpg")!;
+const faqItems = getToolFaqs("heic-to-jpg");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function HeicToJpgPage() {
   return (
     <ToolLayout tool={tool}>
       <HeicToJpg />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

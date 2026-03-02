@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import LoremGenerator from "@/components/tools/LoremGenerator";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("lorem-generator")!;
+const faqItems = getToolFaqs("lorem-generator");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -34,6 +37,7 @@ export default function LoremGeneratorPage() {
   return (
     <ToolLayout tool={tool}>
       <LoremGenerator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

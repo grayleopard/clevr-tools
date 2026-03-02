@@ -1,9 +1,12 @@
 import ToolLayout from "@/components/tool/ToolLayout";
 import AgeCalculator from "@/components/tools/AgeCalculator";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "age-calculator")!;
+const faqItems = getToolFaqs("age-calculator");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -22,6 +25,7 @@ export default function Page() {
   return (
     <ToolLayout tool={tool}>
       <AgeCalculator />
+      <FaqSchema items={faqItems} />
     </ToolLayout>
   );
 }

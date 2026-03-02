@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
 import ToolLayout from "@/components/tool/ToolLayout";
 import WordBlitz from "@/components/tools/WordBlitz";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import FaqSchema from "@/components/seo/FaqSchema";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
 const tool = getToolBySlug("word-blitz")!;
+const faqItems = getToolFaqs("word-blitz");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -35,6 +38,7 @@ export default function WordBlitzPage() {
   return (
     <ToolLayout tool={tool}>
       <WordBlitz />
+      <FaqSchema items={faqItems} />
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">
