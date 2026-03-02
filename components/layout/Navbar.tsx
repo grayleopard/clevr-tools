@@ -115,6 +115,13 @@ export default function Navbar() {
               </div>
             </div>
           ))}
+          <Link
+            href="/play/numble"
+            className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+          >
+            <span>{"\ud83d\udd22"}</span>
+            Numble
+          </Link>
         </nav>
 
         <div className="flex items-center gap-1">
@@ -129,6 +136,14 @@ export default function Navbar() {
 
             <div className="absolute right-0 top-11 z-50 w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto rounded-xl border border-border bg-background p-2 shadow-xl">
               <nav className="space-y-1" aria-label="Mobile navigation">
+                <Link
+                  href="/play/numble"
+                  className="flex items-center gap-2 rounded-md px-2 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+                >
+                  <span>{"\ud83d\udd22"}</span>
+                  Numble — Daily Puzzle
+                </Link>
+                <div className="border-t border-border my-1" />
                 {siteCategories.map((cat) => (
                   <details key={cat.id} className="group/category rounded-md border border-transparent open:border-border">
                     <summary className="flex cursor-pointer list-none items-center justify-between rounded-md px-2 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">

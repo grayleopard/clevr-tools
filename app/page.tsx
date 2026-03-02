@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getToolBySlug } from "@/lib/tools";
 import { siteCategories, getCategoryToolCount } from "@/lib/site-structure";
 import SmartConverterDeferred from "@/components/home/SmartConverterDeferred";
+import DailyChallengeBanner from "@/components/numble/DailyChallengeBanner";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +60,7 @@ export default function HomePage() {
 
         {/* Category grid */}
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+          <DailyChallengeBanner />
           <p className="mb-6 text-sm text-muted-foreground">
             Browse by category:
           </p>
