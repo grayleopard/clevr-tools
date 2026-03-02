@@ -3,7 +3,47 @@
 @import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is([data-theme=dark] *));
+
+/* Light mode (default) */
+[data-theme="light"] {
+  --bg-base: #ffffff;
+  --bg-surface: #f8f8fa;
+  --bg-elevated: #f0f0f3;
+  --bg-input: #ffffff;
+  --border-default: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --text-primary: #111119;
+  --text-secondary: #5a5a72;
+  --text-tertiary: #8888a0;
+  --clr-accent: #3b82f6;
+  --clr-accent-hover: #2563eb;
+  --clr-accent-muted: rgba(59, 130, 246, 0.08);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --bg-base: #06060b;
+  --bg-surface: #0a0a12;
+  --bg-elevated: #111119;
+  --bg-input: #0f0f17;
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text-primary: #f0f0f5;
+  --text-secondary: #8888a0;
+  --text-tertiary: #55556a;
+  --clr-accent: #3b82f6;
+  --clr-accent-hover: #60a5fa;
+  --clr-accent-muted: rgba(59, 130, 246, 0.15);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+html {
+  transition: background-color 200ms ease, color 200ms ease;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -87,7 +127,7 @@
   --sidebar-ring: oklch(0.705 0.015 286.067);
 }
 
-.dark {
+[data-theme="dark"] {
   --background: oklch(0.067 0.003 285);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.105 0.004 285);
@@ -124,7 +164,7 @@
 }
 
 /* Ambient emerald glow — dark mode only */
-.dark body::before {
+[data-theme="dark"] body::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -134,9 +174,9 @@
 }
 
 /* Smooth theme transitions */
-.dark *,
-.dark *::before,
-.dark *::after {
+[data-theme="dark"] *,
+[data-theme="dark"] *::before,
+[data-theme="dark"] *::after {
   transition-property: color, background-color, border-color, box-shadow;
   transition-duration: 0.2s;
   transition-timing-function: ease;

@@ -42,14 +42,11 @@ export default function HomePage() {
         <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent">
           <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
             <div className="mb-8 text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
-                <span>100% Free &middot; No Signup &middot; Files stay in your browser</span>
-              </div>
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                Fast, free, private tools for everyday tasks.
+                Free tools. No signup. Zero data collection.
               </h1>
               <p className="mt-3 text-muted-foreground sm:text-lg">
-                All processing happens in your browser. Your files never leave your device.
+                File converters, calculators, typing tests, and developer tools. Everything runs in your browser — nothing leaves your device.
               </p>
             </div>
 
@@ -72,7 +69,7 @@ export default function HomePage() {
               return (
                 <div
                   key={cat.id}
-                  className="flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
+                  className="flex flex-col rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-150 ease-in-out hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-md)]"
                 >
                   {/* Category header */}
                   <div className="mb-4 flex items-center gap-3">

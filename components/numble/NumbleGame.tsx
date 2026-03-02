@@ -169,7 +169,7 @@ function ResultsPanel({
             </span>
           ))}
         </div>
-        <p className="text-lg font-semibold text-white">
+        <p className="text-lg font-semibold text-[var(--text-primary)]">
           {gameStatus === "won" ? (
             starCount === 3 ? (
               "Perfect!"
@@ -183,14 +183,14 @@ function ResultsPanel({
           )}
         </p>
         {gameStatus === "won" && (
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             {steps.length === puzzle.optimalSteps
               ? `${steps.length} steps (Optimal!)`
               : `${steps.length} steps (Optimal: ${puzzle.optimalSteps})`}
           </p>
         )}
         {streak >= 2 && (
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             {"\ud83d\udd25"} {streak}-day streak
           </p>
         )}
@@ -198,20 +198,20 @@ function ResultsPanel({
 
       {/* Your solution */}
       <div className="space-y-2 text-left">
-        <div className="text-xs text-gray-500 uppercase tracking-widest">
+        <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest">
           Your Solution
         </div>
         {steps.map((step, i) => (
           <div
             key={i}
-            className="bg-gray-900 rounded-lg px-4 py-2 text-sm font-mono"
+            className="bg-[var(--bg-surface)] rounded-lg px-4 py-2 text-sm font-mono"
           >
-            <span className="text-gray-300">{step.a}</span>
+            <span className="text-[var(--text-secondary)]">{step.a}</span>
             <span className="text-blue-400 mx-2">{step.op}</span>
-            <span className="text-gray-300">{step.b}</span>
-            <span className="text-gray-500 mx-2">=</span>
+            <span className="text-[var(--text-secondary)]">{step.b}</span>
+            <span className="text-[var(--text-tertiary)] mx-2">=</span>
             <span
-              className={`font-bold ${step.result === puzzle.target ? "text-green-400" : "text-white"}`}
+              className={`font-bold ${step.result === puzzle.target ? "text-green-400" : "text-[var(--text-primary)]"}`}
             >
               {step.result}
             </span>
@@ -225,21 +225,21 @@ function ResultsPanel({
       {/* Optimal solution (gave up) */}
       {gameStatus === "gave-up" && optimalSolution && optimalSolution.length > 0 && (
         <div className="space-y-2 text-left">
-          <div className="text-xs text-gray-500 uppercase tracking-widest">
+          <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest">
             Optimal Solution ({optimalSolution.length} steps)
           </div>
           {optimalSolution.map((step, i) => (
             <div
               key={i}
-              className="bg-gray-900/60 rounded-lg px-4 py-2 text-sm font-mono border border-gray-800 animate-in fade-in slide-in-from-top-2 duration-300"
+              className="bg-[var(--bg-surface)] rounded-lg px-4 py-2 text-sm font-mono border border-[var(--border-default)] animate-in fade-in slide-in-from-top-2 duration-300"
               style={{ animationDelay: `${i * 200}ms`, animationFillMode: "backwards" }}
             >
-              <span className="text-gray-400">{step.a}</span>
+              <span className="text-[var(--text-secondary)]">{step.a}</span>
               <span className="text-amber-400 mx-2">{step.op}</span>
-              <span className="text-gray-400">{step.b}</span>
-              <span className="text-gray-500 mx-2">=</span>
+              <span className="text-[var(--text-secondary)]">{step.b}</span>
+              <span className="text-[var(--text-tertiary)] mx-2">=</span>
               <span
-                className={`font-bold ${step.result === puzzle.target ? "text-green-400" : "text-gray-300"}`}
+                className={`font-bold ${step.result === puzzle.target ? "text-green-400" : "text-[var(--text-secondary)]"}`}
               >
                 {step.result}
               </span>
@@ -255,13 +255,13 @@ function ResultsPanel({
       <div className="space-y-4">
         <button
           onClick={onShare}
-          className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors"
+          className="w-full py-3 rounded-xl bg-[var(--clr-accent)] hover:bg-[var(--clr-accent-hover)] text-white font-semibold text-sm transition-colors"
         >
           {copied ? "Copied!" : "Share Results"}
         </button>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-[var(--text-tertiary)]">
           Next puzzle in{" "}
-          <span className="font-mono text-gray-300">
+          <span className="font-mono text-[var(--text-secondary)]">
             {formatCountdown(countdownSec)}
           </span>
         </div>
@@ -277,12 +277,12 @@ function HowToPlayModal({ onClose }: { onClose: () => void }) {
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-5 max-h-[85vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-white">How to Play</h2>
+      <div className="relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl max-w-md w-full p-6 space-y-5 max-h-[85vh] overflow-y-auto">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">How to Play</h2>
 
-        <div className="space-y-4 text-sm text-gray-300">
+        <div className="space-y-4 text-sm text-[var(--text-secondary)]">
           <div>
-            <h3 className="font-semibold text-white mb-1">Goal</h3>
+            <h3 className="font-semibold text-[var(--text-primary)] mb-1">Goal</h3>
             <p>
               Combine the 6 given numbers to reach the target using addition,
               subtraction, multiplication, and division.
@@ -290,7 +290,7 @@ function HowToPlayModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-1">Rules</h3>
+            <h3 className="font-semibold text-[var(--text-primary)] mb-1">Rules</h3>
             <ul className="list-disc pl-5 space-y-1">
               <li>Each number can only be used once</li>
               <li>You don&apos;t have to use all numbers</li>
@@ -300,7 +300,7 @@ function HowToPlayModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-1">How to Play</h3>
+            <h3 className="font-semibold text-[var(--text-primary)] mb-1">How to Play</h3>
             <ol className="list-decimal pl-5 space-y-1">
               <li>Tap a number tile to select it</li>
               <li>Tap an operator (+, -, x, /)</li>
@@ -311,7 +311,7 @@ function HowToPlayModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-1">Scoring</h3>
+            <h3 className="font-semibold text-[var(--text-primary)] mb-1">Scoring</h3>
             <div className="space-y-1">
               <p>
                 <span>{"\u2b50\u2b50\u2b50"}</span> — Solved in the fewest
@@ -327,7 +327,7 @@ function HowToPlayModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-1">Daily Challenge</h3>
+            <h3 className="font-semibold text-[var(--text-primary)] mb-1">Daily Challenge</h3>
             <p>
               A new puzzle is released every day at midnight UTC. Everyone gets
               the same puzzle. Build your streak!
@@ -337,7 +337,7 @@ function HowToPlayModal({ onClose }: { onClose: () => void }) {
 
         <button
           onClick={onClose}
-          className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors"
+          className="w-full py-3 rounded-xl bg-[var(--clr-accent)] hover:bg-[var(--clr-accent-hover)] text-white font-semibold text-sm transition-colors"
         >
           Got it!
         </button>
@@ -367,8 +367,8 @@ function StatsModal({
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-5 max-h-[85vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-white">Statistics</h2>
+      <div className="relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl max-w-md w-full p-6 space-y-5 max-h-[85vh] overflow-y-auto">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">Statistics</h2>
 
         {/* Stat cards */}
         <div className="grid grid-cols-4 gap-3">
@@ -385,25 +385,25 @@ function StatsModal({
             },
           ].map((s) => (
             <div key={s.label} className="text-center">
-              <div className="text-2xl font-bold text-white">{s.value}</div>
-              <div className="text-xs text-gray-500">{s.label}</div>
+              <div className="text-2xl font-bold text-[var(--text-primary)]">{s.value}</div>
+              <div className="text-xs text-[var(--text-tertiary)]">{s.label}</div>
             </div>
           ))}
         </div>
 
         {/* Star distribution */}
         <div className="space-y-2">
-          <div className="text-xs text-gray-500 uppercase tracking-widest">
+          <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest">
             Star Distribution
           </div>
           {([3, 2, 1, 0] as const).map((starLevel) => (
             <div key={starLevel} className="flex items-center gap-2">
-              <span className="text-sm w-16 text-gray-400">
+              <span className="text-sm w-16 text-[var(--text-secondary)]">
                 {starLevel > 0
                   ? "\u2b50".repeat(starLevel)
                   : "0 stars"}
               </span>
-              <div className="flex-1 bg-gray-800 rounded-full h-4 overflow-hidden">
+              <div className="flex-1 bg-[var(--bg-surface)] rounded-full h-4 overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
                     starLevel === 3
@@ -419,7 +419,7 @@ function StatsModal({
                   }}
                 />
               </div>
-              <span className="text-sm text-gray-400 w-6 text-right">
+              <span className="text-sm text-[var(--text-secondary)] w-6 text-right">
                 {stats.starDistribution[starLevel]}
               </span>
             </div>
@@ -429,19 +429,19 @@ function StatsModal({
         {/* Recent history */}
         {stats.history.length > 0 && (
           <div className="space-y-2">
-            <div className="text-xs text-gray-500 uppercase tracking-widest">
+            <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest">
               Recent Games
             </div>
             <div className="space-y-1 max-h-40 overflow-y-auto">
               {stats.history.slice(0, 10).map((entry, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between text-sm bg-gray-800/50 rounded-lg px-3 py-2"
+                  className="flex items-center justify-between text-sm bg-[var(--bg-surface)] rounded-lg px-3 py-2"
                 >
-                  <span className="text-gray-400">
+                  <span className="text-[var(--text-secondary)]">
                     #{entry.puzzleNumber}
                   </span>
-                  <span className="text-gray-500">{entry.target}</span>
+                  <span className="text-[var(--text-tertiary)]">{entry.target}</span>
                   <span>
                     {entry.solved
                       ? `${entry.steps} steps`
@@ -462,7 +462,7 @@ function StatsModal({
 
         <button
           onClick={onClose}
-          className="w-full py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold text-sm transition-colors"
+          className="w-full py-3 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold text-sm transition-colors"
         >
           Close
         </button>
@@ -492,8 +492,8 @@ function SettingsModal({
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-5">
-        <h2 className="text-xl font-bold text-white">Settings</h2>
+      <div className="relative bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-2xl max-w-md w-full p-6 space-y-5">
+        <h2 className="text-xl font-bold text-[var(--text-primary)]">Settings</h2>
 
         <div className="space-y-4">
           {[
@@ -518,15 +518,15 @@ function SettingsModal({
               className="flex items-center justify-between"
             >
               <div>
-                <div className="text-sm font-medium text-white">
+                <div className="text-sm font-medium text-[var(--text-primary)]">
                   {opt.label}
                 </div>
-                <div className="text-xs text-gray-500">{opt.desc}</div>
+                <div className="text-xs text-[var(--text-tertiary)]">{opt.desc}</div>
               </div>
               <button
                 onClick={() => toggle(opt.key)}
                 className={`relative w-11 h-6 rounded-full transition-colors ${
-                  local[opt.key] ? "bg-blue-600" : "bg-gray-700"
+                  local[opt.key] ? "bg-[var(--clr-accent)]" : "bg-[var(--bg-surface)]"
                 }`}
               >
                 <span
@@ -542,13 +542,13 @@ function SettingsModal({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold text-sm transition-colors"
+            className="flex-1 py-3 rounded-xl bg-[var(--bg-surface)] hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] font-semibold text-sm transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => onSave(local)}
-            className="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors"
+            className="flex-1 py-3 rounded-xl bg-[var(--clr-accent)] hover:bg-[var(--clr-accent-hover)] text-white font-semibold text-sm transition-colors"
           >
             Save
           </button>
@@ -1125,13 +1125,13 @@ export default function NumbleGame() {
 
   if (!puzzle)
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64 text-[var(--text-secondary)]">
         Loading...
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
       {/* Confetti canvas */}
       <canvas
         id="numble-confetti"
@@ -1140,10 +1140,10 @@ export default function NumbleGame() {
       />
 
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-default)]">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">NUMBLE</h1>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-[var(--text-tertiary)]">
             #{puzzle.puzzleNumber} &middot;{" "}
             {new Date(puzzle.date + "T00:00:00Z").toLocaleDateString("en-US", {
               month: "long",
@@ -1156,21 +1156,21 @@ export default function NumbleGame() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowStats(true)}
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
             title="Stats"
           >
             {"\ud83d\udcca"}
           </button>
           <button
             onClick={() => setShowHowToPlay(true)}
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
             title="How to Play"
           >
             {"\u2753"}
           </button>
           <button
             onClick={() => setShowSettings(true)}
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
             title="Settings"
           >
             {"\u2699\ufe0f"}
@@ -1182,7 +1182,7 @@ export default function NumbleGame() {
         {/* Streak badge */}
         {stats.currentStreak >= 2 && (
           <div className="text-center">
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-[var(--text-secondary)]">
               {"\ud83d\udd25"} {stats.currentStreak}-day streak
             </span>
           </div>
@@ -1190,11 +1190,11 @@ export default function NumbleGame() {
 
         {/* Target */}
         <div className="text-center">
-          <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">
+          <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest mb-1">
             Target
           </div>
           <div
-            className={`text-8xl font-bold leading-none ${gameStatus === "won" ? "text-primary animate-pulse" : "text-white"}`}
+            className={`text-8xl font-bold leading-none ${gameStatus === "won" ? "text-primary animate-pulse" : "text-[var(--text-primary)]"}`}
             style={
               gameStatus === "won"
                 ? { textShadow: "0 0 40px rgba(29, 78, 216, 0.6)" }
@@ -1218,12 +1218,12 @@ export default function NumbleGame() {
                     disabled={tile.state === "used"}
                     className={`h-16 rounded-xl text-2xl font-bold transition-all duration-150 ${
                       tile.state === "used"
-                        ? "opacity-20 cursor-not-allowed bg-gray-800 border border-gray-700"
+                        ? "opacity-20 cursor-not-allowed bg-[var(--bg-elevated)] border border-[var(--border-default)]"
                         : selectedTileId === tile.id
-                          ? "bg-gray-800 border-2 border-blue-500 ring-2 ring-blue-500/30 shadow-lg shadow-blue-500/20 scale-105"
+                          ? "bg-[var(--bg-elevated)] border-2 border-blue-500 ring-2 ring-blue-500/30 shadow-lg shadow-blue-500/20 scale-105"
                           : tile.state === "result"
-                            ? "bg-gray-800 border border-blue-500/30 text-white hover:border-blue-400 hover:scale-105"
-                            : "bg-gray-800 border border-gray-700 text-white hover:border-gray-500 hover:scale-105"
+                            ? "bg-[var(--bg-elevated)] border border-blue-500/30 text-[var(--text-primary)] hover:border-blue-400 hover:scale-105"
+                            : "bg-[var(--bg-elevated)] border border-[var(--border-default)] text-[var(--text-primary)] hover:border-[var(--border-strong)] hover:scale-105"
                     }`}
                   >
                     {tile.value}
@@ -1249,8 +1249,8 @@ export default function NumbleGame() {
                   disabled={!selectedTileId}
                   className={`w-14 h-14 rounded-xl text-2xl font-bold transition-all ${
                     selectedOp === op
-                      ? "bg-blue-600 border-2 border-blue-400 text-white scale-110"
-                      : "bg-gray-700 border border-gray-600 text-gray-200 hover:bg-gray-600"
+                      ? "bg-[var(--clr-accent)] border-2 border-blue-400 text-white scale-110"
+                      : "bg-[var(--bg-elevated)] border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface)]"
                   }`}
                 >
                   {op}
@@ -1268,20 +1268,20 @@ export default function NumbleGame() {
             {/* Steps list */}
             {steps.length > 0 && (
               <div className="space-y-2">
-                <div className="text-xs text-gray-500 uppercase tracking-widest">
+                <div className="text-xs text-[var(--text-tertiary)] uppercase tracking-widest">
                   Steps
                 </div>
                 {steps.map((step, i) => (
                   <div
                     key={i}
-                    className="bg-gray-900 rounded-lg px-4 py-2 text-sm font-mono animate-in slide-in-from-top-2 duration-200"
+                    className="bg-[var(--bg-surface)] rounded-lg px-4 py-2 text-sm font-mono animate-in slide-in-from-top-2 duration-200"
                   >
-                    <span className="text-gray-300">{step.a}</span>
+                    <span className="text-[var(--text-secondary)]">{step.a}</span>
                     <span className="text-blue-400 mx-2">{step.op}</span>
-                    <span className="text-gray-300">{step.b}</span>
-                    <span className="text-gray-500 mx-2">=</span>
+                    <span className="text-[var(--text-secondary)]">{step.b}</span>
+                    <span className="text-[var(--text-tertiary)] mx-2">=</span>
                     <span
-                      className={`font-bold ${step.result === puzzle.target ? "text-green-400" : "text-white"}`}
+                      className={`font-bold ${step.result === puzzle.target ? "text-green-400" : "text-[var(--text-primary)]"}`}
                     >
                       {step.result}
                     </span>
@@ -1416,7 +1416,7 @@ export default function NumbleGame() {
                 <button
                   onClick={handleUndo}
                   disabled={steps.length === 0}
-                  className="px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-300 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="px-4 py-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-default)] text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   {"\u21a9"} Undo
                 </button>
@@ -1426,7 +1426,7 @@ export default function NumbleGame() {
                   className={`px-4 py-2 rounded-lg border text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
                     resetConfirm
                       ? "bg-red-900/50 border-red-500 text-red-300"
-                      : "bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700"
+                      : "bg-[var(--bg-elevated)] border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-surface)]"
                   }`}
                 >
                   {resetConfirm ? "Confirm Reset?" : "\u21ba Reset"}
@@ -1437,13 +1437,13 @@ export default function NumbleGame() {
                 {!giveUpConfirmActive ? (
                   <button
                     onClick={() => setGiveUpConfirmActive(true)}
-                    className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+                    className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
                   >
                     Give up?
                   </button>
                 ) : (
                   <div className="flex gap-2 items-center text-xs">
-                    <span className="text-gray-500">Show solution?</span>
+                    <span className="text-[var(--text-tertiary)]">Show solution?</span>
                     <button
                       onClick={handleGiveUp}
                       className="text-red-400 hover:text-red-300"
@@ -1452,7 +1452,7 @@ export default function NumbleGame() {
                     </button>
                     <button
                       onClick={() => setGiveUpConfirmActive(false)}
-                      className="text-gray-500 hover:text-gray-400"
+                      className="text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
                     >
                       No
                     </button>

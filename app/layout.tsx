@@ -29,10 +29,10 @@ export default function RootLayout({
       <head />
       <body className={`${GeistSans.variable} font-sans antialiased`}>
         <ThemeProvider
-          attribute="class"
+          attribute="data-theme"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange={false}
         >
           {children}
           <ClientOverlays />
