@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { siteCategories } from "@/lib/site-structure";
 import { getToolBySlug } from "@/lib/tools";
-import ThemeToggle from "@/components/layout/ThemeToggle";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 function CategoryMenu({
   category,
