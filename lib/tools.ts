@@ -26,7 +26,7 @@ export const tools: Tool[] = [
     icon: 'ImageDown',
     metaTitle: 'Compress Images Online Free — No Signup | clevr.tools',
     metaDescription:
-      'Compress JPG, PNG, and WebP images online for free. Reduce file size up to 90% while preserving quality. No upload to servers — 100% browser-based, instant results.',
+      'Compress JPG, PNG, and WebP images online free. Reduce file size up to 90% while keeping quality. No upload to servers — 100% browser-based, instant results.',
     seoContent: `
       <h2>Why Compress Images?</h2>
       <p>Large image files slow down your website, inflate storage costs, and directly hurt your Core Web Vitals score — a factor Google uses in search rankings. The average web page loads 2–4 MB of images; compressing them to under 500 KB is one of the highest-impact performance optimizations available. Studies consistently show that each second of load time reduction improves conversion rates by 2–5%.</p>
@@ -371,7 +371,7 @@ export const tools: Tool[] = [
     icon: 'FileText',
     metaTitle: 'Convert Word to PDF Online Free — No Signup | clevr.tools',
     metaDescription:
-      'Convert Word documents (.docx) to PDF online free. Preview your document, choose page size and margins. No upload — processes entirely in your browser, files never leave your device.',
+      'Convert Word documents (.docx) to PDF online free. Preview your document, choose page size and margins. No upload — 100% browser-based, files never leave your device.',
     seoContent: `
       <h2>Convert Word to PDF Without Sending Files to a Server</h2>
       <p>Most online Word to PDF converters upload your document to a remote server, process it there, and return a download link. This means your document — including any confidential content, personal data, legal text, or proprietary information — leaves your device and passes through someone else's infrastructure. clevr.tools converts your Word document to PDF entirely in your browser using JavaScript. Your file never leaves your device, at any point in the process.</p>
@@ -392,7 +392,7 @@ export const tools: Tool[] = [
     route: '/text/word-counter',
     acceptedFormats: [],
     icon: 'Hash',
-    metaTitle: 'Word Counter — Count Words & Characters Free Online | clevr.tools',
+    metaTitle: 'Word Counter — Free Online Word & Char Count | clevr.tools',
     metaDescription:
       'Free online word counter. Count words, characters, sentences, paragraphs, and lines in real time. Calculate reading time and speaking time. No signup required.',
     seoContent: `
@@ -414,7 +414,7 @@ export const tools: Tool[] = [
     route: '/text/case-converter',
     acceptedFormats: [],
     icon: 'CaseSensitive',
-    metaTitle: 'Case Converter — Uppercase, Lowercase, Title Case & More | clevr.tools',
+    metaTitle: 'Case Converter — Text Case Changer Free | clevr.tools',
     metaDescription:
       'Free online case converter. Convert text to uppercase, lowercase, title case, sentence case, camelCase, PascalCase, snake_case, kebab-case, and more. Instant, no signup.',
     seoContent: `
@@ -436,7 +436,7 @@ export const tools: Tool[] = [
     route: '/text/lorem-generator',
     acceptedFormats: [],
     icon: 'AlignLeft',
-    metaTitle: 'Lorem Ipsum Generator — Free Placeholder Text Online | clevr.tools',
+    metaTitle: 'Lorem Ipsum Generator — Placeholder Text | clevr.tools',
     metaDescription:
       'Generate lorem ipsum placeholder text free. Choose paragraphs, sentences, or words. Copy instantly. No signup — generate realistic Latin filler text for design and development.',
     seoContent: `
@@ -503,8 +503,8 @@ export const tools: Tool[] = [
     route: '/text/character-counter',
     acceptedFormats: [],
     icon: 'Hash',
-    metaTitle: 'Character Counter Online — Count Characters Free | clevr.tools',
-    metaDescription: 'Free online character counter. Count characters with and without spaces, words, sentences, and lines. See real-time character limits for Twitter, Instagram, SMS, meta descriptions, and more.',
+    metaTitle: 'Character Counter — Free Online Tool | clevr.tools',
+    metaDescription: 'Free character counter. Count characters with and without spaces, words, and lines in real time. See limits for Twitter, Instagram, and SMS. No signup.',
     seoContent: `<h2>Why Character Count Matters</h2>
 <p>Whether you're writing a tweet, crafting an SMS, or optimizing a meta description for SEO, character limits define what you can say. Going over the limit means your message gets cut off, your tweet gets truncated, or your meta description gets replaced by Google's own snippet.</p>
 <p>Different platforms have different limits: Twitter/X allows 280 characters per post, SMS messages are typically limited to 160 characters (longer messages get split into multiple segments), and SEO best practices suggest keeping meta descriptions under 160 characters for optimal display in search results.</p>
@@ -521,7 +521,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Braces',
     metaTitle: 'JSON Formatter & Validator Online Free | clevr.tools',
-    metaDescription: 'Free online JSON formatter, validator, and beautifier. Paste JSON to format it with proper indentation, validate it for errors, or minify it. Instant error detection with line numbers.',
+    metaDescription: 'Free JSON formatter, validator, and minifier. Paste JSON to beautify with proper indentation or minify. Instant error detection with line numbers. No signup.',
     seoContent: `<h2>Format and Validate JSON Online</h2>
 <p>JSON (JavaScript Object Notation) is the universal data format for APIs, configuration files, and data exchange. When working with raw JSON from an API response, a database export, or a config file, it's often minified — stripped of all whitespace to save bandwidth. That makes it nearly impossible to read or debug.</p>
 <p>This JSON formatter instantly beautifies minified JSON with proper indentation, making nested objects and arrays easy to navigate. It also validates your JSON as you paste it, catching syntax errors like missing commas, unclosed brackets, or incorrect data types — with the exact position of the error so you can fix it fast.</p>
@@ -537,7 +537,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Replace',
     metaTitle: 'Find and Replace Text Online Free | clevr.tools',
-    metaDescription: 'Free online find and replace tool. Replace text, fix repeated typos, and batch-edit documents. Supports case-sensitive search, whole word matching, and regular expressions.',
+    metaDescription: 'Free find and replace tool. Fix repeated typos and batch-edit text. Supports case-sensitive search, whole word matching, and regex. No signup required.',
     seoContent: `<h2>Find and Replace Text Online</h2>
 <p>Need to fix a repeated typo across a long document, replace all instances of a name, or batch-edit a list of URLs? This tool lets you find any text and replace it with something else — across your entire pasted content in one click.</p>
 <p>Beyond simple text replacement, it supports regular expressions for advanced users who need to match patterns rather than literal strings. Use regex to find phone numbers, email addresses, dates in a specific format, or anything else that follows a predictable pattern — then replace them all at once.</p>
@@ -569,7 +569,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Binary',
     metaTitle: 'Base64 Encoder / Decoder Online Free | clevr.tools',
-    metaDescription: 'Free online Base64 encoder and decoder. Encode plain text to Base64 or decode Base64 back to readable text. Handles Unicode characters. Instant, bidirectional, no data sent to server.',
+    metaDescription: 'Free Base64 encoder and decoder. Encode text to Base64 or decode back to plain text. Handles Unicode. Instant, browser-based, no data sent to any server.',
     seoContent: `<h2>Base64 Encoding and Decoding</h2>
 <p>Base64 is an encoding scheme that converts binary data into ASCII text, making it safe to transmit in contexts that only support text — like email, URLs, or JSON payloads. You'll encounter Base64 everywhere in web development: data URIs for embedding images in CSS, Basic Auth headers, JWT tokens, and API responses that include binary data.</p>
 <p>Decoding Base64 is equally common when debugging API responses, inspecting JWT payloads (the middle section of a JWT is Base64-encoded JSON), or reading encoded values from environment variables or config files.</p>
@@ -585,8 +585,8 @@ export const tools: Tool[] = [
     route: '/generate/password',
     acceptedFormats: [],
     icon: 'KeyRound',
-    metaTitle: 'Password Generator — Secure Random Passwords Free | clevr.tools',
-    metaDescription: 'Free secure password generator. Create strong, random passwords with custom length (4–128 chars), uppercase, lowercase, numbers, and symbols. Uses cryptographic randomness. No data sent to server.',
+    metaTitle: 'Password Generator — Strong & Random | clevr.tools',
+    metaDescription: 'Free secure password generator. Create strong random passwords with custom length and character sets. Uses crypto-grade randomness. Browser-based, no data sent.',
     seoContent: `<h2>Free Secure Password Generator</h2>
 <p>This password generator creates cryptographically secure random passwords using your browser's built-in <code>crypto.getRandomValues()</code> API — the same source of randomness used in encryption software and security tools. Unlike generators that use <code>Math.random()</code>, which is predictable and unsuitable for security purposes, every password created here is truly unpredictable.</p>
 <p>Customize your password length from 4 to 128 characters and choose which character sets to include: uppercase letters, lowercase letters, numbers, and symbols. The "exclude ambiguous characters" option removes look-alike characters like <code>0</code>, <code>O</code>, <code>1</code>, <code>l</code>, and <code>I</code> — useful when you need to type a password manually rather than paste it.</p>
@@ -605,7 +605,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Dices',
     metaTitle: 'Random Number Generator — Free Online RNG | clevr.tools',
-    metaDescription: 'Free random number generator. Generate random numbers in any range, pick multiple numbers, flip a coin, or roll dice. Uses cryptographic randomness for true fairness.',
+    metaDescription: 'Free random number generator. Pick numbers in any range, flip a coin, or roll dice. Uses cryptographic randomness for true fairness. No signup required.',
     seoContent: `<h2>Free Random Number Generator</h2>
 <p>This random number generator uses your browser's <code>crypto.getRandomValues()</code> API to produce truly random numbers — not pseudo-random numbers from a predictable algorithm. That makes it suitable for giveaways, raffles, games, statistical sampling, and any situation where fairness matters.</p>
 <p>Common uses include picking a random winner from a numbered list, selecting a random item from a menu, generating test data, deciding who goes first in a game, or making any decision where you want genuine chance rather than personal bias.</p>
@@ -677,7 +677,7 @@ export const tools: Tool[] = [
     icon: 'Link',
     metaTitle: 'URL Encoder & Decoder Online Free | clevr.tools',
     metaDescription:
-      'Free online URL encoder and decoder. Encode special characters with percent-encoding or decode URL-encoded strings. Supports both encodeURI and encodeURIComponent modes.',
+      'Free URL encoder and decoder. Encode special characters or decode URL-encoded strings. Supports encodeURI and encodeURIComponent modes. Browser-based, no signup.',
     seoContent: `<h2>What is URL Encoding?</h2>
 <p>URL encoding (also called percent-encoding) converts special characters into a format safe for transmission in URLs. Characters like spaces, ampersands, question marks, and non-ASCII characters are replaced with a percent sign followed by their hexadecimal value (e.g., a space becomes %20). This ensures URLs are valid and parsed correctly by browsers and servers.</p>
 <p>JavaScript provides two levels of encoding: <code>encodeURIComponent()</code> encodes almost all special characters and is the right choice for encoding individual query string values. <code>encodeURI()</code> preserves URL structure characters like <code>:</code>, <code>/</code>, <code>?</code>, and <code>#</code>, making it suitable for encoding an entire URL without breaking its structure. This tool supports both modes so you can pick the one that fits your use case.</p>`,
@@ -693,7 +693,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Timer',
     metaTitle: 'Online Timer — Free Countdown Timer with Sound | clevr.tools',
-    metaDescription: 'Free online countdown timer with sound alert. Set hours, minutes, and seconds. Quick presets: 1, 5, 10, 25, 30 minutes. Page title shows countdown so you can see time in your browser tab.',
+    metaDescription: 'Free countdown timer with sound alert. Set hours, minutes, and seconds with quick presets. Page title shows countdown so you can see time in your browser tab.',
     seoContent: `<h2>Free Online Timer</h2><p>Set a countdown timer for cooking, workouts, study sessions, meeting presentations, classroom activities, or any task that needs a time limit. Quick preset buttons for the most common durations — 1, 3, 5, 10, 15, 25, 30 minutes, and 1 hour — get you started with one click.</p><p>The timer continues counting down even when you switch to another browser tab. Your browser tab title shows the remaining time (e.g., "05:23 — Timer") so you can glance at your taskbar without switching back. When the timer reaches zero, you'll hear a clear audio alert and see a visual notification on the page.</p>`,
     relatedTools: ['stopwatch', 'pomodoro'],
   },
@@ -719,7 +719,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Brain',
     metaTitle: 'Pomodoro Timer Online Free — Focus & Break Timer | clevr.tools',
-    metaDescription: 'Free Pomodoro timer. Customizable 25-minute focus sessions with 5-minute short breaks and 15-minute long breaks. Sound alerts, session tracking, and auto-start option.',
+    metaDescription: 'Free Pomodoro timer. Customize focus sessions and break lengths. Sound alerts, session tracking, and auto-start. Boost productivity with proven technique.',
     seoContent: `<h2>Free Pomodoro Timer</h2><p>The Pomodoro Technique is a time management method developed by Francesco Cirillo. Work in 25-minute focused sessions (pomodoros), take a 5-minute short break, then after four sessions take a longer 15-minute break. This cycle helps maintain concentration and prevents mental fatigue.</p><p>Customize the focus duration, short break, and long break lengths to fit your work style. Some people find 50/10 or 90-minute sessions work better for deep work. Sound alerts between sessions let you know when it's time to switch — so you can fully focus without watching the clock.</p>`,
     relatedTools: ['timer', 'stopwatch'],
   },
@@ -733,7 +733,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Cake',
     metaTitle: 'Age Calculator — How Old Am I? Free Online Tool | clevr.tools',
-    metaDescription: 'Free age calculator. Enter your date of birth to find your exact age in years, months, days, hours, and minutes. Also shows next birthday, zodiac sign, Chinese zodiac, and generation.',
+    metaDescription: 'Free age calculator. Enter your birth date to find exact age in years, months, days, and hours. Shows next birthday, zodiac sign, and generation. No signup.',
     seoContent: `<h2>Free Age Calculator</h2><p>Calculate your exact age down to the day from your date of birth. Useful for filling out forms and applications that require your age, calculating age for legal thresholds, tracking milestones, or satisfying curiosity about exactly how old you are in days or hours.</p><p>Beyond basic age calculation, this tool shows your Western zodiac sign, Chinese zodiac animal, the day of the week you were born on, your generational category (Boomer, Gen X, Millennial, Gen Z, or Gen Alpha), and a countdown to your next birthday.</p>`,
     relatedTools: ['date-difference', 'percentage-calculator'],
   },
@@ -745,7 +745,7 @@ export const tools: Tool[] = [
     route: '/calc/date-difference',
     acceptedFormats: [],
     icon: 'CalendarDays',
-    metaTitle: 'Date Difference Calculator — Days Between Dates Free | clevr.tools',
+    metaTitle: 'Date Difference Calculator — Days Between | clevr.tools',
     metaDescription: 'Free date difference calculator. Find the exact number of days, weeks, months, and business days between any two dates. Includes weekday count and weekend count.',
     seoContent: `<h2>Free Date Difference Calculator</h2><p>Calculate the exact number of days between any two dates for project planning, contract deadlines, travel planning, age verification, countdown to events, or calculating durations. Enter a start and end date to see the difference in days, weeks, months, and years.</p><p>The business days calculation excludes Saturdays and Sundays to give you a working-day count, useful for estimating project timelines and delivery windows. Quick shortcuts for common calculations — days until New Year, days until Christmas, 90 days from today — make frequent lookups instant.</p>`,
     relatedTools: ['age-calculator', 'percentage-calculator'],
@@ -760,7 +760,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Fingerprint',
     metaTitle: 'UUID Generator — Free Online UUID / GUID Tool | clevr.tools',
-    metaDescription: 'Free UUID generator. Create UUID v4 (random) or UUID v7 (timestamp-based) identifiers. Generate up to 100 UUIDs at once. Supports uppercase, lowercase, and no-hyphens formats.',
+    metaDescription: 'Free UUID generator. Create UUID v4 (random) or v7 (timestamp) identifiers. Bulk generate up to 100 at once. Uppercase, lowercase, and no-hyphens formats.',
     seoContent: `<h2>Free UUID Generator</h2><p>Universally Unique Identifiers (UUIDs) are 128-bit identifiers used as primary keys in databases, request IDs in distributed systems, session tokens, file names, and anywhere you need a unique identifier that won't collide with others. UUID v4 is randomly generated and suitable for most use cases. UUID v7 is timestamp-based, which makes it sortable by creation time — useful for database primary keys where chronological ordering matters.</p><p>This generator uses <code>crypto.randomUUID()</code> for v4 when available, falling back to <code>crypto.getRandomValues()</code> with correctly set version (0100) and variant (10xx) bits. All generation happens in your browser — nothing is sent to any server.</p>`,
     relatedTools: ['password-generator', 'random-number'],
   },
@@ -786,7 +786,7 @@ export const tools: Tool[] = [
     route: '/calc/mortgage',
     acceptedFormats: [],
     icon: 'Home',
-    metaTitle: 'Mortgage Calculator — Monthly Payment Estimator Free | clevr.tools',
+    metaTitle: 'Mortgage Calculator — Monthly Payment Free | clevr.tools',
     metaDescription: 'Free mortgage calculator. Estimate monthly mortgage payments including principal, interest, property tax, insurance, and PMI. View full amortization schedule.',
     seoContent: `<h2>Free Mortgage Calculator</h2><p>Estimate your monthly mortgage payment by entering the home price, down payment amount, loan term, and interest rate. Include optional property tax and home insurance estimates for a complete monthly housing cost picture. If your down payment is less than 20%, PMI (Private Mortgage Insurance) typically applies until you reach 20% equity.</p><p>The monthly payment formula is M = P[r(1+r)^n] / [(1+r)^n - 1], where P is the loan principal, r is the monthly interest rate (annual rate divided by 12), and n is the total number of payments. This calculator provides estimates — actual payments vary based on lender terms, escrow arrangements, and other factors. Consult a licensed mortgage professional for personalized advice.</p>`,
     relatedTools: ['percentage-calculator', 'compound-interest', 'tip-calculator'],
@@ -812,7 +812,7 @@ export const tools: Tool[] = [
     route: '/calc/discount',
     acceptedFormats: [],
     icon: 'Tag',
-    metaTitle: 'Discount Calculator — Percent Off Calculator Free | clevr.tools',
+    metaTitle: 'Discount Calculator — Percent Off Free | clevr.tools',
     metaDescription: 'Free discount calculator. Find the final sale price after any percentage discount. Supports stacked discounts (e.g., 20% off + extra 10% off) and reverse calculation from sale price.',
     seoContent: `<h2>Free Discount Calculator</h2><p>Quickly calculate the final price after a percentage discount while shopping. Enter the original price and discount percentage to instantly see how much you save and what the sale price is. Quick preset buttons for common discount levels — 10%, 20%, 25%, 50%, 75% — cover most retail scenarios.</p><p>The stacked discount feature handles promotions that apply multiple discounts sequentially, such as "30% off, then an extra 20% off the sale price." Note that stacked discounts are not additive — 20% + 20% is not 40% off. The actual combined discount is 36% in this case. Use the reverse calculator to find the original discount percentage when you know the original and sale prices.</p>`,
     relatedTools: ['percentage-calculator', 'tip-calculator'],
@@ -825,8 +825,8 @@ export const tools: Tool[] = [
     route: '/calc/compound-interest',
     acceptedFormats: [],
     icon: 'TrendingUp',
-    metaTitle: 'Compound Interest Calculator — Investment Growth Tool Free | clevr.tools',
-    metaDescription: 'Free compound interest calculator. Enter initial investment, monthly contributions, interest rate, and time to see your final balance and growth chart. Daily, monthly, quarterly, or annual compounding.',
+    metaTitle: 'Compound Interest Calculator — Free Tool | clevr.tools',
+    metaDescription: 'Free compound interest calculator. Enter investment, contributions, rate, and time. See final balance and growth chart. Daily, monthly, or annual compounding.',
     seoContent: `<h2>Free Compound Interest Calculator</h2><p>Compound interest is interest calculated on both the initial principal and the accumulated interest from previous periods — meaning your money earns returns on its returns. The formula for compound interest with regular contributions is: FV = P(1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)], where P is initial investment, PMT is periodic contribution, r is annual interest rate, n is compounding frequency per year, and t is years.</p><p>The growth chart makes the power of compounding visual: the gap between your total contributions and your final balance widens dramatically over time. A modest monthly contribution invested consistently for 30 years typically produces far more in interest than in contributions — this is why starting early matters more than the amount you invest.</p>`,
     relatedTools: ['mortgage-calculator', 'percentage-calculator'],
   },
@@ -838,8 +838,8 @@ export const tools: Tool[] = [
     route: '/calc/gpa',
     acceptedFormats: [],
     icon: 'GraduationCap',
-    metaTitle: 'GPA Calculator — Semester & Cumulative GPA Calculator Free | clevr.tools',
-    metaDescription: 'Free GPA calculator. Add courses with credit hours and letter grades to calculate your semester GPA. Includes cumulative GPA calculator and Dean\'s List color coding.',
+    metaTitle: 'GPA Calculator — Semester & Cumulative | clevr.tools',
+    metaDescription: 'Free GPA calculator. Add courses with credits and grades to find semester GPA. Includes cumulative GPA and Dean\'s List coding. No signup required.',
     seoContent: `<h2>Free GPA Calculator</h2><p>Calculate your semester GPA by entering each course's credit hours and letter grade. The standard 4.0 GPA scale assigns points from 4.0 (A/A+) down to 0.0 (F). Your GPA is the weighted average of all grade points, weighted by credit hours: GPA = Sum(credit hours * grade points) / Sum(credit hours). A 3-credit A is worth more toward your GPA than a 1-credit A.</p><p>The cumulative GPA section lets you factor in your existing GPA and credit hours to calculate what your new overall GPA will be after adding this semester's results. Use this to plan which grades you need in order to reach academic honors thresholds (typically 3.5 for Dean's List, 3.9+ for summa cum laude).</p>`,
     relatedTools: ['percentage-calculator', 'age-calculator'],
   },
@@ -969,7 +969,7 @@ export const tools: Tool[] = [
     route: '/type/code-challenge',
     acceptedFormats: [],
     icon: 'Code2',
-    metaTitle: 'Code Typing Challenge — Typing Practice for Developers | clevr.tools',
+    metaTitle: 'Code Typing Challenge — Practice for Devs | clevr.tools',
     metaDescription: 'Practice typing real code snippets in JavaScript, Python, TypeScript, HTML, SQL, Go, and Rust. Track your coding WPM and special character accuracy.',
     seoContent: `<h2>Why Practice Code Typing?</h2>
 <p>Programming involves typing characters rarely used in everyday text — brackets, semicolons, angle brackets, backticks, pipes, and special operators. Regular typing tests don't prepare your fingers for these patterns. Code typing practice builds muscle memory for the exact key combinations you use daily as a developer, directly improving your coding productivity.</p>
@@ -1007,7 +1007,7 @@ export const tools: Tool[] = [
     route: '/files/invoice-generator',
     acceptedFormats: [],
     icon: 'FileText',
-    metaTitle: 'Free Invoice Generator — Create Professional Invoices | clevr.tools',
+    metaTitle: 'Invoice Generator — Free PDF Invoices | clevr.tools',
     metaDescription: 'Generate professional PDF invoices for free. Add line items, taxes, discounts, and your logo. Download instantly. No sign-up required.',
     seoContent: `<h2>Free Professional Invoice Generator</h2>
 <p>An invoice is a legally recognized commercial document that records a transaction between a buyer and a seller. It lists the goods or services provided, quantities, unit prices, and the total amount owed. A professional invoice includes your business information, the client's details, a unique invoice number, the date of issue, payment due date, and clear payment terms. These elements are not just professional courtesies — many jurisdictions require specific information on invoices for them to be legally valid and tax-deductible.</p>
@@ -1026,7 +1026,7 @@ export const tools: Tool[] = [
     route: '/calc/salary',
     acceptedFormats: [],
     icon: 'DollarSign',
-    metaTitle: 'Salary Calculator — Hourly to Salary & Salary to Hourly | clevr.tools',
+    metaTitle: 'Salary Calculator — Hourly to Annual Free | clevr.tools',
     metaDescription: 'Free salary calculator. Convert hourly wage to annual salary or annual salary to hourly rate. See daily, weekly, bi-weekly, semi-monthly, and monthly breakdowns instantly.',
     seoContent: `<h2>Free Salary Calculator</h2>
 <p>Whether you're evaluating a job offer, negotiating a raise, or comparing hourly and salaried positions, understanding how your pay translates across different time periods is essential. This calculator instantly converts between hourly and annual pay, showing you the full breakdown: hourly, daily, weekly, bi-weekly, semi-monthly, monthly, and annual figures all at once.</p>
@@ -1044,7 +1044,7 @@ export const tools: Tool[] = [
     route: '/calc/take-home-pay',
     acceptedFormats: [],
     icon: 'Wallet',
-    metaTitle: 'Take-Home Pay Calculator — After-Tax Income Estimator | clevr.tools',
+    metaTitle: 'Take-Home Pay Calculator — After-Tax Pay | clevr.tools',
     metaDescription: 'Free take-home pay calculator. Estimate your paycheck after federal income tax, state tax, Social Security, and Medicare deductions. All 50 states supported.',
     seoContent: `<h2>Free Take-Home Pay Calculator</h2>
 <p>Your gross salary and your take-home pay are very different numbers. Federal income tax, state income tax, Social Security (6.2%), and Medicare (1.45%) all reduce your paycheck before it hits your bank account. This calculator estimates your net pay after all major deductions, giving you a realistic picture of what you'll actually earn per paycheck.</p>
@@ -1062,7 +1062,7 @@ export const tools: Tool[] = [
     route: '/calc/loan',
     acceptedFormats: [],
     icon: 'Landmark',
-    metaTitle: 'Loan Calculator — Monthly Payment & Amortization Schedule | clevr.tools',
+    metaTitle: 'Loan Calculator — Monthly Payment & Schedule | clevr.tools',
     metaDescription: 'Free loan calculator. Calculate monthly payments for any loan amount, interest rate, and term. View a full amortization schedule showing principal and interest breakdown.',
     seoContent: `<h2>Free Loan Calculator</h2>
 <p>Calculate the monthly payment for any fixed-rate loan using the standard amortization formula: M = P[r(1+r)^n] / [(1+r)^n - 1], where P is the principal, r is the monthly interest rate, and n is the total number of payments. This formula ensures each payment covers the interest due plus a portion of principal, fully paying off the loan by the end of the term.</p>
@@ -1098,7 +1098,7 @@ export const tools: Tool[] = [
     route: '/calc/credit-card-payoff',
     acceptedFormats: [],
     icon: 'CreditCard',
-    metaTitle: 'Credit Card Payoff Calculator — Debt-Free Date Estimator | clevr.tools',
+    metaTitle: 'Credit Card Payoff Calculator — Free Tool | clevr.tools',
     metaDescription: 'Free credit card payoff calculator. Enter your balance, APR, and monthly payment to see months to payoff, total interest, and how paying more saves money.',
     seoContent: `<h2>Free Credit Card Payoff Calculator</h2>
 <p>Credit card debt compounds monthly, meaning you pay interest on interest. Enter your current balance, APR (Annual Percentage Rate), and monthly payment to see exactly how long it will take to pay off your debt and how much total interest you'll pay. The "what if" comparison table shows how increasing your monthly payment by $25, $50, or $100 dramatically reduces both the payoff time and total interest.</p>
@@ -1116,7 +1116,7 @@ export const tools: Tool[] = [
     route: '/calc/savings-goal',
     acceptedFormats: [],
     icon: 'PiggyBank',
-    metaTitle: 'Savings Goal Calculator — Monthly Savings Planner Free | clevr.tools',
+    metaTitle: 'Savings Goal Calculator — Free Planner | clevr.tools',
     metaDescription: 'Free savings goal calculator. Enter your savings target, timeline, and current savings to find the monthly contribution needed. Accounts for interest earnings.',
     seoContent: `<h2>Free Savings Goal Calculator</h2>
 <p>Whether you're saving for a vacation, emergency fund, down payment, or any other financial goal, this calculator tells you exactly how much to set aside each month. Enter your target amount, current savings, expected interest rate, and timeline to get your required monthly contribution. The calculation accounts for compound interest on your savings, so money in a high-yield savings account works harder than cash under a mattress.</p>
@@ -1134,8 +1134,8 @@ export const tools: Tool[] = [
     route: '/calc/retirement',
     acceptedFormats: [],
     icon: 'TrendingUp',
-    metaTitle: 'Retirement Calculator — Savings Projection Tool Free | clevr.tools',
-    metaDescription: 'Free retirement calculator. Project your retirement savings based on current savings, monthly contributions, and expected returns. See inflation-adjusted values and estimated monthly income.',
+    metaTitle: 'Retirement Calculator — Savings Projection | clevr.tools',
+    metaDescription: 'Free retirement calculator. Project savings growth with contributions and expected returns. See inflation-adjusted values and estimated monthly retirement income.',
     seoContent: `<h2>Free Retirement Calculator</h2>
 <p>Planning for retirement requires understanding how your savings will grow over decades and what that money will actually be worth when you need it. This calculator projects your retirement savings using compound growth with monthly contributions, then adjusts for inflation to show your purchasing power in today's dollars. The 4% rule estimate shows how much monthly income your savings could sustainably provide.</p>
 <p>The projection uses: FV = PV × (1 + r/12)^n + PMT × [(1 + r/12)^n - 1] / (r/12), where n is months until retirement. The inflation-adjusted value divides by (1 + inflation)^years to show real purchasing power.</p>
@@ -1152,8 +1152,8 @@ export const tools: Tool[] = [
     route: '/calc/investment-return',
     acceptedFormats: [],
     icon: 'BarChart3',
-    metaTitle: 'Investment Return Calculator — Growth Projection Tool Free | clevr.tools',
-    metaDescription: 'Free investment return calculator. Project future value of investments with initial amount, monthly contributions, and compound growth. Year-by-year breakdown included.',
+    metaTitle: 'Investment Return Calculator — Free Tool | clevr.tools',
+    metaDescription: 'Free investment return calculator. Project future value with initial amount, monthly contributions, and compound growth. Year-by-year breakdown table included.',
     seoContent: `<h2>Free Investment Return Calculator</h2>
 <p>See how your investments could grow over time with compound returns and regular contributions. Enter your initial investment, monthly contribution, expected annual return, and investment period to get a year-by-year projection of your portfolio's growth. The calculation compounds monthly: FV = P × (1 + r/12)^(y×12) + PMT × [(1 + r/12)^(y×12) - 1] / (r/12).</p>
 <p>The year-by-year table breaks down starting balance, contributions, earnings, and ending balance for each year, making it easy to see how compound growth accelerates over time. The gap between your total contributions and final balance represents your investment earnings — this gap widens dramatically in later years.</p>
@@ -1170,8 +1170,8 @@ export const tools: Tool[] = [
     route: '/calc/debt-to-income',
     acceptedFormats: [],
     icon: 'Scale',
-    metaTitle: 'Debt-to-Income (DTI) Calculator — Free Ratio Tool | clevr.tools',
-    metaDescription: 'Free debt-to-income ratio calculator. Add all your monthly debts and income to calculate your DTI percentage. See how lenders evaluate your ratio for mortgage and loan approval.',
+    metaTitle: 'Debt-to-Income Calculator — Free DTI Tool | clevr.tools',
+    metaDescription: 'Free debt-to-income calculator. Add monthly debts and income to calculate your DTI ratio. See how lenders evaluate it for mortgage and loan approval.',
     seoContent: `<h2>Free Debt-to-Income Calculator</h2>
 <p>Your debt-to-income (DTI) ratio is one of the most important numbers lenders use to evaluate your ability to repay a loan. It's calculated simply: DTI = (Total Monthly Debt Payments / Gross Monthly Income) × 100. A lower DTI means more of your income is available for new loan payments, making you a lower-risk borrower.</p>
 <p>Add all your monthly debt obligations — mortgage/rent, car payments, student loans, credit card minimums, personal loans, and any other recurring debt payments. Divide by your gross (pre-tax) monthly income to get your DTI percentage.</p>
@@ -1188,7 +1188,7 @@ export const tools: Tool[] = [
     route: '/calc/net-worth',
     acceptedFormats: [],
     icon: 'Calculator',
-    metaTitle: 'Net Worth Calculator — Track Your Financial Health Free | clevr.tools',
+    metaTitle: 'Net Worth Calculator — Track Your Wealth | clevr.tools',
     metaDescription: 'Free net worth calculator. List your assets (savings, investments, property) and liabilities (loans, credit cards, mortgage) to calculate your total net worth.',
     seoContent: `<h2>Free Net Worth Calculator</h2>
 <p>Your net worth is the single most comprehensive measure of your financial health: Net Worth = Total Assets - Total Liabilities. Assets include everything you own that has monetary value — bank accounts, investments, retirement accounts, real estate, vehicles, and valuables. Liabilities include everything you owe — mortgages, car loans, student loans, credit card balances, and personal debts.</p>
@@ -1206,7 +1206,7 @@ export const tools: Tool[] = [
     route: '/calc/sales-tax',
     acceptedFormats: [],
     icon: 'Receipt',
-    metaTitle: 'Sales Tax Calculator — Tax Amount & Total Price Free | clevr.tools',
+    metaTitle: 'Sales Tax Calculator — Free Online Tool | clevr.tools',
     metaDescription: 'Free sales tax calculator. Calculate sales tax on any purchase or reverse-calculate the pre-tax price from a total. Includes state tax rate presets for all US states.',
     seoContent: `<h2>Free Sales Tax Calculator</h2>
 <p>Calculate the sales tax on any purchase by entering the price and tax rate, or work backwards from a receipt total to find the pre-tax amount. The forward calculation is: Tax = Price × Rate / 100, Total = Price + Tax. The reverse calculation is: Pre-Tax Price = Total / (1 + Rate / 100). State tax rate presets let you quickly select the correct rate for your location.</p>
@@ -1224,7 +1224,7 @@ export const tools: Tool[] = [
     route: '/calc/amortization',
     acceptedFormats: [],
     icon: 'CalendarCheck',
-    metaTitle: 'Amortization Calculator — Loan Schedule with Extra Payments | clevr.tools',
+    metaTitle: 'Amortization Calculator — Loan Schedule | clevr.tools',
     metaDescription: 'Free amortization calculator. Generate a full loan amortization schedule. See how extra monthly payments reduce total interest and shorten your loan term.',
     seoContent: `<h2>Free Amortization Calculator</h2>
 <p>An amortization schedule shows exactly how each loan payment is divided between principal and interest over the entire life of the loan. This calculator generates the complete month-by-month schedule for any fixed-rate loan, plus shows the impact of optional extra monthly payments. Extra payments go directly toward principal, reducing both the loan term and total interest paid.</p>
@@ -1242,7 +1242,7 @@ export const tools: Tool[] = [
     route: '/calc/car-payment',
     acceptedFormats: [],
     icon: 'Car',
-    metaTitle: 'Car Payment Calculator — Monthly Auto Payment Estimator | clevr.tools',
+    metaTitle: 'Car Payment Calculator — Monthly Estimate | clevr.tools',
     metaDescription: 'Free car payment calculator. Enter car price, down payment, interest rate, and loan term to estimate your monthly payment, total interest, and total cost of the vehicle.',
     seoContent: `<h2>Free Car Payment Calculator</h2>
 <p>Know your monthly car payment before you start shopping. Enter the vehicle price, your down payment, interest rate, and loan term to instantly see your estimated monthly payment, total interest charges, and the total cost of the vehicle over the life of the loan. This helps you set a realistic budget and avoid overextending at the dealership.</p>
@@ -1260,7 +1260,7 @@ export const tools: Tool[] = [
     route: '/calc/paycheck',
     acceptedFormats: [],
     icon: 'Wallet',
-    metaTitle: 'Paycheck Calculator — Net Pay Per Period Estimator | clevr.tools',
+    metaTitle: 'Paycheck Calculator — Net Pay Estimator | clevr.tools',
     metaDescription: 'Free paycheck calculator. Enter your gross pay per period to see estimated deductions for federal tax, state tax, Social Security, and Medicare. All 50 states supported.',
     seoContent: `<h2>Free Paycheck Calculator</h2>
 <p>See exactly what your paycheck will look like after deductions. Enter your gross pay per pay period, filing status, and state to get an itemized breakdown of federal income tax, state income tax, Social Security, and Medicare withholding. The result shows your estimated net (take-home) pay for each paycheck.</p>
@@ -1278,8 +1278,8 @@ export const tools: Tool[] = [
     route: '/calc/down-payment',
     acceptedFormats: [],
     icon: 'Home',
-    metaTitle: 'Down Payment Calculator — Home Savings Planner Free | clevr.tools',
-    metaDescription: 'Free down payment calculator. Enter home price and down payment percentage to see your savings goal. Compare 5%, 10%, 15%, 20%, and 25% down payment amounts and monthly savings needed.',
+    metaTitle: 'Down Payment Calculator — Free Planner | clevr.tools',
+    metaDescription: 'Free down payment calculator. Enter home price and percentage to see your savings goal. Compare 5%-25% amounts and monthly savings needed. No signup required.',
     seoContent: `<h2>Free Down Payment Calculator</h2>
 <p>A down payment is the upfront cash portion of a home purchase. The standard recommendation is 20% to avoid Private Mortgage Insurance (PMI), but many buyers put down 5–15%. This calculator shows the exact dollar amount needed at different percentages, how long it will take to save based on your current savings and monthly savings rate, and a comparison table across common down payment levels.</p>
 <p>The savings timeline is calculated as: Months = (Goal - Current Savings) / Monthly Savings. For a more accurate projection, the calculator can factor in interest earned on savings if you specify an expected rate.</p>
@@ -1297,8 +1297,8 @@ export const tools: Tool[] = [
     route: '/calc/calorie',
     acceptedFormats: [],
     icon: 'Flame',
-    metaTitle: 'Calorie Calculator — TDEE & Daily Calorie Needs Free | clevr.tools',
-    metaDescription: 'Free calorie calculator using the Mifflin-St Jeor equation. Find your BMR, TDEE, and daily calories for weight loss, maintenance, or gain based on age, gender, height, weight, and activity level.',
+    metaTitle: 'Calorie Calculator — TDEE & Daily Needs | clevr.tools',
+    metaDescription: 'Free calorie calculator using Mifflin-St Jeor. Find your BMR, TDEE, and daily calories for weight loss, maintenance, or gain based on your stats and activity.',
     seoContent: '',
     relatedTools: ['macro', 'calories-burned', 'bmi-calculator'],
     badge: 'new',
@@ -1311,8 +1311,8 @@ export const tools: Tool[] = [
     route: '/calc/macro',
     acceptedFormats: [],
     icon: 'Beef',
-    metaTitle: 'Macro Calculator — Protein, Carbs & Fat Breakdown Free | clevr.tools',
-    metaDescription: 'Free macro calculator. Enter your calorie target or calculate from stats. Choose from Balanced, Low-Carb, High-Protein, Keto presets or set custom ratios. Get exact grams for each macronutrient.',
+    metaTitle: 'Macro Calculator — Protein, Carbs & Fat | clevr.tools',
+    metaDescription: 'Free macro calculator. Enter your calorie target or calculate from stats. Choose Balanced, Low-Carb, Keto, or custom ratios. Get exact protein, carb, and fat grams.',
     seoContent: '',
     relatedTools: ['calorie', 'calories-burned', 'bmi-calculator'],
   },
@@ -1324,7 +1324,7 @@ export const tools: Tool[] = [
     route: '/calc/body-fat',
     acceptedFormats: [],
     icon: 'Activity',
-    metaTitle: 'Body Fat Calculator — Navy Method & BMI Estimate Free | clevr.tools',
+    metaTitle: 'Body Fat Calculator — Navy Method & BMI | clevr.tools',
     metaDescription: 'Free body fat percentage calculator. Use the Navy tape-measure method or BMI-based estimate. Shows category (athlete, fitness, average), fat mass, and lean mass.',
     seoContent: '',
     relatedTools: ['bmi-calculator', 'ideal-weight', 'calorie'],
@@ -1337,7 +1337,7 @@ export const tools: Tool[] = [
     route: '/calc/due-date',
     acceptedFormats: [],
     icon: 'Baby',
-    metaTitle: 'Due Date Calculator — Pregnancy Due Date Estimator Free | clevr.tools',
+    metaTitle: 'Due Date Calculator — Pregnancy Estimator | clevr.tools',
     metaDescription: 'Free due date calculator. Enter your last period, conception date, or IVF transfer date. See estimated due date, current trimester, weeks pregnant, and key milestone dates.',
     seoContent: '',
     relatedTools: ['ovulation', 'age-calculator', 'date-difference'],
@@ -1350,7 +1350,7 @@ export const tools: Tool[] = [
     route: '/calc/ovulation',
     acceptedFormats: [],
     icon: 'Heart',
-    metaTitle: 'Ovulation Calculator — Fertile Window & Ovulation Predictor Free | clevr.tools',
+    metaTitle: 'Ovulation Calculator — Fertile Window Free | clevr.tools',
     metaDescription: 'Free ovulation calculator. Enter your last period start date and cycle length. See your next ovulation date, fertile window, and a 3-month cycle forecast.',
     seoContent: '',
     relatedTools: ['due-date', 'age-calculator', 'date-difference'],
@@ -1363,7 +1363,7 @@ export const tools: Tool[] = [
     route: '/calc/ideal-weight',
     acceptedFormats: [],
     icon: 'Scale',
-    metaTitle: 'Ideal Weight Calculator — Devine, Robinson, Miller & Hamwi Free | clevr.tools',
+    metaTitle: 'Ideal Weight Calculator — Free Online Tool | clevr.tools',
     metaDescription: 'Free ideal weight calculator comparing Devine, Robinson, Miller, and Hamwi formulas. Shows healthy BMI range and adjusts for body frame size.',
     seoContent: '',
     relatedTools: ['bmi-calculator', 'body-fat', 'calorie'],
@@ -1376,7 +1376,7 @@ export const tools: Tool[] = [
     route: '/calc/calories-burned',
     acceptedFormats: [],
     icon: 'Dumbbell',
-    metaTitle: 'Calories Burned Calculator — Exercise Calorie Counter Free | clevr.tools',
+    metaTitle: 'Calories Burned Calculator — Free Tool | clevr.tools',
     metaDescription: 'Free calories burned calculator for 29 activities. Enter your weight, choose an activity, and set duration. Uses MET values for accurate estimates.',
     seoContent: '',
     relatedTools: ['calorie', 'macro', 'pace'],
@@ -1389,7 +1389,7 @@ export const tools: Tool[] = [
     route: '/calc/sleep',
     acceptedFormats: [],
     icon: 'Moon',
-    metaTitle: 'Sleep Calculator — Sleep Cycle Bedtime & Wake Time Planner Free | clevr.tools',
+    metaTitle: 'Sleep Calculator — Bedtime & Wake Planner | clevr.tools',
     metaDescription: 'Free sleep calculator. Enter your wake-up time or bedtime to find optimal sleep times based on 90-minute sleep cycles. Avoid waking during deep sleep.',
     seoContent: '',
     relatedTools: ['calorie', 'age-calculator', 'date-difference'],
@@ -1403,7 +1403,7 @@ export const tools: Tool[] = [
     route: '/calc/pace',
     acceptedFormats: [],
     icon: 'Footprints',
-    metaTitle: 'Pace Calculator — Running Pace, Time & Distance Free | clevr.tools',
+    metaTitle: 'Pace Calculator — Running Pace & Splits | clevr.tools',
     metaDescription: 'Free pace calculator for runners. Calculate pace per mile/km, finish time, or distance. Includes splits table and race presets for 5K, 10K, half marathon, and marathon.',
     seoContent: '',
     relatedTools: ['calories-burned', 'calorie', 'bmi-calculator'],
@@ -1417,7 +1417,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/length',
     acceptedFormats: [],
     icon: 'Ruler',
-    metaTitle: 'Length Converter — Meters, Feet, Inches, Miles & More Free | clevr.tools',
+    metaTitle: 'Length Converter — Meters, Feet & Miles | clevr.tools',
     metaDescription: 'Free length converter. Convert between millimeters, centimeters, meters, kilometers, inches, feet, yards, miles, and nautical miles instantly.',
     seoContent: '',
     relatedTools: ['convert-area', 'cm-to-inches', 'feet-to-meters'],
@@ -1430,7 +1430,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/weight',
     acceptedFormats: [],
     icon: 'Weight',
-    metaTitle: 'Weight Converter — KG, Pounds, Ounces, Grams & Stone Free | clevr.tools',
+    metaTitle: 'Weight Converter — KG, Pounds & Ounces | clevr.tools',
     metaDescription: 'Free weight converter. Convert between milligrams, grams, kilograms, metric tons, ounces, pounds, and stone instantly.',
     seoContent: '',
     relatedTools: ['convert-length', 'kg-to-lbs', 'oz-to-grams'],
@@ -1443,7 +1443,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/temperature',
     acceptedFormats: [],
     icon: 'Thermometer',
-    metaTitle: 'Temperature Converter — Celsius, Fahrenheit & Kelvin Free | clevr.tools',
+    metaTitle: 'Temperature Converter — C, F & Kelvin | clevr.tools',
     metaDescription: 'Free temperature converter. Convert between Celsius, Fahrenheit, and Kelvin instantly. Quick reference table included.',
     seoContent: '',
     relatedTools: ['fahrenheit-to-celsius', 'convert-length', 'convert-weight'],
@@ -1456,7 +1456,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/volume',
     acceptedFormats: [],
     icon: 'ArrowLeftRight',
-    metaTitle: 'Volume Converter — Liters, Gallons, Cups & Fluid Ounces Free | clevr.tools',
+    metaTitle: 'Volume Converter — Liters, Gallons & Cups | clevr.tools',
     metaDescription: 'Free volume converter. Convert between milliliters, liters, gallons, quarts, pints, cups, fluid ounces, tablespoons, and teaspoons.',
     seoContent: '',
     relatedTools: ['convert-cooking', 'liters-to-gallons', 'cups-to-ml'],
@@ -1469,7 +1469,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/area',
     acceptedFormats: [],
     icon: 'ArrowLeftRight',
-    metaTitle: 'Area Converter — Square Meters, Feet, Acres & Hectares Free | clevr.tools',
+    metaTitle: 'Area Converter — Sq Ft, Acres & Hectares | clevr.tools',
     metaDescription: 'Free area converter. Convert between square millimeters, centimeters, meters, kilometers, miles, yards, feet, inches, acres, and hectares.',
     seoContent: '',
     relatedTools: ['convert-length', 'acres-to-sq-ft', 'convert-weight'],
@@ -1482,7 +1482,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/speed',
     acceptedFormats: [],
     icon: 'Gauge',
-    metaTitle: 'Speed Converter — MPH, KM/H, M/S, Knots & FT/S Free | clevr.tools',
+    metaTitle: 'Speed Converter — MPH, KM/H & Knots | clevr.tools',
     metaDescription: 'Free speed converter. Convert between meters per second, kilometers per hour, miles per hour, knots, and feet per second.',
     seoContent: '',
     relatedTools: ['convert-length', 'pace', 'convert-time'],
@@ -1495,7 +1495,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/time',
     acceptedFormats: [],
     icon: 'Clock',
-    metaTitle: 'Time Converter — Seconds, Minutes, Hours, Days & Years Free | clevr.tools',
+    metaTitle: 'Time Converter — Seconds to Years & More | clevr.tools',
     metaDescription: 'Free time converter. Convert between milliseconds, seconds, minutes, hours, days, weeks, months, and years.',
     seoContent: '',
     relatedTools: ['date-difference', 'age-calculator', 'convert-speed'],
@@ -1508,7 +1508,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/data',
     acceptedFormats: [],
     icon: 'Binary',
-    metaTitle: 'Data Size Converter — Bytes, KB, MB, GB, TB & Bits Free | clevr.tools',
+    metaTitle: 'Data Size Converter — KB, MB, GB & TB | clevr.tools',
     metaDescription: 'Free data size converter. Convert between bits, bytes, kilobytes, megabytes, gigabytes, terabytes, petabytes, megabits, and gigabits.',
     seoContent: '',
     relatedTools: ['mbps-to-gbps', 'convert-time', 'convert-length'],
@@ -1521,7 +1521,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/pressure',
     acceptedFormats: [],
     icon: 'ArrowLeftRight',
-    metaTitle: 'Pressure Converter — PSI, Bar, ATM, Pascal & mmHg Free | clevr.tools',
+    metaTitle: 'Pressure Converter — PSI, Bar & ATM | clevr.tools',
     metaDescription: 'Free pressure converter. Convert between pascals, kilopascals, bar, PSI, atmospheres, and mmHg instantly.',
     seoContent: '',
     relatedTools: ['convert-force', 'convert-energy', 'convert-temperature'],
@@ -1534,7 +1534,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/energy',
     acceptedFormats: [],
     icon: 'Zap',
-    metaTitle: 'Energy Converter — Joules, Calories, BTU, kWh & More Free | clevr.tools',
+    metaTitle: 'Energy Converter — Joules, BTU & kWh | clevr.tools',
     metaDescription: 'Free energy converter. Convert between joules, kilojoules, calories, kilocalories, BTU, kilowatt-hours, watt-hours, and electronvolts.',
     seoContent: '',
     relatedTools: ['convert-power', 'convert-pressure', 'calories-burned'],
@@ -1560,7 +1560,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/fuel-economy',
     acceptedFormats: [],
     icon: 'Gauge',
-    metaTitle: 'Fuel Economy Converter — MPG, L/100km & km/L Free | clevr.tools',
+    metaTitle: 'Fuel Economy Converter — MPG & L/100km | clevr.tools',
     metaDescription: 'Free fuel economy converter. Convert between miles per gallon (US/UK), liters per 100 kilometers, and kilometers per liter.',
     seoContent: '',
     relatedTools: ['convert-volume', 'convert-speed', 'convert-length'],
@@ -1573,7 +1573,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/angle',
     acceptedFormats: [],
     icon: 'Compass',
-    metaTitle: 'Angle Converter — Degrees, Radians, Gradians & Arcseconds Free | clevr.tools',
+    metaTitle: 'Angle Converter — Degrees & Radians | clevr.tools',
     metaDescription: 'Free angle converter. Convert between degrees, radians, gradians, arcminutes, and arcseconds instantly.',
     seoContent: '',
     relatedTools: ['convert-length', 'percentage-calculator', 'convert-speed'],
@@ -1586,7 +1586,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/power',
     acceptedFormats: [],
     icon: 'Zap',
-    metaTitle: 'Power Converter — Watts, Kilowatts, Horsepower & BTU/hr Free | clevr.tools',
+    metaTitle: 'Power Converter — Watts, kW & Horsepower | clevr.tools',
     metaDescription: 'Free power converter. Convert between watts, kilowatts, megawatts, horsepower, and BTU per hour instantly.',
     seoContent: '',
     relatedTools: ['convert-energy', 'convert-force', 'convert-pressure'],
@@ -1599,7 +1599,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/force',
     acceptedFormats: [],
     icon: 'ArrowLeftRight',
-    metaTitle: 'Force Converter — Newtons, Pounds-force, kgf & Dynes Free | clevr.tools',
+    metaTitle: 'Force Converter — Newtons, lbf & kgf | clevr.tools',
     metaDescription: 'Free force converter. Convert between newtons, kilonewtons, pounds-force, kilogram-force, and dynes instantly.',
     seoContent: '',
     relatedTools: ['convert-pressure', 'convert-weight', 'convert-energy'],
@@ -1612,7 +1612,7 @@ export const tools: Tool[] = [
     route: '/calc/convert/cooking',
     acceptedFormats: [],
     icon: 'ArrowLeftRight',
-    metaTitle: 'Cooking Converter — Cups, Tablespoons, Teaspoons & mL Free | clevr.tools',
+    metaTitle: 'Cooking Converter — Cups, Tbsp & mL | clevr.tools',
     metaDescription: 'Free cooking measurement converter. Convert between teaspoons, tablespoons, fluid ounces, cups, pints, quarts, liters, and milliliters.',
     seoContent: '',
     relatedTools: ['convert-volume', 'cups-to-ml', 'convert-weight'],
@@ -1809,7 +1809,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'MousePointer2',
     metaTitle: 'CPS Test — Clicks Per Second Test | clevr.tools',
-    metaDescription: 'Free CPS test. Test your click speed for gaming. Multiple durations.',
+    metaDescription: 'Free CPS test — measure your clicks per second with 1s, 5s, and 10s modes. Track your best score and compare ranks. Browser-based, no download or signup needed.',
     seoContent: '',
     relatedTools: ['reaction-time', 'keyboard-tester', 'wpm-test'],
     live: true,
@@ -1823,7 +1823,7 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Activity',
     metaTitle: 'Reaction Time Test — Test Your Reflexes | clevr.tools',
-    metaDescription: 'Free online reaction time test. Test how fast your reflexes are in milliseconds.',
+    metaDescription: 'Free reaction time test — measure your reflexes in milliseconds. See your average, best time, and percentile ranking. Works in your browser, no download required.',
     seoContent: '',
     relatedTools: ['cps-test', 'keyboard-tester', 'typing-test'],
     live: true,
