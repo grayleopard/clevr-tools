@@ -14,6 +14,9 @@ import {
   RotateCw,
   Sparkles,
   FileOutput,
+  Maximize2,
+  Crop,
+  Merge,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import AdSlot from "@/components/tool/AdSlot";
@@ -30,8 +33,12 @@ type ActionId =
   | "to-jpg"
   | "to-png"
   | "to-webp"
+  | "to-pdf"
+  | "resize-image"
+  | "crop-image"
   | "compress-pdf"
   | "pdf-to-jpg"
+  | "merge-pdf"
   | "split-pdf"
   | "rotate-pdf"
   | "word-to-pdf";
@@ -47,11 +54,11 @@ interface DetectedFile {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
-  png: ["compress-image", "to-jpg", "to-webp"],
-  jpg: ["compress-image", "to-png", "to-webp"],
-  webp: ["to-png", "to-jpg"],
-  heic: ["to-jpg"],
-  pdf: ["compress-pdf", "pdf-to-jpg", "split-pdf", "rotate-pdf"],
+  png: ["compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  jpg: ["compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  webp: ["to-png", "to-jpg", "resize-image"],
+  heic: ["to-jpg", "to-png"],
+  pdf: ["compress-pdf", "pdf-to-jpg", "merge-pdf", "split-pdf", "rotate-pdf"],
   docx: ["word-to-pdf"],
   unknown: [],
 };
@@ -112,6 +119,30 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
     description: "Rotate pages individually or all at once",
     accent: "text-blue-600 dark:text-blue-400",
   },
+  "to-pdf": {
+    icon: FileText,
+    name: "Convert to PDF",
+    description: "Create a PDF from your image",
+    accent: "text-red-600 dark:text-red-400",
+  },
+  "resize-image": {
+    icon: Maximize2,
+    name: "Resize Image",
+    description: "Change dimensions while keeping quality",
+    accent: "text-teal-600 dark:text-teal-400",
+  },
+  "crop-image": {
+    icon: Crop,
+    name: "Crop Image",
+    description: "Trim to the exact area you need",
+    accent: "text-orange-600 dark:text-orange-400",
+  },
+  "merge-pdf": {
+    icon: Merge,
+    name: "Merge PDFs",
+    description: "Combine multiple PDFs into one file",
+    accent: "text-green-600 dark:text-green-400",
+  },
   "word-to-pdf": {
     icon: FileOutput,
     name: "Convert to PDF",
@@ -128,8 +159,12 @@ function getRoute(fileType: FileType, actionId: ActionId): string {
     case "to-jpg":         return fileType === "heic" ? "/convert/heic-to-jpg" : "/convert/png-to-jpg";
     case "to-png":         return fileType === "webp" ? "/convert/webp-to-png" : "/convert/jpg-to-png";
     case "to-webp":        return "/convert/png-to-webp";
+    case "to-pdf":         return fileType === "jpg" ? "/convert/jpg-to-pdf" : "/convert/png-to-pdf";
+    case "resize-image":   return "/tools/resize-image";
+    case "crop-image":     return "/files/image-cropper";
     case "compress-pdf":   return "/compress/pdf";
     case "pdf-to-jpg":     return "/convert/pdf-to-jpg";
+    case "merge-pdf":      return "/tools/merge-pdf";
     case "split-pdf":      return "/tools/split-pdf";
     case "rotate-pdf":     return "/tools/rotate-pdf";
     case "word-to-pdf":    return "/convert/word-to-pdf";
@@ -316,7 +351,7 @@ function DetectedView({
               Browse the tools below.
             </div>
           ) : (
-            <div className="grid gap-2.5 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
               {actions.map((actionId, i) => {
                 const def = ACTION_DEFS[actionId];
                 const Icon = def.icon;
