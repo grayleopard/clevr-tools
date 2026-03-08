@@ -21,7 +21,6 @@ import {
 import type { LucideIcon } from "lucide-react";
 import AdSlot from "@/components/tool/AdSlot";
 import { usePasteImage } from "@/lib/usePasteImage";
-import { addToast } from "@/lib/toast";
 import { setPendingFile } from "@/lib/file-handoff";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
@@ -275,6 +274,7 @@ function DetectedView({
   onReset: () => void;
 }) {
   const actions = TYPE_ACTIONS[detected.type];
+  const typeLabel = detected.type === "unknown" ? "File" : detected.type.toUpperCase();
   const isPreviewable = detected.previewUrl !== null;
 
   return (
@@ -343,7 +343,7 @@ function DetectedView({
           className="animate-in fade-in slide-in-from-right-3 duration-300 flex flex-col gap-3"
           style={{ animationDelay: "50ms" }}
         >
-          <p className="text-sm font-semibold text-foreground">What do you want to do?</p>
+          <p className="text-sm font-semibold text-foreground">{typeLabel} detected — what do you want to do?</p>
           {actions.length === 0 ? (
             <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
               No tools available for this file type yet.
@@ -490,6 +490,23 @@ export default function SmartConverter({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── Logo-click reset (same-page nav) ─────────────────────────────────────
+
+  useEffect(() => {
+    const handleReset = () => {
+      setDetected((prev) => {
+        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
+        return null;
+      });
+      setError(null);
+      setNavigatingAction(null);
+      stageRef.current = "idle";
+      setStage("idle");
+    };
+    window.addEventListener("clevr:reset-home", handleReset);
+    return () => window.removeEventListener("clevr:reset-home", handleReset);
+  }, []);
+
   // ── Core logic ────────────────────────────────────────────────────────────
 
   const processFile = useCallback(async (file: File) => {
@@ -534,8 +551,7 @@ export default function SmartConverter({
     stageRef.current = "detected";
     setStage("detected");
 
-    const typeLabel = type === "unknown" ? "File" : type.toUpperCase();
-    addToast(`${typeLabel} detected — choose an action below`, "info", 3000);
+    // Toast removed — the UI change (file preview + action cards) is sufficient feedback
   }, []);
 
   // Keep a stable ref so the drag event closure always calls the latest processFile

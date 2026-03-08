@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   ArrowRight,
   ChevronDown,
@@ -58,10 +61,20 @@ function CategoryMenu({
 }
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-lg font-semibold"
+          onClick={() => {
+            if (pathname === "/") {
+              window.dispatchEvent(new CustomEvent("clevr:reset-home"));
+            }
+          }}
+        >
           <Zap className="h-5 w-5 text-primary" />
           <span>
             <span className="text-primary">clevr</span>
