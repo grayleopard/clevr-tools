@@ -3,14 +3,14 @@
 import { useState, useCallback, useRef } from "react";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
-import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { usePasteImage } from "@/lib/usePasteImage";
 import { addToast } from "@/lib/toast";
 import type { PDFDocument } from "pdf-lib";
-import { GripVertical, X } from "lucide-react";
+import { GripVertical, X, FileText } from "lucide-react";
+import { formatBytes } from "@/lib/utils";
 
 type PageSize = "A4" | "Letter" | "fit";
 type Orientation = "portrait" | "landscape";
@@ -57,6 +57,88 @@ async function fileToEmbeddable(file: File, pdfDoc: PDFDocument) {
     img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Failed to load image")); };
     img.src = url;
   });
+}
+
+// ─── Page dimensions in points (PDF standard) ────────────────────────────────
+
+const PAGE_DIMS = {
+  A4: { w: 595, h: 842 },
+  Letter: { w: 612, h: 792 },
+} as const;
+
+/** CSS mockup of the first PDF page showing the image laid out on the chosen page size. */
+function PdfPagePreview({
+  files,
+  pageSize,
+  orientation,
+  margins,
+}: {
+  files: OrderedFile[];
+  pageSize: PageSize;
+  orientation: Orientation;
+  margins: boolean;
+}) {
+  if (files.length === 0) return null;
+  const first = files[0];
+
+  // Get page dimensions in points
+  let pageW: number, pageH: number;
+  if (pageSize === "fit") {
+    // For "fit", use a 3:4 placeholder ratio — the image fills the page
+    pageW = 600;
+    pageH = 800;
+  } else {
+    const dims = PAGE_DIMS[pageSize];
+    pageW = dims.w;
+    pageH = dims.h;
+  }
+
+  if (pageSize !== "fit" && orientation === "landscape") {
+    [pageW, pageH] = [pageH, pageW];
+  }
+
+  const marginPt = margins ? 40 : 0;
+  const marginPct = (marginPt / pageW) * 100;
+  const marginPctV = (marginPt / pageH) * 100;
+
+  // Scale the mockup to fit within a reasonable max height
+  const maxMockupH = 320;
+  const mockupScale = maxMockupH / pageH;
+  const mockupW = pageW * mockupScale;
+  const mockupH = pageH * mockupScale;
+
+  return (
+    <div className="flex justify-center">
+      <div className="relative rounded-sm border border-border bg-white dark:bg-zinc-100 overflow-hidden shadow-sm"
+        style={{ width: mockupW, height: mockupH }}
+      >
+        {/* Margin area shown as subtle padding */}
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          style={{
+            padding: `${marginPctV}% ${marginPct}%`,
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={first.previewUrl}
+            alt="Preview"
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+        {/* Page label */}
+        <div className="absolute bottom-1.5 right-2 text-[10px] text-zinc-400 font-medium">
+          {pageSize === "fit" ? "Fit" : `${pageSize} ${orientation}`}
+        </div>
+        {/* Page number */}
+        {files.length > 1 && (
+          <div className="absolute bottom-1.5 left-2 text-[10px] text-zinc-400 font-medium">
+            Page 1 of {files.length}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPdfProps) {
@@ -273,24 +355,46 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
             </div>
           </div>
 
-          {/* Create button */}
-          {resultUrl === null && (
-            <button
-              onClick={handleCreate}
-              className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
-            >
-              Create PDF
-            </button>
-          )}
+          {/* Create / Regenerate button */}
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
+          >
+            {resultUrl ? "Regenerate PDF" : "Create PDF"}
+          </button>
 
-          {/* Result */}
+          {/* Preview + Download */}
           {resultUrl && (
-            <DownloadCard
-              href={resultUrl}
-              filename={outputFilename}
-              fileSize={resultSize}
-              onDownload={() => setDownloaded(true)}
-            />
+            <div className="space-y-4 animate-in fade-in duration-300">
+              <h2 className="text-sm font-semibold">Preview</h2>
+              <PdfPagePreview
+                files={files}
+                pageSize={pageSize}
+                orientation={orientation}
+                margins={margins}
+              />
+              <div className="rounded-xl border border-border bg-card p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10">
+                    <FileText className="h-5 w-5 text-red-600 dark:text-red-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{outputFilename}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {files.length} page{files.length > 1 ? "s" : ""} · {formatBytes(resultSize)}
+                    </p>
+                  </div>
+                  <a
+                    href={resultUrl}
+                    download={outputFilename}
+                    onClick={() => setDownloaded(true)}
+                    className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                  >
+                    Download
+                  </a>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       )}

@@ -435,9 +435,6 @@ export default function SmartConverter({
   const [dropZoneDragging, setDropZoneDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Animation states
-  const [isIdleExiting, setIsIdleExiting] = useState(false);
-  const [isDetectedExiting, setIsDetectedExiting] = useState(false);
   const [navigatingAction, setNavigatingAction] = useState<ActionId | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -513,24 +510,6 @@ export default function SmartConverter({
     setError(null);
     setNavigatingAction(null);
 
-    const prevStage = stageRef.current;
-
-    // Animate current view out before showing the new file
-    if (prevStage === "idle") {
-      setIsIdleExiting(true);
-      await new Promise<void>((r) => setTimeout(r, 130));
-      setIsIdleExiting(false);
-    } else {
-      // Replace detected state: briefly fade it out
-      setIsDetectedExiting(true);
-      await new Promise<void>((r) => setTimeout(r, 130));
-      setDetected((prev) => {
-        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-        return null;
-      });
-      setIsDetectedExiting(false);
-    }
-
     const type = detectFileType(file);
     const isPreviewable = (["png", "jpg", "webp"] as FileType[]).includes(type);
     let previewUrl: string | null = null;
@@ -547,11 +526,14 @@ export default function SmartConverter({
       }
     }
 
-    setDetected({ file, type, previewUrl, dimensions });
+    // Clean up previous preview URL
+    setDetected((prev) => {
+      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
+      return { file, type, previewUrl, dimensions };
+    });
+
     stageRef.current = "detected";
     setStage("detected");
-
-    // Toast removed — the UI change (file preview + action cards) is sufficient feedback
   }, []);
 
   // Keep a stable ref so the drag event closure always calls the latest processFile
@@ -599,17 +581,13 @@ export default function SmartConverter({
 
   const reset = useCallback(() => {
     if (navigatingAction) return; // don't reset while navigating
-    setIsDetectedExiting(true);
-    setTimeout(() => {
-      setDetected((prev) => {
-        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-        return null;
-      });
-      setError(null);
-      stageRef.current = "idle";
-      setStage("idle");
-      setIsDetectedExiting(false);
-    }, 200);
+    setDetected((prev) => {
+      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
+      return null;
+    });
+    setError(null);
+    stageRef.current = "idle";
+    setStage("idle");
   }, [navigatingAction]);
 
   const handleFileInput = useCallback(
@@ -635,7 +613,7 @@ export default function SmartConverter({
         </div>
       )}
 
-      <div className="relative min-h-[320px]">
+      <div className="relative">
         {/* Error banner */}
         {error && (
           <div className="mb-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400">
@@ -646,14 +624,17 @@ export default function SmartConverter({
           </div>
         )}
 
-        {/* Idle view — with exit animation */}
-        {stage === "idle" && (
+        {/* Crossfade container — both views stay in DOM, only opacity changes */}
+        <div className="relative">
+          {/* Idle view */}
           <div
-            className="transition-all ease-out"
+            className="transition-[opacity,transform] duration-200 ease-out"
             style={{
-              transitionDuration: "130ms",
-              opacity: isIdleExiting ? 0 : 1,
-              transform: isIdleExiting ? "scale(0.97) translateY(4px)" : "scale(1) translateY(0)",
+              opacity: stage === "idle" ? 1 : 0,
+              transform: stage === "idle" ? "scale(1)" : "scale(0.97)",
+              pointerEvents: stage === "idle" ? "auto" : "none",
+              // When detected, collapse idle view so detected flows naturally
+              ...(stage !== "idle" ? { position: "absolute" as const, inset: 0 } : {}),
             }}
           >
             <IdleView
@@ -671,26 +652,27 @@ export default function SmartConverter({
               onBrowse={() => fileInputRef.current?.click()}
             />
           </div>
-        )}
 
-        {/* Detected view — with exit animation */}
-        {stage === "detected" && detected && (
-          <div
-            className="transition-all ease-out"
-            style={{
-              transitionDuration: "200ms",
-              opacity: isDetectedExiting ? 0 : 1,
-              transform: isDetectedExiting ? "translateY(8px)" : "translateY(0)",
-            }}
-          >
-            <DetectedView
-              detected={detected}
-              navigatingAction={navigatingAction}
-              onAction={handleAction}
-              onReset={reset}
-            />
-          </div>
-        )}
+          {/* Detected view */}
+          {detected && (
+            <div
+              className="transition-[opacity,transform] duration-200 ease-out"
+              style={{
+                opacity: stage === "detected" ? 1 : 0,
+                transform: stage === "detected" ? "translateY(0)" : "translateY(8px)",
+                pointerEvents: stage === "detected" ? "auto" : "none",
+                ...(stage !== "detected" ? { position: "absolute" as const, inset: 0 } : {}),
+              }}
+            >
+              <DetectedView
+                detected={detected}
+                navigatingAction={navigatingAction}
+                onAction={handleAction}
+                onReset={reset}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Hidden file input */}
