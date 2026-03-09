@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
+import { usePdfXRayContext } from "@/lib/xray/pdf-xray-context";
 import { addToast } from "@/lib/toast";
-import { truncateFilename } from "@/lib/utils";
+import { truncateFilename, formatBytes } from "@/lib/utils";
 import { loadPdfMake } from "@/lib/pdfmake-loader";
 import { sanitizeWordPreviewHtml } from "@/lib/security/word-preview-sanitizer.mjs";
+import { X } from "lucide-react";
 
 type PageSize = "a4" | "letter";
 type Orientation = "portrait" | "landscape";
@@ -77,29 +79,39 @@ export default function WordToPdf() {
   const [orientation, setOrientation] = useState<Orientation>("portrait");
   const [margins, setMargins] = useState<Margins>("normal");
 
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState("");
   const [result, setResult] = useState<Result | null>(null);
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [sourceFile, setSourceFile] = useState<File | null>(null);
+  const [rawHtml, setRawHtml] = useState<string | null>(null);
 
+  const xrayCtx = usePdfXRayContext();
+
+  // Store source file ref for convert step
+  const sourceFileRef = useRef<File | null>(null);
+
+  // Step 1: Parse the DOCX file — extract HTML preview
   const handleFiles = useCallback(async (files: File[]) => {
     const file = files[0];
     if (!file) return;
 
-    setIsProcessing(true);
+    setIsParsing(true);
     setResult(null);
     setDownloaded(false);
     setPreviewHtml(null);
+    setRawHtml(null);
+    setSourceFile(file);
+    sourceFileRef.current = file;
     setProgress("Reading file…");
 
     try {
-      console.log("Step 1: reading file buffer…");
       const buffer = await file.arrayBuffer();
 
       setProgress("Extracting document content…");
-      console.log("Step 2: mammoth converting .docx to HTML…");
       const mammoth = await import("mammoth/mammoth.browser");
 
       const { value: html, messages } = await mammoth.convertToHtml(
@@ -113,7 +125,6 @@ export default function WordToPdf() {
           ],
         }
       );
-      console.log("Step 3: mammoth done — HTML length:", html.length);
 
       const warningCount = messages.filter((m) => m.type === "warning").length;
       if (warningCount > 0) {
@@ -121,35 +132,41 @@ export default function WordToPdf() {
       }
 
       setPreviewHtml(sanitizeWordPreviewHtml(html));
-      setProgress("Loading PDF libraries…");
+      setRawHtml(html);
+    } catch (err) {
+      console.error("Word parsing failed:", err);
+      addToast(
+        err instanceof Error ? err.message : "Failed to read document — please try again",
+        "error"
+      );
+    } finally {
+      setIsParsing(false);
+      setProgress("");
+    }
+  }, []);
 
-      // Load locally bundled pdfmake and html-to-pdfmake.
-      console.log("Step 4: loading pdfmake + html-to-pdfmake…");
+  useAutoLoadFile(handleFiles);
+
+  // Step 2: Convert parsed HTML to PDF (triggered by button click)
+  const handleConvert = useCallback(async () => {
+    if (!rawHtml || !sourceFileRef.current) return;
+
+    setIsConverting(true);
+    setProgress("Loading PDF libraries…");
+
+    try {
       const [pdfMake, htmlToPdfmakeModule] = await Promise.all([
         loadPdfMake(),
         import("html-to-pdfmake"),
       ]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const htmlToPdfmake = (htmlToPdfmakeModule as any).default ?? htmlToPdfmakeModule;
-      console.log("Step 4: libraries ready — vfs font files:", Object.keys(pdfMake.vfs ?? {}).length);
 
-      setProgress("Converting HTML to PDF document…");
-      console.log("Step 5: html-to-pdfmake converting…");
+      setProgress("Converting to PDF…");
 
-      // Convert the mammoth HTML string into a pdfmake content tree.
-      // html-to-pdfmake handles headings, paragraphs, bold, italic,
-      // underline, lists, tables, and base64 images.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const content = htmlToPdfmake(html, { window: window as any });
-
-      // html-to-pdfmake may embed font names extracted from the Word document
-      // (Calibri, Times New Roman, Arial, etc.) as `font` properties on content
-      // nodes. pdfmake only has Roboto in vfs_fonts, so any other font name
-      // causes "Unknown font format" at PDFFontFactory.open. Strip them all so
-      // everything falls through to the defaultStyle Roboto.
+      const content = htmlToPdfmake(rawHtml, { window: window as any });
       stripCustomFonts(content);
-
-      console.log("Step 6: html-to-pdfmake done — content items:", Array.isArray(content) ? content.length : typeof content);
 
       // MARGIN_MAP order: [top, right, bottom, left]
       // pdfmake pageMargins order: [left, top, right, bottom]
@@ -173,7 +190,6 @@ export default function WordToPdf() {
           lineHeight: 1.4,
         },
         styles: {
-          // html-to-pdfmake maps HTML tags to these style names
           html_h1: { fontSize: 20, bold: true, marginBottom: 8 },
           html_h2: { fontSize: 16, bold: true, marginBottom: 6 },
           html_h3: { fontSize: 13, bold: true, marginBottom: 4 },
@@ -186,13 +202,12 @@ export default function WordToPdf() {
           html_code: { fontSize: 9 },
         },
       };
-      console.log("Step 7: doc definition ready — pageSize:", docDefinition.pageSize, "orientation:", docDefinition.pageOrientation);
 
+      const file = sourceFileRef.current;
       const baseName = file.name.replace(/\.(docx?|doc)$/i, "");
-      const filename  = `${baseName}.pdf`;
+      const filename = `${baseName}.pdf`;
 
       setProgress("Generating PDF…");
-      console.log("Step 8: pdfmake generating PDF blob…");
 
       const pdfBlob = await Promise.race([
         new Promise<Blob>((resolve, reject) => {
@@ -212,8 +227,8 @@ export default function WordToPdf() {
           )
         ),
       ]);
-      console.log("Step 9: PDF blob created — size:", pdfBlob.size);
 
+      if (result) URL.revokeObjectURL(result.url);
       const url = URL.createObjectURL(pdfBlob);
       setResult({
         url,
@@ -223,11 +238,13 @@ export default function WordToPdf() {
         originalName: file.name,
       });
 
-      const pct = Math.round((1 - pdfBlob.size / file.size) * 100);
-      addToast(
-        pct > 0 ? `Converted to PDF — ${pct}% smaller` : "Converted to PDF successfully",
-        "success"
-      );
+      // Feed the generated PDF into X-Ray context
+      if (xrayCtx) {
+        const pdfFile = new File([pdfBlob], filename, { type: "application/pdf" });
+        xrayCtx.setFile(pdfFile);
+      }
+
+      addToast("Converted to PDF successfully", "success");
     } catch (err) {
       console.error("Word to PDF failed:", err);
       addToast(
@@ -235,20 +252,25 @@ export default function WordToPdf() {
         "error"
       );
     } finally {
-      setIsProcessing(false);
+      setIsConverting(false);
       setProgress("");
     }
-  }, [pageSize, orientation, margins]);
-
-  useAutoLoadFile(handleFiles);
+  }, [rawHtml, pageSize, orientation, margins, result, xrayCtx]);
 
   const reset = useCallback(() => {
     if (result) URL.revokeObjectURL(result.url);
     setResult(null);
     setDownloaded(false);
     setPreviewHtml(null);
+    setRawHtml(null);
+    setSourceFile(null);
+    sourceFileRef.current = null;
     setResetKey((k) => k + 1);
-  }, [result]);
+    if (xrayCtx) xrayCtx.setFile(null);
+  }, [result, xrayCtx]);
+
+  const isProcessing = isParsing || isConverting;
+  const hasFile = previewHtml !== null;
 
   return (
     <div className="space-y-6">
@@ -262,8 +284,25 @@ export default function WordToPdf() {
       {/* 1. Drop zone */}
       <FileDropZone accept=".docx,.doc" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
 
-      {/* 2. Options */}
-      {!isProcessing && !result && (
+      {/* 2. File info bar */}
+      {sourceFile && hasFile && !isProcessing && !downloaded && (
+        <div className="rounded-xl border border-border bg-card p-4">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">
+              {sourceFile.name} &middot; {formatBytes(sourceFile.size)}
+            </div>
+            <button
+              onClick={reset}
+              className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Options (shown after parsing, before or after conversion) */}
+      {hasFile && !isProcessing && !downloaded && (
         <div className="rounded-xl border border-border bg-card p-5 space-y-4">
           <p className="text-sm font-semibold">Output Options</p>
 
@@ -337,10 +376,7 @@ export default function WordToPdf() {
         </div>
       )}
 
-      {/* 3. Processing */}
-      {isProcessing && <ProcessingIndicator label={progress || "Converting…"} />}
-
-      {/* 4. Document preview (shown after parsing, before download) */}
+      {/* 4. Document preview */}
       {previewHtml && !isProcessing && !downloaded && (
         <div className="rounded-xl border border-border overflow-hidden">
           <div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2.5">
@@ -360,7 +396,20 @@ export default function WordToPdf() {
         </div>
       )}
 
-      {/* 5. Result */}
+      {/* 5. Convert button */}
+      {hasFile && !isProcessing && !downloaded && (
+        <button
+          onClick={handleConvert}
+          className="w-full rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
+        >
+          {result ? "Reconvert to PDF" : "Convert to PDF"}
+        </button>
+      )}
+
+      {/* 6. Processing */}
+      {isProcessing && <ProcessingIndicator label={progress || "Converting…"} />}
+
+      {/* 7. Result */}
       {result && !isProcessing && !downloaded && (
         <div className="space-y-3">
           <h2 className="text-sm font-semibold">Result</h2>
@@ -374,7 +423,7 @@ export default function WordToPdf() {
         </div>
       )}
 
-      {/* 6. Post-download state */}
+      {/* 8. Post-download state */}
       {downloaded && (
         <PostDownloadState
           toolSlug="word-to-pdf"
