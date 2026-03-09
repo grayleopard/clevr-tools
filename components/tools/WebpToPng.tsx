@@ -28,6 +28,7 @@ export default function WebpToPng() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const handleFiles = useCallback(async (files: File[]) => {
     setIsProcessing(true);
@@ -85,6 +86,7 @@ export default function WebpToPng() {
     });
     setResults([]);
     setDownloaded(false);
+    setResetKey((k) => k + 1);
   }, [results]);
 
   return (
@@ -92,7 +94,7 @@ export default function WebpToPng() {
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".webp" multiple maxSizeMB={50} onFiles={handleFiles} />
+      <FileDropZone accept=".webp" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
 
       {/* 2. Processing */}
       {isProcessing && <ProcessingIndicator label="Converting to PNG…" />}

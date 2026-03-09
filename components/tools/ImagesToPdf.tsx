@@ -68,6 +68,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState(0);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
@@ -171,6 +172,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
     setResultUrl(null);
     setResultSize(0);
     setDownloaded(false);
+    setResetKey((k) => k + 1);
   }, [files, resultUrl]);
 
   const outputFilename = files.length > 0 ? `${files[0].file.name.replace(/\.[^.]+$/, "")}.pdf` : "output.pdf";
@@ -180,7 +182,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
       <PageDragOverlay onFiles={addFiles} />
 
       {/* Drop zone */}
-      <FileDropZone accept={accept} multiple maxSizeMB={50} onFiles={addFiles} />
+      <FileDropZone accept={accept} multiple maxSizeMB={50} onFiles={addFiles} resetKey={resetKey} />
 
       {/* Reorderable file list */}
       {files.length > 0 && !isProcessing && !downloaded && (
@@ -253,12 +255,20 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
               )}
               <div className="space-y-2">
                 <label className="text-sm font-medium">Margins</label>
-                <button
-                  onClick={() => setMargins((m) => !m)}
-                  className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors ${margins ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"}`}
-                >
-                  {margins ? "With margins" : "No margins"}
-                </button>
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={() => setMargins(true)}
+                    className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors ${margins ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40"}`}
+                  >
+                    On
+                  </button>
+                  <button
+                    onClick={() => setMargins(false)}
+                    className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors ${!margins ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/40"}`}
+                  >
+                    Off
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
@@ -28,11 +28,13 @@ export default function PngToJpg() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
-  const handleFiles = useCallback(
-    async (files: File[]) => {
-      const file = files[0];
-      if (!file) return;
+  const sourceFileRef = useRef<File | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const convert = useCallback(
+    async (file: File, q: number) => {
       setIsProcessing(true);
       setResult((prev) => {
         if (prev) {
@@ -41,10 +43,9 @@ export default function PngToJpg() {
         }
         return null;
       });
-      setDownloaded(false);
 
       try {
-        const blob = await toJpg(file, quality);
+        const blob = await toJpg(file, q);
         const baseName = file.name.replace(/\.png$/i, "");
         const r = {
           url: URL.createObjectURL(blob),
@@ -65,11 +66,34 @@ export default function PngToJpg() {
         setIsProcessing(false);
       }
     },
-    [quality]
+    []
+  );
+
+  const handleFiles = useCallback(
+    (files: File[]) => {
+      const file = files[0];
+      if (!file) return;
+      sourceFileRef.current = file;
+      setDownloaded(false);
+      convert(file, quality);
+    },
+    [quality, convert]
   );
 
   useAutoLoadFile(handleFiles);
   usePasteImage((file) => handleFiles([file]));
+
+  // Re-convert when quality changes
+  useEffect(() => {
+    if (!sourceFileRef.current) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      if (sourceFileRef.current) convert(sourceFileRef.current, quality);
+    }, 400);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [quality, convert]);
 
   const reset = useCallback(() => {
     setResult((prev) => {
@@ -80,6 +104,8 @@ export default function PngToJpg() {
       return null;
     });
     setDownloaded(false);
+    sourceFileRef.current = null;
+    setResetKey((k) => k + 1);
   }, []);
 
   return (
@@ -87,7 +113,7 @@ export default function PngToJpg() {
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".png" multiple={false} maxSizeMB={50} onFiles={handleFiles} />
+      <FileDropZone accept=".png" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
 
       {/* 2. Options */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">

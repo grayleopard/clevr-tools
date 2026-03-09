@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, useCallback, useMemo } from "react";
+import { useRef, useState, useCallback, useMemo, useEffect } from "react";
 import { X, AlertCircle, FileText, ImageIcon, Smartphone, Lock } from "lucide-react";
+import { usePdfXRayContext } from "@/lib/xray/pdf-xray-context";
 
 interface FileDropZoneProps {
   accept: string;
@@ -9,6 +10,8 @@ interface FileDropZoneProps {
   maxSizeMB?: number;
   onFiles: (files: File[]) => void;
   className?: string;
+  /** Change this value to force-reset the drop zone to its idle state. */
+  resetKey?: number;
 }
 
 function formatBytes(bytes: number): string {
@@ -37,11 +40,11 @@ function parseFormats(accept: string): string[] {
 }
 
 /** Pick a sensible icon from the accept string. */
-function DropIcon({ accept }: { accept: string }) {
-  if (accept.includes("pdf")) return <FileText className="h-6 w-6 text-primary" />;
+function DropIcon({ accept, className = "h-6 w-6 text-primary" }: { accept: string; className?: string }) {
+  if (accept.includes("pdf")) return <FileText className={className} />;
   if (accept.includes("heic") || accept.includes("heif"))
-    return <Smartphone className="h-6 w-6 text-primary" />;
-  return <ImageIcon className="h-6 w-6 text-primary" />;
+    return <Smartphone className={className} />;
+  return <ImageIcon className={className} />;
 }
 
 type DropState = "idle" | "hover" | "loaded" | "error";
@@ -52,11 +55,26 @@ export default function FileDropZone({
   maxSizeMB,
   onFiles,
   className = "",
+  resetKey,
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<DropState>("idle");
   const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
   const [errorMsg, setErrorMsg] = useState("");
+  const xrayCtx = usePdfXRayContext();
+
+  // Reset internal state when parent changes resetKey
+  const prevResetKey = useRef(resetKey);
+  useEffect(() => {
+    if (resetKey !== undefined && resetKey !== prevResetKey.current) {
+      prevResetKey.current = resetKey;
+      setLoadedFiles([]);
+      setState("idle");
+      setErrorMsg("");
+      if (inputRef.current) inputRef.current.value = "";
+      xrayCtx?.setFile(null);
+    }
+  }, [resetKey, xrayCtx]);
 
   const acceptedExtensions = useMemo(
     () => accept.split(",").map((s) => s.trim().toLowerCase()),
@@ -92,8 +110,10 @@ export default function FileDropZone({
       setState("loaded");
       setErrorMsg("");
       onFiles(files);
+      // Publish the first file to PdfXRayContext when inside a provider
+      xrayCtx?.setFile(files[0] ?? null);
     },
-    [validate, onFiles]
+    [validate, onFiles, xrayCtx]
   );
 
   const handleDrop = useCallback(
@@ -119,7 +139,8 @@ export default function FileDropZone({
     setState("idle");
     setErrorMsg("");
     if (inputRef.current) inputRef.current.value = "";
-  }, []);
+    xrayCtx?.setFile(null);
+  }, [xrayCtx]);
 
   const stateStyles: Record<DropState, string> = {
     idle: "border-border hover:border-primary/50 hover:bg-primary/[0.02]",
@@ -128,12 +149,51 @@ export default function FileDropZone({
     error: "border-destructive bg-destructive/5",
   };
 
+  // ── Compact bar when file(s) are loaded ──────────────────────
+  if (state === "loaded") {
+    const totalSize = loadedFiles.reduce((s, f) => s + f.size, 0);
+    const label =
+      multiple && loadedFiles.length > 1
+        ? `${loadedFiles.length} files selected`
+        : (loadedFiles[0]?.name ?? "");
+
+    return (
+      <div className={`relative ${className}`}>
+        <input
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          multiple={multiple}
+          className="sr-only"
+          onChange={handleChange}
+        />
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-2.5">
+          <DropIcon accept={accept} className="h-4 w-4 shrink-0 text-primary" />
+          <span className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">
+            {label}
+          </span>
+          <span className="shrink-0 text-xs text-muted-foreground">
+            {formatBytes(totalSize)}
+          </span>
+          <button
+            type="button"
+            onClick={clear}
+            className="shrink-0 rounded p-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label="Remove file"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`relative ${className}`}>
       <div
         className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-all duration-200 cursor-pointer ${stateStyles[state]}`}
         onDragOver={(e) => { e.preventDefault(); setState("hover"); }}
-        onDragLeave={() => setState(loadedFiles.length ? "loaded" : "idle")}
+        onDragLeave={() => setState("idle")}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
         role="button"
@@ -159,26 +219,6 @@ export default function FileDropZone({
               onClick={(e) => { e.stopPropagation(); clear(); }}
             >
               Try again
-            </button>
-          </div>
-        ) : state === "loaded" ? (
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex flex-wrap justify-center gap-2">
-              {loadedFiles.map((f, i) => (
-                <span
-                  key={i}
-                  className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-                >
-                  {f.name} ({formatBytes(f.size)})
-                </span>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="mt-2 flex items-center gap-1 text-xs text-muted-foreground underline hover:text-foreground"
-              onClick={(e) => { e.stopPropagation(); clear(); }}
-            >
-              <X className="h-3 w-3" /> Clear
             </button>
           </div>
         ) : (

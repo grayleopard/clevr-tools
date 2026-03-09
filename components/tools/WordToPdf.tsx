@@ -81,6 +81,7 @@ export default function WordToPdf() {
   const [progress, setProgress] = useState("");
   const [result, setResult] = useState<Result | null>(null);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
 
   const handleFiles = useCallback(async (files: File[]) => {
@@ -246,6 +247,7 @@ export default function WordToPdf() {
     setResult(null);
     setDownloaded(false);
     setPreviewHtml(null);
+    setResetKey((k) => k + 1);
   }, [result]);
 
   return (
@@ -258,7 +260,7 @@ export default function WordToPdf() {
       </div>
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".docx,.doc" multiple={false} maxSizeMB={50} onFiles={handleFiles} />
+      <FileDropZone accept=".docx,.doc" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
 
       {/* 2. Options */}
       {!isProcessing && !result && (

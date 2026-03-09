@@ -635,7 +635,7 @@ export default function SmartConverter({
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative min-h-[320px]">
         {/* Error banner */}
         {error && (
           <div className="mb-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400">

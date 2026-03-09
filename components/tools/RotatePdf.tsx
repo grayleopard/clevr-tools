@@ -27,6 +27,7 @@ export default function RotatePdf() {
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState(0);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const arrayBufferRef = useRef<ArrayBuffer | null>(null);
 
   const handleFiles = useCallback(async (files: File[]) => {
@@ -129,6 +130,7 @@ export default function RotatePdf() {
     setResultSize(0);
     setDownloaded(false);
     arrayBufferRef.current = null;
+    setResetKey((k) => k + 1);
   }, [resultUrl]);
 
   const outputFilename = file ? file.name.replace(/\.pdf$/i, "-rotated.pdf") : "rotated.pdf";
@@ -138,7 +140,7 @@ export default function RotatePdf() {
     <div className="space-y-6">
       <PageDragOverlay onFiles={handleFiles} />
 
-      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} />
+      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
 
       {isLoading && <ProcessingIndicator label="Loading PDF pages…" />}
 

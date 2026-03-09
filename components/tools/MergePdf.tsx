@@ -24,6 +24,7 @@ export default function MergePdf() {
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [resultSize, setResultSize] = useState(0);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
@@ -106,6 +107,7 @@ export default function MergePdf() {
     setResultUrl(null);
     setResultSize(0);
     setDownloaded(false);
+    setResetKey((k) => k + 1);
   }, [resultUrl]);
 
   const totalPages = files.reduce((s, f) => s + f.pageCount, 0);
@@ -115,7 +117,7 @@ export default function MergePdf() {
     <div className="space-y-6">
       <PageDragOverlay onFiles={addFiles} />
 
-      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={addFiles} />
+      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={addFiles} resetKey={resetKey} />
 
       {files.length > 0 && !isProcessing && !downloaded && (
         <div className="space-y-4">

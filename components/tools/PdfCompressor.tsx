@@ -25,6 +25,7 @@ export default function PdfCompressor() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const handleFiles = useCallback(async (files: File[]) => {
     setIsProcessing(true);
@@ -84,6 +85,7 @@ export default function PdfCompressor() {
     results.forEach((r) => URL.revokeObjectURL(r.url));
     setResults([]);
     setDownloaded(false);
+    setResetKey((k) => k + 1);
   }, [results]);
 
   return (
@@ -96,7 +98,7 @@ export default function PdfCompressor() {
       </div>
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={handleFiles} />
+      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
 
       {/* 2. Processing */}
       {isProcessing && <ProcessingIndicator label="Compressing PDFs…" />}

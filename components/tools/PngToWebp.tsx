@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
@@ -30,17 +30,27 @@ export default function PngToWebp() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
-  const handleFiles = useCallback(
-    async (files: File[]) => {
+  const sourceFilesRef = useRef<File[]>([]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const convert = useCallback(
+    async (files: File[], q: number) => {
+      if (files.length === 0) return;
       setIsProcessing(true);
-      setResults([]);
-      setDownloaded(false);
-      const converted: Result[] = [];
+      setResults((prev) => {
+        prev.forEach((r) => {
+          URL.revokeObjectURL(r.url);
+          URL.revokeObjectURL(r.originalUrl);
+        });
+        return [];
+      });
 
+      const converted: Result[] = [];
       for (const file of files) {
         try {
-          const blob = await toWebp(file, quality);
+          const blob = await toWebp(file, q);
           const baseName = file.name.replace(/\.png$/i, "");
           converted.push({
             url: URL.createObjectURL(blob),
@@ -66,11 +76,32 @@ export default function PngToWebp() {
         addToast(`${converted.length} images converted to WebP`, "success");
       }
     },
-    [quality]
+    []
+  );
+
+  const handleFiles = useCallback(
+    (files: File[]) => {
+      sourceFilesRef.current = files;
+      setDownloaded(false);
+      convert(files, quality);
+    },
+    [quality, convert]
   );
 
   useAutoLoadFile(handleFiles);
   usePasteImage((file) => handleFiles([file]));
+
+  // Re-convert when quality changes
+  useEffect(() => {
+    if (sourceFilesRef.current.length === 0) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      convert(sourceFilesRef.current, quality);
+    }, 400);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [quality, convert]);
 
   const downloadAll = useCallback(async () => {
     if (results.length < 2) return;
@@ -96,6 +127,8 @@ export default function PngToWebp() {
     });
     setResults([]);
     setDownloaded(false);
+    sourceFilesRef.current = [];
+    setResetKey((k) => k + 1);
   }, [results]);
 
   return (
@@ -103,7 +136,7 @@ export default function PngToWebp() {
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} />
+      <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
 
       {/* 2. Options */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">

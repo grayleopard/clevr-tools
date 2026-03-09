@@ -31,6 +31,7 @@ export default function SplitPdf() {
   const [isSplitting, setIsSplitting] = useState(false);
   const [results, setResults] = useState<PageResult[]>([]);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const arrayBufferRef = useRef<ArrayBuffer | null>(null);
 
   const handleFiles = useCallback(async (files: File[]) => {
@@ -151,6 +152,7 @@ export default function SplitPdf() {
     setDownloaded(false);
     setSelectedPages(new Set());
     arrayBufferRef.current = null;
+    setResetKey((k) => k + 1);
   }, [results]);
 
   const rangePageCount = mode === "range" && rangeInput ? parsePageRange(rangeInput, pageCount).length : 0;
@@ -159,7 +161,7 @@ export default function SplitPdf() {
     <div className="space-y-6">
       <PageDragOverlay onFiles={handleFiles} />
 
-      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} />
+      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
 
       {isLoading && <ProcessingIndicator label="Loading PDF pages…" />}
 

@@ -170,6 +170,7 @@ export default function PdfToFillablePdf() {
   const [isLoadingPdf, setIsLoadingPdf] = useState(false);
   const [isRenderingPage, setIsRenderingPage] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const [userRotation, setUserRotation] = useState(0);
   const [showDebug, setShowDebug] = useState(false);
   const [debugPoint, setDebugPoint] = useState<DebugPoint | null>(null);
@@ -610,6 +611,7 @@ export default function PdfToFillablePdf() {
     setUserRotation(0);
     userRotationRef.current = 0;
     setDebugPoint(null);
+    setResetKey((k) => k + 1);
   }, [destroyPdf]);
 
   const handleDimensionInput = useCallback(
@@ -636,7 +638,7 @@ export default function PdfToFillablePdf() {
         stays private on your device.
       </div>
 
-      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} />
+      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
 
       {isLoadingPdf && <ProcessingIndicator label="Loading PDF preview…" />}
 

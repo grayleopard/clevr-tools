@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { addToast } from "@/lib/toast";
@@ -66,6 +67,7 @@ export default function ImageResizer() {
   const [activeTab, setActiveTab] = useState<"custom" | "presets">("custom");
 
   const aspectRatioRef = useRef(1);
+  const [resetKey, setResetKey] = useState(0);
 
   const handleFiles = useCallback((files: File[]) => {
     const loaded: UploadedImage[] = [];
@@ -89,6 +91,8 @@ export default function ImageResizer() {
       img.src = url;
     });
   }, []);
+
+  useAutoLoadFile(handleFiles);
 
   const handleWidthChange = useCallback(
     (w: number) => {
@@ -221,6 +225,7 @@ export default function ImageResizer() {
     setTargetWidth(0);
     setTargetHeight(0);
     setPercentage(100);
+    setResetKey((k) => k + 1);
   }, [images, results]);
 
   const showQualityControl =
@@ -238,6 +243,7 @@ export default function ImageResizer() {
         multiple
         maxSizeMB={50}
         onFiles={handleFiles}
+        resetKey={resetKey}
       />
 
       {images.length > 0 && (

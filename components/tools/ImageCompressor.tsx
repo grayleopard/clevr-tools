@@ -29,6 +29,7 @@ export default function ImageCompressor() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<CompressedFile[]>([]);
   const [downloaded, setDownloaded] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const sourceFilesRef = useRef<File[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -126,6 +127,7 @@ export default function ImageCompressor() {
     setResults([]);
     setDownloaded(false);
     sourceFilesRef.current = [];
+    setResetKey((k) => k + 1);
   }, [results]);
 
   return (
@@ -138,6 +140,7 @@ export default function ImageCompressor() {
         multiple
         maxSizeMB={50}
         onFiles={handleFiles}
+        resetKey={resetKey}
       />
 
       {/* 2. Options */}

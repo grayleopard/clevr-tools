@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import ReactCrop, {
   type Crop,
   type PixelCrop,
@@ -67,6 +68,7 @@ export default function ImageCropper() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const imgRef = useRef<HTMLImageElement>(null);
+  const [resetKey, setResetKey] = useState(0);
 
   const handleFiles = useCallback((files: File[]) => {
     if (files.length === 0) return;
@@ -82,6 +84,8 @@ export default function ImageCropper() {
     };
     reader.readAsDataURL(file);
   }, []);
+
+  useAutoLoadFile(handleFiles);
 
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -187,6 +191,7 @@ export default function ImageCropper() {
     setResult(null);
     setIsCircle(false);
     setAspect(undefined);
+    setResetKey((k) => k + 1);
   }, [result]);
 
   return (
@@ -198,6 +203,7 @@ export default function ImageCropper() {
           multiple={false}
           maxSizeMB={50}
           onFiles={handleFiles}
+          resetKey={resetKey}
         />
       )}
 
