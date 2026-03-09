@@ -29,6 +29,10 @@ const cspDirectives = [
 ];
 
 const nextConfig: NextConfig = {
+  // pdf-parse@1.x uses __dirname and test-file path detection that break
+  // when bundled by Turbopack. Exclude it from bundling so Node.js resolves
+  // it directly from node_modules at runtime.
+  serverExternalPackages: ["pdf-parse"],
   experimental: {
     cssChunking: "strict",
     inlineCss: true,
@@ -39,6 +43,31 @@ const nextConfig: NextConfig = {
       {
         source: "/files/image-resizer",
         destination: "/tools/resize-image",
+        permanent: true,
+      },
+      {
+        source: "/generate/url-encoder",
+        destination: "/dev/url-encoder",
+        permanent: true,
+      },
+      {
+        source: "/generate/base64",
+        destination: "/dev/base64",
+        permanent: true,
+      },
+      {
+        source: "/generate/json-formatter",
+        destination: "/dev/json-formatter",
+        permanent: true,
+      },
+      {
+        source: "/generate/color-picker",
+        destination: "/dev/color-picker",
+        permanent: true,
+      },
+      {
+        source: "/generate/uuid",
+        destination: "/dev/uuid",
         permanent: true,
       },
     ];
