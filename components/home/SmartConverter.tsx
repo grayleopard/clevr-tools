@@ -278,11 +278,11 @@ function DetectedView({
   const isPreviewable = detected.previewUrl !== null;
 
   return (
-    <div className="animate-in fade-in duration-250">
+    <div>
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
 
-        {/* File info card — slides in from the left */}
-        <div className="animate-in fade-in slide-in-from-left-3 duration-300 flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+        {/* File info card */}
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
           {/* Thumbnail or icon */}
           <div className="flex items-center justify-center overflow-hidden rounded-lg bg-muted/40 h-36">
             {isPreviewable ? (
@@ -290,12 +290,12 @@ function DetectedView({
               <img
                 src={detected.previewUrl!}
                 alt={detected.file.name}
-                className="h-full w-full object-contain animate-in fade-in zoom-in-95 duration-300"
+                className="h-full w-full object-contain"
               />
             ) : (
               <FileTypeIcon
                 type={detected.type}
-                className="h-12 w-12 text-muted-foreground animate-in zoom-in-75 fade-in duration-200"
+                className="h-12 w-12 text-muted-foreground"
               />
             )}
           </div>
@@ -306,22 +306,15 @@ function DetectedView({
               {truncateFilename(detected.file.name, 28)}
             </p>
             <div className="flex flex-wrap gap-1.5">
-              {/* Badge pops in with a slight delay after the card */}
-              <span
-                className="animate-in zoom-in-75 fade-in duration-200 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary uppercase"
-                style={{ animationDelay: "80ms" }}
-              >
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary uppercase">
                 {detected.type === "unknown" ? "File" : detected.type}
               </span>
-              <span
-                className="animate-in fade-in duration-200 text-xs text-muted-foreground self-center"
-                style={{ animationDelay: "100ms" }}
-              >
+              <span className="text-xs text-muted-foreground self-center">
                 {formatBytes(detected.file.size)}
               </span>
             </div>
             {detected.dimensions && (
-              <p className="animate-in fade-in duration-200 text-xs text-muted-foreground" style={{ animationDelay: "120ms" }}>
+              <p className="text-xs text-muted-foreground">
                 {detected.dimensions.width} × {detected.dimensions.height}
               </p>
             )}
@@ -338,11 +331,8 @@ function DetectedView({
           </button>
         </div>
 
-        {/* Action cards panel — slides in from the right, with stagger per card */}
-        <div
-          className="animate-in fade-in slide-in-from-right-3 duration-300 flex flex-col gap-3"
-          style={{ animationDelay: "50ms" }}
-        >
+        {/* Action cards panel */}
+        <div className="flex flex-col gap-3">
           <p className="text-sm font-semibold text-foreground">{typeLabel} detected — what do you want to do?</p>
           {actions.length === 0 ? (
             <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
@@ -352,7 +342,7 @@ function DetectedView({
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-              {actions.map((actionId, i) => {
+              {actions.map((actionId) => {
                 const def = ACTION_DEFS[actionId];
                 const Icon = def.icon;
                 const isNavigating = navigatingAction === actionId;
@@ -363,11 +353,9 @@ function DetectedView({
                     key={actionId}
                     onClick={() => onAction(actionId)}
                     disabled={navigatingAction !== null}
-                    style={{ animationDelay: `${110 + i * 65}ms` }}
                     className={[
-                      "animate-in fade-in slide-in-from-bottom-2 duration-300",
                       "group flex items-start gap-3 rounded-xl border bg-background p-4 text-left",
-                      "transition-all duration-150",
+                      "transition-[border-color,background-color,opacity,transform] duration-150",
                       isNavigating
                         ? "border-primary/50 bg-primary/5 scale-[0.98] shadow-sm"
                         : isOtherNavigating
@@ -624,7 +612,7 @@ export default function SmartConverter({
           </div>
         )}
 
-        {/* Both views always in DOM — toggled with display + opacity only */}
+        {/* Both views always in DOM — toggled with visibility + opacity */}
 
         {/* Idle view: hidden instantly via display:none */}
         <div style={{ display: stage === "idle" ? "block" : "none" }}>
@@ -644,13 +632,15 @@ export default function SmartConverter({
           />
         </div>
 
-        {/* Detected view: fades in via opacity transition */}
+        {/* Detected view: pre-laid-out with visibility:hidden, fades in via opacity */}
         <div
           style={{
-            display: detected ? "block" : "none",
+            visibility: stage === "detected" ? "visible" : "hidden",
             opacity: stage === "detected" ? 1 : 0,
             pointerEvents: stage === "detected" ? "auto" : "none",
-            transition: "opacity 150ms ease",
+            transition: "opacity 200ms ease",
+            // When hidden, collapse so idle view layout isn't affected
+            ...(stage !== "detected" ? { position: "absolute" as const, left: 0, right: 0, top: 0 } : {}),
           }}
         >
           {detected && (
