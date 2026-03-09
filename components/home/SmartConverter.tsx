@@ -624,53 +624,42 @@ export default function SmartConverter({
           </div>
         )}
 
-        {/* Crossfade container — both views stay in DOM, only opacity changes */}
-        <div className="relative">
-          {/* Idle view */}
-          <div
-            className="transition-[opacity,transform] duration-200 ease-out"
-            style={{
-              opacity: stage === "idle" ? 1 : 0,
-              transform: stage === "idle" ? "scale(1)" : "scale(0.97)",
-              pointerEvents: stage === "idle" ? "auto" : "none",
-              // When detected, collapse idle view so detected flows naturally
-              ...(stage !== "idle" ? { position: "absolute" as const, inset: 0 } : {}),
-            }}
-          >
-            <IdleView
-              isDraggingOver={dropZoneDragging}
-              onDragEnter={(e) => { e.stopPropagation(); setDropZoneDragging(true); }}
-              onDragLeave={(e) => { e.stopPropagation(); setDropZoneDragging(false); }}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setDropZoneDragging(false);
-                const file = e.dataTransfer.files[0];
-                if (file) processFile(file);
-              }}
-              onBrowse={() => fileInputRef.current?.click()}
-            />
-          </div>
+        {/* Both views always in DOM — toggled with display + opacity only */}
 
-          {/* Detected view */}
+        {/* Idle view: hidden instantly via display:none */}
+        <div style={{ display: stage === "idle" ? "block" : "none" }}>
+          <IdleView
+            isDraggingOver={dropZoneDragging}
+            onDragEnter={(e) => { e.stopPropagation(); setDropZoneDragging(true); }}
+            onDragLeave={(e) => { e.stopPropagation(); setDropZoneDragging(false); }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setDropZoneDragging(false);
+              const file = e.dataTransfer.files[0];
+              if (file) processFile(file);
+            }}
+            onBrowse={() => fileInputRef.current?.click()}
+          />
+        </div>
+
+        {/* Detected view: fades in via opacity transition */}
+        <div
+          style={{
+            display: detected ? "block" : "none",
+            opacity: stage === "detected" ? 1 : 0,
+            pointerEvents: stage === "detected" ? "auto" : "none",
+            transition: "opacity 150ms ease",
+          }}
+        >
           {detected && (
-            <div
-              className="transition-[opacity,transform] duration-200 ease-out"
-              style={{
-                opacity: stage === "detected" ? 1 : 0,
-                transform: stage === "detected" ? "translateY(0)" : "translateY(8px)",
-                pointerEvents: stage === "detected" ? "auto" : "none",
-                ...(stage !== "detected" ? { position: "absolute" as const, inset: 0 } : {}),
-              }}
-            >
-              <DetectedView
-                detected={detected}
-                navigatingAction={navigatingAction}
-                onAction={handleAction}
-                onReset={reset}
-              />
-            </div>
+            <DetectedView
+              detected={detected}
+              navigatingAction={navigatingAction}
+              onAction={handleAction}
+              onReset={reset}
+            />
           )}
         </div>
       </div>
