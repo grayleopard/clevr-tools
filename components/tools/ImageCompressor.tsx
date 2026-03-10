@@ -15,6 +15,7 @@ import { addToast } from "@/lib/toast";
 
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
+import { TipJar } from "@/components/tool/TipJar";
 
 interface CompressedFile {
   file: File;
@@ -218,34 +219,38 @@ export default function ImageCompressor() {
               Download all as ZIP
             </button>
           )}
+          <TipJar />
         </div>
       )}
 
       {/* 5. Post-download state */}
       {downloaded && (
-        <PostDownloadState
-          toolSlug="image-compressor"
-          resetLabel="Compress another image"
-          onReset={reset}
-          redownloadSlot={
-            results.length === 1 ? (
-              <a
-                href={results[0].url}
-                download={results[0].file.name}
-                className="underline hover:text-foreground transition-colors"
-              >
-                Re-download {truncateFilename(results[0].file.name, 28)}
-              </a>
-            ) : (
-              <button
-                onClick={downloadAll}
-                className="underline hover:text-foreground transition-colors"
-              >
-                Re-download all as ZIP
-              </button>
-            )
-          }
-        />
+        <>
+          <PostDownloadState
+            toolSlug="image-compressor"
+            resetLabel="Compress another image"
+            onReset={reset}
+            redownloadSlot={
+              results.length === 1 ? (
+                <a
+                  href={results[0].url}
+                  download={results[0].file.name}
+                  className="underline hover:text-foreground transition-colors"
+                >
+                  Re-download {truncateFilename(results[0].file.name, 28)}
+                </a>
+              ) : (
+                <button
+                  onClick={downloadAll}
+                  className="underline hover:text-foreground transition-colors"
+                >
+                  Re-download all as ZIP
+                </button>
+              )
+            }
+          />
+          <TipJar />
+        </>
       )}
     </div>
   );

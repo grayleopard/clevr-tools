@@ -13,6 +13,7 @@ import FileDropZone from "@/components/tool/FileDropZone";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
 import { Download, X } from "lucide-react";
+import { TipJar } from "@/components/tool/TipJar";
 
 interface CropResult {
   blob: Blob;
@@ -314,6 +315,7 @@ export default function ImageCropper() {
               Download
             </a>
           </div>
+          <TipJar />
         </div>
       )}
     </div>

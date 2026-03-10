@@ -12,6 +12,7 @@ import { addToast } from "@/lib/toast";
 import { truncateFilename, formatBytes } from "@/lib/utils";
 import { loadPdfMake } from "@/lib/pdfmake-loader";
 import { sanitizeWordPreviewHtml } from "@/lib/security/word-preview-sanitizer.mjs";
+import { TipJar } from "@/components/tool/TipJar";
 import { X } from "lucide-react";
 
 type PageSize = "a4" | "letter";
@@ -420,27 +421,31 @@ export default function WordToPdf() {
             originalSize={result.originalSize}
             onDownload={() => setDownloaded(true)}
           />
+          <TipJar />
         </div>
       )}
 
       {/* 8. Post-download state */}
       {downloaded && (
-        <PostDownloadState
-          toolSlug="word-to-pdf"
-          resetLabel="Convert another document"
-          onReset={reset}
-          redownloadSlot={
-            result && (
-              <a
-                href={result.url}
-                download={result.filename}
-                className="underline hover:text-foreground transition-colors"
-              >
-                Re-download {truncateFilename(result.filename, 28)}
-              </a>
-            )
-          }
-        />
+        <>
+          <PostDownloadState
+            toolSlug="word-to-pdf"
+            resetLabel="Convert another document"
+            onReset={reset}
+            redownloadSlot={
+              result && (
+                <a
+                  href={result.url}
+                  download={result.filename}
+                  className="underline hover:text-foreground transition-colors"
+                >
+                  Re-download {truncateFilename(result.filename, 28)}
+                </a>
+              )
+            }
+          />
+          <TipJar />
+        </>
       )}
     </div>
   );

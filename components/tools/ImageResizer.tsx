@@ -8,6 +8,7 @@ import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
 
 import { Download, Package, Lock, Unlock, X } from "lucide-react";
+import { TipJar } from "@/components/tool/TipJar";
 
 interface UploadedImage {
   file: File;
@@ -526,6 +527,7 @@ export default function ImageResizer() {
               Download All as ZIP
             </button>
           )}
+          <TipJar />
         </div>
       )}
     </div>

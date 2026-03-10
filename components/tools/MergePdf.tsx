@@ -9,6 +9,7 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 
+import { TipJar } from "@/components/tool/TipJar";
 import { GripVertical, X, FileText } from "lucide-react";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
@@ -180,12 +181,15 @@ export default function MergePdf() {
 
           {/* Result */}
           {resultUrl && (
-            <DownloadCard
-              href={resultUrl}
-              filename={outputFilename}
-              fileSize={resultSize}
-              onDownload={() => setDownloaded(true)}
-            />
+            <>
+              <DownloadCard
+                href={resultUrl}
+                filename={outputFilename}
+                fileSize={resultSize}
+                onDownload={() => setDownloaded(true)}
+              />
+              <TipJar />
+            </>
           )}
         </div>
       )}
@@ -193,18 +197,21 @@ export default function MergePdf() {
       {isProcessing && <ProcessingIndicator label="Merging PDFs…" />}
 
       {downloaded && (
-        <PostDownloadState
-          toolSlug="merge-pdf"
-          resetLabel="Merge more PDFs"
-          onReset={reset}
-          redownloadSlot={
-            resultUrl ? (
-              <a href={resultUrl} download={outputFilename} className="underline hover:text-foreground transition-colors">
-                Re-download merged.pdf
-              </a>
-            ) : undefined
-          }
-        />
+        <>
+          <PostDownloadState
+            toolSlug="merge-pdf"
+            resetLabel="Merge more PDFs"
+            onReset={reset}
+            redownloadSlot={
+              resultUrl ? (
+                <a href={resultUrl} download={outputFilename} className="underline hover:text-foreground transition-colors">
+                  Re-download merged.pdf
+                </a>
+              ) : undefined
+            }
+          />
+          <TipJar />
+        </>
       )}
     </div>
   );

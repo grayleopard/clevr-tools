@@ -13,6 +13,7 @@ import { Slider } from "@/components/ui/slider";
 import { toJpg } from "@/lib/processors";
 import { addToast } from "@/lib/toast";
 import { truncateFilename } from "@/lib/utils";
+import { TipJar } from "@/components/tool/TipJar";
 
 interface Result {
   url: string;
@@ -157,25 +158,29 @@ export default function PngToJpg() {
             originalSize={result.originalSize}
             onDownload={() => setDownloaded(true)}
           />
+          <TipJar />
         </div>
       )}
 
       {/* 5. Post-download state */}
       {downloaded && result && (
-        <PostDownloadState
-          toolSlug="png-to-jpg"
-          resetLabel="Convert another file"
-          onReset={reset}
-          redownloadSlot={
-            <a
-              href={result.url}
-              download={result.filename}
-              className="underline hover:text-foreground transition-colors"
-            >
-              Re-download {truncateFilename(result.filename, 28)}
-            </a>
-          }
-        />
+        <>
+          <PostDownloadState
+            toolSlug="png-to-jpg"
+            resetLabel="Convert another file"
+            onReset={reset}
+            redownloadSlot={
+              <a
+                href={result.url}
+                download={result.filename}
+                className="underline hover:text-foreground transition-colors"
+              >
+                Re-download {truncateFilename(result.filename, 28)}
+              </a>
+            }
+          />
+          <TipJar />
+        </>
       )}
     </div>
   );

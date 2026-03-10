@@ -10,6 +10,7 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { renderAllThumbnails } from "@/lib/pdf-utils";
 
+import { TipJar } from "@/components/tool/TipJar";
 import { RotateCw } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
@@ -236,30 +237,36 @@ export default function RotatePdf() {
           {isProcessing && <ProcessingIndicator label="Applying rotations…" />}
 
           {resultUrl && !isProcessing && (
-            <DownloadCard
-              href={resultUrl}
-              filename={outputFilename}
-              fileSize={resultSize}
-              originalSize={file?.size}
-              onDownload={() => setDownloaded(true)}
-            />
+            <>
+              <DownloadCard
+                href={resultUrl}
+                filename={outputFilename}
+                fileSize={resultSize}
+                originalSize={file?.size}
+                onDownload={() => setDownloaded(true)}
+              />
+              <TipJar />
+            </>
           )}
         </div>
       )}
 
       {downloaded && (
-        <PostDownloadState
-          toolSlug="rotate-pdf"
-          resetLabel="Rotate another PDF"
-          onReset={reset}
-          redownloadSlot={
-            resultUrl ? (
-              <a href={resultUrl} download={outputFilename} className="underline hover:text-foreground transition-colors">
-                Re-download {outputFilename}
-              </a>
-            ) : undefined
-          }
-        />
+        <>
+          <PostDownloadState
+            toolSlug="rotate-pdf"
+            resetLabel="Rotate another PDF"
+            onReset={reset}
+            redownloadSlot={
+              resultUrl ? (
+                <a href={resultUrl} download={outputFilename} className="underline hover:text-foreground transition-colors">
+                  Re-download {outputFilename}
+                </a>
+              ) : undefined
+            }
+          />
+          <TipJar />
+        </>
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 import { renderAllThumbnails, parsePageRange } from "@/lib/pdf-utils";
+import { TipJar } from "@/components/tool/TipJar";
 import { Download, Package, RotateCcw, CheckSquare, Square } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
@@ -302,6 +303,7 @@ export default function SplitPdf() {
               Download all {results.length} pages as ZIP
             </button>
           )}
+          <TipJar />
           {downloaded && (
             <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 dark:border-green-900/40 dark:bg-green-950/20">
               <p className="text-sm text-green-700 dark:text-green-400">Downloaded!</p>

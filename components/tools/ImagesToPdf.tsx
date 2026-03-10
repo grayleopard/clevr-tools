@@ -9,6 +9,7 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { usePasteImage } from "@/lib/usePasteImage";
 import { addToast } from "@/lib/toast";
 import type { PDFDocument } from "pdf-lib";
+import { TipJar } from "@/components/tool/TipJar";
 import { GripVertical, X, FileText } from "lucide-react";
 import { formatBytes } from "@/lib/utils";
 
@@ -394,6 +395,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
                   </a>
                 </div>
               </div>
+              <TipJar />
             </div>
           )}
         </div>
@@ -403,18 +405,21 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
 
       {/* Post-download */}
       {downloaded && (
-        <PostDownloadState
-          toolSlug={toolSlug}
-          resetLabel={resetLabel}
-          onReset={reset}
-          redownloadSlot={
-            resultUrl ? (
-              <a href={resultUrl} download={outputFilename} className="underline hover:text-foreground transition-colors">
-                Re-download {outputFilename}
-              </a>
-            ) : undefined
-          }
-        />
+        <>
+          <PostDownloadState
+            toolSlug={toolSlug}
+            resetLabel={resetLabel}
+            onReset={reset}
+            redownloadSlot={
+              resultUrl ? (
+                <a href={resultUrl} download={outputFilename} className="underline hover:text-foreground transition-colors">
+                  Re-download {outputFilename}
+                </a>
+              ) : undefined
+            }
+          />
+          <TipJar />
+        </>
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
+import { TipJar } from "@/components/tool/TipJar";
 import {
   CalendarDays,
   CheckSquare,
@@ -948,6 +949,7 @@ export default function PdfToFillablePdf() {
               >
                 Start Over
               </button>
+              <TipJar />
             </div>
           </aside>
         </div>

@@ -11,6 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { Download, Package, FileImage, RotateCcw } from "lucide-react";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 import { FileXRayTrigger } from "@/components/xray/FileXRay";
+import { TipJar } from "@/components/tool/TipJar";
 
 interface PageResult {
   blob: Blob;
@@ -390,6 +391,7 @@ export default function PdfToJpg() {
               Download all {results.length} pages as ZIP
             </button>
           )}
+          <TipJar />
           {downloaded && (
             <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 dark:border-green-900/40 dark:bg-green-950/20">
               <p className="text-sm text-green-700 dark:text-green-400">Downloaded! Need to convert another PDF?</p>

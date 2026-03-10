@@ -15,6 +15,7 @@ import { addToast } from "@/lib/toast";
 
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
+import { TipJar } from "@/components/tool/TipJar";
 
 interface Result {
   url: string;
@@ -187,34 +188,38 @@ export default function HeicToJpg() {
               Download all as ZIP
             </button>
           )}
+          <TipJar />
         </div>
       )}
 
       {/* 5. Post-download state */}
       {downloaded && (
-        <PostDownloadState
-          toolSlug="heic-to-jpg"
-          resetLabel="Convert another file"
-          onReset={reset}
-          redownloadSlot={
-            results.length === 1 ? (
-              <a
-                href={results[0].url}
-                download={results[0].filename}
-                className="underline hover:text-foreground transition-colors"
-              >
-                Re-download {truncateFilename(results[0].filename, 28)}
-              </a>
-            ) : (
-              <button
-                onClick={downloadAll}
-                className="underline hover:text-foreground transition-colors"
-              >
-                Re-download all as ZIP
-              </button>
-            )
-          }
-        />
+        <>
+          <PostDownloadState
+            toolSlug="heic-to-jpg"
+            resetLabel="Convert another file"
+            onReset={reset}
+            redownloadSlot={
+              results.length === 1 ? (
+                <a
+                  href={results[0].url}
+                  download={results[0].filename}
+                  className="underline hover:text-foreground transition-colors"
+                >
+                  Re-download {truncateFilename(results[0].filename, 28)}
+                </a>
+              ) : (
+                <button
+                  onClick={downloadAll}
+                  className="underline hover:text-foreground transition-colors"
+                >
+                  Re-download all as ZIP
+                </button>
+              )
+            }
+          />
+          <TipJar />
+        </>
       )}
     </div>
   );
