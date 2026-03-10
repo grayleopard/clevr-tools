@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Copy, Trash2, ClipboardPaste } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Stats calculation ─────────────────────────────────────────────────────
 
@@ -163,6 +164,8 @@ export default function WordCounter() {
           <span className="text-xs text-muted-foreground/60">characters</span>
         </div>
       </div>
+
+      <TipJar />
     </div>
   );
 }

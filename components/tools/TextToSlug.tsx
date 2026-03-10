@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Copy, Trash2, ClipboardPaste } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Slug conversion ───────────────────────────────────────────────────────
 
@@ -125,6 +126,8 @@ export default function TextToSlug() {
           </div>
         )}
       </div>
+
+      <TipJar />
 
       {/* Examples */}
       <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">

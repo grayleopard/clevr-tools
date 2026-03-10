@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Copy, Trash2, ClipboardPaste, Check, X } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 type IndentType = "2" | "4" | "tab";
 
@@ -220,6 +221,8 @@ export default function JsonFormatter() {
           className="w-full bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none resize-y min-h-[200px] font-mono"
         />
       </div>
+
+      <TipJar />
     </div>
   );
 }

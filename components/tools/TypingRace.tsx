@@ -8,6 +8,7 @@ import {
   getPersonalBest,
 } from "@/lib/typing-stats";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
 
@@ -638,6 +639,8 @@ export default function TypingRace() {
           </div>
         </div>
       )}
+
+      <TipJar />
 
       <TypingHistory tool="race" refreshTrigger={historyRefresh} />
     </div>

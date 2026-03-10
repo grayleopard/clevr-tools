@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import { Copy, Trash2 } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 type Mode = "component" | "uri";
 
@@ -219,6 +220,8 @@ export default function UrlEncoderDecoder() {
           </p>
         </div>
       )}
+
+      <TipJar />
     </div>
   );
 }

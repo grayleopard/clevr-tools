@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 
 function countBusinessDays(start: Date, end: Date): number {
   let count = 0;
@@ -205,6 +206,8 @@ export default function DateDifference() {
           </div>
         </>
       )}
+
+      <TipJar />
     </div>
   );
 }

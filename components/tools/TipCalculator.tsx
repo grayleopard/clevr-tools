@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 
 const TIP_PRESETS = [10, 15, 18, 20, 25];
 
@@ -130,6 +131,8 @@ export default function TipCalculator() {
           )}
         </div>
       )}
+
+      <TipJar />
     </div>
   );
 }

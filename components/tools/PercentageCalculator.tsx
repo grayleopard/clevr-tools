@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Copy } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -244,6 +245,8 @@ export default function PercentageCalculator() {
           <p className="text-sm text-muted-foreground font-mono">{formula}</p>
         )}
       </div>
+
+      <TipJar />
     </div>
   );
 }

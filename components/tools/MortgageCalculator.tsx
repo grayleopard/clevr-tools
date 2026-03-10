@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -383,6 +384,8 @@ export default function MortgageCalculator() {
           )}
         </>
       )}
+
+      <TipJar />
     </div>
   );
 }

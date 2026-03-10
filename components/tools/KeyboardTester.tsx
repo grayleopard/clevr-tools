@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { RotateCcw } from "lucide-react";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -266,6 +267,8 @@ export default function KeyboardTester() {
       <p className="text-xs text-muted-foreground text-center sm:hidden">
         A physical keyboard is required to use this tool.
       </p>
+
+      <TipJar />
     </div>
   );
 }

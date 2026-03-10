@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 import { Plus, Trash2, Download, Upload } from "lucide-react";
 import { loadPdfMake } from "@/lib/pdfmake-loader";
 
@@ -915,6 +916,8 @@ export default function InvoiceGenerator() {
             <Download className="h-4 w-4" />
             {isGenerating ? "Generating\u2026" : "Download PDF"}
           </button>
+
+          <TipJar />
         </div>
       </div>
     </div>

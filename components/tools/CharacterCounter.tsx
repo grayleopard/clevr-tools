@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Trash2, ClipboardPaste } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Platform limits ────────────────────────────────────────────────────────
 
@@ -145,6 +146,8 @@ export default function CharacterCounter() {
           })}
         </div>
       </div>
+
+      <TipJar />
     </div>
   );
 }

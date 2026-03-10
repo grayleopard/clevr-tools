@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import { Copy } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Color conversion utilities ─────────────────────────────────────────────
 
@@ -479,6 +480,8 @@ export default function ColorPicker() {
           </div>
         </div>
       </div>
+
+      <TipJar />
 
       {/* Recent colors */}
       {recentColors.length > 0 && (

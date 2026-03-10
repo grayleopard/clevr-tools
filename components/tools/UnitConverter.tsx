@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { ArrowLeftRight, Copy } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Unit definitions ───────────────────────────────────────────────────────
 
@@ -418,6 +419,8 @@ export default function UnitConverter() {
           </div>
         )}
       </div>
+
+      <TipJar />
     </div>
   );
 }

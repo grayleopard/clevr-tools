@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Copy } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Random helpers ─────────────────────────────────────────────────────────
 
@@ -264,6 +265,8 @@ export default function RandomNumberGenerator() {
           )}
         </div>
       )}
+
+      <TipJar />
 
       {/* Quick actions */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">

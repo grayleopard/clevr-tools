@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { Copy, RefreshCw, Check } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Character sets ─────────────────────────────────────────────────────────
 
@@ -413,6 +414,8 @@ export default function PasswordGenerator() {
           )}
         </div>
       </div>
+
+      <TipJar />
 
       {/* Multi-generate */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-4">

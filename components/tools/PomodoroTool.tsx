@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, SkipForward, RotateCcw, Settings } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 type SessionType = "focus" | "short-break" | "long-break";
 type Status = "idle" | "running" | "paused" | "done";
@@ -450,6 +451,8 @@ export default function PomodoroTool() {
           </div>
         )}
       </div>
+
+      <TipJar />
     </div>
   );
 }

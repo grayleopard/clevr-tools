@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 
 const DISCOUNT_PRESETS = [10, 15, 20, 25, 30, 50, 75];
 
@@ -258,6 +259,8 @@ export default function DiscountCalculator() {
           )}
         </>
       )}
+
+      <TipJar />
     </div>
   );
 }

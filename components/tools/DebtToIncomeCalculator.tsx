@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { TipJar } from "@/components/tool/TipJar";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -166,6 +167,8 @@ export default function DebtToIncomeCalculator() {
           </div>
         </>
       )}
+
+      <TipJar />
 
       {/* SEO Content */}
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">

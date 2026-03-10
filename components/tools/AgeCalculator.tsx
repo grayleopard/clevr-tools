@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 
 const ZODIAC = [
   { sign: "Capricorn", emoji: "\u2651", end: [1, 19] },
@@ -263,6 +264,8 @@ export default function AgeCalculator() {
           </div>
         </>
       )}
+
+      <TipJar />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Copy, RefreshCw } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Lorem ipsum word bank (200+ words) ────────────────────────────────────
 
@@ -148,6 +149,8 @@ export default function LoremGenerator() {
           className="w-full bg-background px-4 py-3 text-sm text-foreground focus:outline-none resize-y min-h-[240px] cursor-text"
         />
       </div>
+
+      <TipJar />
     </div>
   );
 }

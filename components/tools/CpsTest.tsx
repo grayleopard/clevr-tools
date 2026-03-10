@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { saveSession, updateStreak, getPersonalBest, getSessions } from "@/lib/typing-stats";
+import { TipJar } from "@/components/tool/TipJar";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
 
@@ -261,6 +262,8 @@ export default function CpsTest() {
           </div>
         </div>
       )}
+
+      <TipJar />
 
       {/* History */}
       <TypingHistory tool="cps-test" refreshTrigger={historyRefresh} />

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { TipJar } from "@/components/tool/TipJar";
 
 type InputMode = "manual" | "calculate";
 type Gender = "male" | "female";
@@ -232,6 +233,8 @@ export default function MacroCalculator() {
           </div>
         </>
       )}
+
+      <TipJar />
 
       {/* SEO Content */}
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 import { converterConfigs } from "@/lib/conversions";
 import type { UnitConverterConfig } from "@/lib/conversions";
 
@@ -208,6 +209,8 @@ export default function UnitConverterPage({
           </tbody>
         </table>
       </div>
+
+      <TipJar />
 
       {/* SEO content */}
       {seoContent && (

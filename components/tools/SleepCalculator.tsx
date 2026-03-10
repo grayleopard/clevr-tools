@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 
 type Mode = "wake" | "sleep";
 
@@ -163,6 +164,8 @@ export default function SleepCalculator() {
           Based on {fallAsleep} minutes to fall asleep. Each sleep cycle is approximately 90 minutes.
         </p>
       </div>
+
+      <TipJar />
 
       {/* SEO Content */}
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">

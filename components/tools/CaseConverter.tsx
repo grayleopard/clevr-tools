@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Copy, Trash2, ClipboardPaste } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Conversion functions ──────────────────────────────────────────────────
 
@@ -202,6 +203,8 @@ export default function CaseConverter() {
           {output || "Select a case format above to convert your text…"}
         </div>
       </div>
+
+      <TipJar />
     </div>
   );
 }

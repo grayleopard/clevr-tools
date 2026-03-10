@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 const PRESETS = [
   { label: "1 min", seconds: 60 },
@@ -324,6 +325,8 @@ export default function TimerTool() {
           </div>
         </div>
       )}
+
+      <TipJar />
     </div>
   );
 }

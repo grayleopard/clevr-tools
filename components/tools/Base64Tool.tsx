@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from "react";
 import { Copy, Trash2 } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 function encodeBase64(text: string): string {
   return btoa(unescape(encodeURIComponent(text)));
@@ -163,6 +164,8 @@ export default function Base64Tool() {
           </p>
         </div>
       )}
+
+      <TipJar />
     </div>
   );
 }

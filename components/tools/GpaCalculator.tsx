@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { Plus, X } from "lucide-react";
+import { TipJar } from "@/components/tool/TipJar";
 
 const GRADE_MAP: Record<string, number> = {
   "A+": 4.0,
@@ -277,6 +278,8 @@ export default function GpaCalculator() {
           </div>
         )}
       </div>
+
+      <TipJar />
     </div>
   );
 }

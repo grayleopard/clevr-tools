@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TipJar } from "@/components/tool/TipJar";
 
 type Method = "lmp" | "conception" | "ivf";
 type IvfType = "3day" | "5day";
@@ -201,6 +202,8 @@ export default function DueDateCalculator() {
           </div>
         </>
       )}
+
+      <TipJar />
 
       {/* SEO Content */}
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">

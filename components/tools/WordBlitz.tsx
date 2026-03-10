@@ -8,6 +8,7 @@ import {
   getSessions,
 } from "@/lib/typing-stats";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
 
@@ -582,6 +583,8 @@ export default function WordBlitz() {
           </div>
         </div>
       )}
+
+      <TipJar />
 
       <TypingHistory tool="word-blitz" refreshTrigger={historyRefresh} />
     </div>

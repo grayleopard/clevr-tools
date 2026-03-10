@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Copy, RefreshCw } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 function uuidFromBytes(): string {
   const bytes = new Uint8Array(16);
@@ -181,6 +182,8 @@ export default function UUIDGenerator() {
           Hyphens
         </label>
       </div>
+
+      <TipJar />
 
       {/* Bulk generate */}
       <div className="rounded-xl border border-border bg-card p-4 space-y-4">

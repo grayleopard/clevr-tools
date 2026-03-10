@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, RotateCcw, Flag, Copy, Trash2 } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 interface Lap {
   lapTime: number;
@@ -241,6 +242,8 @@ export default function StopwatchTool() {
           </div>
         </div>
       )}
+
+      <TipJar />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Copy, Trash2, ClipboardPaste } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 
 // ─── Operations ────────────────────────────────────────────────────────────
 
@@ -201,6 +202,8 @@ export default function RemoveLineBreaks() {
           {output || "Select an operation above to clean your text…"}
         </div>
       </div>
+
+      <TipJar />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { saveSession, updateStreak, getSessions } from "@/lib/typing-stats";
+import { TipJar } from "@/components/tool/TipJar";
 import TypingHistory from "./TypingHistory";
 
 const TOTAL_ROUNDS = 5;
@@ -263,6 +264,8 @@ export default function ReactionTime() {
           </div>
         </div>
       )}
+
+      <TipJar />
 
       {/* History */}
       <TypingHistory tool="reaction-time" refreshTrigger={historyRefresh} />

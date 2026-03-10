@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { RotateCcw, Copy, ChevronDown, ChevronUp, Volume2, VolumeX } from "lucide-react";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 import { english200, quotes, passages, advancedPassages } from "@/lib/word-lists";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -1107,6 +1108,8 @@ export default function TypingTest() {
             <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">Enter</kbd>
             {" to restart"}
           </p>
+
+          <TipJar />
         </div>
       )}
     </div>

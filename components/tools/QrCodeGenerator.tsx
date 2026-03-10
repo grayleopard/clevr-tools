@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QRCode from "qrcode";
 import { Download } from "lucide-react";
 import PostDownloadState from "@/components/tool/PostDownloadState";
+import { TipJar } from "@/components/tool/TipJar";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 type QRSize = 128 | 256 | 512 | 1024;
@@ -224,6 +225,8 @@ export default function QrCodeGenerator() {
           )}
         </div>
       </div>
+
+      <TipJar />
 
       {/* Post-download state */}
       {downloaded && (

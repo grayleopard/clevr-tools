@@ -10,6 +10,7 @@ import {
   getWeakKeys,
 } from "@/lib/typing-stats";
 import { addToast } from "@/lib/toast";
+import { TipJar } from "@/components/tool/TipJar";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
 
@@ -972,6 +973,8 @@ export default function TypingPractice() {
           </div>
         </div>
       ) : null}
+
+      <TipJar />
 
       <TypingHistory tool="typing-practice" refreshTrigger={historyRefresh} />
     </div>
