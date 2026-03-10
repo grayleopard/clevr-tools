@@ -256,7 +256,7 @@ function XRayResults({
                 key={i}
                 onClick={() => {
                   const route = TOOL_ROUTES[action.toolSlug];
-                  if (route) window.open(route, "_blank");
+                  if (route) window.open(route, "_blank", "noopener,noreferrer");
                 }}
                 className="inline-flex items-center gap-1.5 rounded-full border border-[var(--clr-accent)]/30 bg-[var(--clr-accent-muted)] px-3 py-1.5 text-xs font-medium text-[var(--clr-accent)] hover:bg-[var(--clr-accent)] hover:text-white transition-colors"
               >

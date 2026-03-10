@@ -21,6 +21,7 @@ export default function DailyChallengeBanner() {
 
   useEffect(() => {
     const today = getUTCDateString();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser localStorage on mount
     setPuzzleNumber(getPuzzleNumber(today));
     const todayState = getTodayState();
     const stats = getStats();

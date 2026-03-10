@@ -68,6 +68,7 @@ export default function FileDropZone({
   useEffect(() => {
     if (resetKey !== undefined && resetKey !== prevResetKey.current) {
       prevResetKey.current = resetKey;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting internal state in response to parent resetKey prop change
       setLoadedFiles([]);
       setState("idle");
       setErrorMsg("");

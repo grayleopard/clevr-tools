@@ -744,7 +744,6 @@ export default function NumbleGame() {
     }
 
     setStats(getStats());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function initTiles(

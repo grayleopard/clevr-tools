@@ -13,6 +13,7 @@ export default function StreakDisplay() {
     const streak = getStreak();
     const stats = getTotalStats();
     if (streak.current >= 2 && stats.totalTests >= 1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading localStorage stats on mount (browser API)
       setData({ streak: streak.current, tests: stats.totalTests });
     }
   }, []);

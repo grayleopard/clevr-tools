@@ -19,6 +19,9 @@ const cspDirectives = [
   "form-action 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",
+  // SECURITY DEBT: 'unsafe-inline' is required for the analytics queue stub
+  // (components/analytics/DeferredAnalytics.tsx) which injects an inline <script>.
+  // TODO: Replace with nonce-based CSP when Next.js middleware supports per-request nonces.
   `script-src ${scriptSrc.join(" ")}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://www.google-analytics.com https://stats.g.doubleclick.net",

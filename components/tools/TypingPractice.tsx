@@ -9,7 +9,6 @@ import {
   updateWeakKeys,
   getWeakKeys,
 } from "@/lib/typing-stats";
-import { addToast } from "@/lib/toast";
 import { TipJar } from "@/components/tool/TipJar";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
@@ -628,7 +627,8 @@ export default function TypingPractice() {
 
   // onChange is now a no-op since we handle all input via keydown + preventDefault
   const handleChange = useCallback(
-    (_e: React.ChangeEvent<HTMLInputElement>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_: React.ChangeEvent<HTMLInputElement>) => {
       // All input is handled in handleKeyDown to allow preventDefault on all keys
     },
     []

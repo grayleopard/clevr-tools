@@ -133,15 +133,15 @@ export default function WordBlitz() {
   const [currentInput, setCurrentInput] = useState("");
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
-  const [longestStreak, setLongestStreak] = useState(0);
-  const [wordsCompleted, setWordsCompleted] = useState(0);
+  const [, setLongestStreak] = useState(0);
+  const [, setWordsCompleted] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isFocused, setIsFocused] = useState(false);
   const [inputBorderState, setInputBorderState] = useState<
     "default" | "correct" | "error"
   >("default");
-  const [correctCharsTotal, setCorrectCharsTotal] = useState(0);
-  const [totalCharsTotal, setTotalCharsTotal] = useState(0);
+  const [, setCorrectCharsTotal] = useState(0);
+  const [, setTotalCharsTotal] = useState(0);
   const [result, setResult] = useState<{
     score: number;
     wpm: number;

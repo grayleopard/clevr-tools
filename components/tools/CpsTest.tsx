@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
-import { saveSession, updateStreak, getPersonalBest, getSessions } from "@/lib/typing-stats";
+import { useState, useRef, useEffect } from "react";
+import { saveSession, updateStreak, getPersonalBest } from "@/lib/typing-stats";
 import { TipJar } from "@/components/tool/TipJar";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
@@ -50,6 +50,7 @@ export default function CpsTest() {
   // Reset when duration changes (and we're idle)
   useEffect(() => {
     if (status === "idle") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting timer state when game status changes
       setTimeLeft(duration);
       setClicks(0);
       clicksRef.current = 0;

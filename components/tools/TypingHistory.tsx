@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getSessions, getWeakKeys, getPersonalBest } from "@/lib/typing-stats";
+import { getSessions, getWeakKeys } from "@/lib/typing-stats";
 import type { TypingSession } from "@/lib/typing-stats";
 
 interface Props {

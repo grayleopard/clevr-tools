@@ -128,6 +128,7 @@ export default function KeyboardTester() {
 
   // Detect Mac
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading navigator.platform on mount (browser API)
     setIsMac(navigator.platform.toLowerCase().includes("mac"));
   }, []);
 

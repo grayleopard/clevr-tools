@@ -42,7 +42,7 @@ export default function MacroCalculator() {
     const h = parseFloat(heightCm) || 0;
     const w = parseFloat(weightKg) || 0;
     if (a <= 0 || h <= 0 || w <= 0) return 0;
-    let bmr = gender === "male"
+    const bmr = gender === "male"
       ? 10 * w + 6.25 * h - 5 * a + 5
       : 10 * w + 6.25 * h - 5 * a - 161;
     return Math.round(bmr * ACTIVITIES[activityIdx].multiplier);

@@ -343,7 +343,8 @@ export default function TypingRace() {
   );
 
   const handleChange = useCallback(
-    (_e: React.ChangeEvent<HTMLInputElement>) => {},
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_: React.ChangeEvent<HTMLInputElement>) => {},
     []
   );
 

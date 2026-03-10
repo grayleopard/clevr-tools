@@ -442,7 +442,8 @@ export default function WpmTest() {
 
   // onChange is now a no-op since we handle all input via keydown + preventDefault
   const handleChange = useCallback(
-    (_e: React.ChangeEvent<HTMLInputElement>) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (_: React.ChangeEvent<HTMLInputElement>) => {
       // All input is handled in handleKeyDown to allow preventDefault on all keys
     },
     []

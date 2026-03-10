@@ -97,6 +97,7 @@ export default function ReactionTime() {
     }
 
     if (roundState === "ready") {
+      // eslint-disable-next-line react-hooks/purity -- called inside click handler, not during render
       const reactionTime = Math.round(performance.now() - greenTimestampRef.current);
       setLastReactionTime(reactionTime);
       setRoundState("showing-result");
