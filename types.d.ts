@@ -26,3 +26,9 @@ declare module "html-to-pdfmake" {
   ): unknown[];
   export = htmlToPdfmake;
 }
+
+declare module "pdfjs-dist/legacy/build/pdf.worker.mjs" {
+  export const WorkerMessageHandler: {
+    setup: (handler: unknown, port: unknown) => void;
+  };
+}

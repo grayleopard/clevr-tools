@@ -4,6 +4,8 @@ import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PdfToJpg from "@/components/tools/PdfToJpg";
+import FileXRay from "@/components/xray/FileXRay";
+import { PdfXRayProvider } from "@/lib/xray/pdf-xray-context";
 import { notFound } from "next/navigation";
 
 const tool = getToolBySlug("pdf-to-jpg")!;
@@ -17,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: tool.metaTitle,
       description: tool.metaDescription,
-      url: `https://clevr.tools${tool.route}`,
+      url: `https://www.clevr.tools${tool.route}`,
       siteName: "clevr.tools",
       images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     },
@@ -27,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: tool.metaDescription,
     },
     alternates: {
-      canonical: `https://clevr.tools${tool.route}`,
+      canonical: `https://www.clevr.tools${tool.route}`,
     },
   };
 }
@@ -36,7 +38,10 @@ export default function PdfToJpgPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <PdfToJpg />
+      <PdfXRayProvider>
+        <PdfToJpg />
+        <FileXRay showTrigger={false} />
+      </PdfXRayProvider>
       <FaqSchema items={faqItems} />
     </ToolLayout>
   );

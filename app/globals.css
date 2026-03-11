@@ -21,6 +21,10 @@
   --clr-accent-muted: rgba(59, 130, 246, 0.08);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --scan-line: rgba(59, 130, 246, 0.7);
+  --scan-glow: rgba(59, 130, 246, 0.08);
+  --doc-bg: #eef2ff;
+  --doc-line: rgba(0, 0, 0, 0.1);
 }
 
 /* Dark mode */
@@ -39,10 +43,21 @@
   --clr-accent-muted: rgba(59, 130, 246, 0.15);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --scan-line: rgba(59, 130, 246, 0.6);
+  --scan-glow: rgba(59, 130, 246, 0.15);
+  --doc-bg: #0d1628;
+  --doc-line: rgba(255, 255, 255, 0.1);
 }
 
 html {
   transition: background-color 200ms ease, color 200ms ease;
+}
+
+@keyframes xray-scan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }
 
 @theme inline {
