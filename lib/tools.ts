@@ -114,12 +114,29 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert WebP images to PNG online free. Get lossless PNG output compatible with all apps and design tools. Batch convert multiple files. No upload required.',
     seoContent: `
-      <h2>Why Convert WebP to PNG?</h2>
-      <p>WebP is Google's efficient image format widely used across the web, but PNG remains the universal standard for maximum application compatibility. Every design tool (Photoshop, Illustrator, Figma, Sketch), photo editor, and operating system supports PNG natively. Converting to PNG is essential when preparing images for design work, archiving assets, or working in environments that don't yet accept WebP — which still includes many older enterprise applications.</p>
-      <h2>Lossless Output</h2>
-      <p>PNG uses lossless compression — no image data is discarded during conversion. For lossless WebP sources, the PNG output is pixel-for-pixel identical to the original. For lossy WebP sources, PNG preserves the full decoded quality without any additional compression loss. This makes PNG ideal when you need to preserve every detail for editing, compositing, or long-term archival storage.</p>
-      <h2>Batch Conversion</h2>
-      <p>Drop multiple WebP files at once and download all converted PNGs individually or as a single ZIP archive. All processing is entirely client-side — your files are never uploaded to a server. This makes it safe for proprietary images, client assets, and anything you'd rather keep private.</p>
+      <h2>When to use this</h2>
+      <p>You saved an image from a website and it's a WebP file. Now Photoshop won't open it, or Illustrator ignores it, or your company's ancient CMS rejects it outright. Design tools have been slow to adopt WebP — Figma handles it fine, but many desktop apps still choke. If you need to edit a web image in a traditional design tool, PNG is the safe bet.</p>
+      <p>Archiving is the other big use case. WebP is relatively young. PNG has been around since 1996 and will open on literally anything with a screen. If you're building a long-term asset library, PNG is the format that won't surprise you in five years.</p>
+      <p>Enterprise software is the third reason. Internal tools, medical imaging systems, government portals — many of these were built before WebP existed and won't be updated anytime soon. PNG gets through the door every time.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Zero quality loss.</strong> WebP to PNG conversion is lossless. The PNG output contains every pixel of data from the decoded WebP. Nothing is added, nothing is removed.</p>
+      <p><strong>Files will get larger.</strong> That's the tradeoff. PNG uses lossless compression, which produces bigger files than WebP's more aggressive algorithms. Expect 30-50% larger files. You're trading size for universal compatibility.</p>
+      <p><strong>Lossy artifacts carry over.</strong> If the original WebP used lossy compression, those artifacts are baked in to the pixel data. PNG preserves them faithfully — it doesn't add new ones, but it can't remove what's already there.</p>
+      <p><strong>Batch mode is the fast path.</strong> Drop 10, 20, 50 files at once. Download them individually or grab the ZIP. All processing stays in your browser — nothing leaves your device.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>WebP</th><th>PNG</th></tr></thead>
+        <tbody>
+          <tr><td>Compression</td><td>Lossy + lossless</td><td>Lossless only</td></tr>
+          <tr><td>Transparency</td><td>Yes (alpha)</td><td>Yes (alpha)</td></tr>
+          <tr><td>Browser support</td><td>All modern (post-2020)</td><td>Universal</td></tr>
+          <tr><td>Design tool support</td><td>Limited</td><td>Universal</td></tr>
+          <tr><td>Typical file size</td><td>Smaller (30-50%)</td><td>Larger</td></tr>
+          <tr><td>Best for</td><td>Web delivery</td><td>Editing and archiving</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['png-to-webp', 'image-compressor', 'jpg-to-png'],
   },
@@ -178,12 +195,28 @@ export const tools: Tool[] = [
     metaDescription:
       'Compress PDF files online free. Strip metadata and reduce file size for email and uploads. No signup, no upload to servers — 100% browser-based, instant results.',
     seoContent: `
-      <h2>Why Compress PDFs?</h2>
-      <p>PDFs frequently contain hidden overhead that inflates file size without adding value: embedded document metadata (author names, creation dates, software version strings, revision histories), XML metadata streams, and unoptimized object cross-reference tables. Stripping this bloat can reduce file size by 10–40%, making PDFs faster to email, easier to upload to web services, and quicker to open on slow connections.</p>
-      <h2>What Gets Removed?</h2>
-      <p>Our compressor strips document information metadata (author, creator, producer, subject, keywords), XMP metadata streams embedded in the PDF structure, and performs structural cleanup of the PDF object table. The text, images, fonts, formatting, interactive elements, and page layout are completely preserved. The resulting PDF opens identically in every reader — Adobe Acrobat, Preview, Chrome, and mobile PDF apps alike.</p>
-      <h2>Limitations to Know</h2>
-      <p>This tool is most effective for PDFs padded with verbose metadata and structural overhead. For PDFs that are large primarily because of embedded high-resolution images, size reduction will be modest — image-based PDF compression requires specialist tools that resample or re-encode the embedded images. If your PDF contains scanned documents or photographs, this tool works best combined with a dedicated image compression step beforehand.</p>
+      <h2>When to use this</h2>
+      <p>Gmail bounced your attachment. The upload portal says "file too large." Your Dropbox link won't generate a preview because the PDF is over 50MB. These are the moments you need a compressor.</p>
+      <p>Most of the time, the problem isn't the content — it's the overhead. PDFs accumulate metadata, revision histories, XML streams, and bloated cross-reference tables that add megabytes without adding value. Stripping that dead weight can shave 10-40% off the file size without changing a single visible element.</p>
+      <p>This is a metadata-and-structure compressor, not an image resampler. If your PDF is large because it's full of high-res photos, the reduction will be modest. But for text-heavy documents with verbose metadata (common with Word-exported PDFs, Adobe InDesign output, and legal document generators), the savings are significant.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Most "bloat" is invisible.</strong> Author names, software version strings, creation timestamps, editing histories, XMP metadata blocks — none of this shows up when you read the PDF, but it can account for 10-30% of the file size. Especially in PDFs generated by enterprise software.</p>
+      <p><strong>Your actual content is never touched.</strong> Text, images, fonts, form fields, annotations, bookmarks — all preserved exactly. The compressor only strips metadata and optimizes the internal object table. The PDF opens identically in every reader.</p>
+      <p><strong>Image-heavy PDFs won't shrink much.</strong> A 50MB PDF of scanned pages is 50MB because of the images, not the metadata. This tool will trim a few percent, but for dramatic size reduction on image-heavy files, you'd need image resampling (a different technique entirely).</p>
+      <p><strong>Word-exported PDFs respond especially well.</strong> Microsoft Word embeds verbose metadata, font subsets, and structural overhead that this compressor strips efficiently. A 10MB Word-exported PDF routinely drops to 6-7MB.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Platform</th><th>File Size Limit</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Gmail</td><td>25 MB</td><td>Attachment limit per email</td></tr>
+          <tr><td>Outlook</td><td>20 MB</td><td>Combined attachments</td></tr>
+          <tr><td>Most web portals</td><td>5–10 MB</td><td>Insurance, tax, applications</td></tr>
+          <tr><td>Dropbox preview</td><td>50 MB</td><td>Larger files won't render inline</td></tr>
+          <tr><td>WhatsApp</td><td>100 MB</td><td>Document sharing limit</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['merge-pdf', 'split-pdf', 'pdf-to-jpg'],
   },
@@ -200,12 +233,27 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert PDF pages to JPG images online free. Select page range, adjust quality, preview all pages. Download individually or as ZIP. No upload — 100% browser-based.',
     seoContent: `
-      <h2>Why Convert PDF to JPG?</h2>
-      <p>PDFs are the universal format for documents, but JPG images are universal for sharing, embedding, and displaying content. Converting PDF pages to JPG lets you share individual slides or pages via email or messaging apps, embed document content in presentations and web pages, use PDF content in image editors, and create thumbnail previews of multi-page reports. JPG is the format that works everywhere images are accepted.</p>
-      <h2>Quality and Page Selection</h2>
-      <p>The quality slider controls the JPG compression applied to each rendered page — higher quality produces sharper, larger files ideal for archiving or professional use, while lower quality creates smaller files perfect for web thumbnails or quick sharing. The page range selector lets you extract just the pages you need rather than converting an entire document, saving time and storage on long PDFs.</p>
-      <h2>How It Works</h2>
-      <p>Each PDF page is rendered to an HTML5 Canvas element using PDF.js — Mozilla's open-source PDF rendering library used in Firefox. The canvas is exported as a JPEG at your chosen quality. All processing happens entirely in your browser: no pages, no text, and no document content is ever transmitted to a server. Your PDFs and their contents stay completely private throughout the conversion process.</p>
+      <h2>When to use this</h2>
+      <p>You need to drop a chart from a PDF into a slide deck. You want to share a single page from a report on Slack or social media. You're building a web gallery of document thumbnails. Or you just need a quick image of page 1 for a preview card. All of these need JPG, not PDF.</p>
+      <p>PDF-to-JPG is also the go-to when you need to extract visuals — graphs, diagrams, infographics — from reports without access to the original source files. Convert the relevant pages, crop in any image editor, done.</p>
+      <p>It's particularly useful for social media sharing, where PDF links get ignored but images get engagement. Convert, post, get clicks.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>85% quality is the sweet spot.</strong> It's visually indistinguishable from 100% for most documents but produces files 40-60% smaller. Only go higher if you're printing or zooming into fine detail.</p>
+      <p><strong>DPI controls the resolution, not the quality slider.</strong> Higher DPI means more pixels per page — bigger files, but sharper output when printed or zoomed. For screen viewing, default DPI is fine. For print, bump it up.</p>
+      <p><strong>Text stays sharp because of how rendering works.</strong> PDF.js renders text as vector outlines first, then rasterizes to your chosen resolution. This means text is as sharp as the DPI allows, not limited by the original PDF's internal resolution.</p>
+      <p><strong>Use page range to save time.</strong> A 200-page PDF doesn't need all 200 pages converted. Select just the pages you need — the tool skips everything else, which is dramatically faster on long documents.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Use Case</th><th>Quality</th><th>DPI</th><th>Typical File Size</th></tr></thead>
+        <tbody>
+          <tr><td>Web / social media</td><td>75–85%</td><td>Default (150)</td><td>80–200 KB/page</td></tr>
+          <tr><td>Email sharing</td><td>85%</td><td>Default (150)</td><td>150–300 KB/page</td></tr>
+          <tr><td>Presentations</td><td>90%</td><td>200</td><td>300–600 KB/page</td></tr>
+          <tr><td>Printing</td><td>95–100%</td><td>300</td><td>500 KB–1.5 MB/page</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['pdf-compressor', 'merge-pdf', 'jpg-to-pdf'],
     badge: 'popular',
@@ -222,12 +270,28 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert JPG, PNG, and WebP images to PDF online free. Drag to reorder pages, choose page size, add margins. No upload — processes entirely in your browser.',
     seoContent: `
-      <h2>Combine Images into a Professional PDF</h2>
-      <p>Converting images to PDF is one of the most common document tasks — assembling scanned receipts, combining photo scans of a multi-page form, packaging multiple screenshots into a single shareable file, or creating a presentation-ready document from individual image files. This tool accepts JPG, PNG, and WebP images and combines them into a single, properly-formatted PDF in seconds.</p>
-      <h2>Page Layout Control</h2>
-      <p>Choose between A4 (international standard), US Letter (North American standard), or "Fit to Image" mode that creates a page sized exactly to each image's dimensions. Portrait and landscape orientations are supported, and an optional margin adds professional whitespace around each image. Drag-to-reorder lets you arrange images in any sequence before generating the PDF — no re-uploading required.</p>
-      <h2>Private, Client-Side Processing</h2>
-      <p>All PDF creation happens in your browser using pdf-lib, a pure JavaScript PDF library. Your images are never sent to any server — they're read locally, embedded into the PDF structure in memory, and the result is downloaded directly to your device. This makes it safe for scanned identification documents, private correspondence, financial statements, and any image content you'd prefer to keep off the internet.</p>
+      <h2>When to use this</h2>
+      <p>You photographed six receipts for an expense report. You scanned both sides of your ID for a rental application. You have phone photos of a signed contract that needs to be emailed as one file. The common thread: you have JPG images of real-world documents, and someone needs them as a PDF.</p>
+      <p>This is different from PNG-to-PDF in practice. JPG users typically have photos and scans — images from phone cameras, flatbed scanners, or downloaded from email. The content is usually documents, receipts, forms, or ID cards rather than screenshots or design exports.</p>
+      <p>It's also the fastest way to package insurance claims, tax documents, college transcripts, or any set of scanned paperwork into the single PDF that every portal and email recipient expects.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Existing compression stays as-is.</strong> JPGs are already compressed. Embedding them in a PDF doesn't add another round of compression or degrade quality further. The artifacts already in your JPG are preserved, not amplified.</p>
+      <p><strong>Drag-to-reorder is critical.</strong> For multi-page documents (scanned forms, contracts, ID front/back), page order matters. Drag your images into the correct sequence before converting — it's much easier than fixing page order in a PDF editor afterward.</p>
+      <p><strong>"Fit to Image" avoids weird borders.</strong> Phone photos are rarely standard page dimensions. Forcing them onto A4 or Letter adds uneven whitespace. "Fit to Image" creates pages matched to each photo's actual size, which looks cleaner for screen viewing.</p>
+      <p><strong>PDF is the universal submission format.</strong> Insurance claims, tax filings, job applications, apartment rentals — virtually every online portal accepts PDF. Converting your scans to PDF before uploading saves you from format rejection errors.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Scenario</th><th>Recommended Page Size</th><th>Margins</th></tr></thead>
+        <tbody>
+          <tr><td>Scanned receipts</td><td>Fit to Image</td><td>Off</td></tr>
+          <tr><td>ID card scans</td><td>Fit to Image</td><td>Off</td></tr>
+          <tr><td>Scanned paper forms</td><td>A4 or Letter</td><td>On</td></tr>
+          <tr><td>Insurance / tax docs</td><td>A4 or Letter</td><td>On</td></tr>
+          <tr><td>Photo collage / portfolio</td><td>Fit to Image</td><td>Optional</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['pdf-compressor', 'png-to-pdf', 'merge-pdf'],
   },
@@ -285,12 +349,27 @@ export const tools: Tool[] = [
     metaDescription:
       'Rotate PDF pages online free. Fix upside-down or sideways pages individually or all at once. Preview thumbnails before saving. No upload — browser-based.',
     seoContent: `
-      <h2>Fix Rotated PDF Pages</h2>
-      <p>Incorrectly oriented PDF pages are a common problem: scanned documents that come out sideways, PDFs created from photos taken in landscape mode, presentations exported with mixed orientations, or signed contracts where some pages are upside-down. Sending a rotated PDF looks unprofessional and is frustrating to read — this tool fixes rotation problems permanently in a few clicks without re-scanning or re-creating the document.</p>
-      <h2>Per-Page Control</h2>
-      <p>Each page is shown as a thumbnail. Click any page to rotate it 90° clockwise — clicking repeatedly cycles through all four orientations (0°, 90°, 180°, 270°). Use "Rotate All" to apply the same rotation to every page at once, or rotate individual pages when only some need adjustment. A rotation indicator shows the current orientation of each page before you apply changes.</p>
-      <h2>Non-Destructive Metadata Rotation</h2>
-      <p>PDF rotation is stored as a metadata property on each page rather than re-rendering content. This means the rotation is applied instantly regardless of PDF complexity, and the original page content (vectors, text, images) is preserved at full quality. The output PDF is a standard, widely-compatible file that opens correctly in all PDF readers — Adobe Acrobat, Preview, browsers, and mobile apps alike.</p>
+      <h2>When to use this</h2>
+      <p>You scanned a stack of papers and half the pages came out sideways. You merged PDFs from different sources and now page 7 is upside-down. Your phone scanned a document in landscape when it should have been portrait. These are annoyingly common — and surprisingly hard to fix without the right tool.</p>
+      <p>Rotation issues are especially frequent with flatbed scanners (which don't auto-detect orientation), phone-scanned documents (where the phone's gyroscope guessed wrong), and merged PDFs where different source files had different orientations.</p>
+      <p>The fix takes seconds. Click the page, click rotate, download. The corrected orientation is permanent — every recipient sees the pages the right way up.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Rotation is metadata-only.</strong> The PDF spec stores rotation as a page property (0°, 90°, 180°, 270°) rather than actually re-rendering the content. This means zero quality loss — text, images, and vectors are untouched. The file size barely changes.</p>
+      <p><strong>It's per-page, not per-document.</strong> You can rotate page 3 without affecting pages 1 and 2. This matters when only some pages in a merged document are misoriented — you fix exactly what's wrong and leave the rest alone.</p>
+      <p><strong>Some scanners are repeat offenders.</strong> If your scanner consistently produces sideways pages, it's usually a driver setting (page size vs. feed direction mismatch). But when you're in a hurry, rotating after scanning is faster than troubleshooting the scanner.</p>
+      <p><strong>The fix is permanent.</strong> Unlike rotating the view in a PDF reader (which resets when you close the file), this tool writes the rotation into the PDF itself. Everyone who opens the file sees the corrected orientation.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Problem</th><th>Rotation Needed</th><th>Common Cause</th></tr></thead>
+        <tbody>
+          <tr><td>Page is sideways (clockwise)</td><td>90° counter-clockwise</td><td>Landscape scan fed portrait</td></tr>
+          <tr><td>Page is sideways (counter-clockwise)</td><td>90° clockwise</td><td>Portrait scan fed landscape</td></tr>
+          <tr><td>Page is upside-down</td><td>180°</td><td>Paper fed backwards in scanner</td></tr>
+          <tr><td>Mixed orientations after merge</td><td>Per-page correction</td><td>Different source file settings</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['merge-pdf', 'split-pdf', 'pdf-compressor'],
   },
@@ -351,12 +430,27 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert PNG images to PDF online free. Combine multiple PNGs into one PDF, drag to reorder pages, choose page size and margins. No upload required.',
     seoContent: `
-      <h2>PNG to PDF for Documents and Presentations</h2>
-      <p>PNG is the preferred format for screenshots, diagrams, flowcharts, and any image with sharp edges or text — making it the natural choice for document content that started as image captures. Converting PNG files to PDF creates a properly formatted, distributable document from your images: screenshots of reports, exported presentation slides, scanned pages saved as PNG, or any collection of images that needs to be packaged into a single professional document.</p>
-      <h2>Lossless Embedding</h2>
-      <p>Unlike JPEG, PNG uses lossless compression — every pixel is preserved exactly. When embedded in a PDF, PNG images retain full fidelity with no additional compression artifacts introduced during the conversion. This matters for screenshots with text, diagrams with fine lines, and any image where sharpness and legibility are critical. The PDF output is identical in visual quality to the original PNG source files.</p>
-      <h2>Page Layout and Ordering</h2>
-      <p>Drag your PNG files into any order before generating the PDF. Choose A4, US Letter, or image-fitted page sizes, and toggle margins for a clean professional look. All conversion happens in your browser using pdf-lib — no file is ever sent to a server. Your PNG files stay on your device from start to finish, keeping screenshots of private content, proprietary diagrams, and sensitive documents completely secure.</p>
+      <h2>When to use this</h2>
+      <p>Your client asked for "the screenshots as a PDF." Your boss wants the slide exports in one file. You scanned five pages of a signed contract and now need to send them as a single document. These are all the same problem: you have PNGs, someone else needs a PDF.</p>
+      <p>PNG-to-PDF is especially common for screenshots, UI mockups, and exported presentation slides. Unlike photos (which are usually JPGs), screenshots and design exports default to PNG — so this is typically the tool you reach for when packaging screen captures or diagram exports into a shareable document.</p>
+      <p>It also works well for assembling portfolio pages, packaging scanned artwork, or creating simple image-based decks when you don't need transitions or animations.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>No quality loss.</strong> PNG is lossless, and embedding it in a PDF preserves every pixel. Unlike JPG-to-PDF, there are zero compression artifacts introduced during conversion. What you see in the PNG is exactly what appears in the PDF.</p>
+      <p><strong>"Fit to Image" is usually what you want.</strong> Standard page sizes (A4, Letter) add whitespace around your image. If you're packaging screenshots or mockups, "Fit to Image" creates pages sized exactly to each image's dimensions — no awkward borders.</p>
+      <p><strong>One PDF beats a ZIP of images.</strong> Recipients can scroll through a single PDF in any viewer. A ZIP of 12 PNGs requires extracting, sorting, and opening each one separately. PDFs are also easier to annotate and comment on.</p>
+      <p><strong>Drag to reorder before you generate.</strong> Page order matters for multi-page documents. Get the sequence right before hitting convert — it's faster than fixing it in a PDF editor later.</p>
+      <p><strong>Margins matter for printing.</strong> If the PDF will be printed, add margins. Printers clip the outer edges, and borderless content risks losing important details. For screen-only viewing, skip margins to maximize image size.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Page Size</th><th>Dimensions</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>A4</td><td>210 × 297 mm</td><td>Formal docs, international printing</td></tr>
+          <tr><td>US Letter</td><td>8.5 × 11 in</td><td>North American printing, submissions</td></tr>
+          <tr><td>Fit to Image</td><td>Matches each PNG</td><td>Screenshots, mockups, screen viewing</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['jpg-to-pdf', 'merge-pdf', 'png-to-jpg'],
   },
@@ -373,12 +467,34 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert Word documents (.docx) to PDF online free. Preview your document, choose page size and margins. No upload — 100% browser-based, files never leave your device.',
     seoContent: `
-      <h2>Convert Word to PDF Without Sending Files to a Server</h2>
-      <p>Most online Word to PDF converters upload your document to a remote server, process it there, and return a download link. This means your document — including any confidential content, personal data, legal text, or proprietary information — leaves your device and passes through someone else's infrastructure. clevr.tools converts your Word document to PDF entirely in your browser using JavaScript. Your file never leaves your device, at any point in the process.</p>
-      <h2>How It Works</h2>
-      <p>Your .docx file is parsed in-browser using Mammoth.js, which extracts the document content — paragraphs, headings, bold and italic text, lists, and tables — and converts it to clean HTML. That HTML is then rendered with Word-like typography (serif font, 12pt body text, proper heading hierarchy) and converted to a PDF using html2canvas and jsPDF. The result is a clean, readable PDF that accurately represents your Word document's content and structure.</p>
-      <h2>What's Preserved and What Isn't</h2>
-      <p>Text content, headings (H1–H6), bold, italic, bullet and numbered lists, tables, and basic formatting are faithfully converted. Complex Word features like custom macros, tracked changes, form fields, and advanced layout elements (text boxes, floating images) may not render perfectly in every case — this is a fundamental limitation of browser-based conversion without the full Word rendering engine. For documents where pixel-perfect fidelity matters, Microsoft Word's built-in "Export to PDF" function is the most reliable option. For standard documents, reports, letters, and resumes, this tool produces excellent results instantly and privately.</p>
+      <h2>When to use this</h2>
+      <p>You need to send a document that looks the same on every screen, every printer, every operating system. That's the entire point of PDF — it freezes your layout. Word files reflow based on the reader's installed fonts, margins, and Word version. PDFs don't.</p>
+      <p>Job applications almost always ask for PDF. So do grant submissions, legal filings, and client deliverables. If someone says "send me the document," they usually mean a PDF — whether they say so or not.</p>
+      <p>There's also the edit-prevention angle. A .docx is trivially editable. A PDF signals "this is final." It's not bulletproof (PDFs can be edited), but it sets the right expectation.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Text formatting converts well.</strong> Headings, bold, italic, bullet lists, numbered lists, and tables all come through cleanly. These are the building blocks of most documents, and they're handled reliably.</p>
+      <p><strong>Complex layouts may shift.</strong> Multi-column layouts, text boxes, floating images, and custom positioning are harder to replicate outside the Word rendering engine. If your document uses these heavily, expect some visual differences.</p>
+      <p><strong>Fonts won't match exactly.</strong> The PDF uses Roboto as the base font. Your original Word fonts (Calibri, Times New Roman, etc.) won't carry over. The text content is identical, but the typography will look slightly different.</p>
+      <p><strong>For pixel-perfect results, use Word itself.</strong> Word's built-in File, Export, PDF uses its own rendering engine and preserves everything. This tool is for when you don't have Word installed, or you need a quick conversion without opening a desktop app.</p>
+      <p><strong>Your file stays on your device.</strong> Unlike most online converters, nothing is uploaded. The conversion runs entirely in your browser using Mammoth.js and jsPDF.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Formatting Feature</th><th>Conversion Quality</th></tr></thead>
+        <tbody>
+          <tr><td>Headings (H1-H6)</td><td>Excellent</td></tr>
+          <tr><td>Bold, italic, underline</td><td>Excellent</td></tr>
+          <tr><td>Bullet and numbered lists</td><td>Excellent</td></tr>
+          <tr><td>Tables</td><td>Good</td></tr>
+          <tr><td>Inline images</td><td>Good</td></tr>
+          <tr><td>Columns and text boxes</td><td>May shift</td></tr>
+          <tr><td>Floating images</td><td>May shift</td></tr>
+          <tr><td>Headers and footers</td><td>Not supported</td></tr>
+          <tr><td>Custom fonts</td><td>Replaced with Roboto</td></tr>
+          <tr><td>Macros and form fields</td><td>Not supported</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['pdf-compressor', 'merge-pdf'],
     badge: 'new',
@@ -484,12 +600,29 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert text to a URL-friendly slug instantly. Handles accented characters, spaces, symbols. Real-time output, copy to clipboard. Free, no signup required.',
     seoContent: `
-      <h2>Free Text to URL Slug Converter</h2>
-      <p>A URL slug is the human-readable part of a URL that identifies a specific page — the "how-to-make-sourdough-bread" in "yoursite.com/recipes/how-to-make-sourdough-bread". Good slugs are all lowercase, contain only letters, numbers, and hyphens, and accurately reflect the page's content. This converter turns any title, heading, or phrase into a clean, properly-formatted slug in real time as you type.</p>
-      <h2>SEO Impact of URL Slugs</h2>
-      <p>URL slugs are one of the few remaining on-page SEO signals that search engines weigh directly. Google's own documentation recommends using words in URLs and avoiding parameter-heavy URLs. A keyword-rich, human-readable slug helps both search engines and users understand page content before clicking. Slugs also appear in search results snippets, and shorter, cleaner URLs consistently show higher click-through rates than long, parameter-laden alternatives. When publishing a blog post, article, or product page, getting the slug right before publication matters — changing a URL after it's indexed requires 301 redirects to preserve SEO value.</p>
-      <h2>Handling International Characters</h2>
-      <p>Accented characters (é, ü, ñ, ø, etc.) are normalized to their ASCII equivalents using Unicode NFD decomposition before the slug is generated. This means "Crème brûlée" becomes "creme-brulee" rather than containing encoded Unicode sequences in the URL. The result is a slug that works correctly in all browsers, tools, and file systems without any special encoding or escaping required.</p>
+      <h2>When to use this</h2>
+      <p>Every blog post, product page, and CMS entry needs a URL-safe identifier. You could hand-craft slugs by lowercasing, replacing spaces with hyphens, and stripping special characters — or you could paste the title here and get a clean slug instantly. It's one of those small tasks that's annoying to do manually and trivial to automate.</p>
+      <p>Beyond URLs, slugs work well as filenames, database keys, CSS class names, and any identifier that needs to be human-readable without special characters. If you're building a CMS, static site, or API, slug generation is a constant need.</p>
+      <p>Google recommends 3-5 word slugs for SEO. Shorter URLs get higher click-through rates in search results, and keyword-rich slugs help both users and search engines understand the page before clicking. Get the slug right before publishing — changing a URL after it's indexed means setting up 301 redirects to preserve link equity.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Accented characters get transliterated, not encoded.</strong> "Creme brulee" becomes "creme-brulee", not "cr%C3%A8me-br%C3%BBl%C3%A9e". The converter uses Unicode NFD decomposition to map accented letters to their ASCII equivalents. Clean output that works everywhere.</p>
+      <p><strong>Consecutive hyphens collapse into one.</strong> Input like "hello - - world" produces "hello-world", not "hello---world". No stuttering hyphens cluttering up your URLs.</p>
+      <p><strong>Leading and trailing hyphens are stripped.</strong> " — My Great Post — " becomes "my-great-post". No dangling punctuation on either end.</p>
+      <p><strong>Numbers are preserved.</strong> "Top 10 Tips for 2024" becomes "top-10-tips-for-2024". Digits stay exactly where they are.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Input</th><th>Output</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>How to Make Sourdough Bread</td><td>how-to-make-sourdough-bread</td><td>Standard conversion</td></tr>
+          <tr><td>Creme Brulee Recipe</td><td>creme-brulee-recipe</td><td>Accent transliteration</td></tr>
+          <tr><td>Price: $9.99!!!</td><td>price-9-99</td><td>Symbols stripped, numbers kept</td></tr>
+          <tr><td>  — Hello World —  </td><td>hello-world</td><td>Trimmed edges, collapsed hyphens</td></tr>
+          <tr><td>React and Next.js Tutorial</td><td>react-and-next-js-tutorial</td><td>Dots removed</td></tr>
+          <tr><td>Uber Cool Cafe</td><td>uber-cool-cafe</td><td>Transliteration</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['case-converter', 'remove-line-breaks', 'word-counter'],
     badge: 'new',
@@ -1100,11 +1233,25 @@ export const tools: Tool[] = [
     icon: 'CreditCard',
     metaTitle: 'Credit Card Payoff Calculator — Free Tool | clevr.tools',
     metaDescription: 'Free credit card payoff calculator. Enter your balance, APR, and monthly payment to see months to payoff, total interest, and how paying more saves money.',
-    seoContent: `<h2>Free Credit Card Payoff Calculator</h2>
-<p>Credit card debt compounds monthly, meaning you pay interest on interest. Enter your current balance, APR (Annual Percentage Rate), and monthly payment to see exactly how long it will take to pay off your debt and how much total interest you'll pay. The "what if" comparison table shows how increasing your monthly payment by $25, $50, or $100 dramatically reduces both the payoff time and total interest.</p>
-<p>If your monthly payment barely covers the interest charges, payoff could take decades. Credit card APRs typically range from 15% to 25%, making them one of the most expensive forms of debt. Prioritizing credit card payoff over other financial goals often makes mathematical sense.</p>
-<h2>Strategies to Pay Off Credit Cards Faster</h2>
-<p>The avalanche method targets the highest-APR card first, minimizing total interest paid. The snowball method targets the smallest balance first, providing psychological wins. Both are effective — the best strategy is the one you'll stick with. Even small extra payments make a meaningful difference when interest rates are high.</p>`,
+    seoContent: `<h2>When to use this</h2>
+<p>You have credit card debt and you want to see the math — not a vague "pay more and you'll be fine," but the actual numbers. How many months until it's gone? How much of each payment goes to interest vs. principal? What happens if you throw an extra $50 or $100 at it each month?</p>
+<p>This is especially useful when you're deciding between the avalanche method (highest APR first, mathematically optimal) and the snowball method (smallest balance first, psychologically motivating). Plug in your numbers for each scenario and compare. Both work — the best strategy is the one you'll actually stick with.</p>
+<p>It's also a reality check. If your minimum payment barely covers the monthly interest charge, you need to see that spelled out. Credit cards at 20%+ APR are the most expensive debt most people carry, and the compounding works against you every month you carry a balance.</p>
+<h2>Good to know</h2>
+<p><strong>Most of your early payments go to interest.</strong> At 20% APR, roughly 65% of your minimum payment goes to interest in year one. That ratio slowly shifts toward principal over time, but it's why payoff feels so slow at first.</p>
+<p><strong>Small extra payments have an outsized impact.</strong> Paying just $50/month extra on a $5,000 balance at 20% APR saves approximately $3,000 in total interest and cuts years off the payoff timeline. The "what-if" table makes this dramatically visible.</p>
+<p><strong>APR and interest rate are basically the same for credit cards.</strong> Technically, APR includes certain fees while the interest rate doesn't. But credit cards don't have origination fees or closing costs, so your APR and interest rate are effectively identical.</p>
+<p><strong>Balance transfer cards can save thousands.</strong> A 0% intro APR card (typically 12-21 months) lets every dollar go to principal. If you can pay off the balance within the promo period, you pay zero interest. Just watch for the transfer fee (usually 3-5%).</p>
+<p><strong>Minimum payments are designed to be slow.</strong> Card issuers typically set minimums at 1-3% of the balance. That's not a suggestion for how much to pay — it's the least they'll accept without penalizing you.</p>
+<h2>Quick Reference</h2>
+<table>
+<thead><tr><th>Balance</th><th>APR</th><th>Minimum Only</th><th>$200/month</th><th>$400/month</th></tr></thead>
+<tbody>
+<tr><td>$2,000</td><td>18%</td><td>~11 years, $1,800 interest</td><td>~11 months, $180 interest</td><td>~5 months, $90 interest</td></tr>
+<tr><td>$5,000</td><td>20%</td><td>~34 years, $8,600 interest</td><td>~2.5 years, $1,300 interest</td><td>~14 months, $570 interest</td></tr>
+<tr><td>$10,000</td><td>24%</td><td>~40+ years, $25,000+ interest</td><td>~8 years, $8,600 interest</td><td>~3 years, $3,400 interest</td></tr>
+</tbody>
+</table>`,
     relatedTools: ['debt-to-income', 'loan', 'savings-goal'],
     badge: 'new',
   },
