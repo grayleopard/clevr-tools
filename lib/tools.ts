@@ -107,12 +107,28 @@ export const tools: Tool[] = [
     metaDescription:
       'Generate QR codes for URLs and text online free. Customize size, colors, and error correction level. Download as PNG or SVG. Instant, no signup required.',
     seoContent: `
-      <h2>What is a QR Code?</h2>
-      <p>A QR (Quick Response) code is a two-dimensional barcode that stores data in a grid of black and white squares. Unlike traditional barcodes, QR codes can hold significantly more information — URLs, contact details, Wi-Fi credentials, or any text. Every smartphone camera can decode them instantly without a dedicated app, making QR codes one of the most frictionless ways to share information in the physical world.</p>
-      <h2>Error Correction and Reliability</h2>
-      <p>QR codes include built-in error correction, allowing them to be scanned even when partially damaged or obscured. Level L corrects up to 7% of errors — suitable for clean digital displays. Level M (15%) balances size and resilience for general use. Level Q (25%) handles moderate physical wear, and Level H (30%) is essential for QR codes on merchandise, packaging, or any item that will be physically handled.</p>
-      <h2>PNG vs. SVG Download</h2>
-      <p>Download PNG for screen use — websites, presentations, and digital documents where pixel dimensions are fixed. Download SVG for print: as a vector format, SVG scales to any size without pixelation, making it the right choice for business cards, posters, and signage. For professional print work, 512px or larger PNG, or SVG, ensures crisp scanning at print resolution.</p>
+      <h2>When to use this</h2>
+      <p>You're printing business cards and need a QR code that links to your portfolio. You're setting up a conference booth and want attendees to scan for your WiFi credentials. You're creating restaurant table tents with a link to the digital menu. QR codes are the bridge between physical materials and digital content — and they've become expected rather than novel.</p>
+      <p>The pandemic permanently changed QR code adoption. What used to feel gimmicky is now the default for menus, event check-ins, payment links, and contact sharing. If you're producing any physical material that should connect to a URL, a QR code is the fastest path from "holding paper" to "viewing a webpage."</p>
+      <p>They're also useful in purely digital contexts: embedding a scannable code in a presentation, adding one to a PDF document, or generating codes for app deep links and two-factor authentication setup.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Error correction is why QR codes survive abuse.</strong> QR codes embed redundant data so they can be scanned even when partially damaged, dirty, or obscured. Level H (30% correction) lets you place a logo over the center of the code and it'll still scan — that's how branded QR codes work.</p>
+      <p><strong>More data = denser code = harder to scan.</strong> A QR code encoding a 20-character URL is simple and scans instantly from across a room. A QR code encoding 500 characters of text is dense, requires close-up scanning, and may fail on older cameras. Keep the encoded data as short as possible — use URL shorteners for long links.</p>
+      <p><strong>SVG for print, PNG for screens.</strong> SVG is a vector format that scales to any size without pixelation — billboard or business card, it's always sharp. PNG is rasterized (fixed pixels), so choose at least 512px for anything that will be printed. For web use, PNG is fine at 256-512px.</p>
+      <p><strong>Dark modules on light background scans best.</strong> QR scanners expect dark-on-light contrast. You can customize colors, but keep the contrast ratio high. Light modules on dark background works if the scanner supports inverted codes, but not all do.</p>
+      <p><strong>Test before you print.</strong> Always scan your generated QR code with at least two different phones before sending anything to print. A typo in the URL means reprinting everything.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Error Correction</th><th>Recovery</th><th>Code Density</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>Level L</td><td>~7%</td><td>Smallest</td><td>Clean digital displays, screens</td></tr>
+          <tr><td>Level M</td><td>~15%</td><td>Moderate</td><td>General purpose, most use cases</td></tr>
+          <tr><td>Level Q</td><td>~25%</td><td>Larger</td><td>Printed materials, moderate wear</td></tr>
+          <tr><td>Level H</td><td>~30%</td><td>Largest</td><td>Logo overlay, merchandise, packaging</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['image-compressor', 'png-to-jpg', 'pdf-compressor'],
   },
@@ -691,12 +707,33 @@ export const tools: Tool[] = [
     metaDescription:
       'Free online case converter. Convert text to uppercase, lowercase, title case, sentence case, camelCase, PascalCase, snake_case, kebab-case, and more. Instant, no signup.',
     seoContent: `
-      <h2>Free Online Case Converter</h2>
-      <p>Text case conversion is a daily task for developers, writers, and content managers. This tool converts any text between ten common case formats instantly — no copy-paste-retype cycle needed. Paste your text, click the target format, and copy the result to your clipboard. Everything runs in your browser with no data sent anywhere.</p>
-      <h2>Programming Case Formats</h2>
-      <p>Coding conventions vary by language and framework. JavaScript and TypeScript use camelCase for variables and PascalCase for classes and components. Python uses snake_case for variables and functions. URLs, CSS class names, and command-line arguments use kebab-case. Configuration keys and package names sometimes use dot.case. Having a quick converter eliminates the mental overhead of reformatting between standards when moving text between systems, renaming variables, or writing documentation.</p>
-      <h2>Writing and Content Case Formats</h2>
-      <p>Title Case capitalizes the first letter of every word — the standard for headlines, headings, and proper nouns in English-language publishing. Sentence case capitalizes only the first word of each sentence, which is the default for body text and most UI strings. UPPER CASE is used for acronyms, emphasis, and certain legal and regulatory contexts. Toggle Case flips the case of every character, a quick way to undo an accidental Caps Lock or create stylized text for creative use.</p>
+      <h2>When to use this</h2>
+      <p>You just pasted a heading from a Word doc and it's ALL CAPS. Or you're porting a Python variable into JavaScript and need to flip snake_case to camelCase. Maybe you're writing a blog post title and want proper Title Case without manually capitalizing each word. These are the moments where a case converter saves you time.</p>
+      <p>Developers hit this constantly when moving between languages. Python wants snake_case, JavaScript wants camelCase, React components need PascalCase, and CSS classes expect kebab-case. Retyping by hand is slow and error-prone — one wrong capital and your code breaks silently. Paste, click, copy, done.</p>
+      <p>Writers and content teams use it just as often. Headline style guides vary between AP (Title Case) and sentence case, and switching between them for a batch of headings is exactly the kind of tedious work a machine should do. If you've ever inherited a spreadsheet where someone typed everything in caps lock, you already know why this exists.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Title Case isn't just "capitalize every word."</strong> Proper title case lowercases articles, prepositions, and conjunctions (a, the, of, and, in) unless they start the title. This converter follows standard English title case rules, so "the art of war" becomes "The Art of War" — not "The Art Of War."</p>
+      <p><strong>camelCase and PascalCase strip spaces and punctuation.</strong> "user first name" becomes "userFirstName" or "UserFirstName". The converter handles multi-word input intelligently, splitting on spaces, hyphens, and underscores before rejoining in the target format.</p>
+      <p><strong>Toggle case has a real use beyond memes.</strong> Yes, people use it for sarcastic SpongeBob text. But it's also the fastest way to invert case when you accidentally typed a paragraph with Caps Lock on — toggle it, and everything flips back.</p>
+      <p><strong>kebab-case is what URLs want.</strong> Search engines prefer lowercase hyphenated slugs. If you're converting a page title to a URL path, kebab-case gives you a clean, SEO-friendly result without needing a separate slug tool.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Format</th><th>Example</th><th>Where it's used</th></tr></thead>
+        <tbody>
+          <tr><td>UPPER CASE</td><td>HELLO WORLD</td><td>Constants, acronyms, legal text</td></tr>
+          <tr><td>lower case</td><td>hello world</td><td>Body text, email, casual writing</td></tr>
+          <tr><td>Title Case</td><td>Hello World</td><td>Headlines, book titles, headings</td></tr>
+          <tr><td>Sentence case</td><td>Hello world</td><td>UI strings, subtitles, paragraphs</td></tr>
+          <tr><td>camelCase</td><td>helloWorld</td><td>JavaScript/TypeScript variables</td></tr>
+          <tr><td>PascalCase</td><td>HelloWorld</td><td>React components, C# classes</td></tr>
+          <tr><td>snake_case</td><td>hello_world</td><td>Python, Ruby, database columns</td></tr>
+          <tr><td>kebab-case</td><td>hello-world</td><td>URLs, CSS classes, CLI flags</td></tr>
+          <tr><td>dot.case</td><td>hello.world</td><td>Config keys, Java packages</td></tr>
+          <tr><td>CONSTANT_CASE</td><td>HELLO_WORLD</td><td>Environment variables, enums</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['word-counter', 'remove-line-breaks', 'text-to-slug'],
     badge: 'new',
@@ -713,12 +750,29 @@ export const tools: Tool[] = [
     metaDescription:
       'Generate lorem ipsum placeholder text free. Choose paragraphs, sentences, or words. Copy instantly. No signup — generate realistic Latin filler text for design and development.',
     seoContent: `
-      <h2>Free Lorem Ipsum Generator</h2>
-      <p>Lorem ipsum placeholder text is the standard filler content for visual design, web development, and print layout. It lets designers and developers work on typography, spacing, and layout without waiting for real content — and without the distraction of meaningful words pulling focus away from the visual elements being evaluated. This generator produces properly structured lorem ipsum text in paragraphs, sentences, or individual words on demand.</p>
-      <h2>The Origin of Lorem Ipsum</h2>
-      <p>Lorem ipsum text is derived from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (On the Ends of Good and Evil) by the Roman statesman Cicero, written in 45 BC. The scrambled version used today has been the industry's standard dummy text since the 1960s, when Letraset sheets popularized it for dry-transfer lettering. It was further spread by desktop publishing software like Aldus PageMaker in the 1980s. Its nonsensical Latin origins are exactly what make it useful — recognizable enough to signal "placeholder" while remaining unreadable enough not to distract.</p>
-      <h2>When to Use Placeholder Text</h2>
-      <p>Lorem ipsum is appropriate in wireframes, mockups, and prototypes — anywhere real copy doesn't exist yet and visual structure is what's being evaluated. In client presentations, it prevents feedback about specific word choices when the goal is to get layout approval. In development, it fills database fixtures, demo accounts, and test environments with realistic-looking text. The key is to replace it with real content before any user-facing launch — search engines penalize lorem ipsum as thin or duplicate content.</p>
+      <h2>When to use this</h2>
+      <p>You're building a landing page and the client hasn't sent the copy yet. The layout needs text — real-length text with paragraph breaks and varied sentence structure — so you can judge spacing, font sizing, and visual rhythm. That's what lorem ipsum is for. Generate it here by paragraph, sentence, or word count, then paste it into your design tool or codebase.</p>
+      <p>Developers use it to seed database fixtures, populate demo environments, and stress-test layouts with realistic content volumes. If you've ever hard-coded "test test test" into a prototype, you know how distracting that is in a stakeholder review. Lorem ipsum signals "this is placeholder" immediately — nobody tries to proofread it or give feedback on word choice.</p>
+      <p>Here's a detail most people don't know: lorem ipsum is scrambled Latin from Cicero's "de Finibus Bonorum et Malorum," written in 45 BC. The version we use today dates to the 1960s, when Letraset dry-transfer sheets needed filler text for their type specimen catalogs. It stuck because it looks like natural language without being readable — exactly what placeholder text should do.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Don't ship it.</strong> Search engines flag lorem ipsum as thin content. It's fine in staging, mockups, and dev environments, but scan your codebase before launch. A stray "Lorem ipsum dolor sit amet" on a production page can hurt your SEO and looks unprofessional.</p>
+      <p><strong>Paragraph length matters for layout testing.</strong> A single paragraph won't reveal how your design handles content flow. Generate 3-5 paragraphs to test how headings, images, and sidebars interact with varying text blocks. If your layout breaks at 4 paragraphs, you'll want to know before real content goes in.</p>
+      <p><strong>Word count mode is perfect for constrained UI.</strong> Need exactly 25 words for a card description or 50 for a product blurb? Word mode gives you precise control instead of trimming paragraphs down by hand.</p>
+      <p><strong>It's not the only option.</strong> Some teams prefer "real-ish" placeholder text (like Hipster Ipsum or Corporate Ipsum) for presentations. But for pure layout work, classic lorem ipsum remains the standard because it doesn't distract or accidentally offend anyone in a client meeting.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Use case</th><th>Recommended amount</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Card / preview snippet</td><td>1-2 sentences (15-30 words)</td><td>Tests truncation and overflow</td></tr>
+          <tr><td>Blog post preview</td><td>1 paragraph (40-80 words)</td><td>Matches typical excerpt length</td></tr>
+          <tr><td>Full page layout</td><td>3-5 paragraphs (200-400 words)</td><td>Reveals scroll behavior and spacing</td></tr>
+          <tr><td>Long-form article</td><td>8-12 paragraphs (600-1000 words)</td><td>Stress-tests reading layouts</td></tr>
+          <tr><td>Database seed</td><td>10-50 words per field</td><td>Simulates realistic record lengths</td></tr>
+          <tr><td>Email template</td><td>2-3 paragraphs (100-200 words)</td><td>Tests rendering across clients</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['word-counter', 'case-converter', 'remove-line-breaks'],
     badge: 'new',
@@ -735,12 +789,28 @@ export const tools: Tool[] = [
     metaDescription:
       'Remove line breaks, extra spaces, and empty lines from text online free. Clean up text copied from PDFs, emails, or documents. Instant, no signup required.',
     seoContent: `
-      <h2>Remove Line Breaks & Extra Spaces Online</h2>
-      <p>Text copied from PDFs, scanned documents, email threads, terminal output, or online articles frequently contains unwanted line breaks, double spaces, and empty lines that make it unusable in other contexts. Pasting such text into a form field, email body, or database typically preserves all that invisible whitespace, creating formatting problems that require tedious manual cleanup. This tool automates that cleanup in a single click.</p>
-      <h2>Common Use Cases</h2>
-      <p>PDF text extraction is notoriously prone to inserting hard line breaks at the end of each visual line, turning continuous paragraphs into dozens of short fragments. Email forwarding chains accumulate indentation and quote markers. Terminal logs mix command output with prompt characters. Spreadsheet exports contain inconsistent spacing between fields. The Remove Line Breaks operation joins all these fragments back into proper continuous text, while Remove Extra Spaces normalizes inconsistent whitespace that results from other formatting issues.</p>
-      <h2>Working With the Tools</h2>
-      <p>Each cleaning operation is applied separately so you can chain them in any order. "Remove Line Breaks" replaces each newline with a single space and collapses multiple spaces. "Remove Empty Lines" preserves the paragraph structure of intentional line breaks while eliminating the blank lines between them. "Clean All" applies all operations at once for the fastest single-click cleanup. "Trim Each Line" is useful for pasted code or lists where you want to normalize indentation without losing the line structure.</p>
+      <h2>When to use this</h2>
+      <p>You copied text from a PDF and pasted it into an email — and every line is broken in the middle of a sentence. PDF viewers insert hard line breaks at the visual edge of each line, turning flowing paragraphs into fragmented messes. This is the single most common reason people need this tool, and it's the one that drives the most frustration.</p>
+      <p>Forwarded email chains are the second culprit. Each forward adds quoting characters, indentation, and inconsistent spacing that accumulates into unreadable noise. Terminal output, OCR text, and spreadsheet exports all have their own flavors of whitespace chaos.</p>
+      <p>The fix is usually one click. Paste your broken text, hit "Remove Line Breaks," and get clean continuous prose. For more control, the individual operations let you target exactly what's wrong without overcorrecting.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Hard breaks ≠ paragraph breaks.</strong> "Remove Line Breaks" joins lines within paragraphs while "Remove Empty Lines" eliminates the gaps between paragraphs. Used together, you get a continuous block. Used separately, you can fix the in-paragraph breaks while keeping intentional paragraph structure.</p>
+      <p><strong>Extra spaces are the silent pest.</strong> Double spaces after periods (a typewriter-era habit), inconsistent indentation, and tab-space mixtures all hide in text that looks clean at first glance. "Remove Extra Spaces" catches all of these without altering your actual content.</p>
+      <p><strong>"Trim Each Line" is for code and lists.</strong> If you have indented text where you want to normalize the leading whitespace without merging lines together, this is the operation. It strips leading and trailing spaces from each line while preserving the line structure itself.</p>
+      <p><strong>"Clean All" does everything at once.</strong> If you just want clean, normal text and don't care about preserving any of the existing formatting, one click handles it. It removes line breaks, collapses spaces, strips empty lines, and trims whitespace in a single pass.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Operation</th><th>What It Does</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>Remove Line Breaks</td><td>Replaces newlines with spaces, collapses multiple spaces</td><td>PDF text, OCR output</td></tr>
+          <tr><td>Remove Empty Lines</td><td>Strips blank lines between paragraphs</td><td>Double-spaced text, email chains</td></tr>
+          <tr><td>Remove Extra Spaces</td><td>Collapses runs of spaces/tabs to single space</td><td>Sloppy formatting, tab-space mix</td></tr>
+          <tr><td>Trim Each Line</td><td>Strips leading/trailing whitespace per line</td><td>Code indentation, data cleanup</td></tr>
+          <tr><td>Clean All</td><td>All operations in one pass</td><td>"Just fix everything"</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['word-counter', 'case-converter', 'text-to-slug'],
     badge: 'new',
@@ -795,10 +865,35 @@ export const tools: Tool[] = [
     icon: 'Hash',
     metaTitle: 'Character Counter — Free Online Tool | clevr.tools',
     metaDescription: 'Free character counter. Count characters with and without spaces, words, and lines in real time. See limits for Twitter, Instagram, and SMS. No signup.',
-    seoContent: `<h2>Why Character Count Matters</h2>
-<p>Whether you're writing a tweet, crafting an SMS, or optimizing a meta description for SEO, character limits define what you can say. Going over the limit means your message gets cut off, your tweet gets truncated, or your meta description gets replaced by Google's own snippet.</p>
-<p>Different platforms have different limits: Twitter/X allows 280 characters per post, SMS messages are typically limited to 160 characters (longer messages get split into multiple segments), and SEO best practices suggest keeping meta descriptions under 160 characters for optimal display in search results.</p>
-<p>Our character counter updates in real time as you type, so you always know exactly where you stand. It tracks raw character count, characters without spaces, word count, sentence count, and line count — plus it shows you your character usage against the most common platform limits with a visual indicator.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're drafting a tweet and you're at 274 characters — do you have room for that hashtag? You're writing a meta description and need to stay under 160 characters before Google truncates it with "..." in search results. You're composing an SMS for a marketing campaign and every character past 160 splits it into a second message that doubles your cost.</p>
+      <p>Character limits are everywhere, and guessing wrong has real consequences. A truncated social media post loses its call-to-action. A meta description that runs long gets replaced by whatever snippet Google chooses. An SMS that overflows costs twice as much to send. This counter shows you exactly where you stand — in real time, as you type.</p>
+      <p>It's also useful when you don't have a strict limit but need awareness. Writing a headline? Shorter is almost always better. Crafting a push notification? You've got about 50 characters before it gets cut on most lock screens. Filling out a form field that silently truncates at the database level? Knowing your character count prevents nasty surprises.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>"Characters" and "characters without spaces" serve different purposes.</strong> Twitter counts spaces. SMS counts spaces. But if you're checking word-processor-style character counts (like for academic submissions), many institutions specify "characters excluding spaces." This tool shows both so you don't have to wonder which one you're looking at.</p>
+      <p><strong>Emojis can count as more than one character.</strong> A simple smiley is 2 bytes in UTF-16, but compound emojis (like family emojis or flag emojis) can be 7+ code points joined by zero-width joiners. Platforms count these differently — Twitter counts most emojis as 2 characters regardless of visual complexity.</p>
+      <p><strong>Meta descriptions aren't measured in characters — they're measured in pixels.</strong> Google's display width is about 920 pixels on desktop. A string of capital W's hits the limit at ~105 characters, while lowercase i's could run past 200. The 155-160 character guideline assumes average-width text. If your description is heavy on wide letters, aim shorter.</p>
+      <p><strong>Line count matters for code.</strong> Many coding challenges, pull request guidelines, and style guides set maximum line counts. If you're cleaning up a function or splitting a file, knowing your line count saves you from counting manually in your editor.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Platform</th><th>Limit</th><th>What happens when exceeded</th></tr></thead>
+        <tbody>
+          <tr><td>Twitter / X post</td><td>280 characters</td><td>Can't post — hard limit</td></tr>
+          <tr><td>Instagram caption</td><td>2,200 characters</td><td>Truncated with "...more"</td></tr>
+          <tr><td>Meta description (SEO)</td><td>~155-160 characters</td><td>Google truncates or rewrites</td></tr>
+          <tr><td>SMS (single segment)</td><td>160 characters</td><td>Splits into multiple messages</td></tr>
+          <tr><td>YouTube title</td><td>100 characters</td><td>Truncated in search results</td></tr>
+          <tr><td>LinkedIn post</td><td>3,000 characters</td><td>Can't post — hard limit</td></tr>
+          <tr><td>Facebook post</td><td>63,206 characters</td><td>Truncated with "See more"</td></tr>
+          <tr><td>Google Ads headline</td><td>30 characters</td><td>Rejected — won't run</td></tr>
+          <tr><td>Push notification (iOS)</td><td>~110 characters</td><td>Truncated on lock screen</td></tr>
+          <tr><td>Email subject line</td><td>~60 characters</td><td>Cut off in inbox preview</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['word-counter', 'case-converter', 'text-to-slug'],
   },
   // ─── Dev Tools ──────────────────────────────────────────────────────────
@@ -812,10 +907,30 @@ export const tools: Tool[] = [
     icon: 'Braces',
     metaTitle: 'JSON Formatter & Validator Online Free | clevr.tools',
     metaDescription: 'Free JSON formatter, validator, and minifier. Paste JSON to beautify with proper indentation or minify. Instant error detection with line numbers. No signup.',
-    seoContent: `<h2>Format and Validate JSON Online</h2>
-<p>JSON (JavaScript Object Notation) is the universal data format for APIs, configuration files, and data exchange. When working with raw JSON from an API response, a database export, or a config file, it's often minified — stripped of all whitespace to save bandwidth. That makes it nearly impossible to read or debug.</p>
-<p>This JSON formatter instantly beautifies minified JSON with proper indentation, making nested objects and arrays easy to navigate. It also validates your JSON as you paste it, catching syntax errors like missing commas, unclosed brackets, or incorrect data types — with the exact position of the error so you can fix it fast.</p>
-<p>Use the minify option to do the reverse: compact JSON into a single line for use in API calls, environment variables, or anywhere you need to minimize payload size.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You just hit an API endpoint and the response came back as a single wall of text — thousands of characters with no whitespace. You need to find one nested field three levels deep, but scrolling through minified JSON is like reading a novel with no paragraphs. Paste it here and the structure appears instantly with proper indentation.</p>
+      <p>Same story when you're debugging a webhook payload, inspecting a JWT body (decode the middle segment with Base64 first, then format the JSON here), or trying to make sense of a massive config file someone committed without formatting. If the JSON is broken, you'll get the exact line and character position of the error instead of a cryptic "Unexpected token" from your browser console.</p>
+      <p>The minify direction is just as useful. You need to shove JSON into an environment variable, a URL parameter, or a single-line config field — compacting it down removes all whitespace while keeping the data intact.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>JSON is not JavaScript.</strong> Despite the name, JSON is a strict subset. Trailing commas are illegal. Keys must be double-quoted strings. No comments allowed. Single quotes don't work. If you're used to writing JS objects, these are the rules that trip you up — and this validator catches all of them.</p>
+      <p><strong>Indentation is a style choice, not a spec requirement.</strong> The JSON specification (RFC 8259) says nothing about whitespace formatting. Two spaces, four spaces, tabs — all produce identical data. This tool defaults to 2-space indentation because it's the most common convention in web development, but the minified output is what actually gets sent over the wire.</p>
+      <p><strong>Large JSON files can crash browser dev tools.</strong> Chrome's console pretty-printer chokes on responses above ~5MB. Pasting into a dedicated formatter is often faster and more reliable for big payloads since it doesn't carry the overhead of the entire DevTools environment.</p>
+      <p><strong>Power user tip: JSON5 isn't JSON.</strong> If you're getting validation errors on a file that "looks right," check whether it uses JSON5 extensions (comments, trailing commas, unquoted keys). Many config tools — including VS Code's settings.json — actually use JSON5 or JSONC under the hood, which won't validate as strict JSON per RFC 8259.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Common JSON Error</th><th>What It Means</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Unexpected token at position N</td><td>Invalid character at byte N</td><td>Check for trailing commas or missing quotes near that position</td></tr>
+          <tr><td>Unterminated string</td><td>A string value was never closed</td><td>Look for a missing closing double quote</td></tr>
+          <tr><td>Expected ':' after key</td><td>Object key without a value</td><td>Add a colon and value after the key</td></tr>
+          <tr><td>Unexpected end of input</td><td>JSON is incomplete</td><td>Check for missing closing <code>}</code> or <code>]</code></td></tr>
+          <tr><td>Duplicate key</td><td>Same key appears twice in one object</td><td>RFC 8259 says keys SHOULD be unique — rename or remove the duplicate</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['base64', 'url-encoder'],
   },
   {
@@ -828,10 +943,32 @@ export const tools: Tool[] = [
     icon: 'Replace',
     metaTitle: 'Find and Replace Text Online Free | clevr.tools',
     metaDescription: 'Free find and replace tool. Fix repeated typos and batch-edit text. Supports case-sensitive search, whole word matching, and regex. No signup required.',
-    seoContent: `<h2>Find and Replace Text Online</h2>
-<p>Need to fix a repeated typo across a long document, replace all instances of a name, or batch-edit a list of URLs? This tool lets you find any text and replace it with something else — across your entire pasted content in one click.</p>
-<p>Beyond simple text replacement, it supports regular expressions for advanced users who need to match patterns rather than literal strings. Use regex to find phone numbers, email addresses, dates in a specific format, or anything else that follows a predictable pattern — then replace them all at once.</p>
-<p>The match counter updates in real time as you type your search term, so you always know how many replacements will be made before you apply them.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>Someone changed their name and it appears 47 times in your document. The API base URL switched from staging to production and you've got 200 lines of config to update. A CSV export has semicolons where you need commas. These are find-and-replace problems, and doing them by hand is a recipe for missed instances and inconsistency.</p>
+      <p>Plain text mode handles the obvious cases — swap one word for another, fix a repeated typo, change a domain name. But the real power is in regex mode. Regular expressions let you match patterns instead of exact strings: any date in MM/DD/YYYY format, any email address, any phone number with or without dashes. Match the pattern, replace it with the corrected version, and every instance updates at once.</p>
+      <p>The match counter updates live as you type your search term. You'll see exactly how many replacements will happen before you commit — no surprises, no "undo 200 times" panic. And since everything runs in your browser, your text never leaves your machine.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Case-sensitive mode prevents false positives.</strong> Replacing "us" catches "US", "bus", "focus", and "mushroom" if you're not careful. Turn on case-sensitive matching and whole-word mode together to target exactly what you mean.</p>
+      <p><strong>Regex capture groups let you rearrange, not just replace.</strong> Use parentheses to capture parts of a match, then reference them with $1, $2 in the replacement. "(\w+), (\w+)" replaced with "$2 $1" flips "Doe, John" to "John Doe" across your entire list.</p>
+      <p><strong>Backslash-n inserts line breaks in the replacement.</strong> Replacing "; " with ";\n" splits semicolon-separated values into one-per-line — useful for reformatting compressed CSS, log entries, or data dumps into something readable.</p>
+      <p><strong>Preview before committing.</strong> The live match count and highlighted matches show you exactly what will change. If you see 300 matches when you expected 30, your search term is probably too broad. Narrow it down before replacing.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Regex pattern</th><th>What it matches</th><th>Example use</th></tr></thead>
+        <tbody>
+          <tr><td>\\b\\w+@\\w+\\.\\w+\\b</td><td>Email addresses</td><td>Redact emails from a document</td></tr>
+          <tr><td>\\d{3}[-.]?\\d{3}[-.]?\\d{4}</td><td>US phone numbers</td><td>Standardize phone format</td></tr>
+          <tr><td>\\d{1,2}/\\d{1,2}/\\d{2,4}</td><td>Dates (M/D/YY or MM/DD/YYYY)</td><td>Convert date formats</td></tr>
+          <tr><td>(\\w+), (\\w+)</td><td>"Last, First" names</td><td>Flip to "First Last" with $2 $1</td></tr>
+          <tr><td>^\\s+</td><td>Leading whitespace</td><td>Strip indentation from pasted code</td></tr>
+          <tr><td>https?://\\S+</td><td>URLs (http and https)</td><td>Extract or replace all links</td></tr>
+          <tr><td>\\s{2,}</td><td>Multiple consecutive spaces</td><td>Collapse to single spaces</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['word-counter', 'sort-lines', 'remove-line-breaks'],
   },
   {
@@ -844,10 +981,33 @@ export const tools: Tool[] = [
     icon: 'ArrowUpDown',
     metaTitle: 'Sort Lines Online Free — Alphabetically, by Length | clevr.tools',
     metaDescription: 'Free online line sorter. Sort lines alphabetically A-Z or Z-A, sort by length, randomize order, or remove duplicate lines instantly.',
-    seoContent: `<h2>Sort Lines of Text Online</h2>
-<p>Sorting lines of text is a surprisingly common task: alphabetizing a list of names, ordering URLs, deduplicating a set of keywords, or randomizing the order of items for a quiz or drawing. This tool handles it all without needing to open a spreadsheet or write a script.</p>
-<p>Paste any multi-line content — a list, a CSV column, a set of tags, or exported data — and sort it instantly. The tool handles case-insensitive alphabetical sorting by default, so "Apple" and "apple" sort together rather than being separated by ASCII value differences.</p>
-<p>The "Remove Duplicates" option works independently from sorting, so you can clean up a list without reordering it — or combine it with sorting to get a clean, alphabetized, deduplicated list in one step.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You exported a list of 500 email addresses and need them alphabetized. You're cleaning up a keyword list for SEO and want duplicates removed. You pulled a column of product names from a spreadsheet and need them sorted by length so you can spot the outliers. These are all "sort lines" problems — and opening Excel or writing a Python script for them is overkill.</p>
+      <p>Paste your list, pick a sort mode, and get the result instantly. Alphabetical sorting is case-insensitive by default, so "apple" and "Apple" end up next to each other instead of being separated by ASCII rules (where all uppercase letters come before any lowercase letter — "Z" before "a"). That one detail saves more headaches than you'd expect.</p>
+      <p>The deduplicate option is quietly the most useful feature here. Combine it with alphabetical sort and you get a clean, unique, ordered list in one step — the same result that would take a spreadsheet formula, a Set() in JavaScript, or a "sort | uniq" pipe in the terminal.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Numeric sort treats "10" as ten, not as "1" followed by "0".</strong> Alphabetical sorting puts "10" before "2" because it compares character by character. Numeric sort understands that 2 < 10. If you're sorting version numbers, scores, prices, or any list with numbers in it, numeric mode is what you want.</p>
+      <p><strong>Sort by length finds outliers fast.</strong> If you're reviewing a list of product titles, meta descriptions, or database entries, sorting by length immediately reveals the too-short and too-long entries. It's a quick quality check you can do without writing any code.</p>
+      <p><strong>Random sort is fair randomization.</strong> It uses a proper shuffle algorithm, not a naive sort-by-random comparison (which produces biased results). Use it for raffle drawings, random quiz question order, or A/B test group assignments where fairness matters.</p>
+      <p><strong>Reverse works with any sort mode.</strong> Sort Z-A, longest-to-shortest, or largest-to-smallest. Every sort mode has a reverse option, so you don't need to sort and then flip — just check the reverse box.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Sort mode</th><th>How it orders</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><td>Alphabetical (A-Z)</td><td>Case-insensitive Unicode order</td><td>Name lists, glossaries, tags</td></tr>
+          <tr><td>Alphabetical (Z-A)</td><td>Reverse alphabetical</td><td>Reverse lookups, inverted indexes</td></tr>
+          <tr><td>Numeric (ascending)</td><td>Parses numbers, sorts by value</td><td>Scores, prices, version numbers</td></tr>
+          <tr><td>Numeric (descending)</td><td>Largest numbers first</td><td>Leaderboards, top-N lists</td></tr>
+          <tr><td>By length (short first)</td><td>Character count, ascending</td><td>Finding short entries, outlier detection</td></tr>
+          <tr><td>By length (long first)</td><td>Character count, descending</td><td>Finding verbose entries, truncation checks</td></tr>
+          <tr><td>Random</td><td>Fisher-Yates shuffle</td><td>Raffles, quiz order, test groups</td></tr>
+          <tr><td>Remove duplicates</td><td>Preserves original order</td><td>Deduplicating any list</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['find-and-replace', 'remove-line-breaks', 'word-counter'],
   },
   {
@@ -860,10 +1020,30 @@ export const tools: Tool[] = [
     icon: 'Binary',
     metaTitle: 'Base64 Encoder / Decoder Online Free | clevr.tools',
     metaDescription: 'Free Base64 encoder and decoder. Encode text to Base64 or decode back to plain text. Handles Unicode. Instant, browser-based, no data sent to any server.',
-    seoContent: `<h2>Base64 Encoding and Decoding</h2>
-<p>Base64 is an encoding scheme that converts binary data into ASCII text, making it safe to transmit in contexts that only support text — like email, URLs, or JSON payloads. You'll encounter Base64 everywhere in web development: data URIs for embedding images in CSS, Basic Auth headers, JWT tokens, and API responses that include binary data.</p>
-<p>Decoding Base64 is equally common when debugging API responses, inspecting JWT payloads (the middle section of a JWT is Base64-encoded JSON), or reading encoded values from environment variables or config files.</p>
-<p>This tool handles Unicode characters correctly — most naive implementations using just <code>btoa()</code> break on non-ASCII text like accented characters or emoji. Our encoder uses proper UTF-8 encoding so international text is handled correctly in both directions.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're debugging an API response and one of the fields is a blob of characters ending in "==" — that's Base64. You need to decode it to see the actual data inside. Or you're looking at a JWT token and want to read the payload: split the token on the dots, grab the middle segment, and paste it here to reveal the JSON claims.</p>
+      <p>Encoding is just as common. You need to embed a small image directly in CSS or HTML as a data URI. You're setting up Basic Auth and need to encode "username:password" into the <code>Authorization</code> header value. You're stuffing binary data into a JSON field or an environment variable that only accepts text. Base64 is the standard way to make binary safe for text-only channels.</p>
+      <p>In plain terms, Base64 takes every 3 bytes of input and represents them as 4 ASCII characters from a 64-character alphabet (A-Z, a-z, 0-9, +, /). The "==" padding at the end fills out the last group when the input isn't evenly divisible by 3. That's the entire trick — it's encoding, not encryption. Anyone can decode it.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Base64 is not encryption.</strong> It's a common misconception. Base64 is a reversible encoding — there's no key, no secret, no security. If you see credentials stored as Base64 "for security," that's a red flag. Anyone can decode it instantly. It exists purely to make binary data safe for text transport, not to hide anything.</p>
+      <p><strong>JavaScript's <code>btoa()</code> breaks on Unicode.</strong> The built-in <code>btoa()</code> function only handles Latin-1 characters. Feed it an emoji, an accented character, or any multibyte UTF-8 and you'll get "Failed to execute 'btoa'." The correct approach — and what this tool uses — is to encode to UTF-8 bytes first, then Base64-encode those bytes. The <code>TextEncoder</code> API makes this clean.</p>
+      <p><strong>Base64 increases size by ~33%.</strong> Every 3 bytes become 4 characters. A 1MB image becomes ~1.33MB as a data URI. For small assets (icons, tiny SVGs) the overhead is worth avoiding an extra HTTP request. For anything above a few KB, serve the file normally.</p>
+      <p><strong>Power user tip: Base64url is a thing.</strong> Standard Base64 uses <code>+</code> and <code>/</code>, which are special characters in URLs. Base64url (RFC 4648 Section 5) swaps those for <code>-</code> and <code>_</code> and drops the padding. JWTs use Base64url, not standard Base64 — so if you're manually decoding a JWT segment and the output looks garbled, that's probably why.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Input</th><th>Base64 Output</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Hello</td><td>SGVsbG8=</td><td>Single <code>=</code> pad (5 bytes, 1 leftover)</td></tr>
+          <tr><td>Hi</td><td>SGk=</td><td>One pad character</td></tr>
+          <tr><td>ABC</td><td>QUJD</td><td>No padding needed (3 bytes divides evenly)</td></tr>
+          <tr><td>user:pass</td><td>dXNlcjpwYXNz</td><td>HTTP Basic Auth format</td></tr>
+          <tr><td>{"sub":"1234"}</td><td>eyJzdWIiOiIxMjM0In0=</td><td>JWT-style JSON payload</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['json-formatter', 'url-encoder'],
   },
   // ─── Generate Tools ──────────────────────────────────────────────────────
@@ -877,13 +1057,31 @@ export const tools: Tool[] = [
     icon: 'KeyRound',
     metaTitle: 'Password Generator — Strong & Random | clevr.tools',
     metaDescription: 'Free secure password generator. Create strong random passwords with custom length and character sets. Uses crypto-grade randomness. Browser-based, no data sent.',
-    seoContent: `<h2>Free Secure Password Generator</h2>
-<p>This password generator creates cryptographically secure random passwords using your browser's built-in <code>crypto.getRandomValues()</code> API — the same source of randomness used in encryption software and security tools. Unlike generators that use <code>Math.random()</code>, which is predictable and unsuitable for security purposes, every password created here is truly unpredictable.</p>
-<p>Customize your password length from 4 to 128 characters and choose which character sets to include: uppercase letters, lowercase letters, numbers, and symbols. The "exclude ambiguous characters" option removes look-alike characters like <code>0</code>, <code>O</code>, <code>1</code>, <code>l</code>, and <code>I</code> — useful when you need to type a password manually rather than paste it.</p>
-<h2>What Makes a Strong Password?</h2>
-<p>Password strength comes down to two factors: length and character diversity. A 16-character password using all four character types has roughly 95^16 possible combinations — more than 10^31. That's beyond the reach of any brute-force attack with current technology. By contrast, an 8-character password using only lowercase letters has just 26^8 combinations, which modern hardware can crack in seconds.</p>
-<p>Our strength meter calculates entropy — a measure of randomness measured in bits — and estimates how long a brute-force attack would take at 10 billion guesses per second. This represents a well-funded attacker using modern GPU hardware. For context, a 16-character password using all character types reaches roughly 105 bits of entropy and would take approximately 100 million years to crack. A simple 8-character lowercase password has just 37 bits of entropy and could be cracked in under a minute.</p>
-<p>Security experts recommend using a unique password for every account, never reusing passwords, and using a password manager to store them. Generate a long, random password here and let your password manager handle the rest.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're signing up for a new service and you need a password that isn't "Summer2024!" — which, by the way, appears in every major breach database. You need something truly random, something no human would think of, something that can't be guessed from your birthday, pet's name, or favorite band. That's what this generator does.</p>
+      <p>It's also for the moments when you need a quick API key, a temporary shared secret for a staging environment, or a random token for a one-time link. Any time you need a string that's unpredictable and high-entropy, generating one here is faster than mashing your keyboard and hoping for the best.</p>
+      <p>Every password is generated using your browser's <code>crypto.getRandomValues()</code> API — the same cryptographic random number generator that underpins TLS, SSH keys, and encryption software. Nothing is sent to any server. The password exists only in your browser until you copy it.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Length beats complexity, every time.</strong> A 20-character lowercase password (26^20 = ~95 bits of entropy) is harder to crack than a 10-character password using all character types (95^10 = ~66 bits). If a site lets you use long passwords, go long rather than short-and-complex. The math isn't close.</p>
+      <p><strong><code>Math.random()</code> is not suitable for passwords.</strong> Most programming tutorials generate passwords with <code>Math.random()</code>, which uses a pseudo-random algorithm seeded by a predictable value. An attacker who knows the implementation can reduce the search space dramatically. <code>crypto.getRandomValues()</code> draws from the OS entropy pool — CPU jitter, interrupt timing, hardware noise — and is the only acceptable source for security-sensitive randomness in the browser.</p>
+      <p><strong>The "exclude ambiguous characters" option exists for a reason.</strong> When you have to read a password aloud, type it on a TV remote, or enter it on a device without paste support, confusing <code>0</code> with <code>O</code> or <code>1</code> with <code>l</code> is infuriating. Excluding these look-alikes costs a tiny amount of entropy but saves real-world headaches.</p>
+      <p><strong>Power user tip: entropy is what actually matters.</strong> A password's strength is measured in bits of entropy: <code>log2(pool_size ^ length)</code>. A 16-character password from a 95-character pool has ~105 bits. At 10 billion guesses per second (a well-funded attacker with GPUs), that takes longer than the age of the universe to brute-force. Aim for 80+ bits minimum for anything important.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Password Config</th><th>Pool Size</th><th>Entropy (16 chars)</th><th>Brute-force Time*</th></tr></thead>
+        <tbody>
+          <tr><td>Lowercase only</td><td>26</td><td>~75 bits</td><td>~1.2 million years</td></tr>
+          <tr><td>Lower + upper</td><td>52</td><td>~91 bits</td><td>~78 billion years</td></tr>
+          <tr><td>Lower + upper + digits</td><td>62</td><td>~95 bits</td><td>~1.4 trillion years</td></tr>
+          <tr><td>All printable ASCII</td><td>95</td><td>~105 bits</td><td>~128 quadrillion years</td></tr>
+          <tr><td>Lowercase only (8 chars)</td><td>26</td><td>~37 bits</td><td>~21 seconds</td></tr>
+        </tbody>
+      </table>
+      <p>* At 10 billion guesses/second (modern GPU cluster)</p>
+    `,
     relatedTools: ['qr-code-generator', 'base64', 'random-number'],
   },
   {
@@ -968,9 +1166,33 @@ export const tools: Tool[] = [
     metaTitle: 'URL Encoder & Decoder Online Free | clevr.tools',
     metaDescription:
       'Free URL encoder and decoder. Encode special characters or decode URL-encoded strings. Supports encodeURI and encodeURIComponent modes. Browser-based, no signup.',
-    seoContent: `<h2>What is URL Encoding?</h2>
-<p>URL encoding (also called percent-encoding) converts special characters into a format safe for transmission in URLs. Characters like spaces, ampersands, question marks, and non-ASCII characters are replaced with a percent sign followed by their hexadecimal value (e.g., a space becomes %20). This ensures URLs are valid and parsed correctly by browsers and servers.</p>
-<p>JavaScript provides two levels of encoding: <code>encodeURIComponent()</code> encodes almost all special characters and is the right choice for encoding individual query string values. <code>encodeURI()</code> preserves URL structure characters like <code>:</code>, <code>/</code>, <code>?</code>, and <code>#</code>, making it suitable for encoding an entire URL without breaking its structure. This tool supports both modes so you can pick the one that fits your use case.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're building a URL with query parameters and one of the values contains an ampersand, a space, or a non-English character. Without encoding, the URL breaks — the browser interprets that <code>&</code> as a parameter separator, the space terminates the URL, and the Unicode character gets mangled. Percent-encoding makes every character URL-safe so the full value arrives intact on the server side.</p>
+      <p>Decoding is the mirror scenario. You're reading server logs or inspecting a redirect URL and it's full of <code>%20</code>, <code>%3D</code>, and <code>%26</code>. Paste the encoded string here to see the human-readable version. This comes up constantly when debugging OAuth callbacks, tracking parameters, and deep links.</p>
+      <p>URL encoding (formally "percent-encoding" per RFC 3986) replaces unsafe characters with a <code>%</code> followed by two hex digits representing the character's byte value. A space becomes <code>%20</code>, an ampersand becomes <code>%26</code>, and a multi-byte emoji like a flag might become six or more percent-encoded bytes.</p>
+
+      <h2>Good to know</h2>
+      <p><strong><code>encodeURIComponent</code> vs. <code>encodeURI</code> — they're not interchangeable.</strong> <code>encodeURIComponent()</code> encodes almost everything except <code>A-Z a-z 0-9 - _ . ! ~ * ' ( )</code>. Use it for individual query string values. <code>encodeURI()</code> leaves URL-structural characters like <code>: / ? # [ ] @</code> alone, so it's safe for encoding a complete URL without destroying its structure. Using the wrong one is a top-5 URL bug.</p>
+      <p><strong>Spaces can be <code>%20</code> or <code>+</code> — and it matters which.</strong> In URL query strings (the <code>application/x-www-form-urlencoded</code> format used by HTML forms), spaces are encoded as <code>+</code>. In the path segment and everywhere else in a URI, spaces are <code>%20</code>. JavaScript's <code>encodeURIComponent</code> always produces <code>%20</code>. If you need <code>+</code> for form data, you'll need to post-process.</p>
+      <p><strong>Double-encoding is a silent data corrupter.</strong> If a value is already encoded and you encode it again, <code>%20</code> becomes <code>%2520</code>. The server decodes it once and gets the literal string "%20" instead of a space. Always check whether your input is already encoded before running it through an encoder.</p>
+      <p><strong>Power user tip: RFC 3986 defines "unreserved" characters that never need encoding.</strong> These are <code>A-Z a-z 0-9 - . _ ~</code>. Everything else is either "reserved" (has structural meaning in URIs) or must be percent-encoded. Knowing this list saves you from over-encoding.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Character</th><th>Encoded</th><th>Why it needs encoding</th></tr></thead>
+        <tbody>
+          <tr><td>(space)</td><td>%20</td><td>Terminates URLs in many contexts</td></tr>
+          <tr><td>&</td><td>%26</td><td>Separates query parameters</td></tr>
+          <tr><td>=</td><td>%3D</td><td>Separates key from value in query strings</td></tr>
+          <tr><td>?</td><td>%3F</td><td>Marks the start of the query string</td></tr>
+          <tr><td>#</td><td>%23</td><td>Marks the start of the fragment</td></tr>
+          <tr><td>/</td><td>%2F</td><td>Path separator (encode only inside values)</td></tr>
+          <tr><td>@</td><td>%40</td><td>Used in userinfo (user@host)</td></tr>
+          <tr><td>+</td><td>%2B</td><td>Interpreted as space in form data</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['base64', 'json-formatter'],
   },
   // ─── Time Tools ──────────────────────────────────────────────────────────
@@ -984,7 +1206,31 @@ export const tools: Tool[] = [
     icon: 'Timer',
     metaTitle: 'Online Timer — Free Countdown Timer with Sound | clevr.tools',
     metaDescription: 'Free countdown timer with sound alert. Set hours, minutes, and seconds with quick presets. Page title shows countdown so you can see time in your browser tab.',
-    seoContent: `<h2>Free Online Timer</h2><p>Set a countdown timer for cooking, workouts, study sessions, meeting presentations, classroom activities, or any task that needs a time limit. Quick preset buttons for the most common durations — 1, 3, 5, 10, 15, 25, 30 minutes, and 1 hour — get you started with one click.</p><p>The timer continues counting down even when you switch to another browser tab. Your browser tab title shows the remaining time (e.g., "05:23 — Timer") so you can glance at your taskbar without switching back. When the timer reaches zero, you'll hear a clear audio alert and see a visual notification on the page.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>The pasta needs exactly 8 minutes. Your presentation slot is 15 minutes and you need to know when to wrap up. You're doing interval training and need 45-second work periods with 15-second rest. A countdown timer is one of the simplest tools that exists — and one of the most universally useful.</p>
+      <p>This timer lives in your browser tab, which means it works alongside whatever else you're doing. The tab title updates with the remaining time, so you can glance at your taskbar without switching windows. When time's up, you'll hear it — even if the tab is buried behind twelve others.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The tab title is your status bar.</strong> While the timer runs, your browser tab shows "05:23 — Timer" (or whatever's remaining). This means you never need to switch back to check — just glance at your taskbar or tab bar.</p>
+      <p><strong>It works in background tabs.</strong> Modern browsers throttle JavaScript in inactive tabs, but this timer compensates by calculating elapsed time from timestamps rather than relying on setInterval accuracy. The display might update less frequently in the background, but the alarm fires on time.</p>
+      <p><strong>Quick presets eliminate typing.</strong> The most common timer durations (1, 3, 5, 10, 15, 25, 30 minutes, 1 hour) are one click away. You'll use these 90% of the time. Custom hours/minutes/seconds input is there for everything else.</p>
+      <p><strong>25 minutes is the Pomodoro default.</strong> If you're timing a focus session, the dedicated Pomodoro timer handles work/break cycling automatically. Use this plain timer when you just need a one-off countdown without the structure.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Activity</th><th>Typical Duration</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Soft-boiled egg</td><td>6–7 min</td><td>From boiling water</td></tr>
+          <tr><td>Pasta (al dente)</td><td>8–10 min</td><td>Check package instructions</td></tr>
+          <tr><td>Power nap</td><td>20 min</td><td>Longer risks grogginess</td></tr>
+          <tr><td>Pomodoro session</td><td>25 min</td><td>Standard focus block</td></tr>
+          <tr><td>Presentation practice</td><td>5–15 min</td><td>Match your time slot</td></tr>
+          <tr><td>HIIT interval</td><td>30–45 sec</td><td>Work period</td></tr>
+          <tr><td>Meditation</td><td>10–20 min</td><td>Start short, build up</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['stopwatch', 'pomodoro'],
   },
   {
@@ -997,7 +1243,30 @@ export const tools: Tool[] = [
     icon: 'Watch',
     metaTitle: 'Online Stopwatch — Free Lap Timer | clevr.tools',
     metaDescription: 'Free online stopwatch with lap timing. Record split times, track laps, and compare your fastest and slowest laps. Display updates at 60fps for precision timing.',
-    seoContent: `<h2>Free Online Stopwatch</h2><p>A precise stopwatch with lap timing for sports training, cooking, lab experiments, presentations, game timing, and any activity where split times matter. Record unlimited laps and see your total elapsed time alongside each individual lap time.</p><p>The fastest and slowest laps are automatically highlighted in green and red so you can instantly identify your best and worst splits. Copy all lap times as text for sharing or logging. The display updates every frame for smooth, accurate time reading down to hundredths of a second.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're timing laps at the track and need to compare splits. You're running a science experiment and need precise elapsed time. You're a coach timing relay legs, or a debater tracking speaking time, or a game master managing turns. Anywhere you need to measure how long something takes — with the ability to mark intermediate points — a stopwatch with lap recording is the tool.</p>
+      <p>The lap feature is what separates a stopwatch from a timer. Recording splits lets you see not just total time, but pacing — are your laps getting faster or slower? The automatic green/red highlighting on fastest and slowest laps gives you that answer at a glance.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Hundredths-of-a-second precision.</strong> The display updates at 60fps using requestAnimationFrame, giving you smooth, responsive time reading. For practical purposes, human reaction time to press the lap button adds ~150-300ms of variance, so the display precision exceeds your input precision.</p>
+      <p><strong>Fastest and slowest laps are auto-highlighted.</strong> Green marks your best split, red marks your worst. After 3+ laps, this instantly shows whether you're fading or accelerating — no mental math needed.</p>
+      <p><strong>Lap time vs. split time.</strong> Lap time is the duration of that individual segment. Split time (cumulative) is the total elapsed time at that point. Both are useful — lap time for pacing, split time for overall progress.</p>
+      <p><strong>Copy all laps as text.</strong> One click exports your entire lap history as plain text for pasting into a spreadsheet, training log, or lab notebook. Much faster than writing times down by hand.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Use Case</th><th>What to Track</th><th>Typical Precision Needed</th></tr></thead>
+        <tbody>
+          <tr><td>Track/running laps</td><td>Lap splits, pacing</td><td>Seconds</td></tr>
+          <tr><td>Swimming intervals</td><td>Lap time per length</td><td>Tenths</td></tr>
+          <tr><td>Lab experiments</td><td>Reaction time, elapsed</td><td>Seconds</td></tr>
+          <tr><td>Cooking stages</td><td>Phase duration</td><td>Minutes</td></tr>
+          <tr><td>Debate/speech timing</td><td>Speaker duration</td><td>Seconds</td></tr>
+          <tr><td>Board game turns</td><td>Per-player time</td><td>Seconds</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['timer', 'pomodoro'],
   },
   {
@@ -1010,7 +1279,31 @@ export const tools: Tool[] = [
     icon: 'Brain',
     metaTitle: 'Pomodoro Timer Online Free — Focus & Break Timer | clevr.tools',
     metaDescription: 'Free Pomodoro timer. Customize focus sessions and break lengths. Sound alerts, session tracking, and auto-start. Boost productivity with proven technique.',
-    seoContent: `<h2>Free Pomodoro Timer</h2><p>The Pomodoro Technique is a time management method developed by Francesco Cirillo. Work in 25-minute focused sessions (pomodoros), take a 5-minute short break, then after four sessions take a longer 15-minute break. This cycle helps maintain concentration and prevents mental fatigue.</p><p>Customize the focus duration, short break, and long break lengths to fit your work style. Some people find 50/10 or 90-minute sessions work better for deep work. Sound alerts between sessions let you know when it's time to switch — so you can fully focus without watching the clock.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You have a task you've been avoiding all week. You know you should start, but the scope feels overwhelming. The Pomodoro Technique's genius isn't the timer — it's the reframing. You're not committing to finishing the task. You're committing to 25 minutes. That's it. Anyone can do 25 minutes.</p>
+      <p>It works because sustained attention is a finite resource. Research in cognitive psychology consistently shows that focus degrades after 20-40 minutes of uninterrupted mental effort. The 25/5 work/break cycle keeps you in the high-performance zone rather than grinding through diminishing returns. The breaks aren't wasted time — they're when your brain consolidates what you just worked on.</p>
+      <p>The technique was developed by Francesco Cirillo in the late 1980s, named after the tomato-shaped kitchen timer he used as a university student. It's since become one of the most widely adopted productivity methods in the world, particularly among developers, writers, and students.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>25 minutes isn't sacred.</strong> The original technique prescribes 25-minute focus blocks, but research suggests optimal focus duration varies by person and task. Writing and design often benefit from longer 45-50 minute blocks. Repetitive tasks do well at 25. Experiment — the principle (focused work + deliberate rest) matters more than the specific numbers.</p>
+      <p><strong>The break is mandatory, not optional.</strong> Skipping breaks to "stay in flow" defeats the purpose. The break prevents the gradual attention degradation that makes hour 3 of continuous work dramatically less productive than hour 1. Stand up, stretch, look at something far away. Don't check email — that's a different kind of work, not rest.</p>
+      <p><strong>Four pomodoros, then a long break.</strong> After four focus sessions, take a 15-30 minute break. This cycle (about 2.5 hours of focused work) maps well to a productive morning or afternoon. Most people find 6-8 pomodoros is a realistic daily maximum for deep work.</p>
+      <p><strong>Track your completed sessions.</strong> Counting pomodoros gives you an objective measure of focused work. "I did 6 pomodoros today" is more honest and useful than "I worked for 8 hours" — because it counts only the time you were actually focused.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Task Type</th><th>Focus Length</th><th>Short Break</th><th>Long Break</th></tr></thead>
+        <tbody>
+          <tr><td>Writing / content creation</td><td>45–50 min</td><td>10 min</td><td>20–30 min</td></tr>
+          <tr><td>Programming / debugging</td><td>25–30 min</td><td>5 min</td><td>15–20 min</td></tr>
+          <tr><td>Studying / reading</td><td>25 min</td><td>5 min</td><td>15 min</td></tr>
+          <tr><td>Email / admin tasks</td><td>15–25 min</td><td>3–5 min</td><td>10 min</td></tr>
+          <tr><td>Creative brainstorming</td><td>20–25 min</td><td>5 min</td><td>15 min</td></tr>
+          <tr><td>Data entry / repetitive</td><td>25 min</td><td>5 min</td><td>15 min</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['timer', 'stopwatch'],
   },
   // ─── Calculators (additional) ───────────────────────────────────────────
@@ -1051,7 +1344,29 @@ export const tools: Tool[] = [
     icon: 'Fingerprint',
     metaTitle: 'UUID Generator — Free Online UUID / GUID Tool | clevr.tools',
     metaDescription: 'Free UUID generator. Create UUID v4 (random) or v7 (timestamp) identifiers. Bulk generate up to 100 at once. Uppercase, lowercase, and no-hyphens formats.',
-    seoContent: `<h2>Free UUID Generator</h2><p>Universally Unique Identifiers (UUIDs) are 128-bit identifiers used as primary keys in databases, request IDs in distributed systems, session tokens, file names, and anywhere you need a unique identifier that won't collide with others. UUID v4 is randomly generated and suitable for most use cases. UUID v7 is timestamp-based, which makes it sortable by creation time — useful for database primary keys where chronological ordering matters.</p><p>This generator uses <code>crypto.randomUUID()</code> for v4 when available, falling back to <code>crypto.getRandomValues()</code> with correctly set version (0100) and variant (10xx) bits. All generation happens in your browser — nothing is sent to any server.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're spinning up a new database table and need primary keys that won't collide across servers, regions, or even completely independent systems — without any coordination. That's the entire point of UUIDs. Generate one anywhere, anytime, and you can be statistically certain it's unique across every UUID ever created. No central registry, no auto-increment sequence to manage, no distributed lock.</p>
+      <p>Beyond database keys, UUIDs show up as request IDs for distributed tracing (attach one to every API call and follow it through your logs), idempotency keys for payment APIs (Stripe requires one), file names that won't collide in object storage, and session tokens. Any time you need a unique identifier that doesn't leak information about your system's internals (unlike sequential IDs), a UUID is the standard answer.</p>
+      <p>Need a batch? The bulk generator creates up to 100 UUIDs at once — useful for seeding test data, pre-generating IDs for a migration script, or populating a staging database.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>v4 is random. v7 is time-sorted. Pick based on your use case.</strong> UUID v4 (RFC 9562) is 122 bits of pure randomness — great for general-purpose unique IDs. UUID v7 embeds a Unix timestamp in the first 48 bits, making them sort chronologically. If you're using UUIDs as database primary keys, v7 is the better choice — it avoids the random-write performance problem that v4 causes in B-tree indexes.</p>
+      <p><strong>The collision probability is vanishingly small.</strong> With 122 random bits, you'd need to generate about 2.7 x 10^18 (2.7 quintillion) v4 UUIDs before hitting a 50% chance of a single collision. For practical purposes, it won't happen. The odds of a collision in a billion UUIDs are about 1 in 10^21.</p>
+      <p><strong>UUID vs. GUID — same thing, different name.</strong> Microsoft calls them GUIDs (Globally Unique Identifiers), everyone else calls them UUIDs. The format is identical: 32 hex digits in 8-4-4-4-12 grouping. If a system asks for a GUID, generate a UUID.</p>
+      <p><strong>Power user tip: the version and variant bits are fixed positions.</strong> In <code>xxxxxxxx-xxxx-<strong>4</strong>xxx-<strong>a</strong>xxx-xxxxxxxxxxxx</code>, the "4" is the version nibble (always 4 for v4, 7 for v7) and the leading bits of the next group set the variant to RFC 9562. This means not all 128 bits are random — v4 has 122 random bits, and v7 has 74 random bits plus a 48-bit timestamp. Knowing this matters when calculating collision probabilities.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>UUID Version</th><th>Based On</th><th>Sortable?</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>v1</td><td>Timestamp + MAC address</td><td>Yes (with caveats)</td><td>Legacy systems (leaks hardware info)</td></tr>
+          <tr><td>v4</td><td>Random</td><td>No</td><td>General-purpose unique IDs</td></tr>
+          <tr><td>v5</td><td>SHA-1 hash of namespace + name</td><td>No</td><td>Deterministic IDs from known inputs</td></tr>
+          <tr><td>v7</td><td>Unix timestamp + random</td><td>Yes</td><td>Database primary keys, time-ordered IDs</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['password-generator', 'random-number'],
   },
   // ─── More Calculators ──────────────────────────────────────────────────
