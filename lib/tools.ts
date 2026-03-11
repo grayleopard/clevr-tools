@@ -560,12 +560,31 @@ export const tools: Tool[] = [
     metaDescription:
       'Resize images online free. Set exact dimensions, use social media presets, or target a specific file size. Batch support, aspect ratio lock. No upload required.',
     seoContent: `
-      <h2>Three Ways to Resize</h2>
-      <p>Different use cases call for different resizing approaches. Exact dimensions mode lets you set precise pixel widths and heights with an aspect ratio lock that automatically calculates the proportional dimension — essential for UI design, web assets, and any context with strict size requirements. Preset mode provides ready-made dimensions for common social media formats (Instagram, Facebook, Twitter), passport photos, and standard web sizes so you don't need to memorize specifications. Target file size mode iteratively adjusts compression until your image meets an exact kilobyte limit — useful for applications with strict upload size requirements.</p>
-      <h2>Quality Without Distortion</h2>
-      <p>All resizing uses the HTML5 Canvas API with bicubic-equivalent scaling to produce smooth, artifact-free results. Aspect ratio locking prevents the stretching and distortion that occurs when width and height are changed independently. For batch resizing, the same settings apply to all files — useful when standardizing a collection of product photos, profile pictures, or presentation assets to consistent dimensions.</p>
-      <h2>Private Browser-Based Processing</h2>
-      <p>Image resizing happens entirely in your browser. Files are drawn to an HTML5 Canvas element and re-exported — no pixel data is ever transmitted to a server. Batch processing runs sequentially in memory, and all blob URLs are released after download. Your photos — including faces, locations, documents, and private content — never leave your device during any step of the process.</p>
+      <h2>When to use this</h2>
+      <p>You shot a product photo at 4000 x 3000 pixels but the e-commerce platform caps uploads at 1200 px wide. Or you're preparing images for a blog post and each one needs to be exactly 800 px wide so the layout doesn't shift. Maybe you're batch-resizing 50 headshots for a company directory page where every photo must be 400 x 400. Any time an image's pixel dimensions don't match where it's going, this is the tool.</p>
+      <p>Social media is another constant trigger. Every platform has its own preferred image dimensions — an Instagram post is 1080 x 1080, a LinkedIn banner is 1584 x 396, a YouTube thumbnail is 1280 x 720. Uploading an image at the wrong size means the platform will crop or scale it unpredictably, often cutting off faces or text. Using the preset mode here gives you exact dimensions so you control what gets shown.</p>
+      <p>The target file size mode solves a different problem entirely: upload limits. Some forms, forums, and email systems cap attachments at 500 KB or 1 MB. Rather than guessing at compression settings, enter the target size and the tool iteratively adjusts quality until the file fits — no trial and error.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Aspect ratio lock prevents distortion.</strong> When enabled, changing the width automatically recalculates the height (and vice versa) to maintain the original proportions. Disable it only when you intentionally want to stretch — like converting a 4:3 photo to a 16:9 banner where some distortion is acceptable.</p>
+      <p><strong>Upscaling adds pixels but not detail.</strong> Enlarging a 200 px image to 2000 px won't magically add sharpness. The Canvas API interpolates between existing pixels, producing a softer result. For best quality, always resize down from a larger original rather than up from a smaller one.</p>
+      <p><strong>Batch mode applies the same settings to every file.</strong> Drop 50 images and they all get resized to identical dimensions. This is the fastest way to standardize a set of product photos, team headshots, or presentation assets.</p>
+      <p><strong>Everything stays on your device.</strong> Images are drawn to an HTML5 Canvas element and re-exported entirely in your browser. No pixel data is transmitted to a server. Blob URLs are released after download to free memory.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Platform</th><th>Format</th><th>Dimensions (px)</th></tr></thead>
+        <tbody>
+          <tr><td>Instagram</td><td>Post (square)</td><td>1080 x 1080</td></tr>
+          <tr><td>Instagram</td><td>Story / Reel</td><td>1080 x 1920</td></tr>
+          <tr><td>Facebook</td><td>Cover photo</td><td>820 x 312</td></tr>
+          <tr><td>Twitter / X</td><td>Header image</td><td>1500 x 500</td></tr>
+          <tr><td>LinkedIn</td><td>Banner</td><td>1584 x 396</td></tr>
+          <tr><td>YouTube</td><td>Thumbnail</td><td>1280 x 720</td></tr>
+          <tr><td>Pinterest</td><td>Pin</td><td>1000 x 1500</td></tr>
+          <tr><td>Passport photo</td><td>US standard</td><td>600 x 600</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['image-compressor', 'png-to-jpg', 'jpg-to-png'],
     badge: 'new',
@@ -1094,11 +1113,31 @@ export const tools: Tool[] = [
     icon: 'Dices',
     metaTitle: 'Random Number Generator — Free Online RNG | clevr.tools',
     metaDescription: 'Free random number generator. Pick numbers in any range, flip a coin, or roll dice. Uses cryptographic randomness for true fairness. No signup required.',
-    seoContent: `<h2>Free Random Number Generator</h2>
-<p>This random number generator uses your browser's <code>crypto.getRandomValues()</code> API to produce truly random numbers — not pseudo-random numbers from a predictable algorithm. That makes it suitable for giveaways, raffles, games, statistical sampling, and any situation where fairness matters.</p>
-<p>Common uses include picking a random winner from a numbered list, selecting a random item from a menu, generating test data, deciding who goes first in a game, or making any decision where you want genuine chance rather than personal bias.</p>
-<h2>How Our Random Number Generator Works</h2>
-<p>Standard programming languages use pseudo-random number generators (PRNGs) seeded by the current time. These are fast and fine for most purposes, but they're mathematically predictable. Our generator uses hardware entropy collected by your operating system — sources like CPU timing jitter, mouse movement, and other unpredictable physical signals. The result is numbers that cannot be predicted or reproduced.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>Your team is running a giveaway and you need to pick a winner from 500 entries. Or you're a teacher assigning students to groups and want the selection to be genuinely unbiased. Maybe you're settling a friendly argument about who pays for dinner. Any time you need a number that nobody can predict or accuse of being rigged, you need a random number generator backed by real entropy — not a coin flip, not "just pick one," and not a PRNG seeded by the clock.</p>
+      <p>Developers use this for generating test data, seeding sample databases, or simulating dice rolls in a board game prototype. Researchers use it for selecting random samples from a population. DMs use it for tabletop RPGs when their physical dice are across the room. The tool supports custom ranges, multiple results at once, and built-in dice and coin flip modes for the most common scenarios.</p>
+      <p>This generator uses your browser's <code>crypto.getRandomValues()</code> API, which draws from hardware entropy collected by your operating system — CPU timing jitter, interrupt timing, and other physically unpredictable signals. Unlike <code>Math.random()</code>, which uses a deterministic PRNG seeded by the clock, these results cannot be predicted or reproduced.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Cryptographic randomness is overkill for most tasks — and that's fine.</strong> You don't strictly need hardware entropy to pick a restaurant. But using it means nobody can claim the result was biased, and it costs nothing extra. Better to over-deliver on fairness than to explain why <code>Math.random()</code> was "good enough."</p>
+      <p><strong>Multiple results are independent.</strong> Generating 10 numbers between 1 and 100 can produce duplicates because each draw is independent. If you need unique numbers (like raffle picks), the tool removes duplicates from the result set automatically when you enable that option.</p>
+      <p><strong>Dice notation maps to ranges.</strong> A d20 is just a random integer from 1 to 20. 2d6 is two independent rolls of 1-6, summed. The built-in dice mode handles standard polyhedral dice (d4, d6, d8, d10, d12, d20, d100) so you don't need to set ranges manually.</p>
+      <p><strong>Coin flips are 50/50, not 51/49.</strong> Physical coins have a slight bias toward the side facing up at the start of the toss (about 51%). A cryptographic coin flip is exactly 50/50 — one bit of entropy, no physics involved.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Use Case</th><th>Range / Mode</th><th>Fairness Level</th></tr></thead>
+        <tbody>
+          <tr><td>Giveaway winner (500 entries)</td><td>1 – 500</td><td>Cryptographic — auditable</td></tr>
+          <tr><td>Coin flip</td><td>Heads / Tails</td><td>Exactly 50/50</td></tr>
+          <tr><td>D&D attack roll</td><td>d20 (1 – 20)</td><td>Uniform distribution</td></tr>
+          <tr><td>Random group assignment</td><td>1 – N (multiple results)</td><td>Independent draws</td></tr>
+          <tr><td>Lottery-style pick (no repeats)</td><td>1 – 49, 6 unique results</td><td>Cryptographic, deduplicated</td></tr>
+          <tr><td>Test data seeding</td><td>Any range, bulk generation</td><td>CSPRNG-backed</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['password-generator', 'qr-code-generator'],
   },
   // ─── Dev Tools (additional) ─────────────────────────────────────────────
@@ -1112,11 +1151,29 @@ export const tools: Tool[] = [
     icon: 'Pipette',
     metaTitle: 'Color Picker — HEX, RGB, HSL Converter Free | clevr.tools',
     metaDescription: 'Free online color picker and converter. Pick any color and instantly get its HEX, RGB, HSL, and HSB values. One-click copy for each format. No ads, no signup.',
-    seoContent: `<h2>Free Online Color Picker</h2>
-<p>Pick any color using the visual color picker and instantly see its value in every common format: HEX for CSS and HTML, RGB for digital design and CSS, HSL for intuitive color adjustments, and HSB/HSV for Photoshop and illustration tools. Every format has a one-click copy button so you can drop the value straight into your code or design tool.</p>
-<p>The recently-used colors panel remembers up to 10 colors you've picked in the current session, so you can easily compare swatches or return to a color you were working with. Edit any input field directly to jump to a specific color — enter a hex code, adjust an RGB channel, or tweak HSL lightness — and all other fields update instantly.</p>
-<h2>HEX, RGB, HSL — Color Formats Explained</h2>
-<p><strong>HEX</strong> (#3B82F6) is the standard format for web development — used in HTML, CSS, SVG, and almost every design tool. It encodes red, green, and blue as two-digit hexadecimal values. <strong>RGB</strong> (rgb(59, 130, 246)) is more readable for developers working directly in CSS and is the native color space for screens. <strong>HSL</strong> (hsl(217, 91%, 60%)) stands for Hue, Saturation, Lightness — it's the most intuitive format for humans since you can adjust brightness or saturation without mentally recalculating all three channels. <strong>HSB/HSV</strong> (Hue, Saturation, Brightness) is commonly used in graphics applications like Photoshop and Figma's color panels.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You found the perfect blue on a competitor's landing page with your browser's eyedropper, but it came back as an RGB value and your CSS file uses HEX. Or you're building a design system and need to generate lighter and darker variants of a brand color — easy in HSL (just change the lightness channel), nearly impossible to eyeball in HEX. This color picker lets you move fluidly between formats without manual math or switching between tools.</p>
+      <p>It's also the tool you reach for when a designer hands you an HSB value from Figma and you need the HSL equivalent for your stylesheet, or when a print vendor asks for RGB breakdowns of a color you only have as a hex code. Every format has a one-click copy button, so you pick once and paste wherever you need it.</p>
+      <p>The recently-used colors panel remembers up to 10 swatches per session, which is useful when you're comparing two near-identical blues or building a palette of complementary tones. Edit any input field directly — type a hex code, nudge an HSL hue slider, adjust a single RGB channel — and all other formats update in real time.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>HSL is the friendliest format for creating variants.</strong> Need a hover state that's 10% darker? Subtract 10 from the lightness value. Need a muted version? Drop the saturation. HEX and RGB make these adjustments opaque because the channels don't map to human perception the way HSL does.</p>
+      <p><strong>HEX shorthand works — but only for doubles.</strong> <code>#3B82F6</code> cannot be shortened, but <code>#FFFFFF</code> compresses to <code>#FFF</code>. The picker always outputs full six-character HEX so there's no ambiguity when pasting into tools that don't support shorthand.</p>
+      <p><strong>HSB and HSL are not the same thing.</strong> Both use Hue, but HSB's "Brightness" channel behaves differently from HSL's "Lightness." A color at HSB 100% brightness can still be fully saturated; at HSL 100% lightness it's pure white. Figma and Photoshop use HSB, while CSS uses HSL — mixing them up shifts your colors.</p>
+      <p><strong>RGB values are device-dependent.</strong> <code>rgb(59, 130, 246)</code> looks slightly different on a wide-gamut display versus an sRGB monitor. For web work this rarely matters, but for print or color-critical design, be aware that RGB is a relative color space.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Format</th><th>Syntax Example</th><th>Primary Use</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>HEX</td><td>#3B82F6</td><td>CSS, HTML, SVG</td><td>Web development, design handoffs</td></tr>
+          <tr><td>RGB</td><td>rgb(59, 130, 246)</td><td>CSS, Canvas API, LED control</td><td>Programmatic color manipulation</td></tr>
+          <tr><td>HSL</td><td>hsl(217, 91%, 60%)</td><td>CSS, design systems</td><td>Creating tints, shades, and palettes</td></tr>
+          <tr><td>HSB / HSV</td><td>hsb(217, 76%, 96%)</td><td>Photoshop, Figma, Illustrator</td><td>Visual design tools and color pickers</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['json-formatter', 'base64'],
   },
   // ─── Calculators ───────────────────────────────────────────────────────
@@ -1130,11 +1187,31 @@ export const tools: Tool[] = [
     icon: 'Percent',
     metaTitle: 'Percentage Calculator — Free Online Percent Tool | clevr.tools',
     metaDescription: 'Free percentage calculator. Find what X% of Y is, calculate what percent one number is of another, or compute percentage increase and decrease. Instant results.',
-    seoContent: `<h2>Free Percentage Calculator</h2>
-<p>Percentages come up constantly in everyday life — calculating a restaurant tip, figuring out a sale discount, understanding a grade, or working out how much tax to add to a price. This calculator handles three common percentage problems in one place, with results updating in real time as you type.</p>
-<p>No more second-guessing whether you're doing the math right. Enter your numbers, pick the type of calculation, and get the answer — along with the formula used, so you understand how it was calculated and can do it yourself next time.</p>
-<h2>How to Calculate Percentages</h2>
-<p>There are three fundamental percentage calculations. <strong>Finding a percentage of a number</strong>: multiply the number by the percentage and divide by 100. For example, 15% of 200 = (15 / 100) x 200 = 30. <strong>Finding what percentage one number is of another</strong>: divide the part by the whole and multiply by 100. For example, 30 is what % of 200? = (30 / 200) x 100 = 15%. <strong>Percentage change</strong>: subtract the original from the new value, divide by the original, and multiply by 100. For example, 200 to 250 = ((250 - 200) / 200) x 100 = +25%.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're looking at a job listing that says "15% annual bonus" and want to know what that actually adds to a $72,000 salary. Or a store is running "35% off everything" and you need the real price before you get to checkout. Maybe your portfolio dropped from $12,400 to $10,800 and you want to know the exact percentage loss. Percentages are everywhere — tips, taxes, grades, discounts, returns — and the mental math is easy to get wrong.</p>
+      <p>This calculator handles the three percentage problems that come up most often, all in one place. Enter your numbers and the result updates instantly, along with the formula used so you can verify the logic or do it yourself next time. No more Googling "how to calculate percentage change" and scrolling past five ads to find the formula.</p>
+      <p>It's also a teaching tool. Students working through math or finance problems can see both the answer and the step-by-step calculation. Understanding that "percentage of" is multiplication, "what percent" is division, and "percentage change" is a ratio removes the mystery from a concept that trips people up well into adulthood.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Percentage change has a direction.</strong> Going from 100 to 150 is a 50% increase. Going from 150 back to 100 is a 33.3% decrease — not 50%. The denominator changes because percentage change is always relative to the starting value. This asymmetry surprises people and is the most common percentage mistake.</p>
+      <p><strong>"Percentage of" and "percent off" are different operations.</strong> "20% of 80" is 16. "20% off 80" is 80 minus 16 = 64. The first is pure multiplication; the second is a discount calculation. Make sure you're solving the right problem.</p>
+      <p><strong>Percentages can exceed 100%.</strong> If your stock went from $50 to $150, that's a 200% increase. If your website traffic tripled, that's a 200% increase too. "100% more" means doubled, not "all of it."</p>
+      <p><strong>The formula is always the same pattern.</strong> Percentage = (Part / Whole) x 100. Every percentage problem is a rearrangement of this single equation. Finding the part? Multiply. Finding the whole? Divide. Finding the percent? Divide and multiply by 100.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Scenario</th><th>Formula</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>What is X% of Y?</td><td>(X / 100) x Y</td><td>15% of 200 = 30</td></tr>
+          <tr><td>X is what % of Y?</td><td>(X / Y) x 100</td><td>30 is 15% of 200</td></tr>
+          <tr><td>% increase</td><td>((New - Old) / Old) x 100</td><td>200 to 250 = +25%</td></tr>
+          <tr><td>% decrease</td><td>((Old - New) / Old) x 100</td><td>250 to 200 = -20%</td></tr>
+          <tr><td>Sale price after discount</td><td>Price x (1 - Discount/100)</td><td>$80 at 25% off = $60</td></tr>
+          <tr><td>Price before tax</td><td>Total / (1 + Tax/100)</td><td>$108 with 8% tax = $100</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['unit-converter'],
   },
   {
@@ -1147,11 +1224,34 @@ export const tools: Tool[] = [
     icon: 'ArrowLeftRight',
     metaTitle: 'Unit Converter — Free Online Conversion Tool | clevr.tools',
     metaDescription: 'Free online unit converter. Convert length, weight, temperature, volume, area, speed, and data units. Instant bidirectional conversion with 60+ units.',
-    seoContent: `<h2>Free Online Unit Converter</h2>
-<p>Convert between units across seven major categories: length (millimeters to miles), weight (milligrams to tons), temperature (Celsius, Fahrenheit, Kelvin), volume (milliliters to gallons), area (square centimeters to acres), speed (meters per second to miles per hour), and digital storage (bits to petabytes). All conversions happen instantly as you type — edit either side and the other updates automatically.</p>
-<p>Whether you're a student working on a physics problem, a home cook converting a recipe from US to metric, or a developer calculating file sizes, this converter handles the math so you don't have to.</p>
-<h2>Common Unit Conversions</h2>
-<p>Some of the most-searched conversions: <strong>1 kg = 2.20462 lbs</strong>, <strong>1 inch = 2.54 cm</strong>, <strong>0 C = 32 F</strong>, <strong>1 mile = 1.60934 km</strong>, <strong>1 gallon = 3.78541 liters</strong>, <strong>1 GB = 1,024 MB</strong>. The unit converter above handles all of these and hundreds more combinations within each category.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're following a European recipe that calls for 200 grams of flour and 180 ml of milk, but your kitchen has measuring cups and a pound scale. Or you're a developer and a client's API returns file sizes in bytes but your UI needs to display megabytes. Maybe you're training for a 10K and your treadmill shows pace in minutes per mile while your running app uses minutes per kilometer. Unit conversions are small problems that interrupt bigger tasks — this tool eliminates the interruption.</p>
+      <p>The converter covers seven categories: length, weight, temperature, volume, area, speed, and digital storage. Each category includes the full range of units you'd realistically encounter — from millimeters to miles, milligrams to metric tons, bits to petabytes. Type a value on either side and the other updates instantly. No dropdowns to navigate, no "convert" button to click.</p>
+      <p>It's especially useful when you're working across measurement systems. The US uses feet, pounds, Fahrenheit, and gallons; most of the world uses meters, kilograms, Celsius, and liters. International collaboration — whether in cooking, engineering, fitness, or software — means you'll hit this friction regularly. Bookmark the converter and it's always one tab away.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Temperature is the only non-linear conversion.</strong> Length, weight, and volume are all simple multiplication (1 inch is always 2.54 cm). Temperature requires both multiplication and addition because Fahrenheit and Celsius have different zero points. The formula is F = (C x 9/5) + 32. Kelvin is simpler: K = C + 273.15.</p>
+      <p><strong>Digital storage has two standards.</strong> In the SI (decimal) system, 1 GB = 1,000 MB. In the binary (IEC) system used by operating systems, 1 GiB = 1,024 MiB. This is why a "500 GB" hard drive shows as ~465 GB in your file manager. This converter uses binary (1,024-based) values, which matches what your OS reports.</p>
+      <p><strong>Fluid ounces and weight ounces are different units.</strong> A fluid ounce measures volume; a weight ounce measures mass. They happen to be close for water (1 fl oz of water weighs about 1 oz), but for other liquids the numbers diverge. Make sure you're converting the right type.</p>
+      <p><strong>Bidirectional editing saves time.</strong> You don't need to swap "from" and "to" fields. Just type in whichever field you have the value for and the other field updates. This is faster than most converter tools that force a one-directional flow.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>From</th><th>To</th><th>Factor</th></tr></thead>
+        <tbody>
+          <tr><td>1 inch</td><td>centimeters</td><td>2.54 cm</td></tr>
+          <tr><td>1 foot</td><td>meters</td><td>0.3048 m</td></tr>
+          <tr><td>1 mile</td><td>kilometers</td><td>1.60934 km</td></tr>
+          <tr><td>1 pound</td><td>kilograms</td><td>0.45359 kg</td></tr>
+          <tr><td>1 ounce</td><td>grams</td><td>28.3495 g</td></tr>
+          <tr><td>1 gallon</td><td>liters</td><td>3.78541 L</td></tr>
+          <tr><td>1 cup</td><td>milliliters</td><td>236.588 mL</td></tr>
+          <tr><td>0 &deg;C</td><td>Fahrenheit</td><td>32 &deg;F</td></tr>
+          <tr><td>1 GB</td><td>megabytes</td><td>1,024 MB</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['percentage-calculator'],
   },
   // ─── Not-yet-built tools ───────────────────────────────────────────────────
@@ -1465,7 +1565,32 @@ export const tools: Tool[] = [
     icon: 'Tag',
     metaTitle: 'Discount Calculator — Percent Off Free | clevr.tools',
     metaDescription: 'Free discount calculator. Find the final sale price after any percentage discount. Supports stacked discounts (e.g., 20% off + extra 10% off) and reverse calculation from sale price.',
-    seoContent: `<h2>Free Discount Calculator</h2><p>Quickly calculate the final price after a percentage discount while shopping. Enter the original price and discount percentage to instantly see how much you save and what the sale price is. Quick preset buttons for common discount levels — 10%, 20%, 25%, 50%, 75% — cover most retail scenarios.</p><p>The stacked discount feature handles promotions that apply multiple discounts sequentially, such as "30% off, then an extra 20% off the sale price." Note that stacked discounts are not additive — 20% + 20% is not 40% off. The actual combined discount is 36% in this case. Use the reverse calculator to find the original discount percentage when you know the original and sale prices.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're standing in a store staring at a $249 jacket with a "40% off" sign and you want to know the actual price before you get to the register. Or an online retailer is running "25% off sitewide + extra 15% for members" and you need to know if the final price is really worth it. Maybe you found an item for $67 that was originally $89 and you want to know the discount percentage for comparison shopping. These are all the same problem: translating a percentage into real dollars.</p>
+      <p>The stacked discount feature is where most people get tripped up. "20% off plus an extra 20% off" sounds like 40% off, but it's actually 36% off. The second discount applies to the already-reduced price, not the original. Retailers know this math is confusing — this calculator makes it transparent so you can see exactly what each layer of discount does to the final price.</p>
+      <p>The reverse calculator solves the opposite problem: you know the original price and the sale price, and you want the percentage discount. This is useful for comparing deals across different stores where one lists the sale price and the other lists the discount percentage.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Stacked discounts are multiplicative, not additive.</strong> Two 20% discounts don't equal 40% off. The math: $100 x 0.80 x 0.80 = $64, which is 36% off. Three 10% discounts yield 27.1% off, not 30%. The gap between the "sounds like" number and the real number grows with each additional discount layer.</p>
+      <p><strong>Order doesn't matter for stacked percentages.</strong> 30% off then 20% off gives the same result as 20% off then 30% off. Multiplication is commutative: 0.70 x 0.80 = 0.80 x 0.70. This only applies to percentage discounts — if one discount is a fixed dollar amount, order matters.</p>
+      <p><strong>Tax applies after the discount.</strong> Sales tax is calculated on the discounted price, not the original price. A $100 item at 25% off with 8% tax costs $81.00, not $83.00. The discount saves you money on tax too.</p>
+      <p><strong>"Up to X% off" means the maximum discount.</strong> Most items in the sale will be discounted less. Retailers use the highest discount in marketing but most inventory is at the lower end. Always check the actual percentage on the item you want.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Stacked Discounts</th><th>Sounds Like</th><th>Actual Total Discount</th><th>$100 Item Final Price</th></tr></thead>
+        <tbody>
+          <tr><td>10% + 10%</td><td>20% off</td><td>19.0% off</td><td>$81.00</td></tr>
+          <tr><td>20% + 10%</td><td>30% off</td><td>28.0% off</td><td>$72.00</td></tr>
+          <tr><td>20% + 20%</td><td>40% off</td><td>36.0% off</td><td>$64.00</td></tr>
+          <tr><td>30% + 20%</td><td>50% off</td><td>44.0% off</td><td>$56.00</td></tr>
+          <tr><td>25% + 25%</td><td>50% off</td><td>43.75% off</td><td>$56.25</td></tr>
+          <tr><td>50% + 20%</td><td>70% off</td><td>60.0% off</td><td>$40.00</td></tr>
+          <tr><td>30% + 20% + 10%</td><td>60% off</td><td>49.6% off</td><td>$50.40</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['percentage-calculator', 'tip-calculator'],
   },
   {
@@ -1610,12 +1735,30 @@ export const tools: Tool[] = [
     icon: 'Keyboard',
     metaTitle: 'Keyboard Tester — Test Every Key Online | clevr.tools',
     metaDescription: 'Free online keyboard tester. Press any key to check it works. See key code, event details, and track which keys have been tested.',
-    seoContent: `<h2>When to Use a Keyboard Tester</h2>
-<p>Use this tool to verify a new keyboard works correctly out of the box, check for dead keys after a spill or physical damage, test N-key rollover for gaming keyboards, diagnose ghosting issues where certain key combinations don't register, and verify function keys and modifier keys are mapping correctly.</p>
-<h2>Understanding Key Events</h2>
-<p>event.key is the character produced by the key press — it changes with modifier keys (Shift turns "a" into "A"). event.code is the physical key location on the keyboard — it stays the same regardless of layout or modifiers ("KeyA" is always the leftmost home-row key). keyCode is a legacy numeric identifier that is deprecated but still used by some older applications.</p>
-<h2>Common Keyboard Problems</h2>
-<p>Ghosting occurs when pressing multiple keys simultaneously causes phantom key presses or dropped inputs. Chattering is when a single key press registers multiple times due to worn switch contacts. Dead keys simply don't register at all — often caused by physical damage, liquid spills, or manufacturing defects.</p>`,
+    seoContent: `
+      <h2>When to Use This</h2>
+      <p>Just unboxed a new mechanical keyboard? This is the first thing to open. Press every single key and watch it light up on the virtual layout — if a key does not register, you know before the return window closes. It is the fastest way to confirm that every switch is working and nothing got damaged in shipping.</p>
+      <p>The Keyboard Tester is equally useful for diagnosing problems on a keyboard you have been using for a while. Spilled coffee and worried about dead keys? Noticing double-typed characters (chattering)? Suspicious that your Ctrl+Shift+Z shortcut keeps dropping inputs? Fire up the tester and press the suspect keys — you will see exactly what the browser receives. Gamers use it to verify N-key rollover (NKRO) by holding down multiple keys simultaneously and confirming every one registers.</p>
+      <p>It is also a surprisingly handy tool for developers. You can see the exact event.key, event.code, and legacy keyCode values for any key press, which is invaluable when building keyboard shortcuts or custom key bindings in your applications.</p>
+
+      <h2>Good to Know</h2>
+      <p><strong>Ghosting vs. rollover matters for gaming.</strong> Ghosting is when pressing three or more keys simultaneously causes a phantom fourth key to register. N-key rollover (NKRO) keyboards let you press every key at once without ghosting. Most gaming keyboards offer NKRO over USB; cheaper membrane boards often limit you to 6-key rollover (6KRO).</p>
+      <p><strong>Chattering means a switch is failing.</strong> If you press a key once and it registers two or three times, the switch contacts are bouncing. On mechanical keyboards, this can sometimes be fixed by adjusting debounce settings in firmware. On membrane keyboards, it usually means the board is wearing out.</p>
+      <p><strong>event.code is layout-independent.</strong> It always reflects the physical key position, so "KeyA" is the same physical key whether you use QWERTY, Dvorak, or AZERTY. This is the value developers should use for game controls and keyboard shortcuts.</p>
+      <p><strong>Some keys are browser-restricted.</strong> Certain keys like PrintScreen, the Windows/Super key, and some function keys may be intercepted by the operating system before the browser sees them. If a key does not register here, it may still work fine in native applications.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Switch Type</th><th>Feel</th><th>Actuation Force</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>Linear (Red)</td><td>Smooth, no bump</td><td>~45g</td><td>Gaming, speed typing</td></tr>
+          <tr><td>Tactile (Brown)</td><td>Bump, no click</td><td>~55g</td><td>All-purpose typing and coding</td></tr>
+          <tr><td>Clicky (Blue)</td><td>Bump + audible click</td><td>~60g</td><td>Typing enthusiasts (loud!)</td></tr>
+          <tr><td>Membrane</td><td>Mushy, quiet</td><td>~55g</td><td>Budget boards, quiet offices</td></tr>
+          <tr><td>Topre</td><td>Smooth thock</td><td>~45g</td><td>Premium typing experience</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['typing-test', 'wpm-test', 'typing-practice'],
     live: true,
   },
@@ -1629,12 +1772,32 @@ export const tools: Tool[] = [
     icon: 'BookOpen',
     metaTitle: 'Typing Practice — Improve Your Typing Skills | clevr.tools',
     metaDescription: 'Free typing practice with lessons for common words, programming syntax, and more. Track per-key accuracy with a keyboard heatmap.',
-    seoContent: `<h2>Touch Typing Fundamentals</h2>
-<p>Touch typing is the foundation of fast, accurate typing. Your fingers rest on the home row: left hand on ASDF, right hand on JKL;. Each finger is responsible for specific keys above and below its home position. The index fingers cover the most keys (including the center columns), while the pinkies handle the edges. Thumbs share the space bar. With practice, your fingers learn the positions through muscle memory.</p>
-<h2>Typing Practice for Programmers</h2>
-<p>Programming requires typing characters rarely used in everyday English: brackets, semicolons, angle brackets, backticks, pipes, and special operators. Code typing practice trains your fingers for these uncommon key combinations. JavaScript, Python, HTML/CSS, SQL, and TypeScript each have distinct syntax patterns worth practicing separately.</p>
-<h2>How Long Does It Take to Improve?</h2>
-<p>Most people see measurable improvement within 2–3 weeks of daily 15-minute practice sessions. Moving from 30 to 50 WPM typically takes 4–6 weeks. Breaking 60 WPM requires 2–3 months of consistent practice. Reaching 80+ WPM usually takes 6–12 months. The key is consistency — short daily sessions beat occasional long ones.</p>`,
+    seoContent: `
+      <h2>When to Use This</h2>
+      <p>Typing Practice is your training ground — the place where you build the fundamentals that make every other typing tool on this site easier. Whether you are learning to touch type for the first time, retraining bad habits like looking at the keyboard, or drilling weak keys that keep tripping you up, structured practice is the fastest path to real improvement.</p>
+      <p>Use this when you want deliberate, focused training rather than just a speed test. The per-key accuracy heatmap shows you exactly which keys are slowing you down, so you can target your weakest links instead of just grinding the same words over and over. Most people discover they have two or three problem keys that account for the majority of their errors — fixing those keys alone can boost overall WPM by 10-15%.</p>
+      <p>It is also the ideal warm-up tool. Professional typists and competitive speed typers rarely jump straight into a test cold — they run a few minutes of practice first to get their fingers loose and their brain in typing mode. Think of it like stretching before a run.</p>
+
+      <h2>Good to Know</h2>
+      <p><strong>Home row is everything.</strong> Your fingers should rest on ASDF (left) and JKL; (right). Every key on the keyboard is assigned to a specific finger, and returning to home row between words is what makes touch typing work. If you are still looking at the keyboard, start with home row drills only — speed comes later.</p>
+      <p><strong>Accuracy first, speed second.</strong> Practicing at 30 WPM with 98% accuracy builds better muscle memory than 50 WPM with 85% accuracy. Your brain reinforces whatever you repeat, including mistakes. Slow down until errors drop below 3%, then gradually push faster.</p>
+      <p><strong>The heatmap reveals your bottlenecks.</strong> Red keys are the ones you miss most often. Drill those specific keys until they cool down to green. Common trouble spots include P, Q, Z, and the semicolon — keys that require pinky stretches most people rarely practice.</p>
+      <p><strong>15 minutes a day beats 2 hours on weekends.</strong> Motor skills are built through spaced repetition, not marathon sessions. Your brain consolidates muscle memory during sleep, so daily short sessions produce dramatically faster improvement than infrequent long ones.</p>
+      <p><strong>Programming mode is a separate skill.</strong> If you code for a living, practice the programming lessons too. Brackets, operators, and special characters use completely different finger patterns than prose typing, and they need their own dedicated training.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>WPM Range</th><th>Level</th><th>Typical Timeline to Reach</th></tr></thead>
+        <tbody>
+          <tr><td>20–30</td><td>Beginner</td><td>Starting point for new touch typists</td></tr>
+          <tr><td>30–45</td><td>Developing</td><td>2–4 weeks of daily practice</td></tr>
+          <tr><td>45–60</td><td>Intermediate</td><td>1–2 months — faster than most office workers</td></tr>
+          <tr><td>60–80</td><td>Advanced</td><td>3–6 months — top 20% of all typists</td></tr>
+          <tr><td>80–100</td><td>Expert</td><td>6–12 months — professional-level speed</td></tr>
+          <tr><td>100+</td><td>Elite</td><td>1+ year of dedicated practice — top 1%</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['typing-test', 'wpm-test', 'keyboard-tester'],
     live: true,
   },
@@ -1648,12 +1811,30 @@ export const tools: Tool[] = [
     icon: 'Flag',
     metaTitle: 'Typing Race — Race Against the Clock | clevr.tools',
     metaDescription: 'Free typing race game. Compete against ghost opponents at five difficulty levels. Track your progress and beat your best time.',
-    seoContent: `<h2>How the Typing Race Works</h2>
-<p>Choose a difficulty level and race against a ghost opponent that types at a fixed WPM. The ghost starts at the same time as you and progresses through the passage at a constant speed. Your goal is to type the passage accurately and finish before the ghost does. Each difficulty level represents a real-world typing speed bracket, from casual (40 WPM) to expert (120 WPM).</p>
-<h2>Choosing the Right Difficulty</h2>
-<p>Start with a difficulty level close to your current WPM. If you consistently beat the ghost, move up a level. Casual (40 WPM) matches the average adult typing speed. Average (60 WPM) is typical for regular computer users. Fast (80 WPM) represents experienced typists. Pro (100 WPM) is professional-level speed, and Expert (120 WPM) is competitive typist territory.</p>
-<h2>Tips for Winning</h2>
-<p>Focus on accuracy over raw speed. Every mistake costs time — correcting errors with backspace is slower than typing correctly the first time. Keep your eyes on the text ahead, not on what you just typed. Maintain a steady rhythm rather than trying to burst through words. Your WPM naturally increases as your accuracy improves.</p>`,
+    seoContent: `
+      <h2>When to Use This</h2>
+      <p>Nothing pushes your typing speed like a visible opponent pulling ahead of you. The Typing Race puts a ghost racer on screen that types at a fixed WPM, and your job is simple: finish the passage before they do. It turns a solo practice session into a head-to-head competition, which is exactly the kind of pressure that forces breakthroughs in speed.</p>
+      <p>Use the race when you feel stuck at a plateau. Typing drills build accuracy, but racing builds urgency — the combination is what pushes you past the WPM ceiling you have been bumping against. It is also a great warm-up before a typing test, pair programming session, or a long writing sprint. Pick the difficulty one level above your comfort zone and chase the ghost.</p>
+      <p>The five difficulty brackets — Casual (40 WPM), Average (60 WPM), Fast (80 WPM), Pro (100 WPM), and Expert (120 WPM) — correspond to real-world typing speed percentiles. Beating the Average ghost puts you ahead of roughly 60% of computer users. Beating Pro means you type faster than 95% of people. Expert is the top 1% — the territory of competitive speed typists.</p>
+
+      <h2>Good to Know</h2>
+      <p><strong>Accuracy wins races, not raw speed.</strong> Every backspace costs you roughly half a second. At 80 WPM, a single corrected error wipes out the time you saved typing three words fast. Keep your error rate below 3% and your speed will climb naturally.</p>
+      <p><strong>Read ahead, not behind.</strong> Train your eyes to stay two or three words ahead of where your fingers are. This gives your brain processing time and lets your fingers flow instead of stopping at each word boundary.</p>
+      <p><strong>Rhythm beats bursting.</strong> Trying to sprint through easy words and then stumbling on hard ones produces a worse average WPM than maintaining a steady, consistent pace throughout the passage. Think metronome, not drag race.</p>
+      <p><strong>Level up when you win 3 in a row.</strong> If you consistently beat a ghost by a wide margin, the difficulty is too low to push growth. Move up a bracket as soon as you can win three consecutive races at your current level.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Ghost Speed</th><th>Difficulty</th><th>Percentile If You Win</th></tr></thead>
+        <tbody>
+          <tr><td>40 WPM</td><td>Casual</td><td>~50th percentile — average adult typing speed</td></tr>
+          <tr><td>60 WPM</td><td>Average</td><td>~70th percentile — regular computer user</td></tr>
+          <tr><td>80 WPM</td><td>Fast</td><td>~90th percentile — experienced typist</td></tr>
+          <tr><td>100 WPM</td><td>Pro</td><td>~96th percentile — professional-level speed</td></tr>
+          <tr><td>120 WPM</td><td>Expert</td><td>~99th percentile — competitive typist territory</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['wpm-test', 'typing-practice', 'word-blitz'],
     live: true,
   },
@@ -1667,12 +1848,30 @@ export const tools: Tool[] = [
     icon: 'Zap',
     metaTitle: 'Word Blitz — Fast-Paced Typing Game | clevr.tools',
     metaDescription: 'Free typing speed game. Type words fast to build streaks and rack up high scores. Three difficulty levels with 30, 60, and 90 second rounds.',
-    seoContent: `<h2>How Word Blitz Works</h2>
-<p>Words appear one at a time. Type each word correctly to score points. Build a streak by typing consecutive words without errors. The longer your streak, the higher your multiplier — up to 5x for 30+ words in a row. Your final score depends on both speed and accuracy, making every keystroke count.</p>
-<h2>Scoring System</h2>
-<p>Each word is worth points based on its length multiplied by your current streak multiplier. Easy words (4-5 letters) are worth fewer base points but let you build streaks faster. Hard words (8-12 letters) are worth more base points but risk breaking your streak. The optimal strategy balances speed with accuracy to maintain high multipliers.</p>
-<h2>Difficulty Levels</h2>
-<p>Easy mode uses common 4-5 letter words — great for warming up or building confidence. Medium mode introduces 6-8 letter words that require more precise typing. Hard mode features 8-12 letter words including technical vocabulary, testing both typing speed and familiarity with complex words.</p>`,
+    seoContent: `
+      <h2>When to Use This</h2>
+      <p>Word Blitz is typing practice disguised as an arcade game. Words fly at you one at a time, you type them as fast as you can, and a streak multiplier rewards you for keeping your accuracy up. It is the perfect tool when you want to improve your typing speed but a plain typing test feels like homework. The score chasing and multiplier system create a "just one more round" loop that keeps you practicing without it feeling like practice.</p>
+      <p>It is especially effective as a warm-up before a formal typing test or a long writing session. A couple of 30-second rounds on Easy mode gets your fingers loose and your brain into typing mode. For a real challenge, try Hard mode with a 90-second timer — maintaining a high streak multiplier on 10-letter words requires both speed and intense focus.</p>
+      <p>Word Blitz also trains a specific skill that standard typing tests do not: fast word recognition. Because each word appears individually and you need to type it before the next one arrives, your brain learns to process and execute words as single units rather than letter-by-letter. This "chunking" skill directly transfers to faster prose typing.</p>
+
+      <h2>Good to Know</h2>
+      <p><strong>The multiplier is everything.</strong> Your streak multiplier scales from 1x up to 5x at 30+ consecutive correct words. A single mistake resets it to 1x. This means one error on word 29 costs you far more points than the same error on word 2. Protect your streak — slow down slightly on hard words rather than rushing and breaking it.</p>
+      <p><strong>Easy mode is not just for beginners.</strong> Short, common words let you build massive streaks and practice rapid-fire execution. Even fast typists use Easy mode to warm up and train their burst speed on familiar words.</p>
+      <p><strong>Hard mode trains vocabulary recognition.</strong> Longer, less common words force your brain to process unfamiliar letter combinations. This is great training for improving your reading speed alongside your typing speed.</p>
+      <p><strong>Watch your WPM trend, not your score.</strong> The score is fun, but the WPM counter tells you if you are actually getting faster. A high score with low WPM means you are playing it safe — push yourself to type faster even if your streak breaks occasionally.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Score Range (60s)</th><th>Level</th><th>What It Means</th></tr></thead>
+        <tbody>
+          <tr><td>0–500</td><td>Warming Up</td><td>Getting familiar with the game — focus on accuracy first</td></tr>
+          <tr><td>500–1,500</td><td>Solid</td><td>Good accuracy with developing speed, building streak consistency</td></tr>
+          <tr><td>1,500–3,000</td><td>Strong</td><td>Sustaining multipliers, typing faster than most — around 60-80 WPM</td></tr>
+          <tr><td>3,000–5,000</td><td>Excellent</td><td>Long streaks with high multipliers — 80-100 WPM territory</td></tr>
+          <tr><td>5,000+</td><td>Elite</td><td>Consistently high multiplier with fast execution — 100+ WPM</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['wpm-test', 'race', 'typing-practice'],
     live: true,
   },
@@ -1686,12 +1885,30 @@ export const tools: Tool[] = [
     icon: 'Code2',
     metaTitle: 'Code Typing Challenge — Practice for Devs | clevr.tools',
     metaDescription: 'Practice typing real code snippets in JavaScript, Python, TypeScript, HTML, SQL, Go, and Rust. Track your coding WPM and special character accuracy.',
-    seoContent: `<h2>Why Practice Code Typing?</h2>
-<p>Programming involves typing characters rarely used in everyday text — brackets, semicolons, angle brackets, backticks, pipes, and special operators. Regular typing tests don't prepare your fingers for these patterns. Code typing practice builds muscle memory for the exact key combinations you use daily as a developer, directly improving your coding productivity.</p>
-<h2>Languages and Difficulty Levels</h2>
-<p>Choose from seven languages: JavaScript, Python, TypeScript, HTML/CSS, SQL, Go, and Rust. Each language has beginner, intermediate, and advanced snippets. Beginner snippets cover basic syntax and common patterns. Intermediate snippets include real-world functions like debounce, decorators, and error handling. Advanced snippets feature complex patterns like event emitters, store implementations, and generic builders.</p>
-<h2>Special Character Accuracy</h2>
-<p>Your results include a special character accuracy score that tracks how well you type brackets, semicolons, operators, and other programming-specific characters. This metric highlights exactly where your coding typing needs improvement. Most developers find that special character accuracy is 10-20% lower than their regular character accuracy — focused practice closes this gap.</p>`,
+    seoContent: `
+      <h2>When to Use This</h2>
+      <p>Regular typing tests measure how fast you can blaze through English sentences, but that skill only gets you halfway as a developer. Code is a completely different beast — curly braces, arrow functions, angle brackets, pipes, semicolons, and triple equals signs all demand finger patterns that everyday typing never trains. If you have ever felt like your brain works faster than your fingers during a coding session, this is where you close the gap.</p>
+      <p>The Code Typing Challenge is perfect for developers prepping for pair programming interviews, hackathon competitors who need to ship fast under pressure, or anyone switching to a new language and wanting to build muscle memory for its syntax patterns. Whether you write JavaScript every day or you are picking up Rust for the first time, practicing actual code snippets beats generic typing drills every time.</p>
+      <p>Even experienced developers are often surprised by their results. Most find their code WPM is 20-40% lower than their prose WPM, and their special character accuracy trails letter accuracy by 10-20 percentage points. Targeted practice can close both gaps in just a few weeks of short daily sessions.</p>
+
+      <h2>Good to Know</h2>
+      <p><strong>Special characters are your bottleneck.</strong> Brackets, semicolons, arrow operators, and template literals require awkward finger stretches that slow everyone down. The challenge tracks your special character accuracy separately so you can see exactly where to focus.</p>
+      <p><strong>Each language has its own rhythm.</strong> Python leans on indentation and colons, JavaScript is heavy on braces and arrows, Rust demands lifetimes and match arms. Practicing each language individually builds distinct muscle memory patterns.</p>
+      <p><strong>Difficulty levels mirror real codebases.</strong> Beginner snippets cover variable declarations and simple functions. Intermediate introduces real-world patterns like debounce, decorators, and error handling. Advanced throws you into generic builders, event emitters, and complex type signatures.</p>
+      <p><strong>Short sessions beat long grinds.</strong> Ten minutes a day of focused code typing practice is more effective than an hour-long session once a week. Consistency builds the neural pathways that make special characters feel automatic.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Code WPM</th><th>Level</th><th>What It Means</th></tr></thead>
+        <tbody>
+          <tr><td>15–25</td><td>Beginner</td><td>Still hunting for special character keys — totally normal when starting out</td></tr>
+          <tr><td>25–40</td><td>Developing</td><td>Comfortable with basic syntax, building speed on brackets and operators</td></tr>
+          <tr><td>40–55</td><td>Proficient</td><td>Solid coding speed — you can keep up with your thinking for most tasks</td></tr>
+          <tr><td>55–70</td><td>Advanced</td><td>Fast enough that typing is rarely the bottleneck, even during pair programming</td></tr>
+          <tr><td>70+</td><td>Expert</td><td>Elite code typing speed — top 5% of developers, hackathon-ready</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['typing-practice', 'wpm-test', 'keyboard-tester'],
     live: true,
   },
@@ -1706,11 +1923,33 @@ export const tools: Tool[] = [
     icon: 'Crop',
     metaTitle: 'Free Image Cropper — Crop Images Online | clevr.tools',
     metaDescription: 'Crop any image with precision. Choose from preset aspect ratios or freeform crop. Supports circle crop, 1:1, 16:9, and more. Free and private.',
-    seoContent: `<h2>Free Online Image Cropper</h2>
-<p>Cropping removes the outer parts of an image to focus on a subject, improve composition, or fit a specific display format. Unlike resizing — which changes an image's dimensions while keeping all its content — cropping changes what content is shown. A portrait photo might be cropped to remove distracting background elements; a landscape shot might be cropped to a square for Instagram. Cropping is one of the most fundamental image editing operations.</p>
-<p>Aspect ratios constrain the crop selection to specific proportional shapes. The 1:1 ratio produces a perfect square — ideal for Instagram posts and profile pictures. The 16:9 ratio matches most screens and YouTube thumbnails. The 9:16 ratio is for vertical video and Instagram Stories. The 4:3 ratio is traditional photography. Locking to an aspect ratio ensures your crop will fit exactly into a target format without letterboxing or black bars.</p>
-<h2>Circle Crop for Profile Pictures</h2>
-<p>Many social platforms display profile pictures as circles — Facebook, LinkedIn, Twitter, Google. The circle crop option removes the corners of your image with a transparent mask, producing a PNG file where the corners are transparent rather than white or black. Upload the result directly as your profile picture without needing to rely on the platform's cropping tool, which often doesn't give you fine control over positioning.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You took a great group photo but one edge has a stranger walking through the frame. Or you need to turn a landscape shot into a square for your Instagram feed without the platform deciding what gets cut. Maybe you're preparing headshots for a team page and every image needs to be the same 1:1 square with the face centered. Cropping is about choosing what stays in the frame — and just as importantly, what doesn't.</p>
+      <p>Unlike resizing, which scales the entire image up or down, cropping removes content from the edges. A 4000 x 3000 photo cropped to 16:9 becomes 4000 x 2250 — the sides stay sharp, but the top and bottom are gone. This makes cropping the right tool when you need to recompose a shot, eliminate distractions, or fit an image into a specific aspect ratio for a platform or layout.</p>
+      <p>The circle crop option is specifically for profile pictures. Facebook, LinkedIn, Twitter, and Google all display avatars as circles. Rather than uploading a square and hoping the platform's cropper centers your face correctly, crop it yourself with a circular mask that exports as a PNG with transparent corners. You control exactly what appears inside the circle.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Freeform crop gives you total control.</strong> When no aspect ratio is locked, you can drag the crop box to any rectangular shape. This is useful for cutting out a specific section of a screenshot, removing a watermark area, or isolating a region of interest from a larger image.</p>
+      <p><strong>Locking an aspect ratio prevents accidental distortion.</strong> When you set 16:9, the crop box can only be resized proportionally. This guarantees the output fits perfectly into a YouTube thumbnail, presentation slide, or widescreen banner without letterboxing.</p>
+      <p><strong>Circle crop outputs a PNG, not a JPG.</strong> JPEG doesn't support transparency, so the circular mask requires PNG format. If the original was a JPG, the cropped output will be a PNG file — slightly larger, but with clean transparent corners instead of white or black fill.</p>
+      <p><strong>Crop before you resize.</strong> Cropping first means you're working with the full-resolution original. If you resize down first and then crop, you're throwing away pixels you already paid for. The optimal workflow is crop, then resize to your target dimensions.</p>
+      <p><strong>All processing happens in your browser.</strong> Your images are drawn to an HTML5 Canvas element and cropped locally. No pixel data leaves your device at any point.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Aspect Ratio</th><th>Dimensions Example</th><th>Common Use</th></tr></thead>
+        <tbody>
+          <tr><td>1:1</td><td>1080 x 1080</td><td>Instagram posts, profile pictures, app icons</td></tr>
+          <tr><td>4:3</td><td>2000 x 1500</td><td>Traditional photography, iPad displays</td></tr>
+          <tr><td>3:2</td><td>1800 x 1200</td><td>DSLR photos, 6x4 prints</td></tr>
+          <tr><td>16:9</td><td>1920 x 1080</td><td>YouTube thumbnails, presentations, TV</td></tr>
+          <tr><td>9:16</td><td>1080 x 1920</td><td>Instagram Stories, TikTok, Reels</td></tr>
+          <tr><td>2:3</td><td>1000 x 1500</td><td>Pinterest pins, book covers, posters</td></tr>
+          <tr><td>Circle</td><td>500 x 500 (masked)</td><td>Profile pictures (Facebook, LinkedIn, Google)</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['image-compressor', 'resize-image', 'png-to-jpg'],
     badge: 'new',
   },
@@ -1724,11 +1963,32 @@ export const tools: Tool[] = [
     icon: 'FileText',
     metaTitle: 'Invoice Generator — Free PDF Invoices | clevr.tools',
     metaDescription: 'Generate professional PDF invoices for free. Add line items, taxes, discounts, and your logo. Download instantly. No sign-up required.',
-    seoContent: `<h2>Free Professional Invoice Generator</h2>
-<p>An invoice is a legally recognized commercial document that records a transaction between a buyer and a seller. It lists the goods or services provided, quantities, unit prices, and the total amount owed. A professional invoice includes your business information, the client's details, a unique invoice number, the date of issue, payment due date, and clear payment terms. These elements are not just professional courtesies — many jurisdictions require specific information on invoices for them to be legally valid and tax-deductible.</p>
-<p>Invoice numbering creates an auditable trail of all your transactions. A simple sequential system (INV-001, INV-002) works for most freelancers and small businesses. Some businesses use year-prefixed numbers (2026-001) to reset the sequence annually. Consistent numbering makes it easier to reconcile payments, follow up on outstanding invoices, and prepare for tax season. Your accounting software or the client's accounts payable department may also require a unique invoice number to process payment.</p>
-<h2>Professional Invoicing Tips</h2>
-<p>Specify payment terms clearly — "Net 30" means payment is due within 30 days of the invoice date. "Due on receipt" means immediate payment is expected. If you charge late fees, state them explicitly: "A 1.5% monthly fee applies to balances unpaid after 30 days." Including multiple payment methods (bank transfer, PayPal, credit card) reduces friction and helps you get paid faster. For larger projects, consider milestone-based invoicing rather than a single invoice at the end — it protects your cash flow and reduces the client's risk as well.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You just finished a freelance project and the client is waiting for an invoice before they can process payment. Or you run a small business and need to send professional-looking invoices without paying for QuickBooks or FreshBooks. Maybe you're a contractor who invoices different clients each month and wants a fast way to generate a clean PDF with your logo, line items, and payment details — without fiddling with a Word template every time.</p>
+      <p>This tool is built for the moment between "work is done" and "I need to get paid." Fill in your business details, add the client's information, list your line items with quantities and rates, apply tax if needed, and download a polished PDF invoice. The entire process takes under two minutes, and the result looks like it came from dedicated accounting software.</p>
+      <p>It's also useful for one-off situations that don't justify setting up invoicing software — selling a piece of furniture, billing for a speaking engagement, or invoicing a friend's business for consulting. You need a real invoice with a number, date, and total, not a Venmo request.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Invoice numbers create an audit trail.</strong> Use a consistent numbering system — sequential (INV-001, INV-002) or year-prefixed (2026-001). Many accounting departments and tax authorities require unique invoice numbers to process payments and validate deductions. Skipping or duplicating numbers creates reconciliation headaches.</p>
+      <p><strong>Payment terms set expectations.</strong> "Net 30" means the client has 30 days to pay. "Due on receipt" means you expect immediate payment. "Net 15" splits the difference. Stating terms clearly on the invoice is not aggressive — it's professional, and it gives the client's accounts payable team the information they need to schedule your payment.</p>
+      <p><strong>Include your payment methods.</strong> The fewer obstacles between the client and your bank account, the faster you get paid. List bank transfer details, PayPal, Venmo, or any other method you accept. Clients who can't figure out how to pay you will deprioritize your invoice.</p>
+      <p><strong>Your data stays in your browser.</strong> Invoice details are used to generate a PDF locally. No business information, client data, or financial details are transmitted to any server. The PDF is created entirely on your device.</p>
+      <p><strong>Add your logo for a professional touch.</strong> A logo in the header immediately distinguishes your invoice from a generic template. Upload a PNG or JPG and it's embedded directly in the PDF.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Payment Term</th><th>Meaning</th><th>Typical Use</th></tr></thead>
+        <tbody>
+          <tr><td>Due on receipt</td><td>Payment expected immediately</td><td>Small jobs, one-time services</td></tr>
+          <tr><td>Net 15</td><td>Due within 15 days</td><td>Ongoing freelance work</td></tr>
+          <tr><td>Net 30</td><td>Due within 30 days</td><td>Standard business invoicing</td></tr>
+          <tr><td>Net 60</td><td>Due within 60 days</td><td>Large contracts, enterprise clients</td></tr>
+          <tr><td>2/10 Net 30</td><td>2% discount if paid within 10 days, otherwise due in 30</td><td>Incentivizing early payment</td></tr>
+          <tr><td>50% upfront</td><td>Half due before work begins</td><td>Large projects, new client relationships</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['word-counter', 'pdf-compressor'],
     badge: 'new',
   },
@@ -2558,7 +2818,31 @@ export const tools: Tool[] = [
     icon: 'MousePointer2',
     metaTitle: 'CPS Test — Clicks Per Second Test | clevr.tools',
     metaDescription: 'Free CPS test — measure your clicks per second with 1s, 5s, and 10s modes. Track your best score and compare ranks. Browser-based, no download or signup needed.',
-    seoContent: '',
+    seoContent: `
+      <h2>When to Use This</h2>
+      <p>The CPS Test measures how many clicks per second you can sustain — a metric that matters more than you might think. Gamers use it to benchmark their clicking speed for PvP games where rapid-fire clicking is the difference between winning and losing. Minecraft PvP, Roblox combat, and competitive clicker games all reward high CPS, and knowing your baseline is the first step toward improving it.</p>
+      <p>Beyond gaming, the CPS test is a fun way to challenge friends, settle debates about who has the fastest trigger finger, or just burn off some energy during a break. The three time modes — 1 second, 5 seconds, and 10 seconds — test different things: the 1-second burst measures your peak speed, while the 10-second test reveals your sustained clicking endurance.</p>
+      <p>It is also a useful diagnostic tool. If you suspect your mouse is missing clicks or double-clicking, run a quick CPS test — inconsistent registration will show up immediately in your results. Gamers testing new mice often use CPS tests to compare switches and find which mouse feels most responsive.</p>
+
+      <h2>Good to Know</h2>
+      <p><strong>Jitter clicking is the fastest technique.</strong> Jitter clicking involves tensing your forearm muscles to vibrate your finger on the mouse button. It can push CPS above 12-14 but is tiring and hard to sustain. Most people jitter click with their index finger while stabilizing the mouse with their thumb and palm.</p>
+      <p><strong>Butterfly clicking doubles your potential.</strong> Alternating two fingers (usually index and middle) on the same mouse button lets you click faster than one finger alone. It takes practice to get both fingers to register cleanly without double-clicks.</p>
+      <p><strong>Drag clicking is not the same skill.</strong> Drag clicking exploits mouse switch friction to register dozens of clicks per swipe. It produces artificially high CPS numbers and is banned in most competitive contexts. This test measures genuine clicking speed.</p>
+      <p><strong>Your mouse matters.</strong> Mechanical switches with short travel and low debounce times register clicks faster. Optical switches have zero debounce delay, making them technically faster for CPS tests. If you are stuck at 6-7 CPS on a cheap mouse, upgrading can genuinely help.</p>
+      <p><strong>Warm up your hand first.</strong> Cold muscles click slower. Flex your fingers, shake out your hand, and do a couple of practice rounds before going for your personal best.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>CPS</th><th>Rank</th><th>Context</th></tr></thead>
+        <tbody>
+          <tr><td>1–4</td><td>Casual</td><td>Normal clicking pace — fine for everyday computer use</td></tr>
+          <tr><td>5–7</td><td>Average</td><td>Typical gamer clicking speed with regular technique</td></tr>
+          <tr><td>8–10</td><td>Fast</td><td>Above average — competitive in most games</td></tr>
+          <tr><td>11–14</td><td>Very Fast</td><td>Jitter clicking range — top 10% of clickers</td></tr>
+          <tr><td>15+</td><td>Extreme</td><td>Butterfly or advanced technique — elite speed</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['reaction-time', 'keyboard-tester', 'wpm-test'],
     live: true,
   },
@@ -2572,7 +2856,32 @@ export const tools: Tool[] = [
     icon: 'Activity',
     metaTitle: 'Reaction Time Test — Test Your Reflexes | clevr.tools',
     metaDescription: 'Free reaction time test — measure your reflexes in milliseconds. See your average, best time, and percentile ranking. Works in your browser, no download required.',
-    seoContent: '',
+    seoContent: `
+      <h2>When to Use This</h2>
+      <p>Reaction time is one of the most fundamental measures of how fast your brain can process a stimulus and send a signal to your muscles. Gamers test it to benchmark their reflexes for competitive shooters and fighting games where milliseconds decide fights. Athletes use it to track their neural response speed. And everyone else takes it just to find out: how fast am I, really?</p>
+      <p>The test is simple — wait for the screen to change color, then click as fast as you can. Your reaction time is measured in milliseconds from the moment the color changes to the moment you click. Take multiple attempts to get a reliable average, since individual tries can vary by 50ms or more depending on attention and anticipation.</p>
+      <p>It is also a surprisingly useful self-check. Reaction time is sensitive to sleep deprivation, caffeine intake, time of day, and even mood. Testing yourself at different times can reveal patterns — most people are measurably faster in the late morning than right after waking up or late at night.</p>
+
+      <h2>Good to Know</h2>
+      <p><strong>The average human reaction time is about 250ms.</strong> If you are consistently under 250ms, you are faster than most people. Under 200ms is genuinely fast. Under 150ms is exceptional and puts you in the top few percent of the population.</p>
+      <p><strong>Your monitor and mouse add latency.</strong> A 60Hz monitor adds up to 16ms of display lag. A wireless mouse can add 1-8ms. High-refresh monitors (144Hz+) and wired mice shave off a few milliseconds that show up in your results. Your true neural reaction time is slightly faster than what the test displays.</p>
+      <p><strong>Do not anticipate the signal.</strong> If you click before the color changes, it does not count. The test randomizes the delay to prevent you from timing the pattern. Genuine reaction time means responding to the stimulus, not guessing when it will appear.</p>
+      <p><strong>Take at least 5 attempts.</strong> A single trial is unreliable — you might blink, get distracted, or just have a slow moment. Your average over 5+ attempts is a much more accurate measure of your true reaction speed.</p>
+      <p><strong>Reaction time is trainable.</strong> Competitive gamers who practice regularly can improve their reaction time by 10-30ms over several weeks. The improvement comes from both faster neural processing and more efficient motor execution.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Reaction Time</th><th>Rating</th><th>Context</th></tr></thead>
+        <tbody>
+          <tr><td>100–150ms</td><td>Exceptional</td><td>Top 1% — elite competitive gamer reflexes</td></tr>
+          <tr><td>150–200ms</td><td>Fast</td><td>Well above average — strong for competitive gaming</td></tr>
+          <tr><td>200–250ms</td><td>Above Average</td><td>Faster than most people — solid reflexes</td></tr>
+          <tr><td>250–300ms</td><td>Average</td><td>Typical human reaction time — perfectly normal</td></tr>
+          <tr><td>300–400ms</td><td>Below Average</td><td>May indicate fatigue, distraction, or slow input device</td></tr>
+          <tr><td>400ms+</td><td>Slow</td><td>Likely distracted or fatigued — try again after rest</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['cps-test', 'keyboard-tester', 'typing-test'],
     live: true,
   },
