@@ -115,19 +115,21 @@ function PdfPagePreview({
       <div className="relative rounded-sm border border-border bg-white dark:bg-zinc-100 overflow-hidden shadow-sm"
         style={{ width: mockupW, height: mockupH }}
       >
-        {/* Margin area shown as subtle padding */}
+        {/* Margin area shown as subtle padding with dashed indicator */}
         <div
           className="absolute inset-0 flex items-center justify-center"
           style={{
             padding: `${marginPctV}% ${marginPct}%`,
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={first.previewUrl}
-            alt="Preview"
-            className="max-w-full max-h-full object-contain"
-          />
+          <div className={`relative w-full h-full flex items-center justify-center ${margins ? "border border-dashed border-zinc-300 dark:border-zinc-400 rounded-[1px]" : ""}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={first.previewUrl}
+              alt="Preview"
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
         </div>
         {/* Page label */}
         <div className="absolute bottom-1.5 right-2 text-[10px] text-zinc-400 font-medium">
@@ -266,8 +268,10 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
     <div className="space-y-6">
       <PageDragOverlay onFiles={addFiles} />
 
-      {/* Drop zone */}
-      <FileDropZone accept={accept} multiple maxSizeMB={50} onFiles={addFiles} resetKey={resetKey} />
+      {/* Drop zone — collapse when files are loaded */}
+      {files.length === 0 && (
+        <FileDropZone accept={accept} multiple maxSizeMB={50} onFiles={addFiles} resetKey={resetKey} />
+      )}
 
       {/* Reorderable file list */}
       {files.length > 0 && !isProcessing && !downloaded && (
@@ -308,6 +312,9 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
               </div>
             ))}
           </div>
+
+          {/* Add more files */}
+          <FileDropZone accept={accept} multiple maxSizeMB={50} onFiles={addFiles} resetKey={resetKey} />
 
           {/* Options */}
           <div className="rounded-xl border border-border bg-card p-5 space-y-4">
@@ -362,6 +369,14 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
             </div>
           </div>
 
+          {/* Live preview */}
+          <PdfPagePreview
+            files={files}
+            pageSize={pageSize}
+            orientation={orientation}
+            margins={margins}
+          />
+
           {/* Create / Regenerate button */}
           <button
             onClick={handleCreate}
@@ -373,13 +388,6 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
           {/* Preview + Download */}
           {resultUrl && (
             <div className="space-y-4 animate-in fade-in duration-300">
-              <h2 className="text-sm font-semibold">Preview</h2>
-              <PdfPagePreview
-                files={files}
-                pageSize={pageSize}
-                orientation={orientation}
-                margins={margins}
-              />
               <div className="rounded-xl border border-border bg-card p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10">

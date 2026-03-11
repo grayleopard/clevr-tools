@@ -66,6 +66,7 @@ export default function ImageResizer() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<ResizedResult[]>([]);
   const [activeTab, setActiveTab] = useState<"custom" | "presets">("custom");
+  const [selectedPreset, setSelectedPreset] = useState<Preset | null>(null);
 
   const aspectRatioRef = useRef(1);
   const [resetKey, setResetKey] = useState(0);
@@ -98,6 +99,7 @@ export default function ImageResizer() {
   const handleWidthChange = useCallback(
     (w: number) => {
       setTargetWidth(w);
+      setSelectedPreset(null);
       if (lockAspect && aspectRatioRef.current > 0) {
         setTargetHeight(Math.round(w / aspectRatioRef.current));
       }
@@ -108,6 +110,7 @@ export default function ImageResizer() {
   const handleHeightChange = useCallback(
     (h: number) => {
       setTargetHeight(h);
+      setSelectedPreset(null);
       if (lockAspect && aspectRatioRef.current > 0) {
         setTargetWidth(Math.round(h * aspectRatioRef.current));
       }
@@ -132,7 +135,7 @@ export default function ImageResizer() {
     setTargetHeight(preset.height);
     setLockAspect(false);
     setUsePercentage(false);
-    setActiveTab("custom");
+    setSelectedPreset(preset);
   }, []);
 
   const resizeImages = useCallback(async () => {
@@ -274,7 +277,7 @@ export default function ImageResizer() {
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="flex border-b border-border">
               <button
-                onClick={() => setActiveTab("custom")}
+                onClick={() => { setActiveTab("custom"); setSelectedPreset(null); }}
                 className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
                   activeTab === "custom"
                     ? "bg-background text-foreground border-b-2 border-primary"
@@ -446,12 +449,16 @@ export default function ImageResizer() {
                     <button
                       key={preset.label}
                       onClick={() => applyPreset(preset)}
-                      className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2.5 text-sm transition-colors hover:border-primary/40 hover:bg-muted"
+                      className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-colors ${
+                        selectedPreset?.label === preset.label
+                          ? "border-primary bg-primary/10 ring-1 ring-primary/20"
+                          : "border-border bg-background hover:border-primary/40 hover:bg-muted"
+                      }`}
                     >
-                      <span className="font-medium text-foreground">
+                      <span className={`font-medium ${selectedPreset?.label === preset.label ? "text-primary" : "text-foreground"}`}>
                         {preset.label}
                       </span>
-                      <span className="text-xs text-muted-foreground tabular-nums">
+                      <span className={`text-xs tabular-nums ${selectedPreset?.label === preset.label ? "text-primary/70" : "text-muted-foreground"}`}>
                         {preset.width} &times; {preset.height}
                       </span>
                     </button>
@@ -469,7 +476,9 @@ export default function ImageResizer() {
           >
             {isProcessing
               ? "Resizing\u2026"
-              : `Resize to ${targetWidth} \u00d7 ${targetHeight}`}
+              : selectedPreset
+                ? `Resize to ${selectedPreset.label} (${targetWidth} \u00d7 ${targetHeight})`
+                : `Resize to ${targetWidth} \u00d7 ${targetHeight}`}
           </button>
         </>
       )}
