@@ -28,12 +28,30 @@ export const tools: Tool[] = [
     metaDescription:
       'Compress JPG, PNG, and WebP images online free. Reduce file size up to 90% while keeping quality. No upload to servers — 100% browser-based, instant results.',
     seoContent: `
-      <h2>Why Compress Images?</h2>
-      <p>Large image files slow down your website, inflate storage costs, and directly hurt your Core Web Vitals score — a factor Google uses in search rankings. The average web page loads 2–4 MB of images; compressing them to under 500 KB is one of the highest-impact performance optimizations available. Studies consistently show that each second of load time reduction improves conversion rates by 2–5%.</p>
-      <h2>Quality Control</h2>
-      <p>The quality slider gives you precise control over the compression trade-off. At 80%, most images are visually indistinguishable from the original while achieving 60–80% size reduction. Converting to WebP — Google's modern format — typically produces files 25–35% smaller than JPEG at equivalent quality, making it the best choice for web assets that need to load fast.</p>
-      <h2>Private by Design</h2>
-      <p>Every image is compressed entirely in your browser using the HTML5 Canvas API. Your files are never sent to a server, never stored, and never seen by anyone but you. This makes it safe for confidential client work, proprietary images, personal photos, and anything else you wouldn't want leaving your device.</p>
+      <h2>When to use this</h2>
+      <p>You're about to upload a hero image to your site and it's 4.7 MB straight from the camera. Your email newsletter platform caps images at 1 MB. Shopify is warning you that your product photos are slowing down your store. These are compression moments — you need the same image, just smaller.</p>
+      <p>The other common trigger is platform-specific size limits. WordPress media uploads, Squarespace backgrounds, Etsy listings, LinkedIn posts — they all have ceilings. Rather than guessing, compress to 200–500 KB and you'll clear virtually every platform's requirements without visible quality loss.</p>
+      <p>One important rule: always resize first, compress second. Compressing a 4000×3000 photo and then displaying it at 800×600 wastes most of the work. Resize to the display dimensions, then compress. You'll get dramatically smaller files with better visual results.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>85% quality is the sweet spot.</strong> Below 85%, you start seeing artifacts — banding in gradients, fuzz around text. Above 90%, files barely shrink but you're burning bytes on imperceptible detail. For most web images, 80–85% is where quality and size meet.</p>
+      <p><strong>Diminishing returns above 90%.</strong> Going from 90% to 100% quality roughly doubles file size while producing differences only a pixel-peeping comparison tool would catch. Save the 95–100% range for print-quality originals you'll never serve on the web.</p>
+      <p><strong>WebP output beats JPG.</strong> If your platform supports it (and in 2026, nearly all do), choose WebP output. It produces files 25–35% smaller than JPEG at the same perceived quality. It's the single biggest free win in image optimization.</p>
+      <p><strong>Compression is lossy and one-way.</strong> Once you compress, the discarded data is gone. Always keep your original files. Compress copies, not sources.</p>
+      <p><strong>Everything stays on your device.</strong> No server upload, no account, no tracking. Your images never leave your browser tab.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Platform</th><th>Recommended Max Size</th><th>Suggested Quality</th></tr></thead>
+        <tbody>
+          <tr><td>WordPress (media library)</td><td>500 KB</td><td>80–85%</td></tr>
+          <tr><td>Shopify (product images)</td><td>500 KB</td><td>80–85%</td></tr>
+          <tr><td>Email newsletters</td><td>200 KB per image</td><td>75–80%</td></tr>
+          <tr><td>Social media posts</td><td>1 MB</td><td>85%</td></tr>
+          <tr><td>Google Ads display</td><td>150 KB</td><td>70–75%</td></tr>
+          <tr><td>Web hero images</td><td>300–500 KB</td><td>80–85%</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['png-to-jpg', 'png-to-webp', 'resize-image'],
     badge: 'popular',
@@ -50,12 +68,30 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert PNG to JPG online free, instantly. Handles transparency with white background fill. Adjust quality. No upload — processes entirely in your browser.',
     seoContent: `
-      <h2>When to Convert PNG to JPG</h2>
-      <p>PNG is a lossless format ideal for screenshots, logos, and graphics with transparent backgrounds or sharp edges. JPEG uses lossy compression optimized for photographs and images with gradual color transitions — typically producing files 5–10× smaller than equivalent PNGs. Converting to JPG makes sense when you need smaller file sizes for email, social media, or web use, and transparency isn't required.</p>
-      <h2>Transparency Handling</h2>
-      <p>JPEG doesn't support transparent pixels. When converting a PNG with transparency, we automatically fill transparent areas with a solid white background before encoding. This is standard practice for web images, print materials, and email attachments, and produces clean output without unexpected visual artifacts.</p>
-      <h2>Choosing the Right Quality</h2>
-      <p>The quality slider controls how aggressively JPEG discards visual data. For photographs, 85–90% produces results visually indistinguishable from the original at a fraction of the size. For graphics with solid colors, text, or sharp edges, stay above 90% to avoid blocky compression artifacts. Everything processes locally in your browser — no upload, no account required.</p>
+      <h2>When to use this</h2>
+      <p>You have a PNG screenshot or graphic and you need it smaller — fast. A 2 MB PNG photograph compresses to 200–400 KB as a JPG at 85% quality with no visible difference. If the image doesn't need transparency, this conversion is almost always worth it.</p>
+      <p>Common triggers: email attachment limits, CMS upload caps, social media platforms that re-compress PNGs badly (looking at you, Twitter/X), or you're batch-processing hundreds of product photos and every kilobyte matters at scale.</p>
+      <p>When it doesn't make sense: logos with sharp edges and flat colors, pixel art, screenshots of text, or anything where you need the transparent background. For those, keep the PNG or convert to WebP instead.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Transparency becomes white.</strong> JPG has no alpha channel. Every transparent pixel gets filled with a solid white background. If your PNG has transparency and you need to keep it, use WebP instead — it supports alpha and still beats PNG on file size.</p>
+      <p><strong>The size drop is dramatic.</strong> A typical 3 MB PNG photo becomes 300–500 KB as a JPG. That's a 5–10x reduction. Screenshots with lots of solid color see smaller but still meaningful savings, usually 2–4x.</p>
+      <p><strong>Quality below 80% gets noticeable.</strong> JPG compression creates blocky artifacts around sharp edges and in areas of solid color. For photos, 85% is the sweet spot. For graphics with text or UI elements, stay at 90%+ or the edges get muddy.</p>
+      <p><strong>JPG degrades on re-save.</strong> Every time you open a JPG and save it again, it re-compresses and loses more data. If you plan to edit the output, do your editing first and export to JPG as the final step.</p>
+      <p><strong>No server, no upload.</strong> Conversion happens in your browser via the Canvas API. Your files never leave your device.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>PNG</th><th>JPG</th></tr></thead>
+        <tbody>
+          <tr><td>Compression</td><td>Lossless</td><td>Lossy</td></tr>
+          <tr><td>Transparency</td><td>Yes (alpha channel)</td><td>No</td></tr>
+          <tr><td>Typical photo size</td><td>2–5 MB</td><td>200–500 KB</td></tr>
+          <tr><td>Best for</td><td>Graphics, logos, screenshots</td><td>Photos, web images</td></tr>
+          <tr><td>Browser support</td><td>Universal</td><td>Universal</td></tr>
+          <tr><td>Re-save quality loss</td><td>None</td><td>Yes, cumulative</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['image-compressor', 'jpg-to-png', 'png-to-webp'],
   },
@@ -92,12 +128,29 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert iPhone HEIC and HEIF photos to JPG online free. Batch convert multiple files at once. No upload — processes entirely in your browser, instant results.',
     seoContent: `
-      <h2>What is HEIC?</h2>
-      <p>HEIC (High Efficiency Image Container) is Apple's default photo format for iPhones and iPads running iOS 11 and later. Using the HEVC codec, HEIC files are typically 40–50% smaller than JPEG at the same perceptual quality — a significant saving when a modern iPhone captures 48-megapixel photos. The trade-off is compatibility: HEIC has limited support outside Apple's ecosystem and is not natively opened on Windows, most Android apps, or web platforms.</p>
-      <h2>Why Convert to JPG?</h2>
-      <p>JPEG enjoys universal compatibility across every operating system, browser, application, and device manufactured in the past 30 years. Converting HEIC to JPG lets you share photos via email, upload to any website, edit in Windows applications, and print at any service — without compatibility errors. It's the format that everyone can open, everywhere, on everything.</p>
-      <h2>Batch Conversion</h2>
-      <p>Drop multiple HEIC files at once and our converter processes them all simultaneously in your browser using the heic2any library. Download converted JPGs individually or as a single ZIP archive. Everything runs locally — your iPhone photos never leave your device during conversion.</p>
+      <h2>When to use this</h2>
+      <p>You AirDropped photos to your Windows laptop and nothing can open them. Or you're trying to upload iPhone photos to a web form and it only accepts JPG. Or your printing service rejected HEIC files. Apple made HEIC the default camera format in 2017 (iOS 11), and the rest of the world still hasn't fully caught up.</p>
+      <p>The compatibility gap is the whole reason this tool exists. HEIC uses the HEVC codec and produces files 40–50% smaller than JPG at the same quality — technically superior. But JPG has 30 years of universal support baked into every operating system, browser, and application on earth. When you need something that just works everywhere, you convert to JPG.</p>
+      <p>You can change your iPhone to shoot JPG natively (Settings → Camera → Formats → Most Compatible), but that doubles your storage usage per photo. Most people prefer to shoot in HEIC and convert only when they need to share outside the Apple ecosystem.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>HEIC is actually better than JPG.</strong> It's not a "bad" format — Apple chose it because it genuinely produces smaller, higher-quality files. You're converting for compatibility, not quality. The JPG output will be larger than the HEIC input, typically 1.5–2x the file size.</p>
+      <p><strong>Live Photos only export the still frame.</strong> HEIC files from Live Photos contain both a still image and a short video clip. This converter extracts the still image. The video component doesn't carry over to JPG.</p>
+      <p><strong>EXIF data transfers.</strong> Camera metadata — date, location, exposure settings — carries over from HEIC to JPG. If you're sharing photos and want to strip location data for privacy, that's a separate step.</p>
+      <p><strong>Batch is the way.</strong> You probably aren't converting one photo. Drop your entire folder of HEIC files and grab the ZIP. All processing happens in your browser — your photos never touch a server.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>HEIC</th><th>JPG</th></tr></thead>
+        <tbody>
+          <tr><td>Compression</td><td>Lossy (HEVC codec)</td><td>Lossy (DCT-based)</td></tr>
+          <tr><td>Transparency</td><td>Yes (alpha)</td><td>No</td></tr>
+          <tr><td>Typical photo size (12 MP)</td><td>1.5–2.5 MB</td><td>3–5 MB</td></tr>
+          <tr><td>Browser support</td><td>Safari only</td><td>Universal</td></tr>
+          <tr><td>Windows support</td><td>Requires HEVC extension</td><td>Native</td></tr>
+          <tr><td>Best for</td><td>iPhone storage efficiency</td><td>Sharing and compatibility</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['image-compressor', 'jpg-to-png', 'png-to-jpg'],
     badge: 'new',
@@ -152,12 +205,29 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert PNG images to WebP format online free. WebP files are up to 35% smaller than PNG. Adjust quality, batch convert multiple files. No upload required.',
     seoContent: `
-      <h2>Why Convert to WebP?</h2>
-      <p>WebP is Google's modern image format, offering 25–35% smaller file sizes than PNG at equivalent visual quality. Developed for web performance, WebP is now supported by all major browsers (Chrome, Firefox, Safari since 2020, Edge) and most modern software. Switching PNG assets to WebP reduces page weight, improves load times, and can directly improve search rankings through better Core Web Vitals scores.</p>
-      <h2>Quality and Compression Control</h2>
-      <p>Unlike PNG (always lossless), WebP in this converter uses lossy compression with your chosen quality setting. At 80–85%, most images are visually indistinguishable from the original PNG while being dramatically smaller. For graphics, logos, or images with sharp edges and solid colors, use 90%+ to avoid compression artifacts. The quality slider lets you find the optimal balance for your specific content.</p>
-      <h2>Batch Conversion</h2>
-      <p>Drop multiple PNG files simultaneously and download all WebP outputs as a ZIP. Every conversion happens locally in your browser using the HTML5 Canvas API — no uploads, no account, no file size limits imposed by server quotas. Your files stay on your device throughout the entire process.</p>
+      <h2>When to use this</h2>
+      <p>You're optimizing web assets and PNG files are eating your performance budget. A typical PNG hero image at 1200×800 runs 1–3 MB. The same image as WebP at 85% quality: 200–400 KB. That's the kind of reduction that moves your Lighthouse score from orange to green.</p>
+      <p>WebP is the web performance format. Every major browser has supported it since 2020 (yes, including Safari). If you're building a website, blog, e-commerce store, or web app and still serving PNGs for photographs or complex graphics, you're leaving performance on the table.</p>
+      <p>When to skip it: if you need lossless transparency for design assets that will be layered and re-exported (keep the PNG), or if you're targeting very old software that predates WebP support. For web delivery in 2026, though, WebP is the default right answer.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>WebP keeps transparency.</strong> Unlike JPG, WebP supports alpha channels. Your transparent PNGs convert to transparent WebPs — no white background fill, no lost compositing. This is one of WebP's biggest advantages over JPG.</p>
+      <p><strong>25–35% smaller than PNG, consistently.</strong> Across photographs, illustrations, and UI graphics, WebP reliably beats PNG on file size. For photographic content the savings are even larger — often 60–80% smaller.</p>
+      <p><strong>Lossy is usually the right call.</strong> This converter uses lossy WebP compression. At 80–85% quality, the output is visually identical to the lossless PNG source. Only use 95%+ if you're working with pixel-precise graphics where every detail matters.</p>
+      <p><strong>Next.js and most CDNs auto-convert.</strong> If you're using a modern framework or CDN (Vercel, Cloudflare, Cloudinary), they often serve WebP automatically. Check whether you actually need to convert manually before batch-processing your entire image directory.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>PNG</th><th>WebP</th></tr></thead>
+        <tbody>
+          <tr><td>Compression</td><td>Lossless only</td><td>Lossy + lossless</td></tr>
+          <tr><td>Transparency</td><td>Yes (alpha)</td><td>Yes (alpha)</td></tr>
+          <tr><td>Typical photo size</td><td>1–3 MB</td><td>200–400 KB</td></tr>
+          <tr><td>Browser support</td><td>Universal</td><td>All modern (post-2020)</td></tr>
+          <tr><td>Design tool support</td><td>Universal</td><td>Growing (Figma, Sketch yes)</td></tr>
+          <tr><td>Best for</td><td>Editing, archiving</td><td>Web delivery</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['webp-to-png', 'image-compressor', 'png-to-jpg'],
     badge: 'new',
@@ -174,12 +244,29 @@ export const tools: Tool[] = [
     metaDescription:
       'Convert JPG images to PNG format online free. Lossless PNG output, full quality preservation. Batch convert multiple files. No upload — 100% browser-based.',
     seoContent: `
-      <h2>When to Convert JPG to PNG</h2>
-      <p>JPEG uses lossy compression — each save permanently discards image data and introduces compression artifacts. Converting to PNG provides a lossless container for further editing without compounding quality loss with each save cycle. PNG is also required when you need to add transparency (alpha channel), which JPEG cannot support. Use this tool when preparing images for UI design, logos, compositing workflows, or any editing process where maintaining quality matters.</p>
-      <h2>Understanding the Conversion</h2>
-      <p>Converting JPG to PNG does not restore quality lost during original JPEG compression — JPEG artifacts become part of the PNG output losslessly. What you gain is a format that won't degrade on subsequent saves. If you plan to edit and re-export multiple times, starting from PNG prevents the cumulative quality degradation that plagues multi-generation JPEG files. Think of it as locking in the current quality and preventing further loss.</p>
-      <h2>Batch Processing</h2>
-      <p>Drop multiple JPG or JPEG files at once and convert them all simultaneously. Download converted PNGs individually or as a single ZIP archive. All conversion happens entirely in your browser via the HTML5 Canvas API — no server uploads, no account required, and no file size limits imposed by server quotas.</p>
+      <h2>When to use this</h2>
+      <p>You have a JPG and you need to add it to a design comp in Figma, layer it over other elements in Photoshop, or use it as a texture with transparency. PNG is the starting point for that workflow — it gives you a lossless container and alpha channel support that JPG simply can't provide.</p>
+      <p>The other common scenario: you're editing and re-saving an image multiple times. Every JPG save recompresses and degrades the image further (generation loss). Converting to PNG first freezes the quality at its current level. Edit the PNG as many times as you want — it won't degrade on save. Export to JPG as the final step only.</p>
+      <p>Be realistic about what this conversion does and doesn't do. It locks in current quality and prevents further loss. It does not magically restore detail that JPG compression already removed. If your JPG has visible artifacts, they'll be faithfully preserved in the PNG output.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Files will get larger.</strong> This is the expected tradeoff. A 400 KB JPG photo typically becomes 2–4 MB as a PNG. You're trading file size for lossless editing capability and transparency support. If you just need a smaller file, this is the wrong direction — look at image compression instead.</p>
+      <p><strong>JPG artifacts carry over.</strong> PNG preserves every pixel exactly as decoded from the JPG — including any compression artifacts, color banding, or blockiness. The conversion is lossless in that it adds nothing and removes nothing. It's a faithful pixel-for-pixel copy in a different container.</p>
+      <p><strong>Transparency isn't automatic.</strong> Converting to PNG gives you a format that supports transparency, but the actual image still has a solid background. You'll need to remove the background separately (in a design tool or with a background removal tool) to get actual transparency.</p>
+      <p><strong>PNG is the editing format, not the delivery format.</strong> Work in PNG, deliver in JPG or WebP. Your final web or email assets should almost always be compressed lossy formats. PNG is for the working file.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>JPG</th><th>PNG</th></tr></thead>
+        <tbody>
+          <tr><td>Compression</td><td>Lossy</td><td>Lossless</td></tr>
+          <tr><td>Transparency</td><td>No</td><td>Yes (alpha channel)</td></tr>
+          <tr><td>Typical photo size</td><td>200–500 KB</td><td>2–5 MB</td></tr>
+          <tr><td>Re-save quality loss</td><td>Yes, cumulative</td><td>None</td></tr>
+          <tr><td>Best for</td><td>Final delivery, web, email</td><td>Editing, compositing, design</td></tr>
+          <tr><td>Browser support</td><td>Universal</td><td>Universal</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['png-to-jpg', 'image-compressor', 'webp-to-png'],
   },
@@ -307,12 +394,28 @@ export const tools: Tool[] = [
     metaDescription:
       'Merge multiple PDF files into one online free. Drag to reorder, see page counts. No upload — combines PDFs entirely in your browser using pdf-lib.',
     seoContent: `
-      <h2>Why Merge PDFs?</h2>
-      <p>Merging PDF files is one of the most frequent document tasks in modern workflows: combining chapters into a complete report, assembling contract addenda into a single file, merging bank statements for expense reporting, or packaging multiple form submissions into one document for a records system. A single merged PDF is easier to email, archive, print, and review than a collection of individual files.</p>
-      <h2>Reorder Before Merging</h2>
-      <p>Drag any PDF up or down to set the final page order before generating the merged file. Each card shows the filename, page count, and file size so you can confirm everything is in order. The merge produces a standard PDF file readable by Adobe Acrobat, Preview, every browser, and every mobile PDF viewer — with all original formatting, fonts, images, and bookmarks preserved.</p>
-      <h2>Completely Private</h2>
-      <p>PDF merging happens entirely in your browser using pdf-lib, an open-source JavaScript library. No file is ever uploaded to a server — not even temporarily. Your PDFs could contain legal contracts, medical records, financial statements, or anything else sensitive, and they will never leave your device. This is the fundamental privacy advantage of browser-based document processing over cloud-based alternatives.</p>
+      <h2>When to use this</h2>
+      <p>You have five separate PDFs from different departments and the client wants one file. Or you scanned a stack of receipts and now you need a single expense report. Maybe you are assembling a proposal from a cover letter, scope document, and pricing sheet that live in different folders. These are the moments when merging matters.</p>
+      <p>Merge is also the fastest way to append a signed addendum to an existing contract, tack a new exhibit onto a legal filing, or combine monthly statements into a year-end archive. Any time you are about to attach multiple PDFs to the same email, stop and merge them first — recipients will thank you.</p>
+      <p>One underrated use case: combining presentation handouts with speaker notes into a single reference document after a conference. Much easier to search through one file than twelve.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Page order is your responsibility.</strong> The final PDF follows exactly the sequence you set. Drag files up or down before merging — there is no undo once you download. If you are combining chapters, double-check the order against your table of contents.</p>
+      <p><strong>Bookmarks usually do not carry over.</strong> PDF-level bookmarks (the clickable outline panel in Acrobat) are document-specific metadata. When you merge files, each source document's internal bookmark tree is not automatically stitched into a unified outline. If you need bookmarks in the final file, you will need to recreate them in a PDF editor afterward.</p>
+      <p><strong>Fonts and images survive intact.</strong> Unlike copy-pasting between Word documents, merging PDFs preserves embedded fonts, vector graphics, and image resolution exactly as they appear in each source file. The merged output is byte-for-byte faithful to the originals.</p>
+      <p><strong>File size adds up linearly.</strong> Merging five 2 MB PDFs produces roughly a 10 MB file. There is no compression during the merge step — if you need a smaller result, run the merged file through a PDF compressor afterward.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Use case</th><th>Typical input</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Expense report</td><td>5-15 receipt scans</td><td>Single PDF for reimbursement</td></tr>
+          <tr><td>Contract assembly</td><td>Agreement + exhibits + signature pages</td><td>One executed document</td></tr>
+          <tr><td>Year-end archive</td><td>12 monthly statements</td><td>Single searchable annual record</td></tr>
+          <tr><td>Proposal package</td><td>Cover letter + scope + pricing + references</td><td>One professional deliverable</td></tr>
+          <tr><td>Conference handouts</td><td>Multiple slide decks or note PDFs</td><td>Unified reference document</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['split-pdf', 'pdf-compressor', 'rotate-pdf'],
   },
@@ -328,12 +431,29 @@ export const tools: Tool[] = [
     metaDescription:
       'Split PDF into individual pages or custom page ranges online free. Preview page thumbnails, select exactly what you need. No upload — 100% browser-based.',
     seoContent: `
-      <h2>Extract Exactly the Pages You Need</h2>
-      <p>PDF documents often contain more pages than you need to share or work with: a 50-page report where you only need pages 3–7, a scanned book where you want a specific chapter, a legal document where you need to extract individual exhibits. PDF splitting lets you extract precisely the content you need without editing the original, creating focused documents for each recipient or purpose.</p>
-      <h2>Three Split Modes</h2>
-      <p>Split into all individual pages (one PDF per page), extract a custom page range using range notation like "1-5, 8, 11-15", or visually select specific pages by clicking thumbnails. Multiple extracted pages can be bundled into a ZIP archive for convenient download, or individual page PDFs can be downloaded one at a time. All original page content — text, images, formatting, and annotations — is preserved in every extracted page.</p>
-      <h2>How PDF Splitting Works</h2>
-      <p>Page extraction uses pdf-lib to read the source PDF and copy selected pages into new PDF documents. Visual page previews are rendered by PDF.js, the same engine used in Firefox. All processing runs locally in your browser — no pages of your PDF are sent to any server. This guarantees privacy for confidential documents, legal files, patient records, and any other sensitive content you need to split and share.</p>
+      <h2>When to use this</h2>
+      <p>A 47-page contract lands in your inbox and the client only needs the signature page. Your professor uploaded a 200-slide PDF and you want just the chapter on regression analysis. HR sent a benefits packet and you need to forward only the dental plan pages to your spouse. Splitting is for these moments — when the PDF has what you need, plus a lot of what you do not.</p>
+      <p>It is also essential for filing. Courts, insurance portals, and government websites often have strict page limits or require individual exhibits uploaded separately. Splitting a master document into labeled parts is faster than recreating each piece from scratch.</p>
+      <p>Another common scenario: you scanned a stack of mixed documents into one PDF and now need to break them apart. Split into individual pages, then re-merge the ones that belong together. It sounds roundabout, but it takes about 30 seconds.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Splitting does not alter the original.</strong> The source PDF is read-only during the process. Every extracted page is written into a brand-new file. Your original document remains untouched — you cannot accidentally corrupt it by extracting pages.</p>
+      <p><strong>Cross-page elements may look different.</strong> Headers, footers, and page numbers are baked into each page individually in most PDFs, so they survive extraction. But a table of contents with clickable links to later pages will point to pages that no longer exist in the extracted file. Same for cross-references in legal documents.</p>
+      <p><strong>Annotations and form fields come along for the ride.</strong> If page 5 has sticky notes, highlights, or fillable form data, those travel with the extracted page. This is a feature of how PDF page objects work — annotations are stored per-page, not per-document.</p>
+      <p><strong>Range notation saves time.</strong> Instead of clicking 20 thumbnails, type "1-5, 8, 12-20" to grab exactly those pages in one shot. Commas separate groups, hyphens define ranges. It is the same syntax most print dialogs use, so it should feel familiar.</p>
+      <p><strong>ZIP download for bulk extraction.</strong> Splitting a 100-page PDF into individual pages produces 100 files. The ZIP option bundles them into a single download instead of triggering 100 separate save dialogs.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Scenario</th><th>What to extract</th><th>Best method</th></tr></thead>
+        <tbody>
+          <tr><td>Signature page from a contract</td><td>Last 1-2 pages</td><td>Page range or thumbnail click</td></tr>
+          <tr><td>Chapter from a textbook</td><td>Specific page range</td><td>Range notation (e.g., "34-58")</td></tr>
+          <tr><td>Individual exhibits for court filing</td><td>Multiple non-contiguous sections</td><td>Range notation (e.g., "1-3, 12-15, 28")</td></tr>
+          <tr><td>Break apart a bulk scan</td><td>Every page individually</td><td>Split all pages + ZIP download</td></tr>
+          <tr><td>Remove sensitive pages before sharing</td><td>Everything except certain pages</td><td>Select the pages to keep, not the ones to remove</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['merge-pdf', 'rotate-pdf', 'pdf-compressor'],
   },
@@ -385,12 +505,28 @@ export const tools: Tool[] = [
     metaDescription:
       'Create fillable PDF forms online for free. Add text fields, checkboxes, date fields, and signature boxes in your browser. Private local processing, no upload.',
     seoContent: `
-      <h2>Create Fillable Forms Without Uploading Your PDF</h2>
-      <p>Turning a static PDF into a form usually means opening desktop software or uploading files to a cloud service. This tool lets you add form fields directly in your browser using visual placement and instant export. Everything runs locally, so your PDF stays private on your device from start to finish.</p>
-      <h2>Visual Field Placement</h2>
-      <p>Upload a PDF, choose a field type, click to place it, then drag or resize as needed. You can add text inputs, checkboxes, date fields, and signature fields across multiple pages. A side panel keeps your field list organized so you can quickly rename, edit, or remove fields before exporting.</p>
-      <h2>AcroForm Output Compatibility</h2>
-      <p>The exported file uses standard PDF AcroForm fields supported by major PDF readers, including Adobe Acrobat, browser viewers, and many mobile apps. This makes it practical for contracts, onboarding forms, internal checklists, and any workflow that needs editable PDF fields without exposing documents to external servers.</p>
+      <h2>When to use this</h2>
+      <p>Someone designed a beautiful form in Word or InDesign, exported it as a flat PDF, and now expects people to fill it in digitally. Without fillable fields, recipients are stuck printing it out, writing by hand, and scanning it back. This tool bridges that gap — you overlay interactive fields on top of the static PDF so anyone can type directly into it.</p>
+      <p>Common scenarios: employee onboarding packets that HR designed but forgot to make interactive, client intake forms for law firms or clinics, internal checklists that need sign-off fields, and event registration forms that get emailed as attachments. If the PDF already exists and you just need to make it fillable, this is faster than rebuilding it in Adobe Acrobat.</p>
+      <p>It is also useful for adding a signature field to a contract or agreement that was originally created without one. Drop a signature box at the bottom of the last page and you have a signable document in seconds.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>AcroForm is the standard that actually works.</strong> PDF has two competing form technologies: AcroForm (the original, supported everywhere) and XFA (Adobe's XML-based format, poorly supported outside Acrobat). This tool uses AcroForm, which means your fillable PDF works in Adobe Acrobat, Preview on Mac, Chrome and Firefox's built-in PDF viewers, and most mobile PDF apps. XFA forms routinely break outside Adobe — AcroForm does not.</p>
+      <p><strong>Four field types cover most use cases.</strong> Text fields handle names, addresses, and free-form input. Checkboxes work for yes/no questions, agreement acknowledgments, and multi-select lists. Date fields provide structured date entry. Signature fields designate where a signer should place their mark. These four cover the vast majority of form workflows without overcomplicating things.</p>
+      <p><strong>Field naming matters more than you think.</strong> If you plan to extract form data programmatically later (via PDF libraries or form processing services), give each field a clear, unique name like "applicant_name" or "agree_terms" rather than "Field1." It saves significant headaches downstream.</p>
+      <p><strong>The underlying PDF is untouched.</strong> Form fields are layered on top of the existing page content. The original text, images, and formatting remain exactly as they were. If a recipient opens the PDF in a viewer that does not support forms, they still see the full original document — the fields just will not be interactive.</p>
+      <p><strong>Filled-in data can be saved by the recipient.</strong> When someone fills out your form and saves the PDF, their responses are stored in the file. They can reopen it later and their answers are still there. This is standard AcroForm behavior — no special "save permissions" are required.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Field type</th><th>Best for</th><th>Compatibility</th></tr></thead>
+        <tbody>
+          <tr><td>Text field</td><td>Names, addresses, free-form answers</td><td>All PDF readers</td></tr>
+          <tr><td>Checkbox</td><td>Yes/no, agreements, multi-select</td><td>All PDF readers</td></tr>
+          <tr><td>Date field</td><td>Dates of birth, deadlines, event dates</td><td>Most PDF readers</td></tr>
+          <tr><td>Signature field</td><td>Contract sign-off, approval workflows</td><td>Acrobat, Preview, most mobile apps</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['merge-pdf', 'split-pdf', 'rotate-pdf'],
     badge: 'new',
@@ -512,12 +648,33 @@ export const tools: Tool[] = [
     metaDescription:
       'Free online word counter. Count words, characters, sentences, paragraphs, and lines in real time. Calculate reading time and speaking time. No signup required.',
     seoContent: `
-      <h2>Free Online Word Counter</h2>
-      <p>Whether you're writing an essay with a strict word limit, crafting a blog post targeting a specific length, or checking that a social media caption fits within a character limit, our word counter gives you the numbers you need instantly. Paste any text and see words, characters, sentences, paragraphs, reading time, and speaking time update in real time — no button to click, no page to reload.</p>
-      <h2>Why Word Count Matters</h2>
-      <p>Academic submissions, grant applications, and journalist pitches often have strict word count requirements — going over or under can mean rejection. Blog posts targeting SEO typically perform best between 1,500–2,500 words. Twitter/X allows 280 characters, Instagram captions 2,200, LinkedIn posts 3,000. Reading time estimates help readers know what they're committing to — research shows that displaying "5 min read" at the top of an article increases click-through rates. This tool handles all of these use cases from a single input.</p>
-      <h2>Reading Time and Speaking Time</h2>
-      <p>Reading time is calculated at 238 words per minute — the average silent reading speed for adults based on academic research. Speaking time uses 150 words per minute, a comfortable conversational pace suitable for podcasts, presentations, and speeches. Both figures give you a practical sense of how long it will take your audience to engage with your content, helping you calibrate length for the medium.</p>
+      <h2>When to use this</h2>
+      <p>You're staring at a college essay prompt that says "500-750 words" and you have no idea if you're close. You're drafting a LinkedIn post and need to stay under 3,000 characters. You're writing product descriptions that need to hit exactly 150 words for your CMS template. Word counting is one of those tasks that's trivially easy to automate and surprisingly annoying to do manually.</p>
+      <p>Writers, students, and content marketers are the heaviest users. But it's also useful for anyone preparing a speech (word count determines duration), writing meta descriptions (Google truncates after ~155 characters), or meeting submission requirements for grants, applications, or competitions.</p>
+      <p>The reading time estimate is the hidden gem. If you're publishing online, showing "5 min read" at the top of an article measurably improves engagement — readers commit when they know the time investment upfront.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Reading time uses 238 words per minute.</strong> That's the average silent reading speed for adults, based on a meta-analysis of 190 studies. It's more accurate than the commonly cited 200 or 250 WPM figures that float around the internet.</p>
+      <p><strong>Speaking time uses 150 words per minute.</strong> That's a comfortable conversational pace — ideal for presentations, podcasts, and speeches. TED Talks average about 163 WPM, so 150 gives you a slight buffer for pauses and emphasis.</p>
+      <p><strong>"Characters without spaces" matters more than you think.</strong> Some platforms (like SMS) count characters including spaces, while others (like certain CMS fields) count without. This tool shows both so you never have to guess.</p>
+      <p><strong>Sentences ≠ periods.</strong> The counter handles abbreviations (Dr., U.S., etc.) and decimal numbers without miscounting them as sentence boundaries. It's smarter than a simple period-split.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Platform / Context</th><th>Limit</th><th>Type</th></tr></thead>
+        <tbody>
+          <tr><td>Twitter / X post</td><td>280</td><td>Characters</td></tr>
+          <tr><td>Instagram caption</td><td>2,200</td><td>Characters</td></tr>
+          <tr><td>LinkedIn post</td><td>3,000</td><td>Characters</td></tr>
+          <tr><td>Meta description (SEO)</td><td>155–160</td><td>Characters</td></tr>
+          <tr><td>Google Ads headline</td><td>30</td><td>Characters</td></tr>
+          <tr><td>Google Ads description</td><td>90</td><td>Characters</td></tr>
+          <tr><td>SMS (single segment)</td><td>160</td><td>Characters</td></tr>
+          <tr><td>College essay (typical)</td><td>500–750</td><td>Words</td></tr>
+          <tr><td>Blog post (SEO sweet spot)</td><td>1,500–2,500</td><td>Words</td></tr>
+          <tr><td>5-minute speech</td><td>~750</td><td>Words</td></tr>
+        </tbody>
+      </table>
     `,
     relatedTools: ['case-converter', 'lorem-generator', 'remove-line-breaks'],
     badge: 'popular',
@@ -921,7 +1078,29 @@ export const tools: Tool[] = [
     icon: 'Home',
     metaTitle: 'Mortgage Calculator — Monthly Payment Free | clevr.tools',
     metaDescription: 'Free mortgage calculator. Estimate monthly mortgage payments including principal, interest, property tax, insurance, and PMI. View full amortization schedule.',
-    seoContent: `<h2>Free Mortgage Calculator</h2><p>Estimate your monthly mortgage payment by entering the home price, down payment amount, loan term, and interest rate. Include optional property tax and home insurance estimates for a complete monthly housing cost picture. If your down payment is less than 20%, PMI (Private Mortgage Insurance) typically applies until you reach 20% equity.</p><p>The monthly payment formula is M = P[r(1+r)^n] / [(1+r)^n - 1], where P is the loan principal, r is the monthly interest rate (annual rate divided by 12), and n is the total number of payments. This calculator provides estimates — actual payments vary based on lender terms, escrow arrangements, and other factors. Consult a licensed mortgage professional for personalized advice.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You found a house listed at $425,000 and you need to know what you'd actually pay each month. Not the sticker price — the real number, with taxes, insurance, and PMI factored in. That's the calculation that determines whether a home is affordable or aspirational.</p>
+      <p>Mortgage calculators are also essential for comparing scenarios. What happens if you put 10% down instead of 20%? How much does a 0.5% rate difference cost over 30 years? What if you choose a 15-year term instead of 30? The monthly payment is just the starting point — the total interest paid is where the real surprises are.</p>
+      <p>Run the numbers before you talk to a lender. Walking into a pre-approval meeting with a clear picture of your budget puts you in a stronger position — and prevents you from being steered toward the maximum loan amount you qualify for rather than the amount you're comfortable with.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>In year 1, most of your payment is interest.</strong> On a $350,000 loan at 6.5%, your monthly payment is ~$2,212. In the first month, $1,896 goes to interest and only $316 goes to principal. By year 20, it flips — $1,650 to principal and $562 to interest. This is how amortization works, and it's why extra payments early in the loan save far more than extra payments later.</p>
+      <p><strong>PMI disappears at 20% equity.</strong> If your down payment is less than 20%, lenders require Private Mortgage Insurance — typically 0.5–1% of the loan amount per year. On a $350,000 loan, that's $145–$290/month added to your payment. It drops off once you've built 20% equity, either through payments or appreciation.</p>
+      <p><strong>A 15-year mortgage isn't double the payment.</strong> Halving the term roughly increases the monthly payment by 40-50%, not 100%. But you'll pay dramatically less total interest. A $350,000 loan at 6.5% costs $446,000 in interest over 30 years but only $196,000 over 15 years — a $250,000 difference.</p>
+      <p><strong>Property tax varies wildly by location.</strong> Texas averages 1.8% of home value annually. Hawaii averages 0.28%. On a $400,000 home, that's the difference between $600/month and $93/month in taxes alone. Always include local tax rates in your calculation.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Scenario ($350K loan, 30yr)</th><th>Rate</th><th>Monthly P&I</th><th>Total Interest</th></tr></thead>
+        <tbody>
+          <tr><td>Current market (high)</td><td>7.0%</td><td>$2,329</td><td>$488,281</td></tr>
+          <tr><td>Recent average</td><td>6.5%</td><td>$2,212</td><td>$446,247</td></tr>
+          <tr><td>Moderate rate</td><td>5.5%</td><td>$1,987</td><td>$365,460</td></tr>
+          <tr><td>Low rate era</td><td>3.5%</td><td>$1,572</td><td>$215,799</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['percentage-calculator', 'compound-interest', 'tip-calculator'],
   },
   {
@@ -934,7 +1113,31 @@ export const tools: Tool[] = [
     icon: 'Receipt',
     metaTitle: 'Tip Calculator — Split Bill & Calculate Tip Free | clevr.tools',
     metaDescription: 'Free tip calculator. Enter your bill amount and tip percentage to instantly see the tip amount, total, and per-person cost for groups. Quick presets for common tip amounts.',
-    seoContent: `<h2>Free Tip Calculator</h2><p>Calculate the tip amount for any bill and split the total evenly across any group size. Quick preset buttons for 10%, 15%, 18%, 20%, and 25% tip percentages cover most situations — or enter a custom percentage for anything else. The per-person breakdown updates in real time as you change any input.</p><p>Tipping norms vary by country and service type. In the US, 15–20% is standard for sit-down restaurant service, 10–15% for delivery (though apps often suggest more), and tips are generally not expected at fast food or counter service. Bartenders typically receive $1–2 per drink or 15–20% of the tab.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>The check arrives and six people are staring at it. Someone suggests splitting evenly, someone else only had a salad, and nobody can agree on what percentage to tip. This calculator kills the awkwardness in five seconds — enter the bill, pick the tip, set the number of people, done.</p>
+      <p>It's also useful when you're dining alone and want to double-check the math. Tipping on the pre-tax total vs. post-tax total can make a meaningful difference on a $200 dinner. And delivery app "suggested tips" are often calculated on inflated totals that include fees — it's worth knowing the real number.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>20% is the new 15%.</strong> US tipping norms have shifted. What was considered generous a decade ago is now the baseline for good service at sit-down restaurants. 15% signals dissatisfaction to many servers. 18% is fine, 20% is standard, 25% is generous.</p>
+      <p><strong>Tip on pre-tax, not post-tax.</strong> The tip is for service, not for sales tax. On a $100 meal with 10% tax, tipping 20% on $100 ($20) vs. $110 ($22) is a small difference — but it adds up over a year of dining out.</p>
+      <p><strong>Delivery tips are separate from service fees.</strong> Most delivery apps charge a "service fee" that doesn't go to the driver. The tip is the driver's primary compensation. $3–5 for short deliveries, $5–8+ for longer ones is reasonable.</p>
+      <p><strong>International tipping varies dramatically.</strong> Japan considers tipping rude. Most of Europe includes service in the price (round up or leave 5–10% for exceptional service). Australia doesn't expect tips. The US and Canada are outliers where tips are a major part of server compensation.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Service</th><th>US Standard</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Sit-down restaurant</td><td>18–20%</td><td>On pre-tax total</td></tr>
+          <tr><td>Bartender</td><td>$1–2/drink or 15–20%</td><td>Per drink for simple orders</td></tr>
+          <tr><td>Food delivery</td><td>$3–5+ or 15–20%</td><td>Tip goes directly to driver</td></tr>
+          <tr><td>Coffee / counter service</td><td>$0–1 or 0–10%</td><td>Optional, not expected</td></tr>
+          <tr><td>Hair stylist</td><td>15–20%</td><td>On total service cost</td></tr>
+          <tr><td>Hotel housekeeping</td><td>$2–5/night</td><td>Left daily, not at checkout</td></tr>
+          <tr><td>Taxi / rideshare</td><td>15–20%</td><td>Round up for short rides</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['percentage-calculator', 'discount-calculator'],
   },
   {
@@ -960,7 +1163,31 @@ export const tools: Tool[] = [
     icon: 'TrendingUp',
     metaTitle: 'Compound Interest Calculator — Free Tool | clevr.tools',
     metaDescription: 'Free compound interest calculator. Enter investment, contributions, rate, and time. See final balance and growth chart. Daily, monthly, or annual compounding.',
-    seoContent: `<h2>Free Compound Interest Calculator</h2><p>Compound interest is interest calculated on both the initial principal and the accumulated interest from previous periods — meaning your money earns returns on its returns. The formula for compound interest with regular contributions is: FV = P(1 + r/n)^(nt) + PMT * [((1 + r/n)^(nt) - 1) / (r/n)], where P is initial investment, PMT is periodic contribution, r is annual interest rate, n is compounding frequency per year, and t is years.</p><p>The growth chart makes the power of compounding visual: the gap between your total contributions and your final balance widens dramatically over time. A modest monthly contribution invested consistently for 30 years typically produces far more in interest than in contributions — this is why starting early matters more than the amount you invest.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You want to know what happens if you invest $500/month for 25 years. Or you're trying to show a teenager why starting a Roth IRA at 18 instead of 30 means retiring with twice the money despite contributing less. Compound interest is the single most important concept in personal finance, and this calculator makes it visual.</p>
+      <p>It's also the tool that settles debates. "Should I invest a lump sum or dollar-cost average?" "Does compounding frequency actually matter?" "How much does a 1% fee drag on returns over 30 years?" Plug in the numbers and see for yourself — the chart makes the answer obvious in a way that formulas don't.</p>
+      <p>The growth chart is the key feature. Watching the gap widen between your contributions (the money you put in) and your total balance (what compounding grew it to) is the most powerful financial visualization there is.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Starting early beats investing more.</strong> $200/month from age 22 to 65 at 8% grows to ~$940,000. $400/month from age 32 to 65 (same total contributed: ~$158,000 vs ~$103,000) grows to only ~$680,000. The 10 extra years of compounding are worth more than doubling your contribution.</p>
+      <p><strong>Compounding frequency barely matters.</strong> Monthly vs. daily vs. continuous compounding on a $10,000 investment at 7% over 30 years differs by less than $500. Don't let anyone sell you a product based on "daily compounding" — the edge is trivial.</p>
+      <p><strong>The Rule of 72 is your mental shortcut.</strong> Divide 72 by the annual return rate to estimate how many years it takes to double your money. At 8%, money doubles every 9 years. At 6%, every 12 years. At 10%, every 7.2 years.</p>
+      <p><strong>Fees compound too — in reverse.</strong> A 1% annual fee doesn't sound like much, but on a $500,000 portfolio over 30 years at 8%, it costs you roughly $300,000 in lost growth. Compound interest giveth, and compound fees taketh away.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Monthly Investment</th><th>Years</th><th>Return</th><th>Total Contributed</th><th>Final Balance</th></tr></thead>
+        <tbody>
+          <tr><td>$200</td><td>10</td><td>8%</td><td>$24,000</td><td>$36,589</td></tr>
+          <tr><td>$200</td><td>20</td><td>8%</td><td>$48,000</td><td>$117,804</td></tr>
+          <tr><td>$200</td><td>30</td><td>8%</td><td>$72,000</td><td>$298,072</td></tr>
+          <tr><td>$500</td><td>20</td><td>7%</td><td>$120,000</td><td>$260,464</td></tr>
+          <tr><td>$500</td><td>30</td><td>7%</td><td>$180,000</td><td>$610,729</td></tr>
+          <tr><td>$1,000</td><td>30</td><td>8%</td><td>$360,000</td><td>$1,490,359</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['mortgage-calculator', 'percentage-calculator'],
   },
   {
@@ -987,14 +1214,34 @@ export const tools: Tool[] = [
     icon: 'Keyboard',
     metaTitle: 'Free Typing Test — Check Your Typing Speed | clevr.tools',
     metaDescription: 'Test your typing speed and accuracy with our free online typing test. See your WPM, accuracy, and consistency with detailed stats and a live performance chart.',
-    seoContent: `<h2>Free Online Typing Test</h2>
-<p>A typing test measures two things: speed (words per minute) and accuracy (percentage of correct keystrokes). Speed without accuracy is meaningless — a professional typing test weights both. WPM is calculated using the standard 5-character word definition: your total correct characters (including spaces) divided by 5, divided by the time in minutes. This standardization lets you compare scores across different texts — a passage full of short words isn't "easier" than one with long words when measured this way.</p>
-<p>Average typing speeds vary significantly by age, profession, and practice. Most adults type between 30–45 WPM with moderate accuracy. Office workers who type regularly often reach 60–75 WPM. Professional typists, transcriptionists, and programmers typically type at 80–100+ WPM. World record speeds exceed 200 WPM, though these are rare outliers requiring years of dedicated practice. Knowing your baseline speed is the first step to improving it.</p>
-<p>Consistency is as important as peak speed. A typist who averages 70 WPM with high consistency (smooth, even rhythm) is more productive than one who bursts at 90 WPM and crashes. Our consistency score measures the coefficient of variation in your per-word speed — the closer to 100%, the more even your rhythm.</p>
-<h2>How to Improve Your Typing Speed</h2>
-<p>The single most important technique is proper finger placement. Keep your fingers on the home row (left: ASDF, right: JKL;) and let each finger be responsible for specific keys above and below. Hunt-and-peck typists plateau at 30–40 WPM because visual scanning limits speed. Touch typing removes this ceiling — once your fingers know where the keys are, your brain can process words faster than your eyes can find individual keys.</p>
-<p>Focus on accuracy first, speed second. Many beginners try to type as fast as possible and develop sloppy habits that are hard to unlearn. Set a target accuracy of 95%+ before trying to increase speed. Your WPM will naturally increase as your muscle memory improves. Short daily practice sessions (15–20 minutes) are more effective than infrequent marathon sessions — consistency of practice beats intensity.</p>
-<p>Use the results chart to identify patterns. If your WPM drops sharply at specific seconds, you're hitting unfamiliar letter combinations or losing concentration. If your accuracy is high but speed is low, you're being overly cautious — try to relax and trust your fingers. Take multiple tests in a session and watch your average improve as you warm up. Most typists are 10–15% faster at the end of a session than the beginning.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You want to know where you actually stand. Maybe you are applying for a job that lists "60+ WPM" as a requirement. Maybe you have been practicing touch typing for a month and want to see if it is paying off. Or maybe you just got a new keyboard and want to see how it feels at speed. A typing test gives you a number you can track over time — and that number is more useful than you might think.</p>
+      <p>Take the test at the start of a practice session to establish your baseline, then again at the end. Most people see a 10-15% improvement just from warming up, which tells you something important: your "true" speed is closer to your warmed-up score than your cold start. If you are preparing for a typing requirement, test yourself after a 5-minute warm-up to get the score that reflects your actual ability.</p>
+      <p>Consistency matters as much as peak speed. A typist who holds a steady 65 WPM is more productive than one who spikes to 85 and crashes to 40. The performance chart shows your speed over time within the test — flat lines are better than rollercoasters.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>65 WPM puts you ahead of roughly 70% of typists.</strong> Most people overestimate the average. The true average for adults is around 40 WPM. If you hit 50, you are already above average. At 65, you are faster than most office workers. At 80+, you are in professional territory. Do not feel bad about a "low" score — the bar is lower than the internet makes it seem.</p>
+      <p><strong>Accuracy is the speed multiplier.</strong> Backspacing to fix errors costs roughly 2x the time of typing the character correctly. A typist at 60 WPM with 98% accuracy produces more correct text per minute than one at 75 WPM with 90% accuracy. If you want to get faster, get more accurate first — the speed follows.</p>
+      <p><strong>The home row is not optional.</strong> Hunt-and-peck typists hit a hard ceiling around 35-40 WPM because their eyes become the bottleneck. Touch typing (fingers on ASDF JKL;, each finger responsible for a column of keys) removes that ceiling entirely. The transition is painful for about two weeks, then your speed starts climbing past where it was before.</p>
+      <p><strong>Short sessions beat long ones.</strong> Fifteen minutes of focused practice daily improves speed faster than a two-hour marathon once a week. Your fingers build muscle memory through repetition across days, not within a single session. Set a daily reminder, do three tests, and move on.</p>
+      <p><strong>Your keyboard matters (a little).</strong> Mechanical keyboards with tactile switches tend to produce slightly higher speeds than mushy membrane boards, mostly because the tactile feedback helps your fingers confirm key presses without bottoming out. But technique matters 10x more than hardware — do not blame the keyboard.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>WPM Range</th><th>Percentile (approx.)</th><th>Typical profile</th></tr></thead>
+        <tbody>
+          <tr><td>20-30</td><td>Bottom 20%</td><td>Beginner or hunt-and-peck typist</td></tr>
+          <tr><td>30-40</td><td>30th-45th</td><td>Average adult, casual computer user</td></tr>
+          <tr><td>40-55</td><td>45th-65th</td><td>Regular computer user, most students</td></tr>
+          <tr><td>55-70</td><td>65th-80th</td><td>Solid office worker, intermediate touch typist</td></tr>
+          <tr><td>70-85</td><td>80th-90th</td><td>Experienced typist, programmer</td></tr>
+          <tr><td>85-100</td><td>90th-96th</td><td>Professional typist, transcriptionist</td></tr>
+          <tr><td>100-120</td><td>96th-99th</td><td>Advanced typist, competitive level</td></tr>
+          <tr><td>120+</td><td>Top 1%</td><td>Competitive typist, stenographer-level</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['word-counter', 'character-counter', 'stopwatch'],
     badge: 'popular',
   },
@@ -1008,12 +1255,32 @@ export const tools: Tool[] = [
     icon: 'Gauge',
     metaTitle: 'WPM Test — Check Your Typing Speed | clevr.tools',
     metaDescription: 'Free online WPM typing test. Find out how fast you type in 60 seconds with our clean, distraction-free speed test.',
-    seoContent: `<h2>Average Typing Speed</h2>
-<p>The average adult types around 40 WPM with moderate accuracy. Office workers who type regularly reach 50–60 WPM, experienced typists hit 65–75 WPM, and professional transcriptionists type at 80–100+ WPM. Competitive typists can exceed 120–200 WPM. Knowing where you stand is the first step to improving.</p>
-<h2>How WPM Is Calculated</h2>
-<p>Industry standard defines 1 word as 5 characters including spaces. Gross WPM equals total characters typed divided by 5, divided by minutes elapsed. Net WPM subtracts errors per minute from Gross WPM. This test uses Net WPM — a more accurate measure of effective typing speed that accounts for mistakes.</p>
-<h2>Tips to Improve</h2>
-<p>Learn touch typing with proper home row placement (ASDF JKL;). Focus on accuracy first — speed follows naturally. Practice daily for 10–15 minutes. Use proper posture with feet flat, wrists level, and elbows at 90 degrees. Don't look at the keyboard — trust muscle memory.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You want a quick, no-nonsense speed check. This is a 60-second sprint — start typing and get your WPM when the clock runs out. No settings to fiddle with, no modes to choose. Just you, a passage, and one minute on the clock.</p>
+      <p>Use it to benchmark yourself before and after a practice session, to settle a friendly bet about who types faster, or to check whether you hit the WPM requirement for a job posting. The 60-second format is the industry standard for typing speed assessments — it is long enough to be meaningful but short enough that you can take it three times in a row and track your improvement.</p>
+      <p>It is also a surprisingly effective warm-up. Take one WPM test before a long writing session and your fingers will be primed for the next hour. Think of it as stretching before a run.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Net WPM is the only number that matters.</strong> Gross WPM counts everything you typed. Net WPM subtracts your errors. If you type 80 gross WPM but make 15 errors per minute, your net WPM is 65. This test reports Net WPM because it reflects how much correct text you actually produce — which is what employers, schools, and certification exams care about.</p>
+      <p><strong>One word = 5 characters.</strong> This is not arbitrary. The 5-character standard (including spaces) normalizes scores across different texts. Typing "I am" counts the same as typing "comp" because both are 4 characters toward the next "word." This means your score is comparable regardless of whether the passage uses short or long words.</p>
+      <p><strong>Your first test of the day is not your real speed.</strong> Cold fingers, cold brain. Most typists are 10-15% slower on their first attempt than their third. If you are testing for a job application, do two warm-up rounds first and submit the third.</p>
+      <p><strong>Plateau? Change your practice, not your effort.</strong> If you have been stuck at the same WPM for weeks, you are probably practicing what you are already good at. Target your weak spots: words with uncommon letter pairs (like "rhythm" or "queue"), numbers and punctuation, or capital letters. Deliberate practice on weaknesses breaks plateaus faster than grinding more of the same.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>WPM</th><th>What it means</th><th>Context</th></tr></thead>
+        <tbody>
+          <tr><td>Under 30</td><td>Below average</td><td>Likely a hunt-and-peck typist — learning touch typing would unlock major gains</td></tr>
+          <tr><td>30-45</td><td>Average</td><td>Typical adult speed, enough for casual use</td></tr>
+          <tr><td>45-60</td><td>Above average</td><td>Standard office worker range, meets most job requirements</td></tr>
+          <tr><td>60-80</td><td>Fast</td><td>Programmer, writer, or experienced office worker</td></tr>
+          <tr><td>80-100</td><td>Professional</td><td>Transcriptionist, court reporter trainee, data entry specialist</td></tr>
+          <tr><td>100-120</td><td>Elite</td><td>Competitive typist or highly experienced professional</td></tr>
+          <tr><td>120+</td><td>Exceptional</td><td>Competition-level speed, top 1% of all typists worldwide</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['typing-test', 'typing-practice', 'keyboard-tester'],
     badge: 'popular' as const,
     live: true,
@@ -1197,11 +1464,30 @@ export const tools: Tool[] = [
     icon: 'Landmark',
     metaTitle: 'Loan Calculator — Monthly Payment & Schedule | clevr.tools',
     metaDescription: 'Free loan calculator. Calculate monthly payments for any loan amount, interest rate, and term. View a full amortization schedule showing principal and interest breakdown.',
-    seoContent: `<h2>Free Loan Calculator</h2>
-<p>Calculate the monthly payment for any fixed-rate loan using the standard amortization formula: M = P[r(1+r)^n] / [(1+r)^n - 1], where P is the principal, r is the monthly interest rate, and n is the total number of payments. This formula ensures each payment covers the interest due plus a portion of principal, fully paying off the loan by the end of the term.</p>
-<p>The amortization schedule shows exactly how each payment is split between principal and interest over the life of the loan. Early payments are mostly interest; later payments are mostly principal. Understanding this pattern helps you see how extra payments can dramatically reduce total interest paid.</p>
-<h2>Loan Comparison Tips</h2>
-<p>When comparing loan offers, look beyond the monthly payment. A longer term reduces monthly payments but increases total interest paid — sometimes by tens of thousands of dollars. The total cost of the loan (principal + total interest) is the true measure of what you're paying. Even a 0.5% difference in interest rate can add up to thousands over a 15- or 30-year term.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're comparing two loan offers and they both look reasonable — until you calculate the total interest. A $25,000 personal loan at 8% over 5 years costs $5,416 in interest. The same loan at 10% costs $6,872. That 2% difference is $1,456 you'll never see again. This calculator shows you those numbers before you sign anything.</p>
+      <p>It's also the right tool when you're deciding between loan terms. A longer term means lower monthly payments but dramatically more interest. A shorter term means higher payments but you're debt-free sooner and pay less overall. The amortization schedule makes the tradeoff concrete — you can see exactly how much of each payment goes to principal vs. interest, month by month.</p>
+      <p>Use it for any fixed-rate loan: personal loans, student loans, home equity loans, or equipment financing. If the rate is fixed and the term is set, the math is the same.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Early payments are almost all interest.</strong> On a $30,000 loan at 7% over 5 years, your first payment is $594 — but $419 goes to interest and only $175 to principal. By your last year, nearly the entire payment goes to principal. This is why extra payments early in the loan save the most money.</p>
+      <p><strong>The monthly payment isn't the true cost.</strong> A $20,000 loan at 6% over 3 years costs $608/month. Over 5 years, it's $387/month — sounds better, right? But the 3-year total cost is $21,888 while the 5-year total is $23,199. That "lower" payment costs you $1,311 extra.</p>
+      <p><strong>APR ≠ interest rate.</strong> The Annual Percentage Rate includes fees and origination charges, making it the better comparison metric between lenders. Two loans with the same interest rate can have different APRs if one charges higher fees.</p>
+      <p><strong>One extra payment per year matters.</strong> On a $30,000 loan at 7% over 5 years, making one extra monthly payment per year saves ~$700 in interest and pays off the loan 6 months early. It's one of the simplest debt-reduction strategies.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Loan Amount</th><th>Rate</th><th>Term</th><th>Monthly Payment</th><th>Total Interest</th></tr></thead>
+        <tbody>
+          <tr><td>$10,000</td><td>6%</td><td>3 years</td><td>$304</td><td>$944</td></tr>
+          <tr><td>$10,000</td><td>6%</td><td>5 years</td><td>$193</td><td>$1,600</td></tr>
+          <tr><td>$25,000</td><td>8%</td><td>5 years</td><td>$507</td><td>$5,416</td></tr>
+          <tr><td>$50,000</td><td>7%</td><td>7 years</td><td>$754</td><td>$13,355</td></tr>
+          <tr><td>$50,000</td><td>10%</td><td>5 years</td><td>$1,062</td><td>$13,748</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['auto-loan', 'mortgage-calculator', 'amortization'],
     badge: 'new',
   },
