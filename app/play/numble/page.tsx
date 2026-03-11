@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: "Numble \u2014 Daily Number Puzzle | clevr.tools",
   description:
     "Free daily number puzzle. Combine 6 numbers to reach the target using +, \u2212, \u00d7, \u00f7. One puzzle per day, same for everyone. Track your streak.",
-  alternates: { canonical: "https://clevr.tools/play/numble" },
+  alternates: { canonical: "https://www.clevr.tools/play/numble" },
   openGraph: {
     title: "Numble \u2014 Daily Number Puzzle",
     description:
       "Free daily number puzzle. Combine 6 numbers to reach the target.",
-    url: "https://clevr.tools/play/numble",
+    url: "https://www.clevr.tools/play/numble",
   },
 };
 

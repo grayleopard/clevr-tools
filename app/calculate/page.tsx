@@ -12,11 +12,11 @@ const category = siteCategories.find((c) => c.id === "calculate")!;
 export const metadata: Metadata = {
   title: "Calculators — Free Online Financial & Math Calculators | clevr.tools",
   description: category.description,
-  alternates: { canonical: "https://clevr.tools/calculate" },
+  alternates: { canonical: "https://www.clevr.tools/calculate" },
   openGraph: {
     title: "Calculators — Free Online Financial & Math Calculators | clevr.tools",
     description: category.description,
-    url: "https://clevr.tools/calculate",
+    url: "https://www.clevr.tools/calculate",
     siteName: "clevr.tools",
   },
 };

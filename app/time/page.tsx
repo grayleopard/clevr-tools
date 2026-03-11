@@ -12,11 +12,11 @@ const category = siteCategories.find((c) => c.id === "time")!;
 export const metadata: Metadata = {
   title: "Time Tools — Free Online Timers & Stopwatch | clevr.tools",
   description: category.description,
-  alternates: { canonical: "https://clevr.tools/time" },
+  alternates: { canonical: "https://www.clevr.tools/time" },
   openGraph: {
     title: "Time Tools — Free Online Timers & Stopwatch | clevr.tools",
     description: category.description,
-    url: "https://clevr.tools/time",
+    url: "https://www.clevr.tools/time",
     siteName: "clevr.tools",
   },
 };

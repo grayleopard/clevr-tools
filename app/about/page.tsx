@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "clevr.tools is a free collection of online file and text utilities. All tools run in your browser — your files never leave your device.",
   alternates: {
-    canonical: "https://clevr.tools/about",
+    canonical: "https://www.clevr.tools/about",
   },
 };
 

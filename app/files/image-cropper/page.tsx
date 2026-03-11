@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: tool.metaTitle,
       description: tool.metaDescription,
-      url: `https://clevr.tools${tool.route}`,
+      url: `https://www.clevr.tools${tool.route}`,
       siteName: "clevr.tools",
       images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     },
@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: tool.metaDescription,
     },
     alternates: {
-      canonical: `https://clevr.tools${tool.route}`,
+      canonical: `https://www.clevr.tools${tool.route}`,
     },
   };
 }

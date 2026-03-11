@@ -12,11 +12,11 @@ const category = siteCategories.find((c) => c.id === "files")!;
 export const metadata: Metadata = {
   title: "File Tools — Free Online Compress, Convert & PDF Tools | clevr.tools",
   description: category.description,
-  alternates: { canonical: "https://clevr.tools/files" },
+  alternates: { canonical: "https://www.clevr.tools/files" },
   openGraph: {
     title: "File Tools — Free Online Compress, Convert & PDF Tools | clevr.tools",
     description: category.description,
-    url: "https://clevr.tools/files",
+    url: "https://www.clevr.tools/files",
     siteName: "clevr.tools",
   },
 };

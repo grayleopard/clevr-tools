@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description:
     "clevr.tools processes all files entirely in your browser. Your files never leave your device. Learn what data we collect and how we use it.",
   alternates: {
-    canonical: "https://clevr.tools/privacy",
+    canonical: "https://www.clevr.tools/privacy",
   },
   openGraph: {
     title: "Privacy Policy | clevr.tools",
     description:
       "clevr.tools processes all files entirely in your browser. Your files never leave your device.",
-    url: "https://clevr.tools/privacy",
+    url: "https://www.clevr.tools/privacy",
     siteName: "clevr.tools",
   },
 };

@@ -11,11 +11,11 @@ const faqItems = getToolFaqs("convert-angle");
 export const metadata: Metadata = {
   title: tool.metaTitle,
   description: tool.metaDescription,
-  alternates: { canonical: `https://clevr.tools${tool.route}` },
+  alternates: { canonical: `https://www.clevr.tools${tool.route}` },
   openGraph: {
     title: tool.metaTitle,
     description: tool.metaDescription,
-    url: `https://clevr.tools${tool.route}`,
+    url: `https://www.clevr.tools${tool.route}`,
     siteName: "clevr.tools",
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
   },

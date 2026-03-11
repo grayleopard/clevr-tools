@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
       },
     ],
-    sitemap: "https://clevr.tools/sitemap.xml",
+    sitemap: "https://www.clevr.tools/sitemap.xml",
   };
 }

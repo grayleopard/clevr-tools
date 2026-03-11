@@ -12,11 +12,11 @@ const category = siteCategories.find((c) => c.id === "type")!;
 export const metadata: Metadata = {
   title: "Typing Tools — Free Online Typing Test | clevr.tools",
   description: category.description,
-  alternates: { canonical: "https://clevr.tools/type" },
+  alternates: { canonical: "https://www.clevr.tools/type" },
   openGraph: {
     title: "Typing Tools — Free Online Typing Test | clevr.tools",
     description: category.description,
-    url: "https://clevr.tools/type",
+    url: "https://www.clevr.tools/type",
     siteName: "clevr.tools",
   },
 };

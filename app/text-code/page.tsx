@@ -12,11 +12,11 @@ const category = siteCategories.find((c) => c.id === "text-code")!;
 export const metadata: Metadata = {
   title: "Text & Code Tools — Free Online Text & Dev Tools | clevr.tools",
   description: category.description,
-  alternates: { canonical: "https://clevr.tools/text-code" },
+  alternates: { canonical: "https://www.clevr.tools/text-code" },
   openGraph: {
     title: "Text & Code Tools — Free Online Text & Dev Tools | clevr.tools",
     description: category.description,
-    url: "https://clevr.tools/text-code",
+    url: "https://www.clevr.tools/text-code",
     siteName: "clevr.tools",
   },
 };
