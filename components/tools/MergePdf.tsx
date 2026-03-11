@@ -124,7 +124,9 @@ export default function MergePdf() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">
-              {files.length} PDF{files.length > 1 ? "s" : ""} · {totalPages} pages total · drag to reorder
+              {files.length === 1
+                ? `${files[0].file.name} · ${files[0].pageCount} page${files[0].pageCount > 1 ? "s" : ""}`
+                : `${files.length} PDFs · ${totalPages} pages total · drag to reorder`}
             </h2>
             <button onClick={reset} className="text-xs text-muted-foreground underline hover:text-foreground">Clear all</button>
           </div>

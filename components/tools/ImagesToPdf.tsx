@@ -102,11 +102,13 @@ function PdfPagePreview({
   const marginPct = (marginPt / pageW) * 100;
   const marginPctV = (marginPt / pageH) * 100;
 
-  // Scale the mockup to fit within a reasonable max height
-  const maxMockupH = 320;
-  const mockupScale = maxMockupH / pageH;
-  const mockupW = pageW * mockupScale;
-  const mockupH = pageH * mockupScale;
+  // Scale the mockup so it fits on screen without overwhelming white space.
+  // For "fit" mode the image IS the page, so show it larger.
+  const maxMockupH = pageSize === "fit" ? 400 : 360;
+  const maxMockupW = 320;
+  const scale = Math.min(maxMockupH / pageH, maxMockupW / pageW);
+  const mockupW = pageW * scale;
+  const mockupH = pageH * scale;
 
   return (
     <div className="flex justify-center">
@@ -271,7 +273,11 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
       {files.length > 0 && !isProcessing && !downloaded && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">{files.length} image{files.length > 1 ? "s" : ""} — drag to reorder</h2>
+            <h2 className="text-sm font-semibold">
+              {files.length === 1
+                ? `${files[0].file.name} · ${formatBytes(files[0].file.size)}`
+                : `${files.length} images — drag to reorder`}
+            </h2>
             <button onClick={reset} className="text-xs text-muted-foreground underline hover:text-foreground">Clear all</button>
           </div>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
@@ -361,7 +367,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
             onClick={handleCreate}
             className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
           >
-            {resultUrl ? "Regenerate PDF" : "Create PDF"}
+            Create PDF
           </button>
 
           {/* Preview + Download */}
