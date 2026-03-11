@@ -1417,7 +1417,34 @@ export const tools: Tool[] = [
     icon: 'Cake',
     metaTitle: 'Age Calculator — How Old Am I? Free Online Tool | clevr.tools',
     metaDescription: 'Free age calculator. Enter your birth date to find exact age in years, months, days, and hours. Shows next birthday, zodiac sign, and generation. No signup.',
-    seoContent: `<h2>Free Age Calculator</h2><p>Calculate your exact age down to the day from your date of birth. Useful for filling out forms and applications that require your age, calculating age for legal thresholds, tracking milestones, or satisfying curiosity about exactly how old you are in days or hours.</p><p>Beyond basic age calculation, this tool shows your Western zodiac sign, Chinese zodiac animal, the day of the week you were born on, your generational category (Boomer, Gen X, Millennial, Gen Z, or Gen Alpha), and a countdown to your next birthday.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You need your exact age for a visa application and the form wants years, months, and days — not just the year you were born. Or you're enrolling a child in school and the cutoff is "must be 5 by September 1st," and you need to verify down to the day. Maybe you're checking whether you qualify for Medicare (65), full Social Security benefits (66–67 depending on birth year), or a senior discount (varies by business). Legal and administrative thresholds are surprisingly precise.</p>
+      <p>Beyond paperwork, this calculator is useful for milestone tracking. How many days have you been alive? What day of the week were you born? How many days until your next birthday? It answers the questions that are simple to ask but surprisingly annoying to calculate by hand — especially when months have different lengths and leap years get involved.</p>
+      <p>Parents use it to track a child's exact age in months (pediatricians ask this constantly for the first few years). Genealogy researchers use it to calculate ancestors' ages from historical records. And sometimes you just want to settle a debate about whether you're technically still 34 or already 35.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Age calculation isn't as simple as subtraction.</strong> If you were born on March 15 and today is February 10, you're not just "this year minus birth year." The calculator handles month and day boundaries correctly, which matters when precision counts.</p>
+      <p><strong>Leap year birthdays create an edge case.</strong> If you were born on February 29, your "birthday" technically only occurs every four years. Most legal systems treat March 1 as your birthday in non-leap years, but some jurisdictions use February 28. This calculator shows both your actual and legal age.</p>
+      <p><strong>Generational cutoffs are approximate.</strong> There's no official governing body that defines when Gen Z ends and Gen Alpha begins. The ranges used here follow the Pew Research Center definitions, which are the most widely cited: Boomers (1946–1964), Gen X (1965–1980), Millennials (1981–1996), Gen Z (1997–2012), Gen Alpha (2013+).</p>
+      <p><strong>Your zodiac sign depends on the year, not just the date range.</strong> The Western zodiac dates shift slightly year to year because the Earth's orbit isn't exactly 365.25 days. If you're born on a cusp date, the sign shown here uses the standard date ranges, which are accurate for the vast majority of people.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Milestone</th><th>Age</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td>Driving (US)</td><td>16</td><td>Learner's permit in most states</td></tr>
+          <tr><td>Voting / Legal adult</td><td>18</td><td>Federal voting age, sign contracts</td></tr>
+          <tr><td>Drinking (US)</td><td>21</td><td>Legal purchase of alcohol</td></tr>
+          <tr><td>Car rental (standard)</td><td>25</td><td>No young-driver surcharge</td></tr>
+          <tr><td>Run for US President</td><td>35</td><td>Constitutional minimum</td></tr>
+          <tr><td>Catch-up 401(k)</td><td>50</td><td>Extra $7,500/year contribution allowed</td></tr>
+          <tr><td>Early Social Security</td><td>62</td><td>Reduced benefits available</td></tr>
+          <tr><td>Medicare eligible</td><td>65</td><td>Federal health insurance</td></tr>
+          <tr><td>Full Social Security</td><td>66–67</td><td>Depends on birth year</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['date-difference', 'percentage-calculator'],
   },
   {
@@ -1430,7 +1457,33 @@ export const tools: Tool[] = [
     icon: 'CalendarDays',
     metaTitle: 'Date Difference Calculator — Days Between | clevr.tools',
     metaDescription: 'Free date difference calculator. Find the exact number of days, weeks, months, and business days between any two dates. Includes weekday count and weekend count.',
-    seoContent: `<h2>Free Date Difference Calculator</h2><p>Calculate the exact number of days between any two dates for project planning, contract deadlines, travel planning, age verification, countdown to events, or calculating durations. Enter a start and end date to see the difference in days, weeks, months, and years.</p><p>The business days calculation excludes Saturdays and Sundays to give you a working-day count, useful for estimating project timelines and delivery windows. Quick shortcuts for common calculations — days until New Year, days until Christmas, 90 days from today — make frequent lookups instant.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>Your lease ends on August 14 and you need to know exactly how many days you have to find a new place. A contract specifies "delivery within 90 business days" and you need to pin down the actual calendar date. You're planning a trip and want to know if 17 days is enough to do everything you have in mind. Date math sounds trivial until you try to account for months with different lengths, leap years, and weekends.</p>
+      <p>Project managers use this constantly — estimating sprints, calculating buffer time, and converting between calendar days and business days. HR departments need it for probation periods, benefits eligibility dates, and FMLA calculations. Real estate closings, legal filing deadlines, and insurance waiting periods all hinge on precise day counts.</p>
+      <p>It's also the quick answer to casual questions: how many days until Christmas, how long until summer break, or how many weekends are left before a deadline. The business-day count is especially useful because manually counting while skipping Saturdays and Sundays is tedious and error-prone.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Business days and calendar days diverge fast.</strong> A 30-calendar-day window contains only about 22 business days. Over 90 calendar days, you lose roughly 26 days to weekends. If a deadline is in "business days," always convert to calendar days so you don't underestimate the timeline.</p>
+      <p><strong>This calculator does not account for public holidays.</strong> Business days here means weekdays (Monday–Friday). Federal holidays, state holidays, and company-specific closures aren't subtracted because they vary by location and employer. For precise SLA or legal deadline calculations, subtract holidays manually from the business day count.</p>
+      <p><strong>"Inclusive" vs. "exclusive" counting matters.</strong> If an event starts on January 1 and ends on January 31, is that 30 days or 31? It depends on whether you count the start date. This calculator uses exclusive counting (the standard for durations) — January 1 to January 31 = 30 days. Legal and medical contexts sometimes use inclusive counting, so verify which convention applies.</p>
+      <p><strong>Months are not equal units.</strong> "Three months from January 31" could be April 30 or May 1 depending on interpretation, because February has fewer days. This calculator handles month math by adjusting to the last valid day of the target month when needed.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Duration</th><th>Calendar Days</th><th>Business Days (approx.)</th></tr></thead>
+        <tbody>
+          <tr><td>1 week</td><td>7</td><td>5</td></tr>
+          <tr><td>2 weeks</td><td>14</td><td>10</td></tr>
+          <tr><td>1 month</td><td>28–31</td><td>20–23</td></tr>
+          <tr><td>90 days</td><td>90</td><td>~64</td></tr>
+          <tr><td>6 months</td><td>181–184</td><td>~130</td></tr>
+          <tr><td>1 year</td><td>365 (366 leap)</td><td>~261</td></tr>
+          <tr><td>Common notice period</td><td>30 days</td><td>~22</td></tr>
+          <tr><td>Typical probation</td><td>90 days</td><td>~64</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['age-calculator', 'percentage-calculator'],
   },
   // ─── Dev Tools (additional) ─────────────────────────────────────────────
@@ -1640,7 +1693,34 @@ export const tools: Tool[] = [
     icon: 'GraduationCap',
     metaTitle: 'GPA Calculator — Semester & Cumulative | clevr.tools',
     metaDescription: 'Free GPA calculator. Add courses with credits and grades to find semester GPA. Includes cumulative GPA and Dean\'s List coding. No signup required.',
-    seoContent: `<h2>Free GPA Calculator</h2><p>Calculate your semester GPA by entering each course's credit hours and letter grade. The standard 4.0 GPA scale assigns points from 4.0 (A/A+) down to 0.0 (F). Your GPA is the weighted average of all grade points, weighted by credit hours: GPA = Sum(credit hours * grade points) / Sum(credit hours). A 3-credit A is worth more toward your GPA than a 1-credit A.</p><p>The cumulative GPA section lets you factor in your existing GPA and credit hours to calculate what your new overall GPA will be after adding this semester's results. Use this to plan which grades you need in order to reach academic honors thresholds (typically 3.5 for Dean's List, 3.9+ for summa cum laude).</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>It's midway through the semester and you're trying to figure out what you need on your remaining finals to hit a 3.5 for Dean's List. Or you just got your grades back and want to see how this semester affects your cumulative GPA. Maybe you're applying to graduate school and need to verify your GPA calculation matches what your transcript will show. This calculator handles all of it.</p>
+      <p>The semester calculator lets you enter each course with its credit hours and letter grade. The cumulative calculator takes your existing GPA and total credit hours, then adds this semester's results to project your new overall GPA. Use it to plan ahead: if you're sitting at a 3.4 cumulative with 90 credits, what does this semester need to look like to push you over 3.5?</p>
+      <p>It's also useful for transfer students figuring out how their GPA translates, students considering retaking a course to replace a grade, or parents trying to understand how the GPA system works. The math is simple in concept but tedious to do by hand when you have five or six courses with different credit weights.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The formula is a weighted average: GPA = Sum(credits x grade points) / Sum(credits).</strong> A 4-credit A (4.0) contributes 16 quality points. A 3-credit B+ (3.3) contributes 9.9 quality points. Add all quality points, divide by total credits. This means a high-credit course has a bigger impact on your GPA — getting an A in a 4-credit class matters more than getting an A in a 1-credit elective.</p>
+      <p><strong>Plus/minus grades make a real difference.</strong> The gap between a B+ (3.3) and a B- (2.7) is 0.6 points — in a 4-credit course, that's 2.4 quality points. Over a college career of 120+ credits, these fractional differences accumulate and can determine whether you graduate with honors or just miss the cutoff.</p>
+      <p><strong>Your cumulative GPA gets harder to move over time.</strong> With 30 credits completed, one bad semester can drop your GPA significantly. With 100 credits completed, the same bad semester barely moves the needle — but it also means recovering from a low GPA takes multiple strong semesters. This is the "GPA momentum" effect that makes early performance disproportionately important.</p>
+      <p><strong>Some schools use a different scale.</strong> The standard 4.0 scale is most common in the US, but some institutions cap A+ at 4.0 (same as A), while others give A+ a 4.3. This calculator uses the most common scale where A and A+ both equal 4.0.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Letter Grade</th><th>Grade Points</th><th>Typical Percentage</th></tr></thead>
+        <tbody>
+          <tr><td>A / A+</td><td>4.0</td><td>93–100%</td></tr>
+          <tr><td>A-</td><td>3.7</td><td>90–92%</td></tr>
+          <tr><td>B+</td><td>3.3</td><td>87–89%</td></tr>
+          <tr><td>B</td><td>3.0</td><td>83–86%</td></tr>
+          <tr><td>B-</td><td>2.7</td><td>80–82%</td></tr>
+          <tr><td>C+</td><td>2.3</td><td>77–79%</td></tr>
+          <tr><td>C</td><td>2.0</td><td>73–76%</td></tr>
+          <tr><td>D</td><td>1.0</td><td>60–69%</td></tr>
+          <tr><td>F</td><td>0.0</td><td>Below 60%</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['percentage-calculator', 'age-calculator'],
   },
   // ─── Typing ────────────────────────────────────────────────────────────────
@@ -2003,11 +2083,31 @@ export const tools: Tool[] = [
     icon: 'DollarSign',
     metaTitle: 'Salary Calculator — Hourly to Annual Free | clevr.tools',
     metaDescription: 'Free salary calculator. Convert hourly wage to annual salary or annual salary to hourly rate. See daily, weekly, bi-weekly, semi-monthly, and monthly breakdowns instantly.',
-    seoContent: `<h2>Free Salary Calculator</h2>
-<p>Whether you're evaluating a job offer, negotiating a raise, or comparing hourly and salaried positions, understanding how your pay translates across different time periods is essential. This calculator instantly converts between hourly and annual pay, showing you the full breakdown: hourly, daily, weekly, bi-weekly, semi-monthly, monthly, and annual figures all at once.</p>
-<p>The calculation accounts for your actual work schedule — adjust hours per week and weeks per year to reflect part-time schedules, unpaid time off, or non-standard work arrangements. The standard assumption is 40 hours per week for 52 weeks, but many workers take unpaid vacation or work non-standard hours.</p>
-<h2>Hourly vs. Salary Comparison</h2>
-<p>Hourly workers are paid for each hour worked and typically receive overtime pay (1.5x) for hours exceeding 40 per week. Salaried employees receive a fixed annual amount regardless of hours worked. When comparing offers, consider the total compensation package including benefits, retirement contributions, health insurance, and paid time off — not just the base pay number.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're looking at a job posting that pays $28/hour and want to know the annual equivalent. Or you're comparing two offers — one salaried at $68,000 and one hourly at $34/hour — and need an apples-to-apples comparison. This calculator converts between hourly, daily, weekly, biweekly, semi-monthly, monthly, and annual pay in both directions, so you can evaluate any compensation in the format that makes sense to you.</p>
+      <p>It's also useful for freelancers and contractors setting their rates. If you want to earn the equivalent of a $90,000 salary but you're only billing 48 weeks a year (accounting for vacation and holidays), your hourly rate needs to be higher than simply $90,000 / 2,080 hours. Adjusting the weeks-per-year and hours-per-week fields gives you the accurate number.</p>
+      <p>Part-time workers, people considering overtime, and anyone negotiating a raise benefit from seeing every time-period breakdown at once. A $2/hour raise doesn't sound life-changing, but it's $4,160/year at full-time — which might cover a car payment or fund an IRA contribution.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The standard conversion: Annual = Hourly x Hours/Week x Weeks/Year.</strong> At 40 hours/week and 52 weeks/year, that's 2,080 hours. So $25/hour = $52,000/year. But if you take 2 weeks unpaid vacation, your actual annual earnings are $25 x 40 x 50 = $50,000. The calculator lets you adjust both variables for precision.</p>
+      <p><strong>Salaried doesn't always mean more stable.</strong> Hourly workers get overtime (1.5x) for hours over 40/week under the FLSA. A salaried employee earning $60,000 who works 50 hours/week effectively earns $23.08/hour — less than someone making $25/hour with overtime. When comparing offers, calculate the effective hourly rate based on actual expected hours.</p>
+      <p><strong>Total compensation is what matters.</strong> A job paying $65,000 with employer-paid health insurance ($7,000 value), 6% 401(k) match ($3,900), and 4 weeks PTO is worth roughly $80,000+ in total compensation. A competing offer at $75,000 with no benefits might actually be the worse deal. Always look beyond the base number.</p>
+      <p><strong>Biweekly and semi-monthly are not the same.</strong> Biweekly means every two weeks (26 paychecks/year). Semi-monthly means twice a month, usually the 1st and 15th (24 paychecks/year). On a $60,000 salary, biweekly = $2,308/paycheck, semi-monthly = $2,500/paycheck. The annual total is the same, but the per-check amount differs.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Hourly Rate</th><th>Weekly (40 hrs)</th><th>Biweekly</th><th>Monthly</th><th>Annual</th></tr></thead>
+        <tbody>
+          <tr><td>$15.00</td><td>$600</td><td>$1,200</td><td>$2,600</td><td>$31,200</td></tr>
+          <tr><td>$20.00</td><td>$800</td><td>$1,600</td><td>$3,467</td><td>$41,600</td></tr>
+          <tr><td>$25.00</td><td>$1,000</td><td>$2,000</td><td>$4,333</td><td>$52,000</td></tr>
+          <tr><td>$35.00</td><td>$1,400</td><td>$2,800</td><td>$6,067</td><td>$72,800</td></tr>
+          <tr><td>$50.00</td><td>$2,000</td><td>$4,000</td><td>$8,667</td><td>$104,000</td></tr>
+          <tr><td>$75.00</td><td>$3,000</td><td>$6,000</td><td>$13,000</td><td>$156,000</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['take-home-pay', 'paycheck', 'tip-calculator'],
     badge: 'new',
   },
@@ -2076,11 +2176,31 @@ export const tools: Tool[] = [
     icon: 'Car',
     metaTitle: 'Auto Loan Calculator — Car Payment Estimator Free | clevr.tools',
     metaDescription: 'Free auto loan calculator. Enter vehicle price, down payment, trade-in value, interest rate, and loan term. Compare monthly payments across different term lengths.',
-    seoContent: `<h2>Free Auto Loan Calculator</h2>
-<p>Estimate your monthly car payment before visiting the dealership. Enter the vehicle price, your down payment, any trade-in value, the interest rate, and choose a loan term to see your monthly payment, total interest, and total cost. The term comparison table shows how different loan lengths affect both your monthly payment and total cost.</p>
-<p>A larger down payment reduces your loan amount and monthly payment, and may qualify you for a better interest rate. Trade-in value is subtracted from the vehicle price before calculating the loan. If you owe more on your current car than its trade-in value (negative equity), that difference gets added to your new loan.</p>
-<h2>Choosing the Right Loan Term</h2>
-<p>Shorter loan terms (24–36 months) mean higher monthly payments but significantly less total interest. Longer terms (60–84 months) lower your monthly payment but cost more overall and increase the risk of being "underwater" — owing more than the car is worth. Financial experts generally recommend keeping auto loans to 48–60 months maximum.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You've found a car you like and the dealer is quoting you $550 a month over 72 months. That sounds manageable — but what does the total cost look like? This calculator shows the full picture: your monthly payment, total interest paid, and the all-in cost of the vehicle. Run the numbers before stepping onto the lot so you negotiate from a position of knowledge, not emotion.</p>
+      <p>It's also the right tool when you're weighing trade-offs. How much does a $3,000 larger down payment save you over the life of the loan? What happens if you go with 48 months instead of 72? What if you can get 5.9% from your credit union instead of the dealer's 7.2%? The term comparison table answers all of these questions side by side.</p>
+      <p>If you have a trade-in, enter its value separately. The calculator subtracts trade-in value from the vehicle price before computing the loan. If you owe more on your current car than it's worth (negative equity or being "upside down"), that remaining balance rolls into the new loan — and this calculator accounts for that.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The formula is the same as any fixed-rate loan.</strong> Monthly Payment = P[r(1+r)^n] / [(1+r)^n - 1], where P = loan amount (price - down payment - trade-in), r = monthly interest rate, n = number of payments. The loan amount is what matters, not the sticker price.</p>
+      <p><strong>Longer terms are more expensive than they look.</strong> A $35,000 loan at 6.5% over 60 months costs $685/month and $6,100 in interest. Stretch that to 72 months: $586/month sounds better, but total interest jumps to $7,400. At 84 months it's $516/month but $8,700 in interest. You're paying $2,600 more for the "convenience" of a lower payment.</p>
+      <p><strong>Depreciation works against long loans.</strong> A new car loses roughly 20% of its value in year one and about 60% over five years. With a 72- or 84-month loan and minimal down payment, you can easily owe more than the car is worth for the first 3–4 years. If you total the car or need to sell, you're stuck covering the gap.</p>
+      <p><strong>Get pre-approved before shopping.</strong> A pre-approval from your bank or credit union gives you a baseline rate and maximum loan amount. Dealers can try to beat it, but you won't be pressured into their financing without a comparison point. Credit scores above 720 typically qualify for the best rates.</p>
+      <p><strong>The 20/4/10 rule is a solid guardrail.</strong> Put at least 20% down, finance for no more than 4 years (48 months), and keep total vehicle costs (payment + insurance + fuel) under 10% of gross monthly income. Not everyone can hit all three, but it prevents the most common car-buying overextensions.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Vehicle Price</th><th>Down Payment</th><th>Rate</th><th>48 mo</th><th>60 mo</th><th>72 mo</th></tr></thead>
+        <tbody>
+          <tr><td>$25,000</td><td>$5,000 (20%)</td><td>5.9%</td><td>$470/mo</td><td>$386/mo</td><td>$331/mo</td></tr>
+          <tr><td>$35,000</td><td>$5,000 (14%)</td><td>6.5%</td><td>$712/mo</td><td>$586/mo</td><td>$503/mo</td></tr>
+          <tr><td>$35,000</td><td>$7,000 (20%)</td><td>6.5%</td><td>$665/mo</td><td>$548/mo</td><td>$469/mo</td></tr>
+          <tr><td>$45,000</td><td>$9,000 (20%)</td><td>6.0%</td><td>$845/mo</td><td>$696/mo</td><td>$597/mo</td></tr>
+          <tr><td>$45,000</td><td>$5,000 (11%)</td><td>7.2%</td><td>$963/mo</td><td>$797/mo</td><td>$687/mo</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['car-payment', 'loan', 'down-payment'],
     badge: 'new',
   },
@@ -2126,11 +2246,31 @@ export const tools: Tool[] = [
     icon: 'PiggyBank',
     metaTitle: 'Savings Goal Calculator — Free Planner | clevr.tools',
     metaDescription: 'Free savings goal calculator. Enter your savings target, timeline, and current savings to find the monthly contribution needed. Accounts for interest earnings.',
-    seoContent: `<h2>Free Savings Goal Calculator</h2>
-<p>Whether you're saving for a vacation, emergency fund, down payment, or any other financial goal, this calculator tells you exactly how much to set aside each month. Enter your target amount, current savings, expected interest rate, and timeline to get your required monthly contribution. The calculation accounts for compound interest on your savings, so money in a high-yield savings account works harder than cash under a mattress.</p>
-<p>The formula solves for PMT (monthly payment) given a future value target: PMT = (FV - PV × (1+r)^n) × r / [(1+r)^n - 1], where FV is your goal, PV is current savings, r is the monthly interest rate, and n is the number of months.</p>
-<h2>Setting Realistic Savings Goals</h2>
-<p>Financial experts recommend saving 3–6 months of expenses as an emergency fund before targeting other goals. High-yield savings accounts currently offer 4–5% APY, meaningfully reducing the monthly contribution needed for longer-term goals. Break large goals into smaller milestones to stay motivated — saving $100,000 feels overwhelming, but $500/month for 15 years with 5% interest gets you there.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You have a specific financial target — $15,000 for an emergency fund, $40,000 for a down payment, $5,000 for a vacation — and need to know exactly how much to save each month to get there on time. Enter your goal amount, how much you've already saved, your timeline, and the interest rate on your savings account. The calculator tells you the precise monthly contribution required.</p>
+      <p>It works in the other direction too. If you can only set aside $600 a month, how long until you reach $30,000? Or if you have 24 months and can save $800/month, what's the maximum goal you can realistically hit? Playing with the inputs helps you find a plan that fits your budget and timeline rather than guessing or hoping.</p>
+      <p>This is also a motivational tool. Seeing that your $70,000 down payment goal requires $1,100/month for 5 years (with a high-yield savings account earning 4.5%) transforms an intimidating number into a concrete, achievable plan. And watching the interest component — money your savings earns for you — grow over time reinforces the discipline of consistent saving.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The formula solves for monthly payment: PMT = (FV - PV x (1+r)^n) x r / [(1+r)^n - 1].</strong> FV is your savings goal, PV is your current savings, r is the monthly interest rate (APY / 12), and n is the number of months. Your current savings compound while you add new money each month, so even a modest starting balance helps.</p>
+      <p><strong>Interest rates matter more than you think for longer goals.</strong> Saving $50,000 over 5 years with 0% interest requires $833/month. At 4.5% APY (typical high-yield savings), you need only $750/month — the interest contributes roughly $5,000 over the period. Over 10 years, the gap widens further. Parking your savings in a high-yield account instead of a checking account is one of the easiest financial optimizations.</p>
+      <p><strong>The 50/30/20 budget gives you a savings baseline.</strong> Allocate 50% of after-tax income to needs, 30% to wants, and 20% to savings and debt repayment. On a $4,500/month take-home pay, that's $900/month for savings goals. If your calculator result exceeds your 20% allocation, you may need to extend the timeline or reduce the goal.</p>
+      <p><strong>Automate it.</strong> Research consistently shows that automatic transfers on payday are the most effective savings strategy. Set up a recurring transfer for the exact amount the calculator shows, and treat it like a non-negotiable bill. People who automate savings reach their goals at significantly higher rates than those who transfer manually.</p>
+      <p><strong>Build the emergency fund first.</strong> Financial planners almost universally recommend saving 3–6 months of essential expenses before targeting other goals. Without this cushion, an unexpected expense (car repair, medical bill, job loss) forces you to raid your savings goal or take on debt, setting you back further than if you'd built the safety net first.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Goal</th><th>Timeline</th><th>Monthly (0% interest)</th><th>Monthly (4.5% HYSA)</th><th>Interest Earned</th></tr></thead>
+        <tbody>
+          <tr><td>$5,000 (vacation)</td><td>12 months</td><td>$417</td><td>$407</td><td>$116</td></tr>
+          <tr><td>$15,000 (emergency)</td><td>18 months</td><td>$833</td><td>$804</td><td>$528</td></tr>
+          <tr><td>$25,000 (car)</td><td>3 years</td><td>$694</td><td>$651</td><td>$1,564</td></tr>
+          <tr><td>$50,000 (down payment)</td><td>5 years</td><td>$833</td><td>$750</td><td>$5,000</td></tr>
+          <tr><td>$100,000 (investment)</td><td>10 years</td><td>$833</td><td>$675</td><td>$19,000</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['compound-interest', 'retirement', 'down-payment'],
     badge: 'new',
   },
@@ -2144,11 +2284,32 @@ export const tools: Tool[] = [
     icon: 'TrendingUp',
     metaTitle: 'Retirement Calculator — Savings Projection | clevr.tools',
     metaDescription: 'Free retirement calculator. Project savings growth with contributions and expected returns. See inflation-adjusted values and estimated monthly retirement income.',
-    seoContent: `<h2>Free Retirement Calculator</h2>
-<p>Planning for retirement requires understanding how your savings will grow over decades and what that money will actually be worth when you need it. This calculator projects your retirement savings using compound growth with monthly contributions, then adjusts for inflation to show your purchasing power in today's dollars. The 4% rule estimate shows how much monthly income your savings could sustainably provide.</p>
-<p>The projection uses: FV = PV × (1 + r/12)^n + PMT × [(1 + r/12)^n - 1] / (r/12), where n is months until retirement. The inflation-adjusted value divides by (1 + inflation)^years to show real purchasing power.</p>
-<h2>The 4% Rule</h2>
-<p>The 4% rule suggests you can withdraw 4% of your retirement savings annually (adjusted for inflation each year) with a high probability of your money lasting 30+ years. This translates to dividing your target retirement income by 0.04 to find your savings goal — for example, $60,000/year requires approximately $1.5 million saved. The rule is a starting point, not a guarantee — actual safe withdrawal rates depend on market conditions, asset allocation, and retirement length.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're 30 years old with $45,000 in your 401(k), contributing $500 a month, and you want to know: will I be okay at 65? This calculator projects your savings growth with compound returns and monthly contributions, then shows the inflation-adjusted value — what your money will actually buy in today's dollars. It also estimates your monthly retirement income using the 4% withdrawal rule. The answer might surprise you in either direction.</p>
+      <p>It's also the tool for "what if" scenarios that shape your financial strategy. What if you retire at 60 instead of 67? What if you increase your contribution by $200/month? What if the market returns 6% instead of 8%? Each scenario produces dramatically different outcomes, and seeing the numbers helps you make intentional trade-offs between spending now and security later.</p>
+      <p>Use this calculator at every career milestone: first job, raise, job change, marriage, home purchase. Each event changes your contribution capacity and your retirement timeline. Revisiting the projection regularly — not just once in your 50s — is how you course-correct before it's too late to make a difference.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The projection formula: FV = PV x (1 + r/12)^n + PMT x [(1 + r/12)^n - 1] / (r/12).</strong> PV is your current savings, r is the expected annual return, n is months until retirement, and PMT is your monthly contribution. The inflation-adjusted value divides the result by (1 + inflation)^years to show purchasing power in today's dollars.</p>
+      <p><strong>The 4% rule is a guideline, not a guarantee.</strong> Research by Bill Bengen (1994) showed that withdrawing 4% of your portfolio in year one, then adjusting for inflation each subsequent year, historically survived 30+ years of retirement in almost all market conditions. For $60,000/year in retirement income, you need about $1.5 million saved ($60,000 / 0.04). More conservative planners use 3.5% for longer retirements or volatile markets.</p>
+      <p><strong>Inflation erodes your savings silently.</strong> At 3% inflation, $1 million in 30 years buys what $412,000 buys today. That's why the inflation-adjusted number on this calculator is so much lower than the nominal number — and it's the one you should plan around. A million dollars sounds like a lot until you realize it might provide only $1,400/month in today's purchasing power.</p>
+      <p><strong>Employer match is free money — always capture it.</strong> If your employer matches 50% of contributions up to 6% of salary, contributing less than 6% is leaving money on the table. On a $75,000 salary, that's $2,250/year in free contributions. Over 30 years at 8%, that match alone grows to approximately $280,000.</p>
+      <p><strong>Starting 10 years earlier is worth more than doubling your contribution.</strong> Contributing $400/month from age 25 to 65 at 8% produces about $1,396,000. Contributing $800/month from 35 to 65 produces about $1,191,000. The early start wins with half the monthly sacrifice because compound growth has more time to work.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Start Age</th><th>Monthly Contribution</th><th>At Age 65 (8% return)</th><th>Inflation-Adjusted (3%)</th><th>Monthly Income (4% rule)</th></tr></thead>
+        <tbody>
+          <tr><td>25</td><td>$400</td><td>$1,396,000</td><td>$575,000</td><td>$1,917</td></tr>
+          <tr><td>25</td><td>$750</td><td>$2,618,000</td><td>$1,078,000</td><td>$3,593</td></tr>
+          <tr><td>30</td><td>$500</td><td>$1,116,000</td><td>$530,000</td><td>$1,767</td></tr>
+          <tr><td>35</td><td>$750</td><td>$1,117,000</td><td>$612,000</td><td>$2,040</td></tr>
+          <tr><td>40</td><td>$1,000</td><td>$957,000</td><td>$605,000</td><td>$2,017</td></tr>
+          <tr><td>45</td><td>$1,500</td><td>$879,000</td><td>$641,000</td><td>$2,137</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['compound-interest', 'investment-return', 'savings-goal'],
     badge: 'new',
   },
@@ -2162,11 +2323,31 @@ export const tools: Tool[] = [
     icon: 'BarChart3',
     metaTitle: 'Investment Return Calculator — Free Tool | clevr.tools',
     metaDescription: 'Free investment return calculator. Project future value with initial amount, monthly contributions, and compound growth. Year-by-year breakdown table included.',
-    seoContent: `<h2>Free Investment Return Calculator</h2>
-<p>See how your investments could grow over time with compound returns and regular contributions. Enter your initial investment, monthly contribution, expected annual return, and investment period to get a year-by-year projection of your portfolio's growth. The calculation compounds monthly: FV = P × (1 + r/12)^(y×12) + PMT × [(1 + r/12)^(y×12) - 1] / (r/12).</p>
-<p>The year-by-year table breaks down starting balance, contributions, earnings, and ending balance for each year, making it easy to see how compound growth accelerates over time. The gap between your total contributions and final balance represents your investment earnings — this gap widens dramatically in later years.</p>
-<h2>Historical Market Returns</h2>
-<p>The S&P 500 has returned approximately 10% annually (about 7% after inflation) over the past century. However, returns vary significantly year to year — individual years range from -40% to +50%. Using a conservative estimate (6–8%) for projections is prudent. Past performance does not guarantee future results, and actual returns depend on your specific investment allocation and timing.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're starting to invest and want to see what $500 a month actually becomes in 20 years. Or you have a lump sum — maybe an inheritance or a bonus — and you're deciding between investing it or using it for something else. This calculator shows the projected growth year by year, so you can see exactly when compounding starts to accelerate and how your money grows beyond what you put in.</p>
+      <p>It's also the tool for comparing strategies. What if you invest $10,000 now with no additional contributions vs. investing $0 now but contributing $300/month? What if you increase your monthly contribution by $100 — how much difference does that make over 25 years? The year-by-year breakdown makes these comparisons tangible rather than theoretical.</p>
+      <p>Use it for any investment scenario: brokerage accounts, Roth IRAs, 529 college savings plans, or HSAs. The math is the same regardless of account type — what changes is the tax treatment, which affects your real after-tax returns. This calculator models pre-tax growth; adjust your expected return downward if you're estimating after-tax outcomes in a taxable account.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The formula compounds monthly: FV = P x (1 + r/12)^n + PMT x [(1 + r/12)^n - 1] / (r/12).</strong> P is your initial investment, r is the annual return rate, n is total months, and PMT is your monthly contribution. Monthly compounding means your returns earn returns every month, not just once a year.</p>
+      <p><strong>Compound growth is back-loaded.</strong> With $500/month at 8% over 30 years, you contribute $180,000 total. Your ending balance is approximately $745,000 — meaning $565,000 is pure investment earnings. But here's the key: after 15 years you've only accumulated about $175,000. The second 15 years generates more than three times what the first 15 did. Time is the most powerful variable.</p>
+      <p><strong>The difference between 7% and 10% is enormous over decades.</strong> $500/month for 30 years at 7% gives you about $567,000. At 10%, it's about $1,036,000. That 3% difference nearly doubles your money. This is why investment costs (expense ratios, advisory fees) matter so much — they directly reduce your effective return rate.</p>
+      <p><strong>These are projections, not predictions.</strong> Markets don't return a steady 8% per year — they zigzag. A bad year early on hurts more than a bad year later (sequence-of-returns risk). Use this calculator for planning and goal-setting, but expect the actual path to be bumpier than the smooth curve shown here.</p>
+      <p><strong>Starting early matters more than investing more.</strong> Investing $300/month from age 25 to 65 at 8% yields about $1,047,000. Waiting until 35 and investing $600/month (double!) from age 35 to 65 yields about $894,000. The 10-year head start wins even at half the contribution.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Monthly Contribution</th><th>Return</th><th>10 Years</th><th>20 Years</th><th>30 Years</th></tr></thead>
+        <tbody>
+          <tr><td>$200/mo</td><td>7%</td><td>$34,600</td><td>$104,200</td><td>$243,900</td></tr>
+          <tr><td>$500/mo</td><td>7%</td><td>$86,500</td><td>$260,500</td><td>$609,800</td></tr>
+          <tr><td>$500/mo</td><td>10%</td><td>$102,400</td><td>$382,800</td><td>$1,130,200</td></tr>
+          <tr><td>$1,000/mo</td><td>7%</td><td>$173,100</td><td>$521,000</td><td>$1,219,700</td></tr>
+          <tr><td>$1,000/mo</td><td>10%</td><td>$204,800</td><td>$765,700</td><td>$2,260,500</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['compound-interest', 'retirement', 'savings-goal'],
     badge: 'new',
   },
@@ -2180,11 +2361,33 @@ export const tools: Tool[] = [
     icon: 'Scale',
     metaTitle: 'Debt-to-Income Calculator — Free DTI Tool | clevr.tools',
     metaDescription: 'Free debt-to-income calculator. Add monthly debts and income to calculate your DTI ratio. See how lenders evaluate it for mortgage and loan approval.',
-    seoContent: `<h2>Free Debt-to-Income Calculator</h2>
-<p>Your debt-to-income (DTI) ratio is one of the most important numbers lenders use to evaluate your ability to repay a loan. It's calculated simply: DTI = (Total Monthly Debt Payments / Gross Monthly Income) × 100. A lower DTI means more of your income is available for new loan payments, making you a lower-risk borrower.</p>
-<p>Add all your monthly debt obligations — mortgage/rent, car payments, student loans, credit card minimums, personal loans, and any other recurring debt payments. Divide by your gross (pre-tax) monthly income to get your DTI percentage.</p>
-<h2>What Lenders Look For</h2>
-<p>Most mortgage lenders prefer a DTI below 36%, with no more than 28% going to housing costs (the "front-end" ratio). FHA loans may accept DTI up to 43–50% with compensating factors. For other loans, under 36% is generally considered good, 37–43% is acceptable, and above 43% may make qualification difficult. Reducing your DTI before applying for a major loan can improve your chances and potentially qualify you for better interest rates.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're planning to apply for a mortgage and want to know where you stand before a lender pulls your numbers. Your debt-to-income ratio is one of the first things underwriters check, and knowing yours in advance lets you decide whether to pay down debt first, increase your income documentation, or proceed with confidence. It's the difference between walking into a pre-approval meeting prepared and getting an unwelcome surprise.</p>
+      <p>DTI also matters when you're evaluating your own financial health outside of lending. If 45% of your gross income goes to debt payments every month, that leaves a thin margin for savings, emergencies, and quality of life — regardless of what a lender thinks. Tracking your DTI over time shows whether you're gaining financial flexibility or slowly losing it.</p>
+      <p>Use this calculator before any major financial decision: buying a home, refinancing, taking out a car loan, or co-signing for someone else. Each new debt obligation pushes your DTI higher, and understanding how a potential new payment changes the ratio helps you avoid overextending.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The formula is straightforward: DTI = (Total Monthly Debt Payments / Gross Monthly Income) x 100.</strong> Include mortgage/rent, car loans, student loans, minimum credit card payments, personal loans, alimony, and child support. Do not include utilities, groceries, insurance, or subscriptions — lenders don't count those as "debt" for DTI purposes.</p>
+      <p><strong>There are two types of DTI.</strong> The "front-end" ratio counts only housing costs (mortgage, property tax, insurance, HOA). The "back-end" ratio includes all monthly debts. Lenders look at both — conventional loans typically want front-end below 28% and back-end below 36%. When people say "DTI," they usually mean back-end.</p>
+      <p><strong>Above 36% means compensating factors are needed.</strong> If your DTI is 37–43%, lenders may still approve you if you have strong compensating factors: high credit score (740+), large cash reserves (6+ months of payments), substantial down payment (20%+), or stable employment history. Above 43%, most conventional loans require an exception.</p>
+      <p><strong>Gross income, not net.</strong> DTI uses your pre-tax income, which makes the ratio look better than it feels. A DTI of 36% on gross income could mean 45–50% of your take-home pay goes to debt. Keep that in mind when assessing affordability from a lifestyle perspective, not just a lending one.</p>
+      <p><strong>Paying off small debts can move the needle fast.</strong> Eliminating a $200/month car payment on a $6,000 gross income drops your DTI by 3.3 percentage points. If you're on the edge of a threshold, paying off one small debt can be more effective than trying to increase your income.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>DTI Range</th><th>Lender View</th><th>Typical Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Under 20%</td><td>Excellent</td><td>Best rates, easy approval</td></tr>
+          <tr><td>20–35%</td><td>Good</td><td>Standard approval, competitive rates</td></tr>
+          <tr><td>36%</td><td>Threshold</td><td>Conventional loan maximum (ideal)</td></tr>
+          <tr><td>37–43%</td><td>Acceptable</td><td>May need compensating factors</td></tr>
+          <tr><td>43%</td><td>QM limit</td><td>Qualified Mortgage upper boundary</td></tr>
+          <tr><td>44–50%</td><td>High</td><td>FHA may approve with strong credit</td></tr>
+          <tr><td>50%+</td><td>Very high</td><td>Difficult to qualify for most loans</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['mortgage-calculator', 'credit-card-payoff', 'loan'],
     badge: 'new',
   },
@@ -2198,11 +2401,32 @@ export const tools: Tool[] = [
     icon: 'Calculator',
     metaTitle: 'Net Worth Calculator — Track Your Wealth | clevr.tools',
     metaDescription: 'Free net worth calculator. List your assets (savings, investments, property) and liabilities (loans, credit cards, mortgage) to calculate your total net worth.',
-    seoContent: `<h2>Free Net Worth Calculator</h2>
-<p>Your net worth is the single most comprehensive measure of your financial health: Net Worth = Total Assets - Total Liabilities. Assets include everything you own that has monetary value — bank accounts, investments, retirement accounts, real estate, vehicles, and valuables. Liabilities include everything you owe — mortgages, car loans, student loans, credit card balances, and personal debts.</p>
-<p>Tracking net worth over time is more meaningful than looking at income or savings alone. A high income with high debt can produce a lower net worth than a moderate income with disciplined saving. Calculating your net worth quarterly or annually reveals whether you're building wealth or treading water.</p>
-<h2>Net Worth by Age</h2>
-<p>Average net worth varies dramatically by age due to the compounding effects of time on both savings and debt repayment. It's common to have a negative net worth in your 20s (student loans exceed assets). By your 30s-40s, net worth typically turns positive as retirement accounts grow and debt is paid down. The key metric isn't comparison to others — it's whether your net worth is trending upward over time.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You want a single number that captures your entire financial picture. Income tells you how fast money flows in. Savings tells you what's in the bank. But net worth — assets minus liabilities — tells you where you actually stand. It's the number that answers "if I sold everything and paid off every debt, what's left?"</p>
+      <p>Calculate your net worth at least once a year, ideally quarterly. The absolute number matters less than the trend. Are you building wealth or losing it? A net worth that grows by $15,000 a year tells you your financial habits are working. A flat or declining net worth — even with a high income — signals that spending or debt is absorbing everything you earn.</p>
+      <p>It's also essential before major financial decisions. Applying for a mortgage? The lender will want a picture of your assets and liabilities. Getting divorced? Net worth determines equitable distribution. Planning for retirement? Your net worth target is the number you need to reach. Estate planning? Net worth determines which tax thresholds apply. Every serious financial conversation starts with this number.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The formula is simple: Net Worth = Total Assets - Total Liabilities.</strong> Assets include checking/savings accounts, investment accounts (brokerage, IRA, 401k), real estate (market value), vehicles (current resale value), and other valuables. Liabilities include mortgage balance, car loans, student loans, credit card debt, personal loans, and any other money you owe.</p>
+      <p><strong>Use realistic values, not purchase prices.</strong> Your car isn't worth what you paid for it — use Kelley Blue Book or similar. Your home should be valued at current market price, not what you paid or what Zillow estimated two years ago. Overvaluing assets inflates your net worth on paper but doesn't help with actual planning.</p>
+      <p><strong>A negative net worth is normal in your 20s.</strong> If you have $40,000 in student loans and $8,000 in savings, your net worth is -$32,000. That's not a crisis — it's a starting point. The average American's net worth doesn't turn solidly positive until their early 30s. What matters is the trajectory.</p>
+      <p><strong>Home equity is your largest asset but least liquid.</strong> A $400,000 home with a $300,000 mortgage adds $100,000 to your net worth, but you can't easily spend that $100,000 without selling or taking a home equity loan. When evaluating financial flexibility, consider your "liquid net worth" (excluding home equity) separately.</p>
+      <p><strong>Retirement accounts count, even though you can't touch them yet.</strong> Your 401(k) and IRA balances are real assets. Including them in your net worth is standard practice. Just remember that pre-tax accounts (traditional 401k/IRA) will be taxed on withdrawal, so their after-tax value is roughly 70–85% of the stated balance, depending on your future tax bracket.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Age</th><th>Median Net Worth (US)</th><th>Average Net Worth (US)</th></tr></thead>
+        <tbody>
+          <tr><td>Under 35</td><td>~$39,000</td><td>~$183,000</td></tr>
+          <tr><td>35–44</td><td>~$135,000</td><td>~$549,000</td></tr>
+          <tr><td>45–54</td><td>~$247,000</td><td>~$975,000</td></tr>
+          <tr><td>55–64</td><td>~$364,000</td><td>~$1,566,000</td></tr>
+          <tr><td>65–74</td><td>~$410,000</td><td>~$1,794,000</td></tr>
+          <tr><td>75+</td><td>~$335,000</td><td>~$1,624,000</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['debt-to-income', 'retirement', 'savings-goal'],
     badge: 'new',
   },
@@ -2216,11 +2440,33 @@ export const tools: Tool[] = [
     icon: 'Receipt',
     metaTitle: 'Sales Tax Calculator — Free Online Tool | clevr.tools',
     metaDescription: 'Free sales tax calculator. Calculate sales tax on any purchase or reverse-calculate the pre-tax price from a total. Includes state tax rate presets for all US states.',
-    seoContent: `<h2>Free Sales Tax Calculator</h2>
-<p>Calculate the sales tax on any purchase by entering the price and tax rate, or work backwards from a receipt total to find the pre-tax amount. The forward calculation is: Tax = Price × Rate / 100, Total = Price + Tax. The reverse calculation is: Pre-Tax Price = Total / (1 + Rate / 100). State tax rate presets let you quickly select the correct rate for your location.</p>
-<p>Sales tax rates in the US vary by state, county, and city. Some states (Oregon, Montana, Delaware, New Hampshire) have no state sales tax. Others, like Tennessee, Louisiana, and Arkansas, have combined state and local rates exceeding 9%. Certain items like groceries or clothing may be exempt or taxed at reduced rates depending on your state.</p>
-<h2>Why Sales Tax Matters</h2>
-<p>Sales tax adds a meaningful percentage to every purchase. On a $30,000 car in a state with 8% sales tax, you're paying $2,400 in tax alone. Understanding your local rate helps with budgeting, comparing prices across state lines, and making informed purchasing decisions — especially for large purchases where even 1–2% difference represents significant money.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're budgeting for a big purchase — a laptop at $1,299, furniture at $2,400, or a car at $35,000 — and need to know the actual total with tax. Or you have a receipt showing $86.37 total and want to figure out the pre-tax price for an expense report. This calculator works in both directions: enter a pre-tax price to get the total, or enter a total to reverse-calculate the pre-tax amount.</p>
+      <p>It's especially useful when comparing prices across states or shopping online. A $1,000 item costs $1,000 in Oregon (no sales tax) but $1,101 in Chicago (10.1% combined rate). For large purchases like appliances, electronics, or vehicles, that difference is significant enough to factor into where you buy. Some people time major purchases around tax-free weekends or shop in neighboring states with lower rates.</p>
+      <p>Business owners and freelancers use it daily — calculating tax to add on invoices, verifying collected tax against expected amounts, and preparing for sales tax remittance. If you sell anything in the US, you need to know these numbers.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The forward formula: Tax = Price x Rate / 100. Total = Price + Tax.</strong> The reverse formula: Pre-Tax Price = Total / (1 + Rate / 100). A $50 item at 8.25% tax: Tax = $4.13, Total = $54.13. Working backwards from $54.13: Pre-Tax = $54.13 / 1.0825 = $50.00.</p>
+      <p><strong>Sales tax rates vary wildly by location.</strong> Five states have no state sales tax: Oregon, Montana, Delaware, New Hampshire, and Alaska (though some Alaska municipalities charge local tax). The highest combined state + local rates are in parts of Louisiana, Tennessee, Arkansas, Washington, and Alabama, where rates can exceed 10%. Your effective rate depends on your specific city and county.</p>
+      <p><strong>Not everything is taxed equally.</strong> Most states exempt groceries (food for home consumption) from sales tax or tax them at a reduced rate. Many exempt prescription medications. Some states exempt clothing under a threshold (e.g., New York exempts clothing items under $110). Rules vary significantly — check your state's specific exemptions.</p>
+      <p><strong>Online purchases are taxed based on where you live, not where the seller is.</strong> Since the 2018 South Dakota v. Wayfair Supreme Court decision, states can require out-of-state sellers to collect sales tax. Most major online retailers now charge your local rate automatically. If they don't, you technically owe "use tax" on your state tax return — though compliance on small purchases is low.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>State</th><th>State Rate</th><th>Avg. Combined Rate</th><th>Tax on $100</th></tr></thead>
+        <tbody>
+          <tr><td>Oregon</td><td>0%</td><td>0%</td><td>$0.00</td></tr>
+          <tr><td>Colorado</td><td>2.9%</td><td>~7.8%</td><td>$7.80</td></tr>
+          <tr><td>Texas</td><td>6.25%</td><td>~8.2%</td><td>$8.20</td></tr>
+          <tr><td>New York</td><td>4.0%</td><td>~8.5%</td><td>$8.50</td></tr>
+          <tr><td>California</td><td>7.25%</td><td>~8.7%</td><td>$8.70</td></tr>
+          <tr><td>Washington</td><td>6.5%</td><td>~9.3%</td><td>$9.30</td></tr>
+          <tr><td>Tennessee</td><td>7.0%</td><td>~9.55%</td><td>$9.55</td></tr>
+          <tr><td>Louisiana</td><td>4.45%</td><td>~9.56%</td><td>$9.56</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['tip-calculator', 'discount-calculator', 'percentage-calculator'],
     badge: 'new',
   },
@@ -2234,11 +2480,31 @@ export const tools: Tool[] = [
     icon: 'CalendarCheck',
     metaTitle: 'Amortization Calculator — Loan Schedule | clevr.tools',
     metaDescription: 'Free amortization calculator. Generate a full loan amortization schedule. See how extra monthly payments reduce total interest and shorten your loan term.',
-    seoContent: `<h2>Free Amortization Calculator</h2>
-<p>An amortization schedule shows exactly how each loan payment is divided between principal and interest over the entire life of the loan. This calculator generates the complete month-by-month schedule for any fixed-rate loan, plus shows the impact of optional extra monthly payments. Extra payments go directly toward principal, reducing both the loan term and total interest paid.</p>
-<p>The standard loan payment formula is: M = P[r(1+r)^n] / [(1+r)^n - 1]. Each month, interest is calculated on the remaining balance (Interest = Balance × Monthly Rate), and the rest of the payment goes to principal (Principal = Payment - Interest). As the balance decreases, less goes to interest and more to principal.</p>
-<h2>The Power of Extra Payments</h2>
-<p>Even modest extra payments can save thousands in interest. Adding just $100/month to a $300,000, 30-year mortgage at 6.5% saves over $50,000 in interest and pays off the loan nearly 5 years early. This calculator shows the exact savings so you can decide whether extra payments are the best use of your money compared to investing the difference.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You just got approved for a mortgage and the lender handed you a number — $2,100 a month for 30 years. But what does that actually look like? How much of that first payment is interest vs. principal? When does the crossover happen where you're finally paying down more principal than interest? An amortization schedule answers all of this, month by month, for the entire life of your loan.</p>
+      <p>This calculator is especially powerful when you're considering extra payments. Maybe you can afford an extra $200 a month and want to see the exact impact: how many years it shaves off, how much interest it saves, and when you'd be debt-free. The side-by-side comparison of your standard schedule vs. the accelerated one makes the decision concrete rather than abstract.</p>
+      <p>Use it for any fixed-rate loan — mortgages, auto loans, student loans, or personal loans. If the interest rate and term are fixed, the amortization math applies. Variable-rate loans change the picture (and this calculator assumes a fixed rate throughout), but you can still model different rate scenarios by running the numbers at each rate.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>The formula is M = P[r(1+r)^n] / [(1+r)^n - 1].</strong> P is the principal (loan amount), r is the monthly interest rate (annual rate / 12), and n is total number of payments (years × 12). Each month, interest = remaining balance × r, and principal = M - interest. As the balance shrinks, less goes to interest and more to principal — that's amortization.</p>
+      <p><strong>Front-loading of interest is dramatic.</strong> On a $300,000 mortgage at 6.5% over 30 years, your first payment of $1,896 splits as $1,625 interest and $271 principal. You don't reach a 50/50 split until around year 19. This is why selling a home in the first few years often means you've barely touched the principal.</p>
+      <p><strong>Extra payments attack the back end of the schedule.</strong> When you pay an extra $200/month, that money goes entirely to principal. Each dollar of extra principal eliminates a future interest charge, creating a compounding savings effect. On the same $300,000 mortgage, $200/month extra saves about $82,000 in interest and pays off the loan 6.5 years early.</p>
+      <p><strong>Biweekly payments are a stealth extra payment.</strong> Paying half your monthly payment every two weeks results in 26 half-payments (13 full payments) per year instead of 12. That one extra payment per year can shave 4–5 years off a 30-year mortgage.</p>
+      <p><strong>Refinancing resets your amortization clock.</strong> If you refinance 10 years into a 30-year mortgage into a new 30-year mortgage, you restart the front-loaded interest cycle. Even at a lower rate, you may pay more total interest. Always compare total remaining cost, not just monthly payments.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Loan</th><th>Rate</th><th>Term</th><th>Monthly Payment</th><th>Total Interest</th><th>With $200/mo Extra</th></tr></thead>
+        <tbody>
+          <tr><td>$200,000</td><td>6.0%</td><td>30 yr</td><td>$1,199</td><td>$231,640</td><td>$152,120 (saves $79,520)</td></tr>
+          <tr><td>$300,000</td><td>6.5%</td><td>30 yr</td><td>$1,896</td><td>$382,633</td><td>$300,480 (saves $82,153)</td></tr>
+          <tr><td>$300,000</td><td>6.5%</td><td>15 yr</td><td>$2,613</td><td>$170,389</td><td>$141,220 (saves $29,169)</td></tr>
+          <tr><td>$25,000</td><td>5.5%</td><td>5 yr</td><td>$478</td><td>$3,638</td><td>$2,490 (saves $1,148)</td></tr>
+          <tr><td>$40,000</td><td>7.0%</td><td>6 yr</td><td>$684</td><td>$9,225</td><td>$6,870 (saves $2,355)</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['loan', 'mortgage-calculator', 'auto-loan'],
     badge: 'new',
   },
@@ -2252,11 +2518,30 @@ export const tools: Tool[] = [
     icon: 'Car',
     metaTitle: 'Car Payment Calculator — Monthly Estimate | clevr.tools',
     metaDescription: 'Free car payment calculator. Enter car price, down payment, interest rate, and loan term to estimate your monthly payment, total interest, and total cost of the vehicle.',
-    seoContent: `<h2>Free Car Payment Calculator</h2>
-<p>Know your monthly car payment before you start shopping. Enter the vehicle price, your down payment, interest rate, and loan term to instantly see your estimated monthly payment, total interest charges, and the total cost of the vehicle over the life of the loan. This helps you set a realistic budget and avoid overextending at the dealership.</p>
-<p>The monthly payment is calculated using the standard amortization formula. A larger down payment directly reduces both your monthly payment and total interest paid. Most financial advisors recommend putting at least 20% down on a car to avoid negative equity.</p>
-<h2>Car Buying Tips</h2>
-<p>Get pre-approved for financing before visiting dealerships — it gives you negotiating leverage and a baseline rate to compare against dealer financing. Focus on the total cost of the vehicle (purchase price + total interest) rather than just the monthly payment. Dealers can make any monthly payment look affordable by extending the loan term, but you'll pay far more in total interest.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're browsing car listings and see something for $32,000. Before you get emotionally attached, you want to know what that actually costs per month — and what the total damage is after interest. Enter the price, your planned down payment, the interest rate you expect to qualify for, and the loan term. In seconds you'll see the monthly payment, total interest, and the real cost of that car.</p>
+      <p>This is also the tool for budget-first shopping. If you know you can afford $450 a month, work backwards: adjust the vehicle price, down payment, and term until the payment fits your budget. It's a much better approach than falling in love with a car and then figuring out financing later, when the pressure to make it work clouds your judgment.</p>
+      <p>Use it to compare new vs. used, or to see how a higher down payment changes the math. A used car at $18,000 with a slightly higher rate may still cost less per month and in total than a new car at $30,000 with a promotional rate. The numbers tell the real story.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Monthly payment = P[r(1+r)^n] / [(1+r)^n - 1].</strong> P is the amount financed (price minus down payment), r is the monthly rate (APR / 12), and n is total months. A $28,000 loan at 6% for 60 months works out to $541/month, with $4,480 in total interest.</p>
+      <p><strong>Every $1,000 in down payment saves more than $1,000.</strong> On a 60-month loan at 6%, an extra $1,000 down saves $1,000 in principal plus about $160 in interest — $1,160 total. On a 72-month loan at 7%, that same $1,000 saves nearly $1,240. The longer the term and higher the rate, the more a down payment is worth.</p>
+      <p><strong>Dealer financing isn't always the best deal.</strong> Manufacturers sometimes offer 0% or low-rate promotional financing, but often only on specific models and to buyers with excellent credit. Compare the dealer's offer against a credit union or bank pre-approval. Sometimes a manufacturer rebate (cash discount) plus outside financing beats 0% with no rebate.</p>
+      <p><strong>Don't forget the hidden costs.</strong> Your monthly car budget should include insurance (often $150–$300/month for full coverage), fuel, and maintenance. A car with a $500 payment that requires premium fuel and expensive maintenance can cost the same as a $600 payment on a reliable, fuel-efficient model.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Car Price</th><th>Down Payment</th><th>Rate</th><th>Term</th><th>Monthly Payment</th><th>Total Interest</th></tr></thead>
+        <tbody>
+          <tr><td>$20,000</td><td>$4,000 (20%)</td><td>5.5%</td><td>48 mo</td><td>$372</td><td>$1,840</td></tr>
+          <tr><td>$28,000</td><td>$3,000 (11%)</td><td>6.0%</td><td>60 mo</td><td>$483</td><td>$3,980</td></tr>
+          <tr><td>$35,000</td><td>$7,000 (20%)</td><td>6.5%</td><td>60 mo</td><td>$548</td><td>$4,880</td></tr>
+          <tr><td>$35,000</td><td>$5,000 (14%)</td><td>7.0%</td><td>72 mo</td><td>$512</td><td>$6,860</td></tr>
+          <tr><td>$45,000</td><td>$9,000 (20%)</td><td>5.9%</td><td>60 mo</td><td>$696</td><td>$5,760</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['auto-loan', 'loan', 'down-payment'],
     badge: 'new',
   },
@@ -2270,11 +2555,30 @@ export const tools: Tool[] = [
     icon: 'Wallet',
     metaTitle: 'Paycheck Calculator — Net Pay Estimator | clevr.tools',
     metaDescription: 'Free paycheck calculator. Enter your gross pay per period to see estimated deductions for federal tax, state tax, Social Security, and Medicare. All 50 states supported.',
-    seoContent: `<h2>Free Paycheck Calculator</h2>
-<p>See exactly what your paycheck will look like after deductions. Enter your gross pay per pay period, filing status, and state to get an itemized breakdown of federal income tax, state income tax, Social Security, and Medicare withholding. The result shows your estimated net (take-home) pay for each paycheck.</p>
-<p>This calculator uses 2025 federal tax brackets and state tax rates to estimate withholding. Pre-tax deductions like 401(k) contributions and health insurance premiums are subtracted before calculating federal and state income tax, reducing your taxable income.</p>
-<h2>Understanding Your Pay Stub</h2>
-<p>Your gross pay is the total amount earned before any deductions. From that, your employer withholds federal income tax (based on your W-4 filing status and the progressive bracket system), Social Security tax (6.2% up to $176,100), Medicare tax (1.45%), and state income tax (varies by state). The remainder is your net pay — what gets deposited into your bank account. Understanding these deductions helps you verify your pay stub accuracy and plan your budget around actual take-home pay.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You just got a job offer for $75,000 a year and need to know what your actual paycheck will look like every two weeks. The gross salary sounds great, but between federal taxes, state taxes, Social Security, and Medicare, the number that hits your bank account is meaningfully lower. This calculator shows you the real number so you can budget, negotiate, or plan accordingly.</p>
+      <p>It's also useful when something changes: a raise, a new W-4 filing status after getting married, a move to a different state, or an increase in your 401(k) contribution. Each of these shifts your withholding, and you want to know the impact per paycheck — not just annually. Seeing the per-period breakdown helps you adjust your monthly budget in real time.</p>
+      <p>Use it to verify your actual pay stub, too. If your calculated net pay doesn't match what you're receiving, it might mean your W-4 withholding is set incorrectly, you're over-contributing to pre-tax benefits, or there's a payroll error. It happens more often than you'd expect, and catching it early can save you from a tax surprise in April.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Federal income tax uses progressive brackets.</strong> You don't pay your top rate on all income. For 2025 single filers, the first $11,925 is taxed at 10%, the next portion up to $48,475 at 12%, then 22%, 24%, 32%, 35%, and 37% on income above $626,350. Your effective rate is always lower than your marginal rate. Someone earning $75,000 has a marginal rate of 22% but an effective federal rate closer to 14%.</p>
+      <p><strong>FICA taxes are flat and unavoidable.</strong> Social Security (6.2%) and Medicare (1.45%) apply to every dollar of your paycheck — no brackets, no deductions. Social Security has a wage cap ($176,100 for 2025), so high earners stop paying it partway through the year. Medicare has no cap, and earners above $200,000 pay an additional 0.9% Medicare surtax.</p>
+      <p><strong>Pre-tax deductions reduce your taxable income.</strong> A 401(k) contribution of $500/paycheck doesn't cost you $500 in take-home pay. Because it's deducted pre-tax, your income tax is calculated on a lower amount. A $500 contribution at a 22% marginal rate effectively costs you $390 in take-home pay while sheltering $500 for retirement.</p>
+      <p><strong>Pay frequency matters for budgeting.</strong> Biweekly (26 paychecks/year) and semi-monthly (24 paychecks/year) look similar but aren't. Biweekly gives you two "extra" paychecks per year, and some months you'll receive three paychecks instead of two. Budget based on the regular two-paycheck month and treat the extra ones as bonus savings opportunities.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Gross Salary</th><th>Filing Status</th><th>Approx. Federal Tax</th><th>FICA (7.65%)</th><th>Approx. Net (no state tax)</th></tr></thead>
+        <tbody>
+          <tr><td>$50,000</td><td>Single</td><td>~$5,400</td><td>$3,825</td><td>~$40,775</td></tr>
+          <tr><td>$75,000</td><td>Single</td><td>~$10,300</td><td>$5,738</td><td>~$58,962</td></tr>
+          <tr><td>$100,000</td><td>Single</td><td>~$15,400</td><td>$7,650</td><td>~$76,950</td></tr>
+          <tr><td>$100,000</td><td>Married (joint)</td><td>~$10,400</td><td>$7,650</td><td>~$81,950</td></tr>
+          <tr><td>$150,000</td><td>Single</td><td>~$27,500</td><td>$11,475</td><td>~$111,025</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['salary', 'take-home-pay', 'tip-calculator'],
     badge: 'new',
   },
@@ -2288,11 +2592,30 @@ export const tools: Tool[] = [
     icon: 'Home',
     metaTitle: 'Down Payment Calculator — Free Planner | clevr.tools',
     metaDescription: 'Free down payment calculator. Enter home price and percentage to see your savings goal. Compare 5%-25% amounts and monthly savings needed. No signup required.',
-    seoContent: `<h2>Free Down Payment Calculator</h2>
-<p>A down payment is the upfront cash portion of a home purchase. The standard recommendation is 20% to avoid Private Mortgage Insurance (PMI), but many buyers put down 5–15%. This calculator shows the exact dollar amount needed at different percentages, how long it will take to save based on your current savings and monthly savings rate, and a comparison table across common down payment levels.</p>
-<p>The savings timeline is calculated as: Months = (Goal - Current Savings) / Monthly Savings. For a more accurate projection, the calculator can factor in interest earned on savings if you specify an expected rate.</p>
-<h2>Down Payment Trade-Offs</h2>
-<p>A larger down payment means a smaller loan, lower monthly payments, no PMI (at 20%+), and typically a better interest rate. But it also means more cash tied up in your home and less available for other investments, emergency funds, or home improvements. There's no universally "right" amount — it depends on your financial situation, local market conditions, and how quickly you want to buy. First-time buyer programs, FHA loans (3.5% minimum), and VA loans (0% for veterans) offer lower down payment options.</p>`,
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're starting to think about buying a home and the first question is: how much cash do I need upfront? The answer depends on the home price, the percentage you want to put down, and how long you have to save. This calculator shows the exact dollar amount at every common percentage — 3%, 5%, 10%, 15%, 20%, 25% — so you can see the full range of options instead of assuming you need 20% or nothing.</p>
+      <p>It's also a savings planning tool. If you're putting away $1,500 a month toward a down payment and you have $12,000 saved, how many months until you hit your target? Factor in interest from a high-yield savings account and the timeline shortens. The calculator makes the goal concrete: this is exactly how much, saved over exactly this many months.</p>
+      <p>Even if you're not buying soon, understanding down payment math helps you set long-term savings targets. A $400,000 home at 20% down requires $80,000 — a number that changes how you think about discretionary spending, investment allocation, and timeline. Knowing the number is the first step to reaching it.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>20% eliminates Private Mortgage Insurance (PMI).</strong> PMI typically costs 0.5%–1% of the loan amount per year, added to your monthly payment. On a $320,000 loan (80% of $400,000), that's $133–$267/month. PMI protects the lender, not you — it drops off automatically when you reach 20% equity, but that could take years. Putting 20% down avoids it entirely.</p>
+      <p><strong>You don't need 20% to buy a home.</strong> Conventional loans allow as little as 3% down (with PMI). FHA loans require 3.5% with a credit score of 580+. VA loans for veterans require 0%. USDA loans for rural areas also offer 0% down. The tradeoff is higher monthly payments and PMI, but it gets you into a home sooner.</p>
+      <p><strong>A larger down payment gets you a better rate.</strong> Lenders see a bigger down payment as lower risk. The rate difference between 5% down and 20% down can be 0.25–0.5%, which on a $350,000 loan translates to $50–$100/month or $18,000–$36,000 over 30 years.</p>
+      <p><strong>Don't drain your savings completely.</strong> Financial advisors recommend keeping 3–6 months of expenses as an emergency fund even after the down payment. Closing costs (2–5% of the home price) are separate from the down payment, and moving into a new home inevitably involves unexpected expenses.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Home Price</th><th>5% Down</th><th>10% Down</th><th>20% Down</th><th>PMI at 10%</th></tr></thead>
+        <tbody>
+          <tr><td>$250,000</td><td>$12,500</td><td>$25,000</td><td>$50,000</td><td>~$94–$188/mo</td></tr>
+          <tr><td>$350,000</td><td>$17,500</td><td>$35,000</td><td>$70,000</td><td>~$131–$263/mo</td></tr>
+          <tr><td>$450,000</td><td>$22,500</td><td>$45,000</td><td>$90,000</td><td>~$169–$338/mo</td></tr>
+          <tr><td>$550,000</td><td>$27,500</td><td>$55,000</td><td>$110,000</td><td>~$206–$413/mo</td></tr>
+          <tr><td>$700,000</td><td>$35,000</td><td>$70,000</td><td>$140,000</td><td>~$263–$525/mo</td></tr>
+        </tbody>
+      </table>
+    `,
     relatedTools: ['mortgage-calculator', 'savings-goal', 'auto-loan'],
     badge: 'new',
   },
