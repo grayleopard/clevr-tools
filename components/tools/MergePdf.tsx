@@ -10,13 +10,48 @@ import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { addToast } from "@/lib/toast";
 
 import { TipJar } from "@/components/tool/TipJar";
-import { GripVertical, X, FileText } from "lucide-react";
+import { GripVertical, X, FileText, Plus } from "lucide-react";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
 interface PdfFile {
   id: string;
   file: File;
   pageCount: number;
+}
+
+/** Compact single-line bar for adding more files after initial upload. */
+function AddMoreBar({ accept, onFiles }: { accept: string; onFiles: (files: File[]) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <div
+      className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        if (droppedFiles.length) onFiles(droppedFiles);
+      }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        multiple
+        className="sr-only"
+        onChange={(e) => {
+          const selected = Array.from(e.target.files ?? []);
+          if (selected.length) onFiles(selected);
+          e.target.value = "";
+        }}
+      />
+      <Plus className="h-4 w-4" />
+      <span>Add more files</span>
+    </div>
+  );
 }
 
 export default function MergePdf() {
@@ -118,7 +153,9 @@ export default function MergePdf() {
     <div className="space-y-6">
       <PageDragOverlay onFiles={addFiles} />
 
-      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={addFiles} resetKey={resetKey} />
+      {files.length === 0 && (
+        <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={addFiles} resetKey={resetKey} />
+      )}
 
       {files.length > 0 && !isProcessing && !downloaded && (
         <div className="space-y-4">
@@ -164,8 +201,8 @@ export default function MergePdf() {
             ))}
           </div>
 
-          {/* Add more */}
-          <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={addFiles} className="mt-2" />
+          {/* Add more — compact bar */}
+          <AddMoreBar accept=".pdf" onFiles={addFiles} />
 
           {/* Merge button */}
           {resultUrl === null && files.length >= 2 && (

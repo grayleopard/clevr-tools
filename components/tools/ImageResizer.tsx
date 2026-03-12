@@ -7,7 +7,7 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
 
-import { Download, Package, Lock, Unlock, X } from "lucide-react";
+import { Download, Package, Lock, Unlock, X, Plus } from "lucide-react";
 import { TipJar } from "@/components/tool/TipJar";
 
 interface UploadedImage {
@@ -53,6 +53,41 @@ const qualityOptions = [
   { label: "High", value: 0.92 },
   { label: "Max", value: 1.0 },
 ];
+
+/** Compact single-line bar for adding/replacing files after initial upload. */
+function AddMoreBar({ accept, onFiles }: { accept: string; onFiles: (files: File[]) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <div
+      className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        if (droppedFiles.length) onFiles(droppedFiles);
+      }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        multiple
+        className="sr-only"
+        onChange={(e) => {
+          const selected = Array.from(e.target.files ?? []);
+          if (selected.length) onFiles(selected);
+          e.target.value = "";
+        }}
+      />
+      <Plus className="h-4 w-4" />
+      <span>Add more files</span>
+    </div>
+  );
+}
 
 export default function ImageResizer() {
   const [images, setImages] = useState<UploadedImage[]>([]);
@@ -100,6 +135,7 @@ export default function ImageResizer() {
     (w: number) => {
       setTargetWidth(w);
       setSelectedPreset(null);
+      setResults([]);
       if (lockAspect && aspectRatioRef.current > 0) {
         setTargetHeight(Math.round(w / aspectRatioRef.current));
       }
@@ -111,6 +147,7 @@ export default function ImageResizer() {
     (h: number) => {
       setTargetHeight(h);
       setSelectedPreset(null);
+      setResults([]);
       if (lockAspect && aspectRatioRef.current > 0) {
         setTargetWidth(Math.round(h * aspectRatioRef.current));
       }
@@ -136,6 +173,7 @@ export default function ImageResizer() {
     setLockAspect(false);
     setUsePercentage(false);
     setSelectedPreset(preset);
+    setResults([]);
   }, []);
 
   const resizeImages = useCallback(async () => {
@@ -191,6 +229,33 @@ export default function ImageResizer() {
       }
 
       setResults(resized);
+
+      // Auto-trigger download
+      if (resized.length === 1) {
+        const a = document.createElement("a");
+        a.href = resized[0].url;
+        a.download = resized[0].filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else if (resized.length > 1) {
+        // Auto-download as ZIP for multiple images
+        const JSZip = (await import("jszip")).default;
+        const zip = new JSZip();
+        for (const r of resized) {
+          zip.file(r.filename, r.blob);
+        }
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        const zipUrl = URL.createObjectURL(zipBlob);
+        const a = document.createElement("a");
+        a.href = zipUrl;
+        a.download = "resized-images.zip";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(zipUrl);
+      }
+
       addToast(
         resized.length === 1
           ? `Resized to ${targetWidth} \u00d7 ${targetHeight}`
@@ -241,14 +306,18 @@ export default function ImageResizer() {
 
   return (
     <div className="space-y-6">
-      {/* Drop zone */}
-      <FileDropZone
-        accept=".jpg,.jpeg,.png,.webp,.gif"
-        multiple
-        maxSizeMB={50}
-        onFiles={handleFiles}
-        resetKey={resetKey}
-      />
+      {/* Drop zone — full when no images, compact when loaded */}
+      {images.length === 0 ? (
+        <FileDropZone
+          accept=".jpg,.jpeg,.png,.webp,.gif"
+          multiple
+          maxSizeMB={50}
+          onFiles={handleFiles}
+          resetKey={resetKey}
+        />
+      ) : (
+        <AddMoreBar accept=".jpg,.jpeg,.png,.webp,.gif" onFiles={handleFiles} />
+      )}
 
       {images.length > 0 && (
         <>
@@ -519,10 +588,10 @@ export default function ImageResizer() {
               <a
                 href={r.url}
                 download={r.filename}
-                className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                className="flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
               >
                 <Download className="h-4 w-4" />
-                Download
+                Download again
               </a>
             </div>
           ))}
@@ -533,7 +602,7 @@ export default function ImageResizer() {
               className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <Package className="h-4 w-4" />
-              Download All as ZIP
+              Download all again as ZIP
             </button>
           )}
           <TipJar />
