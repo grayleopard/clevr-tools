@@ -7,6 +7,10 @@
 import { normalizeCanvasQuality, qualityToPercent } from "@/lib/image-quality";
 
 export type ImageOutputFormat = "original" | "jpeg" | "webp";
+interface CanvasExportOptions {
+  fillColor?: string;
+  opaque?: boolean;
+}
 
 /** Compress an image using browser-image-compression */
 export async function compressImage(
@@ -60,16 +64,16 @@ export async function convertViaCanvas(
   file: File,
   outputMime: "image/jpeg" | "image/png" | "image/webp",
   quality?: number,
-  fillColor?: string
+  options: CanvasExportOptions = {}
 ): Promise<Blob> {
   const bitmap = await createImageBitmap(file);
   const canvas = document.createElement("canvas");
   canvas.width = bitmap.width;
   canvas.height = bitmap.height;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", { alpha: !options.opaque });
   if (!ctx) throw new Error("Could not get canvas 2D context");
-  if (fillColor) {
-    ctx.fillStyle = fillColor;
+  if (options.fillColor || options.opaque) {
+    ctx.fillStyle = options.fillColor ?? "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
   ctx.drawImage(bitmap, 0, 0);
@@ -86,17 +90,27 @@ export async function convertViaCanvas(
 
 /** Convert any image to JPG — fills white background for transparent sources */
 export function toJpg(file: File, quality = 90): Promise<Blob> {
-  return convertViaCanvas(file, "image/jpeg", quality, "#ffffff");
+  return convertViaCanvas(file, "image/jpeg", quality, {
+    fillColor: "#ffffff",
+    opaque: true,
+  });
 }
 
-/** Convert any image to PNG (lossless, no background fill) */
-export function toPng(file: File): Promise<Blob> {
-  return convertViaCanvas(file, "image/png");
+/** Convert any image to PNG (lossless, no background fill unless source is opaque) */
+export function toPng(file: File, options: { opaque?: boolean } = {}): Promise<Blob> {
+  return convertViaCanvas(file, "image/png", undefined, {
+    fillColor: options.opaque ? "#ffffff" : undefined,
+    opaque: options.opaque,
+  });
 }
 
 /** Convert any image to WebP at the specified quality */
 export async function toWebp(file: File, quality = 85): Promise<Blob> {
-  const blob = await convertViaCanvas(file, "image/webp", quality);
+  const opaqueSource = /^image\/jpe?g$/i.test(file.type);
+  const blob = await convertViaCanvas(file, "image/webp", quality, {
+    fillColor: opaqueSource ? "#ffffff" : undefined,
+    opaque: opaqueSource,
+  });
   // Guard: canvas WebP encoding of pre-compressed JPEGs can produce larger
   // output. If that happens, re-encode at a proportionally lower quality so
   // the result is always ≤ the original size.

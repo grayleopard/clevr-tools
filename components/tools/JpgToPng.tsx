@@ -38,7 +38,7 @@ export default function JpgToPng() {
 
     for (const file of files) {
       try {
-        const blob = await toPng(file);
+        const blob = await toPng(file, { opaque: true });
         const baseName = file.name.replace(/\.(jpg|jpeg)$/i, "");
         converted.push({
           url: URL.createObjectURL(blob),

@@ -24,12 +24,21 @@ interface CompressedFile {
   url: string;
 }
 
+function waitForNextPaint(): Promise<void> {
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => resolve());
+    });
+  });
+}
+
 export default function ImageCompressor() {
   const [quality, setQuality] = useState(80);
   const [outputFormat, setOutputFormat] = useState<ImageOutputFormat>("original");
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<CompressedFile[]>([]);
   const [downloaded, setDownloaded] = useState(false);
+  const [hasSelection, setHasSelection] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
   const sourceFilesRef = useRef<File[]>([]);
@@ -46,6 +55,7 @@ export default function ImageCompressor() {
         });
         return [];
       });
+      await waitForNextPaint();
 
       try {
         const compressed: CompressedFile[] = [];
@@ -78,8 +88,9 @@ export default function ImageCompressor() {
   const handleFiles = useCallback(
     (files: File[]) => {
       sourceFilesRef.current = files;
+      setHasSelection(files.length > 0);
       setDownloaded(false);
-      compress(files, quality, outputFormat);
+      void compress(files, quality, outputFormat);
     },
     [quality, outputFormat, compress]
   );
@@ -119,6 +130,7 @@ export default function ImageCompressor() {
     });
     setResults([]);
     setDownloaded(false);
+    setHasSelection(false);
     sourceFilesRef.current = [];
     setResetKey((k) => k + 1);
   }, [results]);
@@ -134,7 +146,7 @@ export default function ImageCompressor() {
         maxSizeMB={50}
         onFiles={handleFiles}
         resetKey={resetKey}
-        compact={results.length > 0}
+        compact={hasSelection}
       />
 
       {/* 2. Options */}
