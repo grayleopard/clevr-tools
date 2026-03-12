@@ -222,9 +222,9 @@ function IdleView({
       onDragOver={onDragOver}
       onDrop={onDrop}
       onClick={onBrowse}
-      className={`flex min-h-[320px] cursor-pointer flex-col items-center justify-center gap-5 rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-all duration-200 ${
+      className={`flex min-h-[320px] cursor-pointer flex-col items-center justify-center gap-5 rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-[border-color,background-color] duration-200 ${
         isDraggingOver
-          ? "border-primary bg-primary/10 scale-[1.01]"
+          ? "border-primary bg-primary/10"
           : "border-border bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
       }`}
     >

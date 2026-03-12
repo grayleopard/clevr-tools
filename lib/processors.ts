@@ -81,8 +81,16 @@ export function toPng(file: File): Promise<Blob> {
 }
 
 /** Convert any image to WebP at the specified quality */
-export function toWebp(file: File, quality = 85): Promise<Blob> {
-  return convertViaCanvas(file, "image/webp", quality);
+export async function toWebp(file: File, quality = 85): Promise<Blob> {
+  const blob = await convertViaCanvas(file, "image/webp", quality);
+  // Guard: canvas WebP encoding of pre-compressed JPEGs can produce larger
+  // output. If that happens, re-encode at a proportionally lower quality so
+  // the result is always ≤ the original size.
+  if (blob.size > file.size && quality > 5) {
+    const targetQuality = Math.max(Math.round(quality * (file.size / blob.size)), 5);
+    return convertViaCanvas(file, "image/webp", targetQuality);
+  }
+  return blob;
 }
 
 /** Convert HEIC/HEIF to JPG using heic2any (dynamic import for SSR safety) */

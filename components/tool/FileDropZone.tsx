@@ -65,6 +65,7 @@ export default function FileDropZone({
   const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
   const [errorMsg, setErrorMsg] = useState("");
   const xrayCtx = usePdfXRayContext();
+  const dragCounter = useRef(0);
 
   // Reset internal state when parent changes resetKey
   const prevResetKey = useRef(resetKey);
@@ -148,7 +149,7 @@ export default function FileDropZone({
 
   const stateStyles: Record<DropState, string> = {
     idle: "border-border hover:border-primary/50 hover:bg-primary/[0.02]",
-    hover: "border-primary bg-primary/5 scale-[1.01]",
+    hover: "border-primary bg-primary/5",
     loaded: "border-primary/60 bg-primary/5",
     error: "border-destructive bg-destructive/5",
   };
@@ -223,10 +224,22 @@ export default function FileDropZone({
   return (
     <div className={`relative ${className}`}>
       <div
-        className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-all duration-200 cursor-pointer ${stateStyles[state]}`}
-        onDragOver={(e) => { e.preventDefault(); setState("hover"); }}
-        onDragLeave={() => setState("idle")}
-        onDrop={handleDrop}
+        className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-[border-color,background-color] duration-200 cursor-pointer ${stateStyles[state]}`}
+        onDragEnter={(e) => {
+          e.preventDefault();
+          if (!e.dataTransfer.types.includes("Files")) return;
+          dragCounter.current++;
+          if (dragCounter.current === 1) setState("hover");
+        }}
+        onDragOver={(e) => e.preventDefault()}
+        onDragLeave={() => {
+          dragCounter.current = Math.max(0, dragCounter.current - 1);
+          if (dragCounter.current === 0) setState("idle");
+        }}
+        onDrop={(e) => {
+          dragCounter.current = 0;
+          handleDrop(e);
+        }}
         onClick={() => inputRef.current?.click()}
         role="button"
         tabIndex={0}
