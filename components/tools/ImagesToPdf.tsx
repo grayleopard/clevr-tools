@@ -13,7 +13,6 @@ import {
   GripVertical,
   X,
   FileText,
-  Plus,
   Download,
   ChevronLeft,
   ChevronRight,
@@ -150,47 +149,6 @@ function PdfPagePreview({
           {pageSize === "fit" ? "Fit" : `${pageSize} ${orientation}`}
         </div>
       )}
-    </div>
-  );
-}
-
-/** Compact single-line bar for adding more files after initial upload. */
-function AddMoreBar({
-  accept,
-  onFiles,
-}: {
-  accept: string;
-  onFiles: (files: File[]) => void;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  return (
-    <div
-      className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
-      onClick={() => inputRef.current?.click()}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => {
-        e.preventDefault();
-        const droppedFiles = Array.from(e.dataTransfer.files);
-        if (droppedFiles.length) onFiles(droppedFiles);
-      }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        multiple
-        className="sr-only"
-        onChange={(e) => {
-          const selected = Array.from(e.target.files ?? []);
-          if (selected.length) onFiles(selected);
-          e.target.value = "";
-        }}
-      />
-      <Plus className="h-4 w-4" />
-      <span>Add more files</span>
     </div>
   );
 }
@@ -423,8 +381,14 @@ export default function ImagesToPdf({
             ))}
           </div>
 
-          {/* Add more files — compact bar */}
-          <AddMoreBar accept={accept} onFiles={addFiles} />
+          <FileDropZone
+            accept={accept}
+            multiple
+            maxSizeMB={50}
+            onFiles={addFiles}
+            resetKey={resetKey}
+            compact={files.length > 0}
+          />
 
           {/* Settings */}
           <div className="rounded-xl border border-border bg-card p-5 space-y-4">

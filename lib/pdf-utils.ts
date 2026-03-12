@@ -3,6 +3,7 @@
  * Only used in "use client" components — never runs server-side.
  */
 
+import { normalizeCanvasQuality } from "@/lib/image-quality";
 import { parsePageRange as parsePageRangeImpl } from "@/lib/parse-page-range.mjs";
 
 let workerConfigured = false;
@@ -39,7 +40,7 @@ export async function renderPageThumbnail(
   canvas.height = viewport.height;
   const ctx = canvas.getContext("2d")!;
   await page.render({ canvasContext: ctx, viewport, canvas }).promise;
-  const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+  const dataUrl = canvas.toDataURL("image/jpeg", normalizeCanvasQuality(0.6));
   doc.destroy();
   return dataUrl;
 }
@@ -66,7 +67,7 @@ export async function renderAllThumbnails(
     canvas.height = viewport.height;
     const ctx = canvas.getContext("2d")!;
     await page.render({ canvasContext: ctx, viewport, canvas }).promise;
-    thumbnails.push(canvas.toDataURL("image/jpeg", 0.6));
+    thumbnails.push(canvas.toDataURL("image/jpeg", normalizeCanvasQuality(0.6)));
     onProgress?.(i + 1, count);
   }
 
@@ -98,7 +99,7 @@ export async function renderPageToJpgBlob(
     canvas.toBlob(
       (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
       "image/jpeg",
-      quality / 100
+      normalizeCanvasQuality(quality)
     )
   );
   doc.destroy();

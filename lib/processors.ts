@@ -4,6 +4,8 @@
  * Used by both the individual tool components and SmartConverter.
  */
 
+import { normalizeCanvasQuality, qualityToPercent } from "@/lib/image-quality";
+
 export type ImageOutputFormat = "original" | "jpeg" | "webp";
 
 /** Compress an image using browser-image-compression */
@@ -13,6 +15,7 @@ export async function compressImage(
   outputFormat: ImageOutputFormat = "original"
 ): Promise<{ blob: Blob; ext: string; mimeType: string }> {
   const { default: imageCompression } = await import("browser-image-compression");
+  const qualityPercent = qualityToPercent(quality);
 
   const mimeType =
     outputFormat === "jpeg"
@@ -21,12 +24,23 @@ export async function compressImage(
       ? "image/webp"
       : file.type;
 
-  const compressed = await imageCompression(file, {
-    maxSizeMB: 100,
-    initialQuality: quality / 100,
-    useWebWorker: true,
-    fileType: mimeType,
-  });
+  const runCompression = (requestedQuality: number) =>
+    imageCompression(file, {
+      maxSizeMB: 100,
+      initialQuality: normalizeCanvasQuality(requestedQuality),
+      useWebWorker: true,
+      fileType: mimeType,
+    });
+
+  let compressed = await runCompression(quality);
+
+  if (outputFormat === "webp" && compressed.size > file.size && qualityPercent > 5) {
+    const adjustedQuality = Math.max(
+      Math.round(qualityPercent * (file.size / compressed.size)),
+      5
+    );
+    compressed = await runCompression(adjustedQuality);
+  }
 
   const ext =
     outputFormat === "jpeg"
@@ -65,7 +79,7 @@ export async function convertViaCanvas(
     canvas.toBlob(
       (b) => (b ? resolve(b) : reject(new Error("Canvas toBlob failed"))),
       outputMime,
-      quality !== undefined ? quality / 100 : undefined
+      normalizeCanvasQuality(quality)
     );
   });
 }
@@ -99,7 +113,7 @@ export async function heicToJpg(file: File, quality = 90): Promise<Blob> {
   const result = await heic2any({
     blob: file,
     toType: "image/jpeg",
-    quality: quality / 100,
+    quality: normalizeCanvasQuality(quality),
   });
   return Array.isArray(result) ? result[0] : result;
 }

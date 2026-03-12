@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo, useEffect } from "react";
-import { X, AlertCircle, FileText, ImageIcon, Smartphone, Lock, Plus } from "lucide-react";
+import { AlertCircle, FileText, ImageIcon, Smartphone, Lock, Plus } from "lucide-react";
 import { usePdfXRayContext } from "@/lib/xray/pdf-xray-context";
 
 interface FileDropZoneProps {
@@ -66,6 +66,8 @@ export default function FileDropZone({
   const [errorMsg, setErrorMsg] = useState("");
   const xrayCtx = usePdfXRayContext();
   const dragCounter = useRef(0);
+  const hasSelection = loadedFiles.length > 0;
+  const showCompact = compact || hasSelection;
 
   // Reset internal state when parent changes resetKey
   const prevResetKey = useRef(resetKey);
@@ -154,157 +156,137 @@ export default function FileDropZone({
     error: "border-destructive bg-destructive/5",
   };
 
-  // ── Compact "Add more files" bar (controlled by parent) ─────
-  if (compact) {
-    return (
-      <div className={`relative ${className}`}>
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          className="sr-only"
-          onChange={handleChange}
-        />
-        <div
-          className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleDrop}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
-        >
-          <Plus className="h-4 w-4" />
-          <span>Add more files</span>
-        </div>
-      </div>
-    );
-  }
+  const openPicker = useCallback(() => {
+    inputRef.current?.click();
+  }, []);
 
-  // ── Compact bar when file(s) are loaded ──────────────────────
-  if (state === "loaded") {
-    const totalSize = loadedFiles.reduce((s, f) => s + f.size, 0);
-    const label =
-      multiple && loadedFiles.length > 1
-        ? `${loadedFiles.length} files selected`
-        : (loadedFiles[0]?.name ?? "");
-
-    return (
-      <div className={`relative ${className}`}>
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          className="sr-only"
-          onChange={handleChange}
-        />
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-2.5">
-          <DropIcon accept={accept} className="h-4 w-4 shrink-0 text-primary" />
-          <span className="flex-1 min-w-0 text-sm font-medium text-foreground truncate">
-            {label}
-          </span>
-          <span className="shrink-0 text-xs text-muted-foreground">
-            {formatBytes(totalSize)}
-          </span>
-          <button
-            type="button"
-            onClick={clear}
-            className="shrink-0 rounded p-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-            aria-label="Remove file"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const totalSize = loadedFiles.reduce((sum, file) => sum + file.size, 0);
+  const compactLabel = multiple ? "Add more files" : "Choose another file";
 
   return (
     <div className={`relative ${className}`}>
-      <div
-        className={`relative rounded-xl border-2 border-dashed p-8 text-center transition-[border-color,background-color] duration-200 cursor-pointer ${stateStyles[state]}`}
-        onDragEnter={(e) => {
-          e.preventDefault();
-          if (!e.dataTransfer.types.includes("Files")) return;
-          dragCounter.current++;
-          if (dragCounter.current === 1) setState("hover");
-        }}
-        onDragOver={(e) => e.preventDefault()}
-        onDragLeave={() => {
-          dragCounter.current = Math.max(0, dragCounter.current - 1);
-          if (dragCounter.current === 0) setState("idle");
-        }}
-        onDrop={(e) => {
-          dragCounter.current = 0;
-          handleDrop(e);
-        }}
-        onClick={() => inputRef.current?.click()}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          className="sr-only"
-          onChange={handleChange}
-        />
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        multiple={multiple}
+        className="sr-only"
+        onChange={handleChange}
+      />
 
-        {state === "error" ? (
-          <div className="flex flex-col items-center gap-2">
-            <AlertCircle className="h-10 w-10 text-destructive" />
-            <p className="text-sm font-medium text-destructive">{errorMsg}</p>
-            <button
-              type="button"
-              className="text-xs text-muted-foreground underline"
-              onClick={(e) => { e.stopPropagation(); clear(); }}
-            >
-              Try again
-            </button>
+      {showCompact ? (
+        <div className="space-y-2">
+          <div
+            className="flex min-h-14 items-center justify-center gap-3 rounded-lg border border-dashed border-border px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary cursor-pointer"
+            onClick={openPicker}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleDrop}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && openPicker()}
+          >
+            <Plus className="h-4 w-4 shrink-0" />
+            <span className="font-medium">{compactLabel}</span>
+            {hasSelection && (
+              <span className="truncate text-xs text-muted-foreground">
+                {multiple && loadedFiles.length > 1
+                  ? `${loadedFiles.length} selected · ${formatBytes(totalSize)}`
+                  : `${loadedFiles[0]?.name ?? ""} · ${formatBytes(totalSize)}`}
+              </span>
+            )}
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-3">
-            <div className="rounded-full bg-primary/10 p-3">
-              <DropIcon accept={accept} />
+          {state === "error" && errorMsg ? (
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+              <span className="min-w-0 truncate">{errorMsg}</span>
+              <button
+                type="button"
+                className="shrink-0 underline"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  clear();
+                }}
+              >
+                Clear
+              </button>
             </div>
-            <div>
-              <p className="font-medium text-foreground">
-                {state === "hover" ? "Drop it here" : "Drag & drop files here"}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                or <span className="text-primary underline">click to browse</span>
-              </p>
+          ) : null}
+        </div>
+      ) : (
+        <div
+          className={`relative min-h-[220px] rounded-xl border-2 border-dashed p-8 text-center transition-[border-color,background-color] duration-200 cursor-pointer ${stateStyles[state]}`}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            if (!e.dataTransfer.types.includes("Files")) return;
+            dragCounter.current++;
+            if (dragCounter.current === 1) setState("hover");
+          }}
+          onDragOver={(e) => e.preventDefault()}
+          onDragLeave={() => {
+            dragCounter.current = Math.max(0, dragCounter.current - 1);
+            if (dragCounter.current === 0) setState("idle");
+          }}
+          onDrop={(e) => {
+            dragCounter.current = 0;
+            handleDrop(e);
+          }}
+          onClick={openPicker}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && openPicker()}
+        >
+          {state === "error" ? (
+            <div className="flex flex-col items-center gap-2">
+              <AlertCircle className="h-10 w-10 text-destructive" />
+              <p className="text-sm font-medium text-destructive">{errorMsg}</p>
+              <button
+                type="button"
+                className="text-xs text-muted-foreground underline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clear();
+                }}
+              >
+                Try again
+              </button>
             </div>
+          ) : (
+            <div className="flex flex-col items-center gap-3">
+              <div className="rounded-full bg-primary/10 p-3">
+                <DropIcon accept={accept} />
+              </div>
+              <div>
+                <p className="font-medium text-foreground">
+                  {state === "hover" ? "Drop it here" : "Drag & drop files here"}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  or <span className="text-primary underline">click to browse</span>
+                </p>
+              </div>
 
-            {/* Format pills */}
-            <div className="flex flex-wrap justify-center gap-1.5">
-              {formatLabels.map((fmt) => (
-                <span
-                  key={fmt}
-                  className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
-                >
-                  {fmt}
-                </span>
-              ))}
-              {maxSizeMB && (
-                <span className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs text-muted-foreground">
-                  Max {maxSizeMB} MB
-                </span>
-              )}
-            </div>
+              <div className="flex flex-wrap justify-center gap-1.5">
+                {formatLabels.map((fmt) => (
+                  <span
+                    key={fmt}
+                    className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                  >
+                    {fmt}
+                  </span>
+                ))}
+                {maxSizeMB && (
+                  <span className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs text-muted-foreground">
+                    Max {maxSizeMB} MB
+                  </span>
+                )}
+              </div>
 
-            {/* Privacy line */}
-            <p className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
-              <Lock className="h-3 w-3 shrink-0" />
-              Files stay in your browser — nothing is uploaded
-            </p>
-          </div>
-        )}
-      </div>
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
+                <Lock className="h-3 w-3 shrink-0" />
+                Files stay in your browser — nothing is uploaded
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

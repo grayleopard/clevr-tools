@@ -1,10 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Sparkles, Upload } from "lucide-react";
 
-const SmartConverter = dynamic(() => import("@/components/home/SmartConverter"), {
+const loadSmartConverter = () => import("@/components/home/SmartConverter");
+
+const SmartConverter = dynamic(loadSmartConverter, {
   ssr: false,
   loading: () => null,
 });
@@ -93,26 +95,44 @@ function SmartConverterSkeleton({
 
 export default function SmartConverterDeferred() {
   const [enabled, setEnabled] = useState(false);
-  const [browseToken, setBrowseToken] = useState(0);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [pendingFileToken, setPendingFileToken] = useState(0);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const activateBrowse = useCallback(() => {
+    void loadSmartConverter();
+    inputRef.current?.click();
+  }, []);
+
+  const activateWithFile = useCallback(async (file: File) => {
+    setPendingFile(file);
+    setPendingFileToken((token) => token + 1);
+    await loadSmartConverter();
     setEnabled(true);
-    setBrowseToken((token) => token + 1);
   }, []);
 
   const dropFile = useCallback((file: File) => {
-    setEnabled(true);
-    setPendingFile(file);
-    setPendingFileToken((token) => token + 1);
+    void activateWithFile(file);
+  }, [activateWithFile]);
+
+  useEffect(() => {
+    const schedulePreload = () => {
+      void loadSmartConverter();
+    };
+
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(schedulePreload, { timeout: 1500 });
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = setTimeout(schedulePreload, 800);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   if (enabled) {
     return (
       <SmartConverter
-        deferredBrowseToken={browseToken}
         deferredFile={pendingFile}
         deferredFileToken={pendingFileToken}
         onDeferredFileHandled={() => setPendingFile(null)}
@@ -121,11 +141,24 @@ export default function SmartConverterDeferred() {
   }
 
   return (
-    <SmartConverterSkeleton
-      isDraggingOver={isDraggingOver}
-      onActivateBrowse={activateBrowse}
-      onDropFile={dropFile}
-      onDragState={setIsDraggingOver}
-    />
+    <>
+      <SmartConverterSkeleton
+        isDraggingOver={isDraggingOver}
+        onActivateBrowse={activateBrowse}
+        onDropFile={dropFile}
+        onDragState={setIsDraggingOver}
+      />
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.pdf,.docx,.doc"
+        className="sr-only"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) void activateWithFile(file);
+          event.target.value = "";
+        }}
+      />
+    </>
   );
 }

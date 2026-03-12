@@ -11,6 +11,7 @@ import ReactCrop, {
 import "react-image-crop/dist/ReactCrop.css";
 import FileDropZone from "@/components/tool/FileDropZone";
 import { addToast } from "@/lib/toast";
+import { normalizeCanvasQuality } from "@/lib/image-quality";
 import { formatBytes } from "@/lib/utils";
 import { Download, X } from "lucide-react";
 import { TipJar } from "@/components/tool/TipJar";
@@ -158,7 +159,7 @@ export default function ImageCropper() {
             : "png";
 
       const blob = await new Promise<Blob>((resolve) =>
-        canvas.toBlob((b) => resolve(b!), outputType, 0.92)
+        canvas.toBlob((b) => resolve(b!), outputType, normalizeCanvasQuality(0.92))
       );
 
       const baseName = fileName.replace(/\.[^.]+$/, "");

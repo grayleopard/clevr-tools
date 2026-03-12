@@ -4,10 +4,11 @@ import { useState, useCallback, useRef } from "react";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
+import { normalizeCanvasQuality } from "@/lib/image-quality";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
 
-import { Download, Package, Lock, Unlock, X, Plus } from "lucide-react";
+import { Download, Package, Lock, Unlock, X } from "lucide-react";
 import { TipJar } from "@/components/tool/TipJar";
 
 interface UploadedImage {
@@ -53,41 +54,6 @@ const qualityOptions = [
   { label: "High", value: 0.92 },
   { label: "Max", value: 1.0 },
 ];
-
-/** Compact single-line bar for adding/replacing files after initial upload. */
-function AddMoreBar({ accept, onFiles }: { accept: string; onFiles: (files: File[]) => void }) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  return (
-    <div
-      className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
-      onClick={() => inputRef.current?.click()}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => {
-        e.preventDefault();
-        const droppedFiles = Array.from(e.dataTransfer.files);
-        if (droppedFiles.length) onFiles(droppedFiles);
-      }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        multiple
-        className="sr-only"
-        onChange={(e) => {
-          const selected = Array.from(e.target.files ?? []);
-          if (selected.length) onFiles(selected);
-          e.target.value = "";
-        }}
-      />
-      <Plus className="h-4 w-4" />
-      <span>Add more files</span>
-    </div>
-  );
-}
 
 export default function ImageResizer() {
   const [images, setImages] = useState<UploadedImage[]>([]);
@@ -207,7 +173,7 @@ export default function ImageResizer() {
           canvas.toBlob(
             (b) => resolve(b!),
             mimeType,
-            showQuality ? quality : undefined
+            showQuality ? normalizeCanvasQuality(quality) : undefined
           )
         );
 
@@ -300,51 +266,52 @@ export default function ImageResizer() {
 
   return (
     <div className="space-y-6">
-      {/* Drop zone — full when no images, compact when loaded */}
-      {images.length === 0 ? (
-        <FileDropZone
-          accept=".jpg,.jpeg,.png,.webp,.gif"
-          multiple
-          maxSizeMB={50}
-          onFiles={handleFiles}
-          resetKey={resetKey}
-        />
-      ) : (
-        <AddMoreBar accept=".jpg,.jpeg,.png,.webp,.gif" onFiles={handleFiles} />
-      )}
+      <FileDropZone
+        accept=".jpg,.jpeg,.png,.webp,.gif"
+        multiple
+        maxSizeMB={50}
+        onFiles={handleFiles}
+        resetKey={resetKey}
+        compact={images.length > 0}
+      />
 
       {images.length > 0 && (
         <>
-          {/* Original info with preview */}
-          <div className="rounded-xl border border-border bg-card p-4">
-            <div className="flex items-center gap-4">
-              {/* Image thumbnail */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={images[0].url}
-                alt={images[0].file.name}
-                className="h-16 w-16 shrink-0 rounded-lg border border-border object-cover"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {images[0].file.name}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {images[0].width} &times; {images[0].height} px
-                  {images.length === 1 && (
-                    <span> &middot; {formatBytes(images[0].file.size)}</span>
-                  )}
-                  {images.length > 1 && (
-                    <span> &middot; {images.length} images</span>
-                  )}
-                </p>
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
+            <div className="grid gap-4 sm:grid-cols-[160px_minmax(0,1fr)] sm:items-start">
+              <div className="overflow-hidden rounded-xl border border-border bg-muted/30">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={images[0].url}
+                  alt={images[0].file.name}
+                  className="h-40 w-full object-contain sm:h-44"
+                />
               </div>
-              <button
-                onClick={reset}
-                className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <div className="flex min-w-0 items-start gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {images[0].file.name}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {images[0].width} &times; {images[0].height} px
+                    {images.length === 1 ? (
+                      <span> &middot; {formatBytes(images[0].file.size)}</span>
+                    ) : (
+                      <span> &middot; {images.length} images loaded</span>
+                    )}
+                  </p>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Preview shown from the uploaded source image. Resize controls below keep the current preset selection and output workflow intact.
+                  </p>
+                </div>
+                <button
+                  onClick={reset}
+                  className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  aria-label="Remove uploaded images"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
 
