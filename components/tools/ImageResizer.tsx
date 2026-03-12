@@ -321,21 +321,33 @@ export default function ImageResizer() {
 
       {images.length > 0 && (
         <>
-          {/* Original info */}
+          {/* Original info with preview */}
           <div className="rounded-xl border border-border bg-card p-4">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-muted-foreground">
-                Original: {images[0].width} &times; {images[0].height} px
-                {images.length === 1 && (
-                  <span> &middot; {formatBytes(images[0].file.size)}</span>
-                )}
-                {images.length > 1 && (
-                  <span> &middot; {images.length} images</span>
-                )}
+            <div className="flex items-center gap-4">
+              {/* Image thumbnail */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={images[0].url}
+                alt={images[0].file.name}
+                className="h-16 w-16 shrink-0 rounded-lg border border-border object-cover"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {images[0].file.name}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {images[0].width} &times; {images[0].height} px
+                  {images.length === 1 && (
+                    <span> &middot; {formatBytes(images[0].file.size)}</span>
+                  )}
+                  {images.length > 1 && (
+                    <span> &middot; {images.length} images</span>
+                  )}
+                </p>
               </div>
               <button
                 onClick={reset}
-                className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>

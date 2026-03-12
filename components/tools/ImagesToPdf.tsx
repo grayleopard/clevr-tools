@@ -4,14 +4,21 @@ import { useState, useCallback, useRef } from "react";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import PostDownloadState from "@/components/tool/PostDownloadState";
-import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { usePasteImage } from "@/lib/usePasteImage";
 import { addToast } from "@/lib/toast";
 import type { PDFDocument } from "pdf-lib";
 import { TipJar } from "@/components/tool/TipJar";
-import { GripVertical, X, FileText, Plus } from "lucide-react";
-import { formatBytes } from "@/lib/utils";
+import {
+  GripVertical,
+  X,
+  FileText,
+  Plus,
+  Download,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { formatBytes, truncateFilename } from "@/lib/utils";
 
 type PageSize = "A4" | "Letter" | "fit";
 type Orientation = "portrait" | "landscape";
@@ -39,25 +46,33 @@ async function fileToEmbeddable(file: File, pdfDoc: PDFDocument) {
     return pdfDoc.embedPng(arrayBuffer);
   }
   // WebP and other formats: convert via canvas to PNG first
-  return new Promise<Awaited<ReturnType<typeof pdfDoc.embedPng>>>((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d")!;
-      ctx.drawImage(img, 0, 0);
-      URL.revokeObjectURL(url);
-      canvas.toBlob(async (blob) => {
-        if (!blob) { reject(new Error("Canvas toBlob failed")); return; }
-        const buf = await blob.arrayBuffer();
-        resolve(pdfDoc.embedPng(buf));
-      }, "image/png");
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Failed to load image")); };
-    img.src = url;
-  });
+  return new Promise<Awaited<ReturnType<typeof pdfDoc.embedPng>>>(
+    (resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            reject(new Error("Canvas toBlob failed"));
+            return;
+          }
+          const buf = await blob.arrayBuffer();
+          resolve(pdfDoc.embedPng(buf));
+        }, "image/png");
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("Failed to load image"));
+      };
+      img.src = url;
+    }
+  );
 }
 
 // ─── Page dimensions in points (PDF standard) ────────────────────────────────
@@ -67,87 +82,86 @@ const PAGE_DIMS = {
   Letter: { w: 612, h: 792 },
 } as const;
 
-/** CSS mockup of the first PDF page showing the image laid out on the chosen page size. */
+function getPageDims(
+  pageSize: PageSize,
+  orientation: Orientation
+): { w: number; h: number } {
+  let w: number, h: number;
+  if (pageSize === "fit") {
+    w = 600;
+    h = 800;
+  } else {
+    const dims = PAGE_DIMS[pageSize];
+    w = dims.w;
+    h = dims.h;
+  }
+  if (pageSize !== "fit" && orientation === "landscape") {
+    [w, h] = [h, w];
+  }
+  return { w, h };
+}
+
+/** CSS mockup of a single PDF page with the image positioned inside. */
 function PdfPagePreview({
-  files,
+  file,
   pageSize,
   orientation,
   margins,
+  maxH = 320,
+  maxW = 280,
+  showLabel = true,
 }: {
-  files: OrderedFile[];
+  file: OrderedFile;
   pageSize: PageSize;
   orientation: Orientation;
   margins: boolean;
+  maxH?: number;
+  maxW?: number;
+  showLabel?: boolean;
 }) {
-  if (files.length === 0) return null;
-  const first = files[0];
-
-  // Get page dimensions in points
-  let pageW: number, pageH: number;
-  if (pageSize === "fit") {
-    // For "fit", use a 3:4 placeholder ratio — the image fills the page
-    pageW = 600;
-    pageH = 800;
-  } else {
-    const dims = PAGE_DIMS[pageSize];
-    pageW = dims.w;
-    pageH = dims.h;
-  }
-
-  if (pageSize !== "fit" && orientation === "landscape") {
-    [pageW, pageH] = [pageH, pageW];
-  }
-
+  const { w: pageW, h: pageH } = getPageDims(pageSize, orientation);
   const marginPt = margins ? 40 : 0;
   const marginPct = (marginPt / pageW) * 100;
   const marginPctV = (marginPt / pageH) * 100;
-
-  // Scale the mockup so it fits on screen without overwhelming white space.
-  // For "fit" mode the image IS the page, so show it larger.
-  const maxMockupH = pageSize === "fit" ? 400 : 360;
-  const maxMockupW = 320;
-  const scale = Math.min(maxMockupH / pageH, maxMockupW / pageW);
+  const scale = Math.min(maxH / pageH, maxW / pageW);
   const mockupW = pageW * scale;
   const mockupH = pageH * scale;
 
   return (
-    <div className="flex justify-center">
-      <div className="relative rounded-sm border border-border bg-white dark:bg-zinc-100 overflow-hidden shadow-sm"
-        style={{ width: mockupW, height: mockupH }}
+    <div
+      className="relative rounded-sm bg-white dark:bg-zinc-100 overflow-hidden shadow-md border border-zinc-200 dark:border-zinc-300"
+      style={{ width: mockupW, height: mockupH }}
+    >
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ padding: `${marginPctV}% ${marginPct}%` }}
       >
-        {/* Margin area shown as subtle padding with dashed indicator */}
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{
-            padding: `${marginPctV}% ${marginPct}%`,
-          }}
-        >
-          <div className={`relative w-full h-full flex items-center justify-center ${margins ? "border border-dashed border-zinc-300 dark:border-zinc-400 rounded-[1px]" : ""}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={first.previewUrl}
-              alt="Preview"
-              className="max-w-full max-h-full object-contain"
-            />
-          </div>
+        <div className="relative w-full h-full flex items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={file.previewUrl}
+            alt="Preview"
+            className="max-w-full max-h-full object-contain"
+          />
         </div>
-        {/* Page label */}
-        <div className="absolute bottom-1.5 right-2 text-[10px] text-zinc-400 font-medium">
+      </div>
+      {showLabel && (
+        <div className="absolute bottom-1 right-1.5 text-[9px] text-zinc-400 font-medium">
           {pageSize === "fit" ? "Fit" : `${pageSize} ${orientation}`}
         </div>
-        {/* Page number */}
-        {files.length > 1 && (
-          <div className="absolute bottom-1.5 left-2 text-[10px] text-zinc-400 font-medium">
-            Page 1 of {files.length}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }
 
 /** Compact single-line bar for adding more files after initial upload. */
-function AddMoreBar({ accept, onFiles }: { accept: string; onFiles: (files: File[]) => void }) {
+function AddMoreBar({
+  accept,
+  onFiles,
+}: {
+  accept: string;
+  onFiles: (files: File[]) => void;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div
@@ -181,16 +195,20 @@ function AddMoreBar({ accept, onFiles }: { accept: string; onFiles: (files: File
   );
 }
 
-export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPdfProps) {
+export default function ImagesToPdf({
+  accept,
+  toolSlug,
+  resetLabel,
+}: ImagesToPdfProps) {
   const [files, setFiles] = useState<OrderedFile[]>([]);
   const [pageSize, setPageSize] = useState<PageSize>("A4");
   const [orientation, setOrientation] = useState<Orientation>("portrait");
   const [margins, setMargins] = useState(true);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
-  const [resultSize, setResultSize] = useState(0);
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const [previewIndex, setPreviewIndex] = useState(0);
 
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
@@ -202,27 +220,46 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
       previewUrl: URL.createObjectURL(f),
     }));
     setFiles((prev) => [...prev, ...ordered]);
-    setResultUrl(null);
     setDownloaded(false);
-  }, []);
+    if (resultUrl) URL.revokeObjectURL(resultUrl);
+    setResultUrl(null);
+  }, [resultUrl]);
 
   useAutoLoadFile(addFiles);
   usePasteImage((file) => addFiles([file]));
 
-  const removeFile = useCallback((id: string) => {
-    setFiles((prev) => {
-      const f = prev.find((x) => x.id === id);
-      if (f) URL.revokeObjectURL(f.previewUrl);
-      return prev.filter((x) => x.id !== id);
-    });
-  }, []);
+  const removeFile = useCallback(
+    (id: string) => {
+      setFiles((prev) => {
+        const f = prev.find((x) => x.id === id);
+        if (f) URL.revokeObjectURL(f.previewUrl);
+        const next = prev.filter((x) => x.id !== id);
+        // Adjust preview index if needed
+        if (previewIndex >= next.length && next.length > 0) {
+          setPreviewIndex(next.length - 1);
+        }
+        return next;
+      });
+    },
+    [previewIndex]
+  );
 
   // Drag-to-reorder handlers
-  const handleDragStart = (index: number) => { dragItem.current = index; };
-  const handleDragEnter = (index: number) => { dragOverItem.current = index; };
+  const handleDragStart = (index: number) => {
+    dragItem.current = index;
+  };
+  const handleDragEnter = (index: number) => {
+    dragOverItem.current = index;
+  };
   const handleDragEnd = () => {
-    if (dragItem.current === null || dragOverItem.current === null || dragItem.current === dragOverItem.current) {
-      dragItem.current = null; dragOverItem.current = null; return;
+    if (
+      dragItem.current === null ||
+      dragOverItem.current === null ||
+      dragItem.current === dragOverItem.current
+    ) {
+      dragItem.current = null;
+      dragOverItem.current = null;
+      return;
     }
     setFiles((prev) => {
       const copy = [...prev];
@@ -234,9 +271,9 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
     dragOverItem.current = null;
   };
 
-  const handleCreate = useCallback(async () => {
-    if (files.length === 0) return;
-    setIsProcessing(true);
+  const handleDownload = useCallback(async () => {
+    if (files.length === 0 || isDownloading) return;
+    setIsDownloading(true);
     try {
       const { PDFDocument, PageSizes } = await import("pdf-lib");
       const pdfDoc = await PDFDocument.create();
@@ -273,17 +310,29 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
       }
 
       const bytes = await pdfDoc.save();
-      const blob = new Blob([bytes.buffer as ArrayBuffer], { type: "application/pdf" });
-      if (resultUrl) URL.revokeObjectURL(resultUrl);
+      const blob = new Blob([bytes.buffer as ArrayBuffer], {
+        type: "application/pdf",
+      });
+
+      // Trigger download
       const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = outputFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Store for re-download
+      if (resultUrl) URL.revokeObjectURL(resultUrl);
       setResultUrl(url);
-      setResultSize(blob.size);
-      addToast("PDF created successfully", "success");
+      setDownloaded(true);
+      addToast("PDF downloaded", "success");
     } catch (err) {
       console.error(err);
       addToast("Failed to create PDF. Please try again.", "error");
     } finally {
-      setIsProcessing(false);
+      setIsDownloading(false);
     }
   }, [files, pageSize, orientation, margins, resultUrl]);
 
@@ -292,33 +341,56 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
     if (resultUrl) URL.revokeObjectURL(resultUrl);
     setFiles([]);
     setResultUrl(null);
-    setResultSize(0);
     setDownloaded(false);
+    setPreviewIndex(0);
     setResetKey((k) => k + 1);
   }, [files, resultUrl]);
 
-  const outputFilename = files.length > 0 ? `${files[0].file.name.replace(/\.[^.]+$/, "")}.pdf` : "output.pdf";
+  const outputFilename =
+    files.length > 0
+      ? `${files[0].file.name.replace(/\.[^.]+$/, "")}.pdf`
+      : "output.pdf";
+
+  // Clamp preview index
+  const safePreviewIndex = Math.min(
+    previewIndex,
+    Math.max(0, files.length - 1)
+  );
 
   return (
     <div className="space-y-6">
       <PageDragOverlay onFiles={addFiles} />
 
-      {/* Drop zone — collapse when files are loaded */}
+      {/* Drop zone — full when no files, hidden when files loaded */}
       {files.length === 0 && (
-        <FileDropZone accept={accept} multiple maxSizeMB={50} onFiles={addFiles} resetKey={resetKey} />
+        <FileDropZone
+          accept={accept}
+          multiple
+          maxSizeMB={50}
+          onFiles={addFiles}
+          resetKey={resetKey}
+        />
       )}
 
-      {/* Reorderable file list */}
-      {files.length > 0 && !isProcessing && !downloaded && (
+      {/* Main content — shown after file upload, hidden after download */}
+      {files.length > 0 && !downloaded && (
         <div className="space-y-4">
+          {/* File list header */}
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">
               {files.length === 1
-                ? `${files[0].file.name} · ${formatBytes(files[0].file.size)}`
+                ? `${truncateFilename(files[0].file.name, 40)} · ${formatBytes(files[0].file.size)}`
                 : `${files.length} images — drag to reorder`}
             </h2>
-            <button onClick={reset} className="text-xs text-muted-foreground underline hover:text-foreground">Clear all</button>
+            <button
+              onClick={reset}
+              className="text-xs text-muted-foreground underline hover:text-foreground"
+            >
+              Clear all
+            </button>
           </div>
+
+          {/* Thumbnail grid */}
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
             {files.map((f, i) => (
               <div
@@ -331,7 +403,11 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
                 className="relative cursor-grab active:cursor-grabbing group"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={f.previewUrl} alt={f.file.name} className="w-full rounded-lg border border-border object-contain bg-muted/20 aspect-square" />
+                <img
+                  src={f.previewUrl}
+                  alt={f.file.name}
+                  className="w-full rounded-lg border border-border object-contain bg-muted/20 aspect-square"
+                />
                 <div className="absolute top-1 left-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground shadow">
                   {i + 1}
                 </div>
@@ -351,7 +427,7 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
           {/* Add more files — compact bar */}
           <AddMoreBar accept={accept} onFiles={addFiles} />
 
-          {/* Options */}
+          {/* Settings */}
           <div className="rounded-xl border border-border bg-card p-5 space-y-4">
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
@@ -405,52 +481,70 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
           </div>
 
           {/* Live preview */}
-          <PdfPagePreview
-            files={files}
-            pageSize={pageSize}
-            orientation={orientation}
-            margins={margins}
-          />
+          <div className="flex flex-col items-center gap-3">
+            <PdfPagePreview
+              file={files[safePreviewIndex]}
+              pageSize={pageSize}
+              orientation={orientation}
+              margins={margins}
+            />
 
-          {/* Create / Regenerate button */}
+            {/* Page navigation for multi-file */}
+            {files.length > 1 && (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() =>
+                    setPreviewIndex((i) => Math.max(0, i - 1))
+                  }
+                  disabled={safePreviewIndex === 0}
+                  className="rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  Page {safePreviewIndex + 1} of {files.length}
+                </span>
+                <button
+                  onClick={() =>
+                    setPreviewIndex((i) =>
+                      Math.min(files.length - 1, i + 1)
+                    )
+                  }
+                  disabled={safePreviewIndex === files.length - 1}
+                  className="rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Download bar — generates PDF on click */}
           <button
-            onClick={handleCreate}
-            className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border-2 border-primary/25 bg-primary/5 px-5 py-4 transition-all hover:border-primary/50 hover:bg-primary/10 active:scale-[0.99] disabled:opacity-70 disabled:cursor-wait"
           >
-            Create PDF
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10">
+              <FileText className="h-5 w-5 text-red-600 dark:text-red-400" />
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-1 text-left">
+              <span className="truncate text-sm font-semibold text-foreground">
+                {truncateFilename(outputFilename, 35)}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {files.length} page{files.length > 1 ? "s" : ""}
+              </span>
+            </div>
+            <div className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all group-hover:opacity-90 group-hover:shadow-md">
+              <Download className="h-4 w-4" />
+              <span>{isDownloading ? "Generating…" : "Download"}</span>
+            </div>
           </button>
 
-          {/* Preview + Download */}
-          {resultUrl && (
-            <div className="space-y-4 animate-in fade-in duration-300">
-              <div className="rounded-xl border border-border bg-card p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10">
-                    <FileText className="h-5 w-5 text-red-600 dark:text-red-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{outputFilename}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {files.length} page{files.length > 1 ? "s" : ""} · {formatBytes(resultSize)}
-                    </p>
-                  </div>
-                  <a
-                    href={resultUrl}
-                    download={outputFilename}
-                    onClick={() => setDownloaded(true)}
-                    className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-                  >
-                    Download
-                  </a>
-                </div>
-              </div>
-              <TipJar />
-            </div>
-          )}
+          <TipJar />
         </div>
       )}
-
-      {isProcessing && <ProcessingIndicator label="Creating PDF…" />}
 
       {/* Post-download */}
       {downloaded && (
@@ -461,8 +555,12 @@ export default function ImagesToPdf({ accept, toolSlug, resetLabel }: ImagesToPd
             onReset={reset}
             redownloadSlot={
               resultUrl ? (
-                <a href={resultUrl} download={outputFilename} className="underline hover:text-foreground transition-colors">
-                  Re-download {outputFilename}
+                <a
+                  href={resultUrl}
+                  download={outputFilename}
+                  className="underline hover:text-foreground transition-colors"
+                >
+                  Re-download {truncateFilename(outputFilename, 28)}
                 </a>
               ) : undefined
             }

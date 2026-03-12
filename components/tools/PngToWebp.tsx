@@ -13,9 +13,44 @@ import { Slider } from "@/components/ui/slider";
 import { toWebp } from "@/lib/processors";
 import { addToast } from "@/lib/toast";
 
-import { Package } from "lucide-react";
+import { Package, Plus } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
 import { TipJar } from "@/components/tool/TipJar";
+
+/** Compact single-line bar for adding/replacing files after initial upload. */
+function AddMoreBar({ onFiles }: { onFiles: (files: File[]) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <div
+      className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        if (droppedFiles.length) onFiles(droppedFiles);
+      }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".png"
+        multiple
+        className="sr-only"
+        onChange={(e) => {
+          const selected = Array.from(e.target.files ?? []);
+          if (selected.length) onFiles(selected);
+          e.target.value = "";
+        }}
+      />
+      <Plus className="h-4 w-4" />
+      <span>Add more files</span>
+    </div>
+  );
+}
 
 interface Result {
   url: string;
@@ -32,6 +67,7 @@ export default function PngToWebp() {
   const [results, setResults] = useState<Result[]>([]);
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const [hasFiles, setHasFiles] = useState(false);
 
   const sourceFilesRef = useRef<File[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -83,6 +119,7 @@ export default function PngToWebp() {
   const handleFiles = useCallback(
     (files: File[]) => {
       sourceFilesRef.current = files;
+      setHasFiles(true);
       setDownloaded(false);
       convert(files, quality);
     },
@@ -128,6 +165,7 @@ export default function PngToWebp() {
     });
     setResults([]);
     setDownloaded(false);
+    setHasFiles(false);
     sourceFilesRef.current = [];
     setResetKey((k) => k + 1);
   }, [results]);
@@ -136,8 +174,12 @@ export default function PngToWebp() {
     <div className="space-y-6">
       <PageDragOverlay onFiles={handleFiles} />
 
-      {/* 1. Drop zone */}
-      <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
+      {/* 1. Drop zone — full when no files, compact when loaded */}
+      {!hasFiles ? (
+        <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
+      ) : (
+        <AddMoreBar onFiles={handleFiles} />
+      )}
 
       {/* 2. Options */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">
