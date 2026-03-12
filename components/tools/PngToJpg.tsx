@@ -57,9 +57,6 @@ export default function PngToJpg() {
           originalSize: file.size,
         };
         setResult(r);
-        const pct = Math.round((1 - r.size / r.originalSize) * 100);
-        if (pct > 0) addToast(`Converted to JPG — ${pct}% smaller`, "success");
-        else addToast("Converted to JPG", "success");
       } catch (err) {
         console.error("Conversion failed:", err);
         addToast("Conversion failed. Please try again.", "error");
@@ -114,7 +111,7 @@ export default function PngToJpg() {
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".png" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".png" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} compact={result !== null || isProcessing} />
 
       {/* 2. Options */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">

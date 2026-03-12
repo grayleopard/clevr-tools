@@ -327,7 +327,6 @@ export default function ImagesToPdf({
       if (resultUrl) URL.revokeObjectURL(resultUrl);
       setResultUrl(url);
       setDownloaded(true);
-      addToast("PDF downloaded", "success");
     } catch (err) {
       console.error(err);
       addToast("Failed to create PDF. Please try again.", "error");

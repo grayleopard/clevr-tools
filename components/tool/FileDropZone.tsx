@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo, useEffect } from "react";
-import { X, AlertCircle, FileText, ImageIcon, Smartphone, Lock } from "lucide-react";
+import { X, AlertCircle, FileText, ImageIcon, Smartphone, Lock, Plus } from "lucide-react";
 import { usePdfXRayContext } from "@/lib/xray/pdf-xray-context";
 
 interface FileDropZoneProps {
@@ -12,6 +12,8 @@ interface FileDropZoneProps {
   className?: string;
   /** Change this value to force-reset the drop zone to its idle state. */
   resetKey?: number;
+  /** When true, render a compact "Add more files" bar instead of the full drop zone. */
+  compact?: boolean;
 }
 
 function formatBytes(bytes: number): string {
@@ -56,6 +58,7 @@ export default function FileDropZone({
   onFiles,
   className = "",
   resetKey,
+  compact = false,
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<DropState>("idle");
@@ -149,6 +152,34 @@ export default function FileDropZone({
     loaded: "border-primary/60 bg-primary/5",
     error: "border-destructive bg-destructive/5",
   };
+
+  // ── Compact "Add more files" bar (controlled by parent) ─────
+  if (compact) {
+    return (
+      <div className={`relative ${className}`}>
+        <input
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          multiple={multiple}
+          className="sr-only"
+          onChange={handleChange}
+        />
+        <div
+          className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+        >
+          <Plus className="h-4 w-4" />
+          <span>Add more files</span>
+        </div>
+      </div>
+    );
+  }
 
   // ── Compact bar when file(s) are loaded ──────────────────────
   if (state === "loaded") {

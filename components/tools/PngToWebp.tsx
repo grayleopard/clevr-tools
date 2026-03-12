@@ -11,46 +11,10 @@ import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { toWebp } from "@/lib/processors";
-import { addToast } from "@/lib/toast";
 
-import { Package, Plus } from "lucide-react";
+import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
 import { TipJar } from "@/components/tool/TipJar";
-
-/** Compact single-line bar for adding/replacing files after initial upload. */
-function AddMoreBar({ onFiles }: { onFiles: (files: File[]) => void }) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  return (
-    <div
-      className="rounded-lg border border-dashed border-border p-3 flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:border-primary/50 hover:text-primary transition-colors"
-      onClick={() => inputRef.current?.click()}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={(e) => {
-        e.preventDefault();
-        const droppedFiles = Array.from(e.dataTransfer.files);
-        if (droppedFiles.length) onFiles(droppedFiles);
-      }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
-    >
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".png"
-        multiple
-        className="sr-only"
-        onChange={(e) => {
-          const selected = Array.from(e.target.files ?? []);
-          if (selected.length) onFiles(selected);
-          e.target.value = "";
-        }}
-      />
-      <Plus className="h-4 w-4" />
-      <span>Add more files</span>
-    </div>
-  );
-}
 
 interface Result {
   url: string;
@@ -104,14 +68,6 @@ export default function PngToWebp() {
 
       setResults(converted);
       setIsProcessing(false);
-      if (converted.length === 1) {
-        const r = converted[0];
-        const pct = Math.round((1 - r.size / r.originalSize) * 100);
-        if (pct > 0) addToast(`Converted to WebP — ${pct}% smaller`, "success");
-        else addToast("Converted to WebP", "success");
-      } else if (converted.length > 1) {
-        addToast(`${converted.length} images converted to WebP`, "success");
-      }
     },
     []
   );
@@ -175,11 +131,7 @@ export default function PngToWebp() {
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone — full when no files, compact when loaded */}
-      {!hasFiles ? (
-        <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
-      ) : (
-        <AddMoreBar onFiles={handleFiles} />
-      )}
+      <FileDropZone accept=".png" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} compact={hasFiles} />
 
       {/* 2. Options */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">

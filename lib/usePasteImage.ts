@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { addToast } from "@/lib/toast";
+
 
 /**
  * Listens for document-level paste events and extracts the first image item
@@ -27,7 +27,6 @@ export function usePasteImage(onPaste: (file: File) => void): void {
       const file = imageItem.getAsFile();
       if (!file) return;
       onPasteRef.current(file);
-      addToast("Image pasted from clipboard", "info");
     };
 
     document.addEventListener("paste", handler);

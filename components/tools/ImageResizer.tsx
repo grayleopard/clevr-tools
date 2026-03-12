@@ -256,12 +256,6 @@ export default function ImageResizer() {
         URL.revokeObjectURL(zipUrl);
       }
 
-      addToast(
-        resized.length === 1
-          ? `Resized to ${targetWidth} \u00d7 ${targetHeight}`
-          : `${resized.length} images resized`,
-        "success"
-      );
     } catch (err) {
       console.error("Resize failed:", err);
       addToast("Resize failed. Please try again.", "error");

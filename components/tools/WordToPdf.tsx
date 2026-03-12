@@ -127,11 +127,6 @@ export default function WordToPdf() {
         }
       );
 
-      const warningCount = messages.filter((m) => m.type === "warning").length;
-      if (warningCount > 0) {
-        addToast(`${warningCount} formatting element(s) may not render perfectly`, "info");
-      }
-
       setPreviewHtml(sanitizeWordPreviewHtml(html));
       setRawHtml(html);
     } catch (err) {
@@ -245,7 +240,6 @@ export default function WordToPdf() {
         xrayCtx.setFile(pdfFile);
       }
 
-      addToast("Converted to PDF successfully", "success");
     } catch (err) {
       console.error("Word to PDF failed:", err);
       addToast(
@@ -283,7 +277,7 @@ export default function WordToPdf() {
       </div>
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".docx,.doc" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".docx,.doc" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} compact={hasFile} />
 
       {/* 2. File info bar */}
       {sourceFile && hasFile && !isProcessing && !downloaded && (

@@ -466,7 +466,6 @@ export default function InvoiceGenerator() {
         .createPdf(docDef)
         .download(`invoice-${data.invoiceNumber}.pdf`);
 
-      addToast("Invoice PDF generated", "success");
     } catch (err) {
       console.error("PDF generation failed:", err);
       addToast("Failed to generate PDF. Please try again.", "error");

@@ -112,8 +112,6 @@ export default function RotatePdf() {
       setResultUrl(url);
       setResultSize(blob.size);
 
-      const rotatedCount = pages.filter((p) => p.additionalRotation !== 0).length;
-      addToast(`${rotatedCount} page${rotatedCount !== 1 ? "s" : ""} rotated`, "success");
     } catch (err) {
       console.error(err);
       addToast("Failed to apply rotations", "error");
@@ -141,7 +139,7 @@ export default function RotatePdf() {
     <div className="space-y-6">
       <PageDragOverlay onFiles={handleFiles} />
 
-      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} compact={file !== null} />
 
       {isLoading && <ProcessingIndicator label="Loading PDF pages…" />}
 

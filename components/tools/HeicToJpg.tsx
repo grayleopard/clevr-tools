@@ -11,7 +11,6 @@ import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { heicToJpg } from "@/lib/processors";
-import { addToast } from "@/lib/toast";
 
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -68,8 +67,6 @@ export default function HeicToJpg() {
 
       setResults(converted);
       setIsProcessing(false);
-      if (converted.length === 1) addToast("Converted to JPG", "success");
-      else if (converted.length > 1) addToast(`${converted.length} images converted to JPG`, "success");
     },
     []
   );
@@ -131,7 +128,7 @@ export default function HeicToJpg() {
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".heic,.heif" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".heic,.heif" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} compact={results.length > 0} />
 
       {/* 2. Options */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">

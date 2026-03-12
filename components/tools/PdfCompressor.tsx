@@ -53,14 +53,6 @@ export default function PdfCompressor() {
 
     setResults(processed);
     setIsProcessing(false);
-    if (processed.length === 1) {
-      const r = processed[0];
-      const pct = Math.round((1 - r.size / r.originalSize) * 100);
-      if (pct > 0) addToast(`PDF compressed — ${pct}% smaller`, "success");
-      else addToast("PDF compression complete", "success");
-    } else if (processed.length > 1) {
-      addToast(`${processed.length} PDFs compressed`, "success");
-    }
   }, []);
 
   useAutoLoadFile(handleFiles);
@@ -99,7 +91,7 @@ export default function PdfCompressor() {
       </div>
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} compact={results.length > 0} />
 
       {/* 2. Processing */}
       {isProcessing && <ProcessingIndicator label="Compressing PDFs…" />}

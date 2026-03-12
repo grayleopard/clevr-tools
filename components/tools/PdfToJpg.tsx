@@ -151,9 +151,6 @@ export default function PdfToJpg() {
 
     setResults(allResults);
     setIsConverting(false);
-    if (allResults.length > 0) {
-      addToast(`${allResults.length} page${allResults.length > 1 ? "s" : ""} converted to JPG`, "success");
-    }
   }, [pdfEntries, selectedPages, quality]);
 
   const downloadAll = useCallback(async () => {
@@ -169,7 +166,6 @@ export default function PdfToJpg() {
     a.click();
     URL.revokeObjectURL(url);
     setDownloaded(true);
-    addToast("Downloading…", "info", 1500);
   }, [results]);
 
   const reset = useCallback(() => {
@@ -192,7 +188,7 @@ export default function PdfToJpg() {
       </div>
 
       {/* Drop zone */}
-      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".pdf" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} compact={pdfEntries.length > 0} />
 
       {/* Loading thumbnails */}
       {isLoadingThumbs && (
@@ -364,7 +360,7 @@ export default function PdfToJpg() {
                     key={i}
                     href={r.url}
                     download={r.filename}
-                    onClick={() => { setDownloaded(true); addToast("Downloading…", "info", 1500); }}
+                    onClick={() => { setDownloaded(true); }}
                     className="group relative overflow-hidden rounded-xl border border-border bg-card transition-all hover:border-primary/40 hover:shadow-sm"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}

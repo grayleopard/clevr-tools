@@ -65,14 +65,6 @@ export default function ImageCompressor() {
           });
         }
         setResults(compressed);
-        if (compressed.length === 1) {
-          const r = compressed[0];
-          const pct = Math.round((1 - r.file.size / r.originalFile.size) * 100);
-          if (pct > 0) addToast(`Compressed — ${pct}% smaller`, "success");
-          else addToast("Compression complete", "success");
-        } else if (compressed.length > 1) {
-          addToast(`${compressed.length} images compressed`, "success");
-        }
       } catch (err) {
         console.error("Compression failed:", err);
         addToast("Compression failed. Please try again.", "error");
@@ -142,6 +134,7 @@ export default function ImageCompressor() {
         maxSizeMB={50}
         onFiles={handleFiles}
         resetKey={resetKey}
+        compact={results.length > 0}
       />
 
       {/* 2. Options */}

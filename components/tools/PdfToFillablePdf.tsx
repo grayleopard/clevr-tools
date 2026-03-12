@@ -342,7 +342,6 @@ export default function PdfToFillablePdf() {
         pdfRef.current = pdf;
         setFile(uploaded);
         setPageCount(pdf.numPages);
-        addToast(`Loaded ${uploaded.name} (${pdf.numPages} pages)`, "success", 1800);
       } catch (error) {
         console.error(error);
         setFile(null);
@@ -559,7 +558,6 @@ export default function PdfToFillablePdf() {
     const source = pdfBytesRef.current;
     if (!source || !file) return;
     if (fields.length === 0) {
-      addToast("Add at least one field before downloading.", "info");
       return;
     }
 
@@ -587,7 +585,6 @@ export default function PdfToFillablePdf() {
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-      addToast("Download started.", "success");
     } catch (error) {
       console.error(error);
       addToast("Failed to generate fillable PDF.", "error");
@@ -639,7 +636,7 @@ export default function PdfToFillablePdf() {
         stays private on your device.
       </div>
 
-      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} compact={file !== null} />
 
       {isLoadingPdf && <ProcessingIndicator label="Loading PDF preview…" />}
 

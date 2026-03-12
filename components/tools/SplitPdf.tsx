@@ -95,7 +95,6 @@ export default function SplitPdf() {
       } else {
         pageIndices = Array.from(selectedPages).sort((a, b) => a - b);
         if (pageIndices.length === 0) {
-          addToast("Select at least one page", "info");
           setIsSplitting(false);
           return;
         }
@@ -119,7 +118,6 @@ export default function SplitPdf() {
       }
 
       setResults(pageResults);
-      addToast(`${pageResults.length} page${pageResults.length > 1 ? "s" : ""} extracted`, "success");
     } catch (err) {
       console.error(err);
       addToast("Split failed. Please try again.", "error");
@@ -141,7 +139,6 @@ export default function SplitPdf() {
     a.click();
     URL.revokeObjectURL(url);
     setDownloaded(true);
-    addToast("Downloading…", "info", 1500);
   }, [results, file]);
 
   const reset = useCallback(() => {
@@ -162,7 +159,7 @@ export default function SplitPdf() {
     <div className="space-y-6">
       <PageDragOverlay onFiles={handleFiles} />
 
-      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".pdf" multiple={false} maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} compact={file !== null} />
 
       {isLoading && <ProcessingIndicator label="Loading PDF pages…" />}
 
@@ -280,7 +277,7 @@ export default function SplitPdf() {
                 key={i}
                 href={r.url}
                 download={r.filename}
-                onClick={() => { setDownloaded(true); addToast("Downloading…", "info", 1500); }}
+                onClick={() => { setDownloaded(true); }}
                 className="group flex items-center gap-4 rounded-xl border border-border bg-card px-4 py-3 transition-all hover:border-primary/40 hover:bg-primary/5"
               >
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-100 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400">

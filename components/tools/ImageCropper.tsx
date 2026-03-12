@@ -174,7 +174,6 @@ export default function ImageCropper() {
         filename: croppedFilename,
       });
 
-      addToast(`Cropped to ${cropW} \u00d7 ${cropH}`, "success");
     } catch (err) {
       console.error("Crop failed:", err);
       addToast("Crop failed. Please try again.", "error");

@@ -6,11 +6,7 @@ import { Sparkles, Upload } from "lucide-react";
 
 const SmartConverter = dynamic(() => import("@/components/home/SmartConverter"), {
   ssr: false,
-  loading: () => (
-    <div className="flex min-h-[320px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/20 px-6 py-12 text-center">
-      <p className="text-sm text-muted-foreground">Loading converter...</p>
-    </div>
-  ),
+  loading: () => null,
 });
 
 function SmartConverterSkeleton({

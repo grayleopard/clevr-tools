@@ -10,7 +10,6 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { toPng } from "@/lib/processors";
-import { addToast } from "@/lib/toast";
 
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -56,8 +55,6 @@ export default function JpgToPng() {
 
     setResults(converted);
     setIsProcessing(false);
-    if (converted.length === 1) addToast("Converted to PNG", "success");
-    else if (converted.length > 1) addToast(`${converted.length} images converted to PNG`, "success");
   }, []);
 
   useAutoLoadFile(handleFiles);
@@ -95,7 +92,7 @@ export default function JpgToPng() {
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".jpg,.jpeg" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} />
+      <FileDropZone accept=".jpg,.jpeg" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} compact={results.length > 0} />
 
       {/* 2. Processing */}
       {isProcessing && <ProcessingIndicator label="Converting to PNG…" />}

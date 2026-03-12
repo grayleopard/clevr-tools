@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Download, ArrowRight, X } from "lucide-react";
 import { truncateFilename, formatBytes } from "@/lib/utils";
-import { addToast } from "@/lib/toast";
+
 
 interface DownloadCardProps {
   href: string;
@@ -30,7 +30,6 @@ export default function DownloadCard({
       : null;
 
   const handleDownload = () => {
-    addToast("Downloading…", "info", 1500);
     onDownload?.();
   };
 
