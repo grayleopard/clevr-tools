@@ -17,6 +17,7 @@ import {
   Maximize2,
   Crop,
   Merge,
+  Bot,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import AdSlot from "@/components/tool/AdSlot";
@@ -28,6 +29,7 @@ import { formatBytes, truncateFilename } from "@/lib/utils";
 
 type FileType = "png" | "jpg" | "webp" | "heic" | "pdf" | "docx" | "unknown";
 type ActionId =
+  | "remove-background"
   | "compress-image"
   | "to-jpg"
   | "to-png"
@@ -53,9 +55,9 @@ interface DetectedFile {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
-  png: ["compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  jpg: ["compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  webp: ["to-png", "to-jpg", "resize-image"],
+  png: ["remove-background", "compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  jpg: ["remove-background", "compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  webp: ["remove-background", "to-png", "to-jpg", "resize-image"],
   heic: ["to-jpg", "to-png"],
   pdf: ["compress-pdf", "pdf-to-jpg", "merge-pdf", "split-pdf", "rotate-pdf"],
   docx: ["word-to-pdf"],
@@ -70,6 +72,12 @@ interface ActionDef {
 }
 
 const ACTION_DEFS: Record<ActionId, ActionDef> = {
+  "remove-background": {
+    icon: Bot,
+    name: "Remove Background",
+    description: "AI cutout with transparent PNG output",
+    accent: "text-sky-600 dark:text-sky-400",
+  },
   "compress-image": {
     icon: Minimize2,
     name: "Compress",
@@ -154,6 +162,7 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
 
 function getRoute(fileType: FileType, actionId: ActionId): string {
   switch (actionId) {
+    case "remove-background": return "/tools/background-remover";
     case "compress-image": return "/compress/image";
     case "to-jpg":         return fileType === "heic" ? "/convert/heic-to-jpg" : "/convert/png-to-jpg";
     case "to-png":         return fileType === "webp" ? "/convert/webp-to-png" : "/convert/jpg-to-png";

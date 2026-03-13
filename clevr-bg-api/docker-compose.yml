@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  bg-api:
+    build: .
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    environment:
+      U2NET_HOME: /app/models
+      UVICORN_WORKERS: 1
+      ALLOWED_ORIGIN: https://www.clevr.tools
+      BG_API_KEY: change-me
+      MAX_DIMENSION: 4096
+    volumes:
+      - model_cache:/app/models
+    mem_limit: 2g
+
+volumes:
+  model_cache:

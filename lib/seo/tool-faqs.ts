@@ -1,6 +1,33 @@
 import type { FaqItem } from "@/components/seo/FaqSchema";
 
 export const toolFaqsBySlug: Record<string, FaqItem[]> = {
+  "background-remover": [
+    {
+      question: "Is this background remover really free?",
+      answer:
+        "Yes. You get 5 free background removals per day with no signup, no watermark, and no quality cap on the output PNG.",
+    },
+    {
+      question: "What happens to my images after processing?",
+      answer:
+        "Your image is sent to our AI server, processed in memory, and immediately deleted. We do not store, log, or share your uploaded image.",
+    },
+    {
+      question: "What image formats are supported?",
+      answer:
+        "You can upload JPG, PNG, and WebP images up to 10MB. The result is always returned as a transparent PNG.",
+    },
+    {
+      question: "How does the AI background removal work?",
+      answer:
+        "The tool uses the BiRefNet model through rembg to detect the foreground subject and separate it from the background. It works well for people, products, animals, and many common photo types.",
+    },
+    {
+      question: "Is there a watermark on the output?",
+      answer:
+        "No. The free tier returns a full-resolution PNG with no watermark.",
+    },
+  ],
   "merge-pdf": [
     {
       question: "Is Merge PDF free to use?",

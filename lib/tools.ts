@@ -287,6 +287,46 @@ export const tools: Tool[] = [
     relatedTools: ['png-to-jpg', 'image-compressor', 'webp-to-png'],
   },
   {
+    slug: 'background-remover',
+    name: 'AI Background Remover',
+    shortDescription: 'Remove backgrounds from images instantly with AI — no signup required.',
+    category: 'tools',
+    route: '/tools/background-remover',
+    acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp'],
+    icon: 'Bot',
+    metaTitle: 'AI Background Remover — Free, No Signup | clevr.tools',
+    metaDescription:
+      'Remove image backgrounds instantly with AI. Free, no signup, no watermark. Upload a photo and download a clean transparent PNG in seconds.',
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You have a product photo that needs a clean cutout for Shopify, Etsy, Amazon, or a pitch deck. You want a profile photo without the messy office wall behind it. You need to drop a person, pet, or object into a social graphic without opening Photoshop. These are the moments where AI background removal saves real time.</p>
+      <p>It is especially useful for ecommerce. Most marketplaces look better when product images sit on transparent or plain white backgrounds, but hand-masking every image is not a sensible use of time. Background removal lets you cut the subject once, then reuse the transparent PNG across storefronts, ads, and presentation slides.</p>
+      <p>It also replaces the frustrating part of tools like remove.bg: the free tier here gives you full-resolution output with no watermark. If the model gives you a clean cutout, you can keep it. No artificial downgrade after the work is done.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>This is the one clevr.tools image tool that runs server-side.</strong> Your image is sent to our AI server, processed in memory, and immediately deleted. Nothing is stored. The reason is simple: the BiRefNet model is too large to run reliably in a browser tab or Vercel function.</p>
+      <p><strong>The output is always PNG.</strong> Transparency needs an alpha channel, and PNG is the safe universal format for that. Even if you upload JPG or WebP, the result comes back as a transparent PNG so you can layer it anywhere.</p>
+      <p><strong>Complex edges are where AI matters.</strong> Hair, fur, fabric, and semi-transparent edges are the hard cases. The model handles them well on strong source images, but not perfectly on every file. Clean lighting and clear subject separation still help a lot.</p>
+      <p><strong>Free tier is intentionally useful.</strong> You get 5 removals per day, full output resolution, and no watermark. That is enough for occasional product edits, profile images, and social graphics without gating the result behind a paywall.</p>
+      <p><strong>Use the cutout as a starting point.</strong> Once you have a transparent PNG, the next steps are usually resize, compress, or convert to WebP. The result here is designed to feed directly into those workflows.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Item</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Supported input</td><td>JPG, PNG, WebP</td></tr>
+          <tr><td>Maximum file size</td><td>10 MB</td></tr>
+          <tr><td>Maximum dimensions</td><td>4096 × 4096 px</td></tr>
+          <tr><td>Output format</td><td>Transparent PNG</td></tr>
+          <tr><td>Free limit</td><td>5 removals per day</td></tr>
+          <tr><td>Typical processing time</td><td>2–5 seconds</td></tr>
+        </tbody>
+      </table>
+    `,
+    relatedTools: ['resize-image', 'image-compressor', 'png-to-webp'],
+    badge: 'new',
+  },
+  {
     slug: 'pdf-compressor',
     name: 'PDF Compressor',
     shortDescription: 'Strip metadata and reduce PDF file size in your browser.',
