@@ -9,6 +9,9 @@ export function mulberry32(seed: number) {
   };
 }
 
+export type NumbleDifficulty = "Easy" | "Medium" | "Hard";
+export type NumbleMode = "daily" | "practice";
+
 // Get UTC date string: "2026-03-01"
 export function getUTCDateString(date?: Date): string {
   const d = date || new Date();
@@ -41,7 +44,7 @@ const SMALL_POOL = [
 
 export interface Step {
   a: number;
-  op: "+" | "-" | "\u00d7" | "\u00f7";
+  op: "+" | "-" | "×" | "÷";
   b: number;
   result: number;
 }
@@ -52,6 +55,9 @@ export interface DailyPuzzle {
   optimalSteps: number; // minimum operations to reach target
   date: string;
   puzzleNumber: number;
+  difficulty: NumbleDifficulty;
+  seed: number;
+  mode: NumbleMode;
 }
 
 // Solver — finds solution with fewest steps
@@ -73,8 +79,8 @@ function applyOp(a: number, op: string, b: number): number | null {
     if (a - b <= 0) return null; // must be positive, no zero
     return a - b;
   }
-  if (op === "\u00d7") return a * b;
-  if (op === "\u00f7") {
+  if (op === "×") return a * b;
+  if (op === "÷") {
     if (b === 0 || a % b !== 0) return null;
     const r = a / b;
     if (r <= 0) return null;
@@ -88,7 +94,6 @@ export function solveNumbers(numbers: number[], target: number): SolveResult {
   let best: SolutionStep[] | null = null;
 
   function search(nums: number[], steps: SolutionStep[]): void {
-    // Check if any current number is the target
     for (const n of nums) {
       if (n === target) {
         if (best === null || steps.length < best.length) {
@@ -97,17 +102,16 @@ export function solveNumbers(numbers: number[], target: number): SolveResult {
         return;
       }
     }
-    // Prune: if we already have a solution with fewer steps, don't go deeper
+
     if (best !== null && steps.length >= best.length) return;
 
-    const ops = ["+", "-", "\u00d7", "\u00f7"];
+    const ops = ["+", "-", "×", "÷"];
     for (let i = 0; i < nums.length; i++) {
       for (let j = 0; j < nums.length; j++) {
         if (i === j) continue;
         for (const op of ops) {
           const result = applyOp(nums[i], op, nums[j]);
           if (result === null || result === 0) continue;
-          // Build new number set
           const newNums = nums.filter((_, idx) => idx !== i && idx !== j);
           newNums.push(result);
           const step: SolutionStep = {
@@ -128,12 +132,32 @@ export function solveNumbers(numbers: number[], target: number): SolveResult {
     : { found: false, steps: [] };
 }
 
-export function generateDailyPuzzle(dateStr?: string): DailyPuzzle {
-  const date = dateStr || getUTCDateString();
-  const seed = getDailySeed(date);
+function computeDifficulty(
+  numbers: number[],
+  target: number,
+  optimalSteps: number,
+  attempts: number
+): NumbleDifficulty {
+  const nearestStart = numbers.reduce(
+    (best, value) => Math.min(best, Math.abs(value - target)),
+    Number.POSITIVE_INFINITY
+  );
+  const score =
+    optimalSteps * 2 +
+    (attempts >= 75 ? 3 : attempts >= 25 ? 2 : attempts >= 10 ? 1 : 0) +
+    (nearestStart >= 120 ? 1 : 0);
+
+  if (score >= 8) return "Hard";
+  if (score >= 5) return "Medium";
+  return "Easy";
+}
+
+function generatePuzzleFromSeed(
+  seed: number,
+  options: { date: string; puzzleNumber: number; mode: NumbleMode }
+): DailyPuzzle {
   const rand = mulberry32(seed);
 
-  // Pick 2 large numbers (no duplicates)
   const largeCopy = [...LARGE_NUMBERS];
   const large: number[] = [];
   for (let i = 0; i < 2; i++) {
@@ -141,7 +165,6 @@ export function generateDailyPuzzle(dateStr?: string): DailyPuzzle {
     large.push(largeCopy.splice(idx, 1)[0]);
   }
 
-  // Pick 4 small numbers (with duplicates from pool of 2 copies each)
   const smallCopy = [...SMALL_POOL];
   const small: number[] = [];
   for (let i = 0; i < 4; i++) {
@@ -150,20 +173,17 @@ export function generateDailyPuzzle(dateStr?: string): DailyPuzzle {
   }
 
   const numbers = [...large, ...small];
-
-  // Find a solvable target between 101-999
-  const targetBase = 101 + Math.floor(rand() * 899); // 101-999
+  const targetBase = 101 + Math.floor(rand() * 899);
   let target = targetBase;
   let solution = solveNumbers(numbers, target);
   let attempts = 0;
 
   while (!solution.found && attempts < 1800) {
-    target = ((target - 101 + 1) % 899) + 101; // cycle through 101-999
+    target = ((target - 101 + 1) % 899) + 101;
     solution = solveNumbers(numbers, target);
     attempts++;
   }
 
-  // Fallback: if still no solution found (extremely rare), use a simple computed target
   if (!solution.found) {
     target = numbers[0] + numbers[1];
     if (target < 101 || target > 999) target = 101;
@@ -174,9 +194,38 @@ export function generateDailyPuzzle(dateStr?: string): DailyPuzzle {
     numbers,
     target,
     optimalSteps: solution.found ? solution.steps.length : 1,
+    date: options.date,
+    puzzleNumber: options.puzzleNumber,
+    difficulty: computeDifficulty(
+      numbers,
+      target,
+      solution.found ? solution.steps.length : 1,
+      attempts
+    ),
+    seed,
+    mode: options.mode,
+  };
+}
+
+export function generateDailyPuzzle(dateStr?: string): DailyPuzzle {
+  const date = dateStr || getUTCDateString();
+  const seed = getDailySeed(date);
+  return generatePuzzleFromSeed(seed, {
     date,
     puzzleNumber: getPuzzleNumber(date),
-  };
+    mode: "daily",
+  });
+}
+
+export function generatePracticePuzzle(seed = Date.now()): DailyPuzzle {
+  const todaySeed = getDailySeed();
+  let practiceSeed = Math.abs(Math.floor(seed));
+  if (practiceSeed === todaySeed) practiceSeed += 97;
+  return generatePuzzleFromSeed(practiceSeed, {
+    date: `practice-${practiceSeed}`,
+    puzzleNumber: 0,
+    mode: "practice",
+  });
 }
 
 // Time until next UTC midnight in seconds
