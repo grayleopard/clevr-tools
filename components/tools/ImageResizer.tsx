@@ -533,10 +533,12 @@ export default function ImageResizer() {
                     <div className="flex flex-col items-center gap-2">
                       <div className="flex w-full justify-center overflow-hidden">
                         <div
+                          key={`${selectedPreset.label}-${selectedPreset.width}x${selectedPreset.height}`}
                           className="relative max-w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm"
                           style={{
                             aspectRatio: `${selectedPreset.width} / ${selectedPreset.height}`,
-                            width: `min(100%, ${presetPreviewWidth}px)`,
+                            width: `${presetPreviewWidth}px`,
+                            maxWidth: "100%",
                             maxHeight: "400px",
                           }}
                         >

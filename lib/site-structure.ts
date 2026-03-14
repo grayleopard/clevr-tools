@@ -16,6 +16,28 @@ export interface SiteCategory {
   }[];
 }
 
+export interface PlayLink {
+  label: string;
+  route: string;
+  description: string;
+  icon: "hash" | "image";
+}
+
+export const playLinks: PlayLink[] = [
+  {
+    label: "Numble",
+    route: "/play/numble",
+    description: "Daily number puzzle",
+    icon: "hash",
+  },
+  {
+    label: "Meme Generator",
+    route: "/play/meme-generator",
+    description: "Create memes from templates or your own image",
+    icon: "image",
+  },
+];
+
 export const siteCategories: SiteCategory[] = [
   {
     id: "files",

@@ -5,11 +5,13 @@ import { usePathname } from "next/navigation";
 import {
   ArrowRight,
   ChevronDown,
+  Hash,
+  ImageIcon,
   Menu,
   X,
   Zap,
 } from "lucide-react";
-import { siteCategories } from "@/lib/site-structure";
+import { playLinks, siteCategories } from "@/lib/site-structure";
 import { getToolBySlug } from "@/lib/tools";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
@@ -58,6 +60,20 @@ function CategoryMenu({
       ))}
     </>
   );
+}
+
+function PlayLinkIcon({
+  icon,
+  className,
+}: {
+  icon: (typeof playLinks)[number]["icon"];
+  className?: string;
+}) {
+  if (icon === "image") {
+    return <ImageIcon className={className} />;
+  }
+
+  return <Hash className={className} />;
 }
 
 export default function Navbar() {
@@ -128,13 +144,51 @@ export default function Navbar() {
               </div>
             </div>
           ))}
-          <Link
-            href="/play/numble"
-            className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
-          >
-            <span>{"\ud83d\udd22"}</span>
-            Numble
-          </Link>
+          <div className="group relative">
+            <Link
+              href="/play"
+              className="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+            >
+              Play
+              <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" />
+            </Link>
+
+            <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-1 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
+              <div className="min-w-[320px] rounded-xl border border-border bg-popover p-3 shadow-xl">
+                <div className="space-y-1">
+                  {playLinks.map((item) => (
+                    <Link
+                      key={item.route}
+                      href={item.route}
+                      className="flex items-start gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-muted"
+                    >
+                      <span className="rounded-md bg-primary/10 p-2 text-primary">
+                        <PlayLinkIcon icon={item.icon} className="h-4 w-4" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium text-foreground">
+                          {item.label}
+                        </span>
+                        <span className="block text-xs text-muted-foreground">
+                          {item.description}
+                        </span>
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="mt-3 border-t border-border pt-3">
+                  <Link
+                    href="/play"
+                    className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    View all Play tools
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </nav>
 
         <div className="flex items-center gap-1">
@@ -149,13 +203,38 @@ export default function Navbar() {
 
             <div className="absolute right-0 top-11 z-50 w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto rounded-xl border border-border bg-background p-2 shadow-xl">
               <nav className="space-y-1" aria-label="Mobile navigation">
-                <Link
-                  href="/play/numble"
-                  className="flex items-center gap-2 rounded-md px-2 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
-                >
-                  <span>{"\ud83d\udd22"}</span>
-                  Numble — Daily Puzzle
-                </Link>
+                <details className="group/category rounded-md border border-transparent open:border-border">
+                  <summary className="flex cursor-pointer list-none items-center justify-between rounded-md px-2 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10">
+                    Play
+                    <ChevronDown className="h-4 w-4 text-primary transition-transform group-open/category:rotate-180" />
+                  </summary>
+                  <div className="ml-2 mb-1 border-l border-border pl-3">
+                    {playLinks.map((item) => (
+                      <Link
+                        key={item.route}
+                        href={item.route}
+                        className="flex items-start gap-2 rounded-md px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+                      >
+                        <span className="mt-0.5 text-primary">
+                          <PlayLinkIcon icon={item.icon} className="h-4 w-4" />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block font-medium">{item.label}</span>
+                          <span className="block text-xs text-muted-foreground">
+                            {item.description}
+                          </span>
+                        </span>
+                      </Link>
+                    ))}
+                    <Link
+                      href="/play"
+                      className="mt-2 flex items-center gap-1 px-2 py-2 text-sm text-primary transition-colors hover:text-primary/80"
+                    >
+                      View all Play tools
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </details>
                 <div className="border-t border-border my-1" />
                 {siteCategories.map((cat) => (
                   <details key={cat.id} className="group/category rounded-md border border-transparent open:border-border">

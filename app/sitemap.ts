@@ -52,6 +52,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    {
+      url: `${base}/play/meme-generator`,
+      lastModified: new Date("2026-03-10"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
     ...categoryEntries,
     ...toolEntries,
   ];
