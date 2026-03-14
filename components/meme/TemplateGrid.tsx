@@ -7,13 +7,11 @@ import TemplateCard from "@/components/meme/TemplateCard";
 
 interface TemplateGridProps {
   templates: MemeTemplate[];
-  onSelect: (template: MemeTemplate) => void;
   onUpload: (file: File) => void;
 }
 
 export default function TemplateGrid({
   templates,
-  onSelect,
   onUpload,
 }: TemplateGridProps) {
   const inputId = useId();
@@ -77,7 +75,7 @@ export default function TemplateGrid({
         </label>
 
         {filteredTemplates.map((template) => (
-          <TemplateCard key={template.id} template={template} onSelect={onSelect} />
+          <TemplateCard key={template.id} template={template} />
         ))}
       </div>
 

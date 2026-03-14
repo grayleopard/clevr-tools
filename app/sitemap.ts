@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { tools } from "@/lib/tools";
 import { siteCategories } from "@/lib/site-structure";
+import { memeTemplates } from "@/lib/memes/templates";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.clevr.tools";
@@ -60,5 +61,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...categoryEntries,
     ...toolEntries,
+    ...memeTemplates.map((t) => ({
+      url: `${base}/play/meme-generator/${t.id}`,
+      lastModified: new Date("2026-03-14"),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ];
 }

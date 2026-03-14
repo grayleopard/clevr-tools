@@ -47,7 +47,7 @@ export const memeTemplates: MemeTemplate[] = [
     width: 482,
     height: 361,
     textFields: [
-      { id: "sign", label: "Sign Text", x: 241, y: 307, maxWidth: 217, maxHeight: 43, fontSize: 24, color: "#000000", outline: false, align: "center" },
+      { id: "sign", label: "Sign Text", x: 241, y: 264, maxWidth: 313, maxHeight: 65, fontSize: 24, color: "#000000", outline: false, align: "center" },
     ],
   },
   {
@@ -105,7 +105,7 @@ export const memeTemplates: MemeTemplate[] = [
     textFields: [
       { id: "butterfly", label: "Butterfly (Thing Being Questioned)", x: 1349, y: 356, maxWidth: 397, maxHeight: 285, fontSize: 16, color: "#000000", outline: true, align: "center" },
       { id: "person", label: "Person (The Confused One)", x: 397, y: 1211, maxWidth: 555, maxHeight: 214, fontSize: 16, color: "#000000", outline: true, align: "center" },
-      { id: "question", label: "Question Text", x: 794, y: 1354, maxWidth: 1428, maxHeight: 114, fontSize: 18, color: "#000000", outline: true, align: "center" },
+      { id: "question", label: "Question Text", x: 794, y: 1311, maxWidth: 1428, maxHeight: 171, fontSize: 18, color: "#000000", outline: true, align: "center" },
     ],
   },
   {
@@ -172,10 +172,10 @@ export const memeTemplates: MemeTemplate[] = [
     width: 700,
     height: 449,
     textFields: [
-      { id: "panel1", label: "Step 1", x: 525, y: 112, maxWidth: 315, maxHeight: 180, fontSize: 18, color: "#000000", outline: false, align: "center" },
-      { id: "panel2", label: "Step 2", x: 525, y: 112, maxWidth: 315, maxHeight: 180, fontSize: 18, color: "#000000", outline: false, align: "center" },
-      { id: "panel3", label: "Step 3", x: 525, y: 337, maxWidth: 315, maxHeight: 180, fontSize: 18, color: "#000000", outline: false, align: "center" },
-      { id: "panel4", label: "Step 4 (Realization)", x: 525, y: 337, maxWidth: 315, maxHeight: 180, fontSize: 18, color: "#000000", outline: false, align: "center" },
+      { id: "panel1", label: "Step 1", x: 266, y: 103, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
+      { id: "panel2", label: "Step 2", x: 616, y: 103, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
+      { id: "panel3", label: "Step 3", x: 266, y: 328, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
+      { id: "panel4", label: "Step 4 (Realization)", x: 616, y: 328, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
     ],
   },
   {
@@ -285,7 +285,7 @@ export const memeTemplates: MemeTemplate[] = [
     width: 500,
     height: 494,
     textFields: [
-      { id: "card_text", label: "UNO Card Text", x: 60, y: 247, maxWidth: 100, maxHeight: 395, fontSize: 14, color: "#000000", outline: false, align: "center" },
+      { id: "card_text", label: "UNO Card Text", x: 110, y: 138, maxWidth: 125, maxHeight: 148, fontSize: 14, color: "#000000", outline: false, align: "center" },
     ],
   },
   {
@@ -307,8 +307,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 480,
     height: 601,
     textFields: [
-      { id: "top_panel", label: "Top Panel Text", x: 240, y: 150, maxWidth: 432, maxHeight: 240, fontSize: 24, color: "#000000", outline: false, align: "center" },
-      { id: "bottom_panel", label: "Bottom Panel Text", x: 240, y: 451, maxWidth: 432, maxHeight: 240, fontSize: 24, color: "#000000", outline: false, align: "center" },
+      { id: "top_panel", label: "Top Panel Text", x: 240, y: 60, maxWidth: 432, maxHeight: 108, fontSize: 28, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "bottom_panel", label: "Bottom Panel Text", x: 240, y: 541, maxWidth: 432, maxHeight: 108, fontSize: 28, color: "#FFFFFF", outline: true, align: "center" },
     ],
   },
   {

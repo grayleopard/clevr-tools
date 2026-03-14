@@ -1,18 +1,15 @@
-"use client";
-
 import Image from "next/image";
+import Link from "next/link";
 import type { MemeTemplate } from "@/lib/memes/types";
 
 interface TemplateCardProps {
   template: MemeTemplate;
-  onSelect: (template: MemeTemplate) => void;
 }
 
-export default function TemplateCard({ template, onSelect }: TemplateCardProps) {
+export default function TemplateCard({ template }: TemplateCardProps) {
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(template)}
+    <Link
+      href={`/play/meme-generator/${template.id}`}
       className="group overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -27,6 +24,6 @@ export default function TemplateCard({ template, onSelect }: TemplateCardProps) 
           <p className="text-sm font-semibold leading-tight">{template.name}</p>
         </div>
       </div>
-    </button>
+    </Link>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, Download, LoaderCircle } from "lucide-react";
+import Link from "next/link";
 import { startTransition, useEffect, useRef, useState } from "react";
 import MemeCanvas from "@/components/meme/MemeCanvas";
 import TemplateGrid from "@/components/meme/TemplateGrid";
@@ -64,9 +65,17 @@ function createUploadedTemplate(
   };
 }
 
-export default function MemeEditor() {
-  const [selectedTemplate, setSelectedTemplate] = useState<MemeTemplate | null>(null);
-  const [texts, setTexts] = useState<MemeTextValues>({});
+interface MemeEditorProps {
+  initialTemplate?: MemeTemplate;
+}
+
+export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
+  const [selectedTemplate, setSelectedTemplate] = useState<MemeTemplate | null>(
+    initialTemplate ?? null
+  );
+  const [texts, setTexts] = useState<MemeTextValues>(
+    initialTemplate ? createDefaultTextValues(initialTemplate.textFields) : {}
+  );
   const [style, setStyle] = useState<MemeStyleState>(defaultStyle);
   const [isDownloading, setIsDownloading] = useState(false);
   const [uploadedSrc, setUploadedSrc] = useState<string | null>(null);
@@ -102,11 +111,6 @@ export default function MemeEditor() {
     setSelectedTemplate(null);
     setTexts({});
     setStyle(defaultStyle);
-  }
-
-  function handleSelectTemplate(template: MemeTemplate) {
-    releaseUploadedTemplate();
-    openTemplate(template);
   }
 
   async function handleUpload(file: File) {
@@ -167,7 +171,6 @@ export default function MemeEditor() {
     return (
       <TemplateGrid
         templates={memeTemplates}
-        onSelect={handleSelectTemplate}
         onUpload={handleUpload}
       />
     );
@@ -177,14 +180,24 @@ export default function MemeEditor() {
     <section className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-2">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary/35 hover:text-primary"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to templates
-          </button>
+          {initialTemplate ? (
+            <Link
+              href="/play/meme-generator"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary/35 hover:text-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              All templates
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary/35 hover:text-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to templates
+            </button>
+          )}
           <div>
             <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               {selectedTemplate.name}
