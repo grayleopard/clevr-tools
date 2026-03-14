@@ -37,31 +37,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return imagePromise;
 }
 
-function breakLongWord(
-  ctx: CanvasRenderingContext2D,
-  word: string,
-  maxWidth: number
-): string[] {
-  const pieces: string[] = [];
-  let current = "";
-
-  for (const character of word) {
-    const next = current + character;
-    if (current && ctx.measureText(next).width > maxWidth) {
-      pieces.push(current);
-      current = character;
-    } else {
-      current = next;
-    }
-  }
-
-  if (current) {
-    pieces.push(current);
-  }
-
-  return pieces.length ? pieces : [word];
-}
-
+/** Wrap text on word boundaries only — never break a word mid-character. */
 function wrapText(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -70,11 +46,7 @@ function wrapText(
   const normalized = text.replace(/\s+/g, " ").trim();
   if (!normalized) return [];
 
-  const words = normalized.split(" ").flatMap((word) => {
-    const measured = ctx.measureText(word).width;
-    return measured > maxWidth ? breakLongWord(ctx, word, maxWidth) : [word];
-  });
-
+  const words = normalized.split(" ");
   const lines: WrappedLine[] = [];
   let current = "";
 
@@ -106,25 +78,46 @@ function drawField(
   const text = value.trim();
   if (!text) return;
 
-  const fontSize = Math.max(20, Math.round(field.fontSize * style.fontScale));
+  const displayText = style.mode === "classic" ? text.toUpperCase() : text;
   const fontFamily =
     style.mode === "classic"
       ? "Impact, 'Arial Black', sans-serif"
       : "'Arial Black', 'Helvetica Neue', sans-serif";
+
+  // Start with the configured font size, scaled by user preference
+  let fontSize = Math.max(8, Math.round(field.fontSize * style.fontScale));
+  let lines: WrappedLine[] = [];
+  let lineHeight: number;
+
+  // Auto-scale: shrink font if text overflows maxHeight or if single words exceed maxWidth
+  const maxHeight = field.maxHeight ?? Infinity;
+  const MIN_FONT = 8;
+
+  while (fontSize >= MIN_FONT) {
+    ctx.font = `bold ${fontSize}px ${fontFamily}`;
+    lines = wrapText(ctx, displayText, field.maxWidth);
+    lineHeight = fontSize * 1.08;
+    const totalHeight = lines.length * lineHeight;
+
+    // Check: all lines fit width AND total height fits zone
+    const allFit = lines.every((l) => l.width <= field.maxWidth + 2);
+    if (allFit && totalHeight <= maxHeight) break;
+
+    fontSize -= 1;
+  }
+
+  if (!lines.length) return;
+
   ctx.font = `bold ${fontSize}px ${fontFamily}`;
   ctx.textBaseline = "middle";
   ctx.textAlign = field.align;
 
-  const lines = wrapText(ctx, style.mode === "classic" ? text.toUpperCase() : text, field.maxWidth);
-  if (!lines.length) return;
-
-  const lineHeight = fontSize * 1.08;
+  lineHeight = fontSize * 1.08;
   const startY = field.y - ((lines.length - 1) * lineHeight) / 2;
-  const anchorX = field.align === "center" ? field.x : field.x;
 
   lines.forEach((line, index) => {
     const y = startY + index * lineHeight;
-    const x = field.align === "center" ? anchorX : field.x;
+    const x = field.x;
 
     if (style.mode === "classic" && field.outline) {
       ctx.strokeStyle = "#000000";

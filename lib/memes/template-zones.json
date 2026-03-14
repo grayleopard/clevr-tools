@@ -1,0 +1,902 @@
+{
+  "always-has-been": [
+    {
+      "id": "question",
+      "label": "Question Text",
+      "x": 25,
+      "y": 30,
+      "maxWidth": 40,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "answer",
+      "label": "Answer Text",
+      "x": 75,
+      "y": 80,
+      "maxWidth": 40,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "ancient-aliens": [
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "batman-slapping-robin": [
+    {
+      "id": "robin_speech",
+      "label": "Robin's Text",
+      "x": 25,
+      "y": 15,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "batman_speech",
+      "label": "Batman's Text",
+      "x": 75,
+      "y": 15,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "bike-fall": [
+    {
+      "id": "panel1",
+      "label": "Panel 1 (riding bike)",
+      "x": 75,
+      "y": 15,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 20,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "panel2",
+      "label": "Panel 2 (putting stick in wheel)",
+      "x": 75,
+      "y": 48,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 20,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "panel3",
+      "label": "Panel 3 (fallen down)",
+      "x": 75,
+      "y": 85,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 20,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "blank-nut-button": [
+    {
+      "id": "button",
+      "label": "Button Text",
+      "x": 25,
+      "y": 50,
+      "maxWidth": 35,
+      "maxHeight": 25,
+      "fontSize": 16,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "boardroom-meeting": [
+    {
+      "id": "boss_speech",
+      "label": "Boss Speech",
+      "x": 65,
+      "y": 12,
+      "maxWidth": 60,
+      "maxHeight": 15,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "employee1_response",
+      "label": "Employee 1 Response",
+      "x": 20,
+      "y": 57,
+      "maxWidth": 25,
+      "maxHeight": 12,
+      "fontSize": 14,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "employee2_response",
+      "label": "Employee 2 Response",
+      "x": 50,
+      "y": 57,
+      "maxWidth": 25,
+      "maxHeight": 12,
+      "fontSize": 14,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "employee3_response",
+      "label": "Employee 3 Response",
+      "x": 80,
+      "y": 57,
+      "maxWidth": 35,
+      "maxHeight": 12,
+      "fontSize": 14,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "change-my-mind": [
+    {
+      "id": "sign",
+      "label": "Sign Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 45,
+      "maxHeight": 12,
+      "fontSize": 24,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "cheems": [
+    {
+      "id": "left",
+      "label": "Buff Doge Text",
+      "x": 25,
+      "y": 85,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "right",
+      "label": "Cheems Text",
+      "x": 75,
+      "y": 85,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "disaster-girl": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 20,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 90,
+      "maxWidth": 90,
+      "maxHeight": 15,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "distracted-boyfriend": [
+    {
+      "id": "woman_red",
+      "label": "Woman in Red",
+      "x": 25,
+      "y": 85,
+      "maxWidth": 40,
+      "maxHeight": 20,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "distracted_man",
+      "label": "Distracted Boyfriend",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 30,
+      "maxHeight": 20,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "girlfriend",
+      "label": "Disapproving Girlfriend",
+      "x": 80,
+      "y": 85,
+      "maxWidth": 35,
+      "maxHeight": 20,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "doge": [
+    {
+      "id": "top_left",
+      "label": "Top Left Text",
+      "x": 25,
+      "y": 25,
+      "maxWidth": 40,
+      "maxHeight": 30,
+      "fontSize": 18,
+      "color": "#FF6600",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "top_right",
+      "label": "Top Right Text",
+      "x": 75,
+      "y": 25,
+      "maxWidth": 40,
+      "maxHeight": 30,
+      "fontSize": 18,
+      "color": "#FF6600",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "bottom_left",
+      "label": "Bottom Left Text",
+      "x": 25,
+      "y": 75,
+      "maxWidth": 40,
+      "maxHeight": 30,
+      "fontSize": 18,
+      "color": "#FF6600",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "bottom_right",
+      "label": "Bottom Right Text",
+      "x": 75,
+      "y": 75,
+      "maxWidth": 40,
+      "maxHeight": 30,
+      "fontSize": 18,
+      "color": "#FF6600",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "drake": [
+    {
+      "id": "top",
+      "label": "Drake No",
+      "x": 75,
+      "y": 25,
+      "maxWidth": 45,
+      "maxHeight": 40,
+      "fontSize": 24,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Drake Yes",
+      "x": 75,
+      "y": 75,
+      "maxWidth": 45,
+      "maxHeight": 40,
+      "fontSize": 24,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "epic-handshake": [
+    {
+      "id": "left_arm",
+      "label": "Left Person/Group",
+      "x": 25,
+      "y": 35,
+      "maxWidth": 35,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "right_arm",
+      "label": "Right Person/Group",
+      "x": 75,
+      "y": 35,
+      "maxWidth": 35,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "handshake",
+      "label": "Agreement/Common Ground",
+      "x": 50,
+      "y": 75,
+      "maxWidth": 40,
+      "maxHeight": 20,
+      "fontSize": 20,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "expanding-brain": [
+    {
+      "id": "panel1",
+      "label": "First Panel Text",
+      "x": 20,
+      "y": 12,
+      "maxWidth": 35,
+      "maxHeight": 20,
+      "fontSize": 18,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "panel2",
+      "label": "Second Panel Text",
+      "x": 20,
+      "y": 37,
+      "maxWidth": 35,
+      "maxHeight": 20,
+      "fontSize": 18,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "panel3",
+      "label": "Third Panel Text",
+      "x": 20,
+      "y": 62,
+      "maxWidth": 35,
+      "maxHeight": 20,
+      "fontSize": 18,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "panel4",
+      "label": "Fourth Panel Text",
+      "x": 20,
+      "y": 87,
+      "maxWidth": 35,
+      "maxHeight": 20,
+      "fontSize": 18,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "gru-plan": [
+    {
+      "id": "panel1",
+      "label": "Step 1",
+      "x": 75,
+      "y": 25,
+      "maxWidth": 45,
+      "maxHeight": 40,
+      "fontSize": 18,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "panel2",
+      "label": "Step 2",
+      "x": 75,
+      "y": 25,
+      "maxWidth": 45,
+      "maxHeight": 40,
+      "fontSize": 18,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "panel3",
+      "label": "Step 3",
+      "x": 75,
+      "y": 75,
+      "maxWidth": 45,
+      "maxHeight": 40,
+      "fontSize": 18,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "panel4",
+      "label": "Step 4 (Realization)",
+      "x": 75,
+      "y": 75,
+      "maxWidth": 45,
+      "maxHeight": 40,
+      "fontSize": 18,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "hide-the-pain-harold": [
+    {
+      "id": "top_panel",
+      "label": "Top Panel Text",
+      "x": 50,
+      "y": 25,
+      "maxWidth": 90,
+      "maxHeight": 40,
+      "fontSize": 24,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "bottom_panel",
+      "label": "Bottom Panel Text",
+      "x": 50,
+      "y": 75,
+      "maxWidth": 90,
+      "maxHeight": 40,
+      "fontSize": 24,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "is-this-a-pigeon": [
+    {
+      "id": "butterfly",
+      "label": "Butterfly (Thing Being Questioned)",
+      "x": 85,
+      "y": 25,
+      "maxWidth": 25,
+      "maxHeight": 20,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "person",
+      "label": "Person (The Confused One)",
+      "x": 25,
+      "y": 85,
+      "maxWidth": 35,
+      "maxHeight": 15,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "question",
+      "label": "Question Text",
+      "x": 50,
+      "y": 95,
+      "maxWidth": 90,
+      "maxHeight": 8,
+      "fontSize": 18,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "left-exit-12-off-ramp": [
+    {
+      "id": "highway_sign",
+      "label": "Highway Sign Text",
+      "x": 50,
+      "y": 20,
+      "maxWidth": 60,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "exit_ramp",
+      "label": "Exit Ramp Choice",
+      "x": 75,
+      "y": 65,
+      "maxWidth": 40,
+      "maxHeight": 20,
+      "fontSize": 20,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "straight_path",
+      "label": "Straight Path Choice",
+      "x": 25,
+      "y": 75,
+      "maxWidth": 40,
+      "maxHeight": 20,
+      "fontSize": 20,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "mocking-spongebob": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "one-does-not-simply": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 20,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 90,
+      "maxHeight": 20,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "roll-safe": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "running-away-balloon": [
+    {
+      "id": "balloon",
+      "label": "Balloon Text",
+      "x": 75,
+      "y": 20,
+      "maxWidth": 35,
+      "maxHeight": 25,
+      "fontSize": 18,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "person",
+      "label": "Person Text",
+      "x": 25,
+      "y": 35,
+      "maxWidth": 30,
+      "maxHeight": 20,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "girlfriend",
+      "label": "Girlfriend Text",
+      "x": 25,
+      "y": 85,
+      "maxWidth": 30,
+      "maxHeight": 20,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "success-kid": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "surprised-pikachu": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 90,
+      "maxHeight": 25,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "this-is-fine": [
+    {
+      "id": "panel1",
+      "label": "Panel 1 Text",
+      "x": 25,
+      "y": 85,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 16,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "panel2",
+      "label": "Panel 2 Text",
+      "x": 75,
+      "y": 85,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 16,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "two-buttons": [
+    {
+      "id": "button1",
+      "label": "Left Button",
+      "x": 25,
+      "y": 25,
+      "maxWidth": 35,
+      "maxHeight": 25,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    },
+    {
+      "id": "button2",
+      "label": "Right Button",
+      "x": 75,
+      "y": 25,
+      "maxWidth": 35,
+      "maxHeight": 25,
+      "fontSize": 16,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "uno-draw-25": [
+    {
+      "id": "card_text",
+      "label": "UNO Card Text",
+      "x": 12,
+      "y": 50,
+      "maxWidth": 20,
+      "maxHeight": 80,
+      "fontSize": 14,
+      "color": "#000000",
+      "outline": false,
+      "align": "center"
+    }
+  ],
+  "waiting-skeleton": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 20,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 85,
+      "maxWidth": 90,
+      "maxHeight": 20,
+      "fontSize": 32,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "woman-yelling-cat": [
+    {
+      "id": "left",
+      "label": "Woman Yelling Text",
+      "x": 25,
+      "y": 15,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "right",
+      "label": "Cat Text",
+      "x": 75,
+      "y": 15,
+      "maxWidth": 45,
+      "maxHeight": 25,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ],
+  "x-everywhere": [
+    {
+      "id": "top",
+      "label": "Top Text",
+      "x": 50,
+      "y": 15,
+      "maxWidth": 90,
+      "maxHeight": 20,
+      "fontSize": 36,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    },
+    {
+      "id": "bottom",
+      "label": "Bottom Text",
+      "x": 50,
+      "y": 88,
+      "maxWidth": 90,
+      "maxHeight": 20,
+      "fontSize": 36,
+      "color": "#FFFFFF",
+      "outline": true,
+      "align": "center"
+    }
+  ]
+}

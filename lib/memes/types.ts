@@ -13,6 +13,8 @@ export interface TextFieldConfig {
   x: number;
   y: number;
   maxWidth: number;
+  /** Maximum vertical extent of the text zone in pixels. Used for auto-scaling. */
+  maxHeight?: number;
   fontSize: number;
   align: "center" | "left";
   color: string;
