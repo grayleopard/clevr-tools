@@ -68,6 +68,7 @@ export default function ImageResizer() {
   const [results, setResults] = useState<ResizedResult[]>([]);
   const [activeTab, setActiveTab] = useState<"custom" | "presets">("custom");
   const [selectedPreset, setSelectedPreset] = useState<Preset | null>(null);
+  const [lastPreset, setLastPreset] = useState<Preset | null>(null);
 
   const aspectRatioRef = useRef(1);
   const [resetKey, setResetKey] = useState(0);
@@ -139,6 +140,7 @@ export default function ImageResizer() {
     setLockAspect(false);
     setUsePercentage(false);
     setSelectedPreset(preset);
+    setLastPreset(preset);
     setResults([]);
   }, []);
 
@@ -263,6 +265,12 @@ export default function ImageResizer() {
     (outputFormat === "original" &&
       images.length > 0 &&
       (images[0].file.type === "image/jpeg" || images[0].file.type === "image/webp"));
+  const showPresetPreview =
+    activeTab === "presets" && selectedPreset !== null && images.length > 0;
+  const presetPreviewWidth =
+    selectedPreset !== null
+      ? Math.min(560, (selectedPreset.width / selectedPreset.height) * 400)
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -319,7 +327,10 @@ export default function ImageResizer() {
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="flex border-b border-border">
               <button
-                onClick={() => { setActiveTab("custom"); setSelectedPreset(null); }}
+                onClick={() => {
+                  setActiveTab("custom");
+                  setSelectedPreset(null);
+                }}
                 className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
                   activeTab === "custom"
                     ? "bg-background text-foreground border-b-2 border-primary"
@@ -329,7 +340,17 @@ export default function ImageResizer() {
                 Custom Size
               </button>
               <button
-                onClick={() => setActiveTab("presets")}
+                onClick={() => {
+                  setActiveTab("presets");
+                  if (
+                    selectedPreset === null &&
+                    lastPreset !== null &&
+                    targetWidth === lastPreset.width &&
+                    targetHeight === lastPreset.height
+                  ) {
+                    setSelectedPreset(lastPreset);
+                  }
+                }}
                 className={`flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
                   activeTab === "presets"
                     ? "bg-background text-foreground border-b-2 border-primary"
@@ -486,25 +507,52 @@ export default function ImageResizer() {
               )}
 
               {activeTab === "presets" && (
-                <div className="grid grid-cols-2 gap-2">
-                  {presets.map((preset) => (
-                    <button
-                      key={preset.label}
-                      onClick={() => applyPreset(preset)}
-                      className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-colors ${
-                        selectedPreset?.label === preset.label
-                          ? "border-primary bg-primary/10 ring-1 ring-primary/20"
-                          : "border-border bg-background hover:border-primary/40 hover:bg-muted"
-                      }`}
-                    >
-                      <span className={`font-medium ${selectedPreset?.label === preset.label ? "text-primary" : "text-foreground"}`}>
-                        {preset.label}
-                      </span>
-                      <span className={`text-xs tabular-nums ${selectedPreset?.label === preset.label ? "text-primary/70" : "text-muted-foreground"}`}>
-                        {preset.width} &times; {preset.height}
-                      </span>
-                    </button>
-                  ))}
+                <div className="space-y-5">
+                  <div className="grid grid-cols-2 gap-2">
+                    {presets.map((preset) => (
+                      <button
+                        key={preset.label}
+                        onClick={() => applyPreset(preset)}
+                        className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-colors ${
+                          selectedPreset?.label === preset.label
+                            ? "border-primary bg-primary/10 ring-1 ring-primary/20"
+                            : "border-border bg-background hover:border-primary/40 hover:bg-muted"
+                        }`}
+                      >
+                        <span className={`font-medium ${selectedPreset?.label === preset.label ? "text-primary" : "text-foreground"}`}>
+                          {preset.label}
+                        </span>
+                        <span className={`text-xs tabular-nums ${selectedPreset?.label === preset.label ? "text-primary/70" : "text-muted-foreground"}`}>
+                          {preset.width} &times; {preset.height}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {showPresetPreview && (
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="flex w-full justify-center overflow-hidden">
+                        <div
+                          className="relative max-w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm"
+                          style={{
+                            aspectRatio: `${selectedPreset.width} / ${selectedPreset.height}`,
+                            width: `min(100%, ${presetPreviewWidth}px)`,
+                            maxHeight: "400px",
+                          }}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={images[0].url}
+                            alt={`${selectedPreset.label} preview`}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      </div>
+                      <p className="text-center text-xs text-muted-foreground">
+                        {selectedPreset.label} &mdash; {selectedPreset.width} &times; {selectedPreset.height}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
