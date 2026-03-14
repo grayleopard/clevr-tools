@@ -25,19 +25,6 @@ export default function PlayPage() {
 
           <div className="space-y-4">
             <Link
-              href="/play/numble"
-              className="block rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/50"
-            >
-              <div className="mb-2 flex items-center gap-3">
-                <span className="text-2xl">🔢</span>
-                <h2 className="text-xl font-semibold text-foreground">Numble</h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Combine 6 numbers to reach the target using +, −, ×, ÷. Play the shared daily puzzle or practice on unlimited extra puzzles.
-              </p>
-            </Link>
-
-            <Link
               href="/play/meme-generator"
               className="block rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/50"
             >
