@@ -7,6 +7,8 @@ FastAPI + rembg backend for `https://www.clevr.tools/tools/background-remover`.
 - `BG_API_KEY` — shared secret expected from the Next.js proxy route
 - `ALLOWED_ORIGIN` — allowed browser origin for CORS, defaults to `https://www.clevr.tools`
 - `MAX_DIMENSION` — maximum allowed image width or height, defaults to `4096`
+- `MAX_FILE_SIZE_BYTES` — hard upload ceiling enforced before and after body read, defaults to `10485760`
+- `PROCESSING_TIMEOUT_SECONDS` — max wall-clock time allowed for a removal job, defaults to `45`
 - `RATE_LIMIT_PER_MINUTE` — backend throttle for proxied requests, defaults to `30`
 - `UVICORN_WORKERS` — defaults to `1`; increase only if the VPS has enough RAM for multiple model copies
 
@@ -27,6 +29,7 @@ docker compose up -d --build
 ## Reverse proxy
 
 Point `bg.clevr.tools` at the VPS and proxy HTTPS traffic to `localhost:8000` with Caddy or Nginx.
+This repo includes a ready-to-use [Caddyfile](/Users/preet/Projects/clevr-tools/clevr-bg-api/Caddyfile).
 The Vercel app should call this backend through the Next.js proxy route using:
 
 - `BG_API_URL=https://bg.clevr.tools`

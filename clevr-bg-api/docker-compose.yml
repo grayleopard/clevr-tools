@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   bg-api:
     build: .
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     restart: unless-stopped
     environment:
       U2NET_HOME: /app/models
@@ -12,8 +10,17 @@ services:
       ALLOWED_ORIGIN: https://www.clevr.tools
       BG_API_KEY: change-me
       MAX_DIMENSION: 4096
+      MAX_FILE_SIZE_BYTES: 10485760
+      PROCESSING_TIMEOUT_SECONDS: 45
+      RATE_LIMIT_PER_MINUTE: 30
     volumes:
       - model_cache:/app/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5).read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     mem_limit: 2g
 
 volumes:
