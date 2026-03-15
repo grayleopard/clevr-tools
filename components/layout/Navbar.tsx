@@ -188,6 +188,12 @@ export default function Navbar() {
                 </div>
               </div>
             </div>
+          <Link
+            href="/blog"
+            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            Blog
+          </Link>
           </div>
         </nav>
 
@@ -254,6 +260,13 @@ export default function Navbar() {
                     </div>
                   </details>
                 ))}
+                <div className="border-t border-border my-1" />
+                <Link
+                  href="/blog"
+                  className="block rounded-md px-2 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                >
+                  Blog
+                </Link>
               </nav>
             </div>
           </details>
