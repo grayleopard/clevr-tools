@@ -188,13 +188,13 @@ export default function Navbar() {
                 </div>
               </div>
             </div>
+          </div>
           <Link
             href="/blog"
             className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             Blog
           </Link>
-          </div>
         </nav>
 
         <div className="flex items-center gap-1">
