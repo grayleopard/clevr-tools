@@ -198,53 +198,41 @@ export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
               Back to templates
             </button>
           )}
-          <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              {selectedTemplate.name}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {memeTemplates.length} built-in templates, live canvas preview, and local PNG download.
-            </p>
-          </div>
+          <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            {selectedTemplate.name}
+          </h2>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] lg:items-start">
-        <div className="space-y-4">
-          <div className="rounded-[28px] border border-border bg-card p-3 shadow-sm sm:p-5">
-            <MemeCanvas
-              ref={canvasRef}
-              template={selectedTemplate}
-              texts={texts}
-              style={style}
-            />
-          </div>
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            The preview renders at the template&apos;s full resolution and scales down responsively for mobile.
-          </p>
+        <div className="rounded-[28px] border border-border bg-card p-3 shadow-sm sm:p-5">
+          <MemeCanvas
+            ref={canvasRef}
+            template={selectedTemplate}
+            texts={texts}
+            style={style}
+          />
         </div>
 
-        <TextControls
-          template={selectedTemplate}
-          texts={texts}
-          style={style}
-          onTextChange={(id, value) =>
-            setTexts((current) => ({
-              ...current,
-              [id]: value,
-            }))
-          }
-          onStyleChange={setStyle}
-        />
-      </div>
+        <div className="space-y-6">
+          <TextControls
+            template={selectedTemplate}
+            texts={texts}
+            style={style}
+            onTextChange={(id, value) =>
+              setTexts((current) => ({
+                ...current,
+                [id]: value,
+              }))
+            }
+            onStyleChange={setStyle}
+          />
 
-      <div className="sticky bottom-4 z-20">
-        <div className="flex items-center justify-end gap-3 rounded-2xl border border-border bg-background/95 p-3 shadow-lg backdrop-blur sm:p-4">
           <button
             type="button"
             onClick={handleDownload}
             disabled={isDownloading}
-            className="ml-auto inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
+            className="inline-flex w-full min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isDownloading ? (
               <LoaderCircle className="h-4 w-4 animate-spin" />

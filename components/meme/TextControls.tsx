@@ -30,12 +30,7 @@ export default function TextControls({
   return (
     <div className="space-y-6">
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <div>
-          <h3 className="text-base font-semibold text-foreground">Text</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Each field updates the preview live.
-          </p>
-        </div>
+        <h3 className="text-base font-semibold text-foreground">Text</h3>
 
         <div className="space-y-4">
           {template.textFields.map((field) => (

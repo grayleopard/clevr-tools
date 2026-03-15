@@ -172,6 +172,41 @@ const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeC
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(image, 0, 0, template.width, template.height);
 
+        // DEBUG_ZONES: draw red zone boundaries to verify coordinate mapping
+        const DEBUG_ZONES = false;
+        if (DEBUG_ZONES) {
+          template.textFields.forEach((field) => {
+            const cx = field.x;
+            const cy = field.y;
+            const w = field.maxWidth;
+            const h = field.maxHeight ?? 40;
+
+            context.save();
+            context.strokeStyle = "rgba(255, 0, 0, 0.8)";
+            context.lineWidth = 3;
+            context.setLineDash([8, 4]);
+            // For center-aligned text, the zone is centered on (cx, cy)
+            const left = field.align === "center" ? cx - w / 2 : cx;
+            context.strokeRect(left, cy - h / 2, w, h);
+
+            context.fillStyle = "red";
+            context.beginPath();
+            context.arc(cx, cy, 5, 0, Math.PI * 2);
+            context.fill();
+
+            context.font = "14px monospace";
+            context.fillStyle = "red";
+            context.textAlign = "left";
+            context.textBaseline = "top";
+            context.fillText(
+              `${field.id} (${cx},${cy})`,
+              left,
+              cy - h / 2 - 18
+            );
+            context.restore();
+          });
+        }
+
         template.textFields.forEach((field) => {
           drawField(context, field, texts[field.id] ?? "", style);
         });
