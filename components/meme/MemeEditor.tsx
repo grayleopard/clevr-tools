@@ -239,10 +239,7 @@ export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
       </div>
 
       <div className="sticky bottom-4 z-20">
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background/95 p-3 shadow-lg backdrop-blur sm:p-4">
-          <p className="hidden text-sm text-muted-foreground sm:block">
-            Export a PNG with the watermark baked into the image.
-          </p>
+        <div className="flex items-center justify-end gap-3 rounded-2xl border border-border bg-background/95 p-3 shadow-lg backdrop-blur sm:p-4">
           <button
             type="button"
             onClick={handleDownload}
