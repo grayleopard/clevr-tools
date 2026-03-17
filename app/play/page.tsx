@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { generateDailyPuzzle, getUTCDateString } from "@/lib/numble";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DailyChallengeBanner from "@/components/numble/DailyChallengeBanner";
@@ -11,6 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function PlayPage() {
+  const todayDate = getUTCDateString();
+  const puzzle = generateDailyPuzzle(todayDate);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -21,7 +25,12 @@ export default function PlayPage() {
             Daily brain puzzles, creative tools, and fun utilities.
           </p>
 
-          <DailyChallengeBanner />
+          <DailyChallengeBanner
+            puzzleNumber={puzzle.puzzleNumber}
+            target={puzzle.target}
+            difficulty={puzzle.difficulty}
+            todayDate={todayDate}
+          />
 
           <div className="space-y-4">
             <Link

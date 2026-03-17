@@ -4,42 +4,49 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   formatCountdown,
-  generateDailyPuzzle,
   getSecondsUntilMidnight,
   getUTCDateString,
-} from "@/lib/numble";
+} from "@/lib/numble-utils";
 import { getStats, getTodayState } from "@/lib/numble-storage";
 
-function getInitialBannerState() {
-  const today = getUTCDateString();
-  const puzzle = generateDailyPuzzle(today);
+interface DailyChallengeBannerProps {
+  puzzleNumber: number;
+  target: number;
+  difficulty: string;
+  todayDate: string;
+}
+
+function getInitialLocalState(todayDate: string) {
   const todayState = getTodayState();
   const stats = getStats();
 
   return {
     state:
       todayState &&
-      todayState.date === today &&
+      todayState.date === todayDate &&
       (todayState.completed || todayState.gaveUp)
         ? ("completed" as const)
         : ("unplayed" as const),
     completedStars:
       todayState &&
-      todayState.date === today &&
+      todayState.date === todayDate &&
       (todayState.completed || todayState.gaveUp)
         ? (todayState.stars || 0)
         : 0,
     streak: stats.currentStreak,
-    puzzleNumber: puzzle.puzzleNumber,
-    target: puzzle.target,
-    difficulty: puzzle.difficulty,
-    countdown: formatCountdown(getSecondsUntilMidnight()),
   };
 }
 
-export default function DailyChallengeBanner() {
-  const initialRef = useState(() => getInitialBannerState())[0];
-  const [countdown, setCountdown] = useState(initialRef.countdown);
+export default function DailyChallengeBanner({
+  puzzleNumber,
+  target,
+  difficulty,
+  todayDate,
+}: DailyChallengeBannerProps) {
+  const initialRef = useState(() => getInitialLocalState(todayDate))[0];
+  const [countdown, setCountdown] = useState(() =>
+    formatCountdown(getSecondsUntilMidnight())
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -56,10 +63,10 @@ export default function DailyChallengeBanner() {
             <span className="text-lg">🔢</span>
             <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Today&apos;s Numble</span>
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Numble #{initialRef.puzzleNumber}</h2>
+          <h2 className="text-2xl font-bold text-foreground">Numble #{puzzleNumber}</h2>
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-            <span>Target: <span className="font-semibold text-foreground">{initialRef.target}</span></span>
-            <span className="rounded-full border border-border px-2.5 py-1 text-xs font-medium text-foreground">{initialRef.difficulty}</span>
+            <span>Target: <span className="font-semibold text-foreground">{target}</span></span>
+            <span className="rounded-full border border-border px-2.5 py-1 text-xs font-medium text-foreground">{difficulty}</span>
             <span>Next puzzle in {countdown}</span>
           </div>
           {initialRef.state === "completed" ? (

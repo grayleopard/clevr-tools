@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   ArrowRight,
   ChevronDown,
@@ -9,11 +6,11 @@ import {
   ImageIcon,
   Menu,
   X,
-  Zap,
 } from "lucide-react";
 import { playLinks, siteCategories } from "@/lib/site-structure";
 import { getToolBySlug } from "@/lib/tools";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import NavbarLogo from "@/components/layout/NavbarLogo";
 
 function CategoryMenu({
   category,
@@ -77,26 +74,10 @@ function PlayLinkIcon({
 }
 
 export default function Navbar() {
-  const pathname = usePathname();
-
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-lg font-semibold"
-          onClick={() => {
-            if (pathname === "/") {
-              window.dispatchEvent(new CustomEvent("clevr:reset-home"));
-            }
-          }}
-        >
-          <Zap className="h-5 w-5 text-primary" />
-          <span>
-            <span className="text-primary">clevr</span>
-            <span className="text-muted-foreground">.tools</span>
-          </span>
-        </Link>
+        <NavbarLogo />
 
         <nav className="hidden items-center gap-0.5 md:flex" aria-label="Primary navigation">
           {siteCategories.map((cat) => (

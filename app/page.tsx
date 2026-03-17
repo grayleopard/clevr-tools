@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getToolBySlug } from "@/lib/tools";
 import { siteCategories, getCategoryToolCount } from "@/lib/site-structure";
+import { generateDailyPuzzle, getUTCDateString } from "@/lib/numble";
 import SmartConverterDeferred from "@/components/home/SmartConverterDeferred";
 import DailyChallengeBanner from "@/components/numble/DailyChallengeBanner";
 import Navbar from "@/components/layout/Navbar";
@@ -34,6 +35,9 @@ const categoryIcons: Record<string, React.ComponentType<{ className?: string }>>
 };
 
 export default function HomePage() {
+  const todayDate = getUTCDateString();
+  const puzzle = generateDailyPuzzle(todayDate);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -57,7 +61,12 @@ export default function HomePage() {
 
         {/* Category grid */}
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-          <DailyChallengeBanner />
+          <DailyChallengeBanner
+            puzzleNumber={puzzle.puzzleNumber}
+            target={puzzle.target}
+            difficulty={puzzle.difficulty}
+            todayDate={todayDate}
+          />
           <p className="mb-6 text-sm text-muted-foreground">
             Browse by category:
           </p>
