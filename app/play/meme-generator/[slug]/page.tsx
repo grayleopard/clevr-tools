@@ -145,16 +145,20 @@ function getFaqItems(name: string): FaqItem[] {
 
 export default async function MemeTemplatePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ memeDebug?: string }>;
 }) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
   const template = getTemplate(slug);
   if (!template) notFound();
 
   const description = templateDescriptions[slug] ?? "";
   const faqItems = getFaqItems(template.name);
   const related = getRelatedTemplates(slug);
+  const showDebugRegions = resolvedSearchParams.memeDebug === "1";
 
   return (
     <>
@@ -181,7 +185,10 @@ export default async function MemeTemplatePage({
           </section>
 
           <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-            <MemeEditor initialTemplate={template} />
+            <MemeEditor
+              initialTemplate={template}
+              showDebugRegions={showDebugRegions}
+            />
           </section>
 
           {related.length > 0 && (

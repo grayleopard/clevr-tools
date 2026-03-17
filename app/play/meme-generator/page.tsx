@@ -47,7 +47,14 @@ const faqItems: FaqItem[] = [
   },
 ];
 
-export default function MemeGeneratorPage() {
+export default async function MemeGeneratorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ memeDebug?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const showDebugRegions = resolvedSearchParams.memeDebug === "1";
+
   return (
     <>
       <FaqSchema items={faqItems} />
@@ -72,7 +79,7 @@ export default function MemeGeneratorPage() {
           </section>
 
           <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-            <MemeEditor />
+            <MemeEditor showDebugRegions={showDebugRegions} />
           </section>
         </main>
         <Footer />

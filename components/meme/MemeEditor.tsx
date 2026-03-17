@@ -2,7 +2,6 @@
 
 import { ArrowLeft, Download, LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { startTransition, useEffect, useRef, useState } from "react";
 import MemeCanvas from "@/components/meme/MemeCanvas";
 import TemplateGrid from "@/components/meme/TemplateGrid";
@@ -72,10 +71,13 @@ function createUploadedTemplate(
 
 interface MemeEditorProps {
   initialTemplate?: MemeTemplate;
+  showDebugRegions?: boolean;
 }
 
-export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
-  const searchParams = useSearchParams();
+export default function MemeEditor({
+  initialTemplate,
+  showDebugRegions = false,
+}: MemeEditorProps = {}) {
   const [selectedTemplate, setSelectedTemplate] = useState<MemeTemplate | null>(
     initialTemplate ?? null
   );
@@ -86,7 +88,6 @@ export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [uploadedSrc, setUploadedSrc] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const showDebugRegions = searchParams.get("memeDebug") === "1";
 
   useEffect(() => {
     return () => {
