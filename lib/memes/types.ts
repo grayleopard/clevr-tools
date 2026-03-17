@@ -7,16 +7,19 @@ export interface MemeTemplate {
   textFields: TextFieldConfig[];
 }
 
+export type MemeTextAlign = "left" | "center" | "right";
+export type MemeTextVAlign = "top" | "middle" | "bottom";
+
 export interface TextFieldConfig {
   id: string;
   label: string;
   x: number;
   y: number;
-  maxWidth: number;
-  /** Maximum vertical extent of the text zone in pixels. Used for auto-scaling. */
-  maxHeight?: number;
+  width: number;
+  height: number;
   fontSize: number;
-  align: "center" | "left";
+  align: MemeTextAlign;
+  valign?: MemeTextVAlign;
   color: string;
   outline: boolean;
 }

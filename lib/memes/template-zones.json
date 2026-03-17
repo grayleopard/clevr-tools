@@ -3,26 +3,28 @@
     {
       "id": "question",
       "label": "Question Text",
-      "x": 25,
-      "y": 30,
-      "maxWidth": 40,
-      "maxHeight": 25,
+      "x": 14,
+      "y": 18,
+      "width": 26,
+      "height": 18,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "answer",
       "label": "Answer Text",
-      "x": 75,
-      "y": 80,
-      "maxWidth": 40,
-      "maxHeight": 25,
+      "x": 69,
+      "y": 65,
+      "width": 22,
+      "height": 17,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "ancient-aliens": [
@@ -43,26 +45,28 @@
     {
       "id": "robin_speech",
       "label": "Robin's Text",
-      "x": 25,
-      "y": 15,
-      "maxWidth": 45,
-      "maxHeight": 25,
+      "x": 4,
+      "y": 2,
+      "width": 35,
+      "height": 24,
       "fontSize": 16,
       "color": "#000000",
-      "outline": true,
-      "align": "center"
+      "outline": false,
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "batman_speech",
       "label": "Batman's Text",
-      "x": 75,
-      "y": 15,
-      "maxWidth": 45,
-      "maxHeight": 25,
+      "x": 56,
+      "y": 2,
+      "width": 35,
+      "height": 24,
       "fontSize": 16,
       "color": "#000000",
-      "outline": true,
-      "align": "center"
+      "outline": false,
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "bike-fall": [
@@ -121,64 +125,69 @@
     {
       "id": "boss_speech",
       "label": "Boss Speech",
-      "x": 65,
-      "y": 12,
-      "maxWidth": 60,
-      "maxHeight": 15,
+      "x": 24,
+      "y": 0,
+      "width": 50,
+      "height": 15,
       "fontSize": 16,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "employee1_response",
       "label": "Employee 1 Response",
-      "x": 20,
-      "y": 57,
-      "maxWidth": 25,
-      "maxHeight": 12,
+      "x": 1,
+      "y": 35,
+      "width": 21,
+      "height": 11,
       "fontSize": 14,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "employee2_response",
       "label": "Employee 2 Response",
-      "x": 50,
-      "y": 57,
-      "maxWidth": 25,
-      "maxHeight": 12,
+      "x": 30,
+      "y": 34,
+      "width": 20,
+      "height": 11,
       "fontSize": 14,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "employee3_response",
       "label": "Employee 3 Response",
-      "x": 80,
-      "y": 57,
-      "maxWidth": 35,
-      "maxHeight": 12,
+      "x": 57,
+      "y": 30,
+      "width": 30,
+      "height": 18,
       "fontSize": 14,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "change-my-mind": [
     {
       "id": "sign",
       "label": "Sign Text",
-      "x": 50,
-      "y": 73,
-      "maxWidth": 65,
-      "maxHeight": 18,
+      "x": 16,
+      "y": 61,
+      "width": 67,
+      "height": 24,
       "fontSize": 24,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "cheems": [
@@ -237,38 +246,41 @@
     {
       "id": "woman_red",
       "label": "Woman in Red",
-      "x": 25,
-      "y": 85,
-      "maxWidth": 40,
-      "maxHeight": 20,
+      "x": 3,
+      "y": 58,
+      "width": 28,
+      "height": 24,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "distracted_man",
       "label": "Distracted Boyfriend",
-      "x": 50,
-      "y": 85,
-      "maxWidth": 30,
-      "maxHeight": 20,
+      "x": 42,
+      "y": 46,
+      "width": 21,
+      "height": 36,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "girlfriend",
       "label": "Disapproving Girlfriend",
-      "x": 80,
-      "y": 85,
-      "maxWidth": 35,
-      "maxHeight": 20,
+      "x": 71,
+      "y": 49,
+      "width": 23,
+      "height": 34,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "doge": [
@@ -325,26 +337,28 @@
     {
       "id": "top",
       "label": "Drake No",
-      "x": 75,
-      "y": 25,
-      "maxWidth": 45,
-      "maxHeight": 40,
+      "x": 54,
+      "y": 4,
+      "width": 42,
+      "height": 42,
       "fontSize": 24,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "bottom",
       "label": "Drake Yes",
-      "x": 75,
-      "y": 75,
-      "maxWidth": 45,
-      "maxHeight": 40,
+      "x": 54,
+      "y": 54,
+      "width": 42,
+      "height": 42,
       "fontSize": 24,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "epic-handshake": [
@@ -439,50 +453,54 @@
     {
       "id": "panel1",
       "label": "Step 1",
-      "x": 38,
-      "y": 23,
-      "maxWidth": 22,
-      "maxHeight": 38,
+      "x": 24,
+      "y": 4,
+      "width": 24,
+      "height": 40,
       "fontSize": 16,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "panel2",
       "label": "Step 2",
-      "x": 88,
-      "y": 23,
-      "maxWidth": 22,
-      "maxHeight": 38,
+      "x": 74,
+      "y": 4,
+      "width": 24,
+      "height": 40,
       "fontSize": 16,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "panel3",
       "label": "Step 3",
-      "x": 38,
-      "y": 73,
-      "maxWidth": 22,
-      "maxHeight": 38,
+      "x": 24,
+      "y": 54,
+      "width": 24,
+      "height": 40,
       "fontSize": 16,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "panel4",
       "label": "Step 4 (Realization)",
-      "x": 88,
-      "y": 73,
-      "maxWidth": 22,
-      "maxHeight": 38,
+      "x": 74,
+      "y": 54,
+      "width": 24,
+      "height": 40,
       "fontSize": 16,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "hide-the-pain-harold": [
@@ -515,76 +533,82 @@
     {
       "id": "butterfly",
       "label": "Butterfly (Thing Being Questioned)",
-      "x": 85,
-      "y": 25,
-      "maxWidth": 25,
-      "maxHeight": 20,
+      "x": 76,
+      "y": 6,
+      "width": 20,
+      "height": 18,
       "fontSize": 16,
       "color": "#000000",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "person",
       "label": "Person (The Confused One)",
-      "x": 25,
-      "y": 85,
-      "maxWidth": 35,
-      "maxHeight": 15,
+      "x": 4,
+      "y": 73,
+      "width": 33,
+      "height": 16,
       "fontSize": 16,
       "color": "#000000",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "question",
       "label": "Question Text",
-      "x": 50,
-      "y": 92,
-      "maxWidth": 90,
-      "maxHeight": 12,
+      "x": 39,
+      "y": 30,
+      "width": 26,
+      "height": 14,
       "fontSize": 18,
       "color": "#000000",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "left-exit-12-off-ramp": [
     {
       "id": "highway_sign",
       "label": "Highway Sign Text",
-      "x": 50,
-      "y": 20,
-      "maxWidth": 60,
-      "maxHeight": 25,
+      "x": 20,
+      "y": 9,
+      "width": 58,
+      "height": 24,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "exit_ramp",
       "label": "Exit Ramp Choice",
-      "x": 75,
-      "y": 65,
-      "maxWidth": 40,
-      "maxHeight": 20,
+      "x": 63,
+      "y": 55,
+      "width": 27,
+      "height": 18,
       "fontSize": 20,
-      "color": "#000000",
+      "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "straight_path",
       "label": "Straight Path Choice",
-      "x": 25,
-      "y": 75,
-      "maxWidth": 40,
-      "maxHeight": 20,
+      "x": 5,
+      "y": 56,
+      "width": 30,
+      "height": 18,
       "fontSize": 20,
-      "color": "#000000",
+      "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "mocking-spongebob": [
@@ -669,38 +693,41 @@
     {
       "id": "balloon",
       "label": "Balloon Text",
-      "x": 75,
-      "y": 20,
-      "maxWidth": 35,
-      "maxHeight": 25,
+      "x": 61,
+      "y": 3,
+      "width": 29,
+      "height": 27,
       "fontSize": 18,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "person",
       "label": "Person Text",
-      "x": 25,
-      "y": 35,
-      "maxWidth": 30,
-      "maxHeight": 20,
+      "x": 5,
+      "y": 10,
+      "width": 32,
+      "height": 28,
       "fontSize": 16,
       "color": "#000000",
-      "outline": true,
-      "align": "center"
+      "outline": false,
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "girlfriend",
       "label": "Girlfriend Text",
-      "x": 25,
-      "y": 85,
-      "maxWidth": 30,
-      "maxHeight": 20,
+      "x": 3,
+      "y": 60,
+      "width": 30,
+      "height": 26,
       "fontSize": 16,
       "color": "#000000",
-      "outline": true,
-      "align": "center"
+      "outline": false,
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "success-kid": [
@@ -785,26 +812,28 @@
     {
       "id": "button1",
       "label": "Left Button",
-      "x": 25,
-      "y": 25,
-      "maxWidth": 35,
-      "maxHeight": 25,
+      "x": 7,
+      "y": 5,
+      "width": 34,
+      "height": 30,
       "fontSize": 16,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "button2",
       "label": "Right Button",
-      "x": 75,
-      "y": 25,
-      "maxWidth": 35,
-      "maxHeight": 25,
+      "x": 43,
+      "y": 4,
+      "width": 34,
+      "height": 30,
       "fontSize": 16,
       "color": "#000000",
       "outline": false,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "uno-draw-25": [
@@ -851,26 +880,28 @@
     {
       "id": "left",
       "label": "Woman Yelling Text",
-      "x": 25,
-      "y": 15,
-      "maxWidth": 45,
-      "maxHeight": 25,
+      "x": 2,
+      "y": 1,
+      "width": 46,
+      "height": 22,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     },
     {
       "id": "right",
       "label": "Cat Text",
-      "x": 75,
-      "y": 15,
-      "maxWidth": 45,
-      "maxHeight": 25,
+      "x": 52,
+      "y": 1,
+      "width": 46,
+      "height": 22,
       "fontSize": 24,
       "color": "#FFFFFF",
       "outline": true,
-      "align": "center"
+      "align": "center",
+      "valign": "middle"
     }
   ],
   "x-everywhere": [

@@ -5,7 +5,6 @@
  */
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
 
 const ZONES_FILE = path.join(process.cwd(), "lib/memes/template-zones.json");
 const OUTPUT_FILE = path.join(process.cwd(), "lib/memes/templates.ts");
@@ -112,12 +111,36 @@ interface Zone {
   label: string;
   x: number;
   y: number;
-  maxWidth: number;
-  maxHeight: number;
+  width?: number;
+  height?: number;
+  maxWidth?: number;
+  maxHeight?: number;
   fontSize: number;
   color: string;
   outline: boolean;
-  align: "center" | "left";
+  align?: "center" | "left" | "right";
+  valign?: "top" | "middle" | "bottom";
+}
+
+function resolveZoneBox(zone: Zone) {
+  const width = zone.width ?? zone.maxWidth ?? 0;
+  const height = zone.height ?? zone.maxHeight ?? 0;
+
+  if (zone.width !== undefined || zone.height !== undefined) {
+    return {
+      x: zone.x,
+      y: zone.y,
+      width,
+      height,
+    };
+  }
+
+  return {
+    x: zone.x - width / 2,
+    y: zone.y - height / 2,
+    width,
+    height,
+  };
 }
 
 function main() {
@@ -160,19 +183,25 @@ export const memeTemplates: MemeTemplate[] = [\n`;
     const dims = getImageDimensions(filePath);
     const templateZones = zones[id];
 
-    // Convert percentage-based zones to absolute pixel coordinates
-    const fields = templateZones.map((z) => ({
-      id: z.id,
-      label: z.label,
-      x: Math.round((z.x / 100) * dims.width),
-      y: Math.round((z.y / 100) * dims.height),
-      maxWidth: Math.round((z.maxWidth / 100) * dims.width),
-      maxHeight: Math.round((z.maxHeight / 100) * dims.height),
-      fontSize: z.fontSize,
-      color: z.color,
-      outline: z.outline,
-      align: z.align,
-    }));
+    // Convert percentage-based zones to absolute pixel box regions.
+    const fields = templateZones.map((z) => {
+      const box = resolveZoneBox(z);
+      const scaledFontSize = Math.max(12, Math.round((z.fontSize / 600) * dims.width));
+
+      return {
+        id: z.id,
+        label: z.label,
+        x: Math.round((box.x / 100) * dims.width),
+        y: Math.round((box.y / 100) * dims.height),
+        width: Math.round((box.width / 100) * dims.width),
+        height: Math.round((box.height / 100) * dims.height),
+        fontSize: scaledFontSize,
+        color: z.color,
+        outline: z.outline,
+        align: z.align ?? "center",
+        valign: z.valign ?? "middle",
+      };
+    });
 
     output += `  {\n`;
     output += `    id: ${JSON.stringify(id)},\n`;
@@ -183,7 +212,7 @@ export const memeTemplates: MemeTemplate[] = [\n`;
     output += `    textFields: [\n`;
 
     for (const f of fields) {
-      output += `      { id: ${JSON.stringify(f.id)}, label: ${JSON.stringify(f.label)}, x: ${f.x}, y: ${f.y}, maxWidth: ${f.maxWidth}, maxHeight: ${f.maxHeight}, fontSize: ${f.fontSize}, color: ${JSON.stringify(f.color)}, outline: ${f.outline}, align: ${JSON.stringify(f.align)} },\n`;
+      output += `      { id: ${JSON.stringify(f.id)}, label: ${JSON.stringify(f.label)}, x: ${f.x}, y: ${f.y}, width: ${f.width}, height: ${f.height}, fontSize: ${f.fontSize}, color: ${JSON.stringify(f.color)}, outline: ${f.outline}, align: ${JSON.stringify(f.align)}, valign: ${JSON.stringify(f.valign)} },\n`;
     }
 
     output += `    ],\n`;

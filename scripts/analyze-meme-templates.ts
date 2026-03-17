@@ -18,12 +18,13 @@ interface ZoneResult {
   label: string;
   x: number;
   y: number;
-  maxWidth: number;
-  maxHeight: number;
+  width: number;
+  height: number;
   fontSize: number;
   color: string;
   outline: boolean;
-  align: "center" | "left";
+  align: "center" | "left" | "right";
+  valign: "top" | "middle" | "bottom";
 }
 
 const PROMPT = (name: string) => `You are analyzing a meme template image called "${name}" to determine where user-entered text should be placed.
@@ -33,22 +34,24 @@ Look at this meme template and identify ALL text zones where a user would typica
 For each text zone, provide:
 - id: a short descriptive ID (e.g., "top", "bottom", "panel1", "sign", "left", "right")
 - label: a human-readable label for the text input (e.g., "Top Text", "Sign Text", "Drake No", "Drake Yes")
-- x: the CENTER x position of the text zone as a percentage of image width (0-100)
-- y: the CENTER y position of the text zone as a percentage of image height (0-100)
-- maxWidth: the maximum width of the text zone as a percentage of image width (0-100)
-- maxHeight: the maximum height of the text zone as a percentage of image height (0-100)
+- x: the LEFT edge of the text region as a percentage of image width (0-100)
+- y: the TOP edge of the text region as a percentage of image height (0-100)
+- width: the width of the text region as a percentage of image width (0-100)
+- height: the height of the text region as a percentage of image height (0-100)
 - fontSize: recommended base font size in pixels (for an image rendered at 600px wide)
 - color: recommended text color as hex (e.g., "#FFFFFF" for white, "#000000" for black)
 - outline: whether the text needs a contrasting outline for readability (true/false)
-- align: text alignment ("center" or "left")
+- align: text alignment inside the region ("center", "left", or "right")
+- valign: vertical alignment inside the region ("top", "middle", or "bottom")
 
 Rules:
 - Text zones should be where text CONVENTIONALLY goes in this specific meme format
 - For panel memes (like Drake), each panel gets its own text zone positioned in the correct half/quadrant
 - For sign/label memes (like Change My Mind), the text zone should be precisely ON the sign/label area
+- Prefer bounded rectangles that match the actual caption area, chat bubble, sign, or panel region
 - Don't place text zones on top of the main subject/character unless that's the convention
-- maxWidth should prevent text from bleeding outside the intended zone
-- maxHeight should define the vertical boundary so text wrapping stays within the zone
+- width should prevent text from bleeding outside the intended zone
+- height should define the vertical boundary so text wrapping stays within the zone
 - Choose text color and outline based on the background in that zone (white+outline on busy/dark backgrounds, black without outline on clean/light areas)
 - The fontSize should be large enough to read but small enough that a typical meme caption (5-15 words) fits in the zone
 

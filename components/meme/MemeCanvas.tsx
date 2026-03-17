@@ -2,6 +2,8 @@
 
 import { forwardRef, useEffect, useRef } from "react";
 import type {
+  MemeTextAlign,
+  MemeTextVAlign,
   MemeStyleState,
   MemeTemplate,
   MemeTextValues,
@@ -12,6 +14,7 @@ interface MemeCanvasProps {
   template: MemeTemplate;
   texts: MemeTextValues;
   style: MemeStyleState;
+  showDebugRegions?: boolean;
 }
 
 interface WrappedLine {
@@ -19,7 +22,28 @@ interface WrappedLine {
   width: number;
 }
 
+interface TextRegion {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  align: MemeTextAlign;
+  valign: MemeTextVAlign;
+}
+
+interface FittedTextLayout {
+  fontSize: number;
+  lineHeight: number;
+  lines: WrappedLine[];
+  region: TextRegion;
+  innerX: number;
+  innerY: number;
+  innerWidth: number;
+  innerHeight: number;
+}
+
 const imageCache = new Map<string, Promise<HTMLImageElement>>();
+const MIN_FONT_SIZE = 8;
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   if (imageCache.has(src)) {
@@ -37,8 +61,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return imagePromise;
 }
 
-/** Wrap text on word boundaries only — never break a word mid-character. */
-function wrapText(
+function wrapParagraph(
   ctx: CanvasRenderingContext2D,
   text: string,
   maxWidth: number
@@ -69,74 +92,162 @@ function wrapText(
   return lines;
 }
 
+function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number
+): WrappedLine[] {
+  const paragraphs = text.split(/\r?\n/);
+  const lines: WrappedLine[] = [];
+
+  paragraphs.forEach((paragraph, index) => {
+    const wrapped = wrapParagraph(ctx, paragraph, maxWidth);
+    if (wrapped.length) {
+      lines.push(...wrapped);
+    } else if (index < paragraphs.length - 1) {
+      lines.push({ text: "", width: 0 });
+    }
+
+    if (index < paragraphs.length - 1 && wrapped.length) {
+      lines.push({ text: "", width: 0 });
+    }
+  });
+
+  while (lines.length && !lines[lines.length - 1].text) {
+    lines.pop();
+  }
+
+  return lines;
+}
+
+function getFieldRegion(field: TextFieldConfig): TextRegion {
+  return {
+    x: field.x,
+    y: field.y,
+    width: field.width,
+    height: field.height,
+    align: field.align,
+    valign: field.valign ?? "middle",
+  };
+}
+
+function getLineHeight(fontSize: number, style: MemeStyleState): number {
+  return fontSize * (style.mode === "classic" ? 1.08 : 1.16);
+}
+
+function fitTextToRegion(
+  ctx: CanvasRenderingContext2D,
+  field: TextFieldConfig,
+  value: string,
+  style: MemeStyleState
+): FittedTextLayout | null {
+  const text = value.trim();
+  if (!text) return null;
+
+  const displayText = style.mode === "classic" ? text.toUpperCase() : text;
+  const fontFamily =
+    style.mode === "classic"
+      ? "Impact, 'Arial Black', sans-serif"
+      : "Geist, 'Helvetica Neue', Arial, sans-serif";
+
+  const region = getFieldRegion(field);
+  let fontSize = Math.max(MIN_FONT_SIZE, Math.round(field.fontSize * style.fontScale));
+  let fallbackLayout: FittedTextLayout | null = null;
+
+  while (fontSize >= MIN_FONT_SIZE) {
+    ctx.font = `bold ${fontSize}px ${fontFamily}`;
+
+    const paddingX = Math.min(region.width * 0.08, Math.max(4, fontSize * 0.22));
+    const paddingY = Math.min(region.height * 0.12, Math.max(2, fontSize * 0.16));
+    const innerWidth = Math.max(1, region.width - paddingX * 2);
+    const innerHeight = Math.max(1, region.height - paddingY * 2);
+    const lines = wrapText(ctx, displayText, innerWidth);
+    const lineHeight = getLineHeight(fontSize, style);
+    const totalHeight = lines.length * lineHeight;
+    const allFit = lines.every((line) => line.width <= innerWidth + 1);
+
+    if (lines.length) {
+      fallbackLayout = {
+        fontSize,
+        lineHeight,
+        lines,
+        region,
+        innerX: region.x + paddingX,
+        innerY: region.y + paddingY,
+        innerWidth,
+        innerHeight,
+      };
+    }
+
+    if (lines.length && allFit && totalHeight <= innerHeight) {
+      return fallbackLayout;
+    }
+
+    fontSize -= 1;
+  }
+
+  return fallbackLayout;
+}
+
 function drawField(
   ctx: CanvasRenderingContext2D,
   field: TextFieldConfig,
   value: string,
   style: MemeStyleState
 ) {
-  const text = value.trim();
-  if (!text) return;
+  const layout = fitTextToRegion(ctx, field, value, style);
+  if (!layout) return;
 
-  const displayText = style.mode === "classic" ? text.toUpperCase() : text;
   const fontFamily =
     style.mode === "classic"
       ? "Impact, 'Arial Black', sans-serif"
-      : "'Arial Black', 'Helvetica Neue', sans-serif";
+      : "Geist, 'Helvetica Neue', Arial, sans-serif";
 
-  // Start with the configured font size, scaled by user preference
-  let fontSize = Math.max(8, Math.round(field.fontSize * style.fontScale));
-  let lines: WrappedLine[] = [];
-  let lineHeight: number;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(layout.region.x, layout.region.y, layout.region.width, layout.region.height);
+  ctx.clip();
 
-  // Auto-scale: shrink font if text overflows maxHeight or if single words exceed maxWidth
-  const maxHeight = field.maxHeight ?? Infinity;
-  const MIN_FONT = 8;
+  ctx.font = `bold ${layout.fontSize}px ${fontFamily}`;
+  ctx.textBaseline = "middle";
+  ctx.textAlign = layout.region.align;
 
-  while (fontSize >= MIN_FONT) {
-    ctx.font = `bold ${fontSize}px ${fontFamily}`;
-    lines = wrapText(ctx, displayText, field.maxWidth);
-    lineHeight = fontSize * 1.2;
-    const totalHeight = lines.length * lineHeight;
+  const totalHeight = layout.lines.length * layout.lineHeight;
+  let startY = layout.innerY + layout.lineHeight / 2;
 
-    // Check: all lines fit width AND total height fits zone
-    const allFit = lines.every((l) => l.width <= field.maxWidth + 2);
-    if (allFit && totalHeight <= maxHeight) break;
-
-    fontSize -= 1;
+  if (layout.region.valign === "middle") {
+    startY = layout.innerY + (layout.innerHeight - totalHeight) / 2 + layout.lineHeight / 2;
+  } else if (layout.region.valign === "bottom") {
+    startY = layout.innerY + layout.innerHeight - totalHeight + layout.lineHeight / 2;
   }
 
-  if (!lines.length) return;
+  const x =
+    layout.region.align === "left"
+      ? layout.innerX
+      : layout.region.align === "right"
+        ? layout.innerX + layout.innerWidth
+        : layout.innerX + layout.innerWidth / 2;
 
-  ctx.font = `bold ${fontSize}px ${fontFamily}`;
-  ctx.textBaseline = "middle";
-  ctx.textAlign = field.align;
+  layout.lines.forEach((line, index) => {
+    const y = startY + index * layout.lineHeight;
 
-  lineHeight = fontSize * 1.2;
-  const startY = field.y - ((lines.length - 1) * lineHeight) / 2;
-
-  lines.forEach((line, index) => {
-    const y = startY + index * lineHeight;
-    const x = field.x;
-
-    if (style.mode === "classic" && field.outline) {
+    if (style.mode === "classic" && field.outline && line.text) {
       ctx.strokeStyle = "#000000";
-      ctx.lineWidth = Math.max(2, fontSize * 0.15);
+      ctx.lineWidth = Math.max(2, layout.fontSize * 0.16);
       ctx.lineJoin = "round";
-      ctx.strokeText(line.text, x, y, field.maxWidth);
+      ctx.strokeText(line.text, x, y, layout.innerWidth);
     }
 
-    // Classic mode: white text for outlined fields (overlay on photos),
-    // field.color for non-outlined fields (text on signs/boards).
-    // Modern mode: user-chosen color or field default.
     ctx.fillStyle =
       style.mode === "classic"
         ? field.outline
           ? "#FFFFFF"
           : field.color
         : style.color || field.color;
-    ctx.fillText(line.text, x, y, field.maxWidth);
+    ctx.fillText(line.text, x, y, layout.innerWidth);
   });
+
+  ctx.restore();
 }
 
 function drawWatermark(ctx: CanvasRenderingContext2D, width: number, height: number) {
@@ -154,7 +265,7 @@ function drawWatermark(ctx: CanvasRenderingContext2D, width: number, height: num
 }
 
 const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeCanvas(
-  { template, texts, style },
+  { template, texts, style, showDebugRegions = false },
   forwardedRef
 ) {
   const localRef = useRef<HTMLCanvasElement | null>(null);
@@ -179,53 +290,6 @@ const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeC
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(image, 0, 0, template.width, template.height);
 
-        // DEBUG_ZONES: draw red zone boundaries to verify coordinate mapping
-        const DEBUG_ZONES = false;
-        if (DEBUG_ZONES) {
-          template.textFields.forEach((field) => {
-            const cx = field.x;
-            const cy = field.y;
-            const w = field.maxWidth;
-            const h = field.maxHeight ?? 40;
-
-            context.save();
-
-            // Semi-transparent fill
-            context.fillStyle = "rgba(255, 0, 0, 0.15)";
-            const left = field.align === "center" ? cx - w / 2 : cx;
-            context.fillRect(left, cy - h / 2, w, h);
-
-            // Dashed border
-            context.strokeStyle = "red";
-            context.lineWidth = 3;
-            context.setLineDash([8, 4]);
-            context.strokeRect(left, cy - h / 2, w, h);
-
-            // Center crosshair
-            context.setLineDash([]);
-            context.beginPath();
-            context.moveTo(cx - 10, cy);
-            context.lineTo(cx + 10, cy);
-            context.moveTo(cx, cy - 10);
-            context.lineTo(cx, cy + 10);
-            context.strokeStyle = "red";
-            context.lineWidth = 2;
-            context.stroke();
-
-            // Label
-            context.font = "bold 16px monospace";
-            context.fillStyle = "red";
-            context.textAlign = "left";
-            context.textBaseline = "top";
-            context.fillText(
-              `${field.id} (${cx},${cy})`,
-              left + 4,
-              cy - h / 2 + 4
-            );
-            context.restore();
-          });
-        }
-
         template.textFields.forEach((field) => {
           drawField(context, field, texts[field.id] ?? "", style);
         });
@@ -246,18 +310,44 @@ const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeC
   }, [style, template, texts]);
 
   return (
-    <canvas
-      ref={(node) => {
-        localRef.current = node;
-        if (typeof forwardedRef === "function") {
-          forwardedRef(node);
-        } else if (forwardedRef) {
-          forwardedRef.current = node;
-        }
-      }}
-      aria-label={`${template.name} meme preview`}
-      className="h-auto w-full rounded-2xl border border-border bg-black/5 shadow-sm"
-    />
+    <div className="relative overflow-hidden rounded-2xl">
+      <canvas
+        ref={(node) => {
+          localRef.current = node;
+          if (typeof forwardedRef === "function") {
+            forwardedRef(node);
+          } else if (forwardedRef) {
+            forwardedRef.current = node;
+          }
+        }}
+        aria-label={`${template.name} meme preview`}
+        className="block h-auto w-full rounded-2xl border border-border bg-black/5 shadow-sm"
+      />
+
+      {showDebugRegions ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-2xl"
+        >
+          {template.textFields.map((field) => (
+            <div
+              key={field.id}
+              className="absolute border-2 border-rose-500/90 bg-rose-500/15"
+              style={{
+                left: `${(field.x / template.width) * 100}%`,
+                top: `${(field.y / template.height) * 100}%`,
+                width: `${(field.width / template.width) * 100}%`,
+                height: `${(field.height / template.height) * 100}%`,
+              }}
+            >
+              <span className="absolute left-1 top-1 rounded bg-rose-600 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm sm:text-xs">
+                {field.id}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </div>
   );
 });
 

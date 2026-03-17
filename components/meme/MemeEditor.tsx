@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Download, LoaderCircle } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { startTransition, useEffect, useRef, useState } from "react";
 import MemeCanvas from "@/components/meme/MemeCanvas";
 import TemplateGrid from "@/components/meme/TemplateGrid";
@@ -30,7 +31,7 @@ function createUploadedTemplate(
   width: number,
   height: number
 ): MemeTemplate {
-  const fontSize = Math.max(36, Math.round(Math.min(width, height) * 0.09));
+  const fontSize = Math.max(24, Math.round((width / 600) * 36));
 
   return {
     id: `upload-${Date.now()}`,
@@ -42,22 +43,26 @@ function createUploadedTemplate(
       {
         id: "top",
         label: "Top text",
-        x: width / 2,
-        y: height * 0.12,
-        maxWidth: width * 0.88,
+        x: width * 0.05,
+        y: height * 0.04,
+        width: width * 0.9,
+        height: height * 0.18,
         fontSize,
         align: "center",
+        valign: "middle",
         color: "#FFFFFF",
         outline: true,
       },
       {
         id: "bottom",
         label: "Bottom text",
-        x: width / 2,
-        y: height * 0.88,
-        maxWidth: width * 0.88,
+        x: width * 0.05,
+        y: height * 0.78,
+        width: width * 0.9,
+        height: height * 0.18,
         fontSize,
         align: "center",
+        valign: "middle",
         color: "#FFFFFF",
         outline: true,
       },
@@ -70,6 +75,7 @@ interface MemeEditorProps {
 }
 
 export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
+  const searchParams = useSearchParams();
   const [selectedTemplate, setSelectedTemplate] = useState<MemeTemplate | null>(
     initialTemplate ?? null
   );
@@ -80,6 +86,7 @@ export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [uploadedSrc, setUploadedSrc] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const showDebugRegions = searchParams.get("memeDebug") === "1";
 
   useEffect(() => {
     return () => {
@@ -211,6 +218,7 @@ export default function MemeEditor({ initialTemplate }: MemeEditorProps = {}) {
             template={selectedTemplate}
             texts={texts}
             style={style}
+            showDebugRegions={showDebugRegions}
           />
         </div>
 

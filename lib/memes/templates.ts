@@ -13,8 +13,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 1200,
     height: 1200,
     textFields: [
-      { id: "top", label: "Drake No", x: 900, y: 300, maxWidth: 540, maxHeight: 480, fontSize: 24, color: "#000000", outline: false, align: "center" },
-      { id: "bottom", label: "Drake Yes", x: 900, y: 900, maxWidth: 540, maxHeight: 480, fontSize: 24, color: "#000000", outline: false, align: "center" },
+      { id: "top", label: "Drake No", x: 648, y: 48, width: 504, height: 504, fontSize: 48, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "bottom", label: "Drake Yes", x: 648, y: 648, width: 504, height: 504, fontSize: 48, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -24,9 +24,9 @@ export const memeTemplates: MemeTemplate[] = [
     width: 1200,
     height: 800,
     textFields: [
-      { id: "woman_red", label: "Woman in Red", x: 300, y: 680, maxWidth: 480, maxHeight: 160, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "distracted_man", label: "Distracted Boyfriend", x: 600, y: 680, maxWidth: 360, maxHeight: 160, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "girlfriend", label: "Disapproving Girlfriend", x: 960, y: 680, maxWidth: 420, maxHeight: 160, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "woman_red", label: "Woman in Red", x: 36, y: 464, width: 336, height: 192, fontSize: 48, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "distracted_man", label: "Distracted Boyfriend", x: 504, y: 368, width: 252, height: 288, fontSize: 48, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "girlfriend", label: "Disapproving Girlfriend", x: 852, y: 392, width: 276, height: 272, fontSize: 48, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -36,8 +36,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 600,
     height: 908,
     textFields: [
-      { id: "button1", label: "Left Button", x: 150, y: 227, maxWidth: 210, maxHeight: 227, fontSize: 16, color: "#000000", outline: false, align: "center" },
-      { id: "button2", label: "Right Button", x: 450, y: 227, maxWidth: 210, maxHeight: 227, fontSize: 16, color: "#000000", outline: false, align: "center" },
+      { id: "button1", label: "Left Button", x: 42, y: 45, width: 204, height: 272, fontSize: 16, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "button2", label: "Right Button", x: 258, y: 36, width: 204, height: 272, fontSize: 16, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -47,7 +47,7 @@ export const memeTemplates: MemeTemplate[] = [
     width: 482,
     height: 361,
     textFields: [
-      { id: "sign", label: "Sign Text", x: 241, y: 264, maxWidth: 313, maxHeight: 65, fontSize: 24, color: "#000000", outline: false, align: "center" },
+      { id: "sign", label: "Sign Text", x: 77, y: 220, width: 323, height: 87, fontSize: 19, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -57,10 +57,10 @@ export const memeTemplates: MemeTemplate[] = [
     width: 857,
     height: 1202,
     textFields: [
-      { id: "panel1", label: "First Panel Text", x: 171, y: 144, maxWidth: 300, maxHeight: 240, fontSize: 18, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "panel2", label: "Second Panel Text", x: 171, y: 445, maxWidth: 300, maxHeight: 240, fontSize: 18, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "panel3", label: "Third Panel Text", x: 171, y: 745, maxWidth: 300, maxHeight: 240, fontSize: 18, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "panel4", label: "Fourth Panel Text", x: 171, y: 1046, maxWidth: 300, maxHeight: 240, fontSize: 18, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "panel1", label: "First Panel Text", x: 21, y: 24, width: 300, height: 240, fontSize: 26, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "panel2", label: "Second Panel Text", x: 21, y: 325, width: 300, height: 240, fontSize: 26, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "panel3", label: "Third Panel Text", x: 21, y: 625, width: 300, height: 240, fontSize: 26, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "panel4", label: "Fourth Panel Text", x: 21, y: 926, width: 300, height: 240, fontSize: 26, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -70,8 +70,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 680,
     height: 438,
     textFields: [
-      { id: "left", label: "Woman Yelling Text", x: 170, y: 66, maxWidth: 306, maxHeight: 110, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "right", label: "Cat Text", x: 510, y: 66, maxWidth: 306, maxHeight: 110, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "left", label: "Woman Yelling Text", x: 14, y: 4, width: 313, height: 96, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "right", label: "Cat Text", x: 354, y: 4, width: 313, height: 96, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -81,8 +81,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 568,
     height: 335,
     textFields: [
-      { id: "top", label: "Top Text", x: 284, y: 50, maxWidth: 511, maxHeight: 67, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 284, y: 285, maxWidth: 511, maxHeight: 67, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 28, y: 17, width: 511, height: 67, fontSize: 30, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 28, y: 251, width: 511, height: 67, fontSize: 30, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -92,8 +92,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 500,
     height: 500,
     textFields: [
-      { id: "top", label: "Top Text", x: 250, y: 75, maxWidth: 450, maxHeight: 125, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 250, y: 425, maxWidth: 450, maxHeight: 125, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 25, y: 13, width: 450, height: 125, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 25, y: 363, width: 450, height: 125, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -103,9 +103,9 @@ export const memeTemplates: MemeTemplate[] = [
     width: 1587,
     height: 1425,
     textFields: [
-      { id: "butterfly", label: "Butterfly (Thing Being Questioned)", x: 1349, y: 356, maxWidth: 397, maxHeight: 285, fontSize: 16, color: "#000000", outline: true, align: "center" },
-      { id: "person", label: "Person (The Confused One)", x: 397, y: 1211, maxWidth: 555, maxHeight: 214, fontSize: 16, color: "#000000", outline: true, align: "center" },
-      { id: "question", label: "Question Text", x: 794, y: 1311, maxWidth: 1428, maxHeight: 171, fontSize: 18, color: "#000000", outline: true, align: "center" },
+      { id: "butterfly", label: "Butterfly (Thing Being Questioned)", x: 1206, y: 86, width: 317, height: 257, fontSize: 42, color: "#000000", outline: true, align: "center", valign: "middle" },
+      { id: "person", label: "Person (The Confused One)", x: 63, y: 1040, width: 524, height: 228, fontSize: 42, color: "#000000", outline: true, align: "center", valign: "middle" },
+      { id: "question", label: "Question Text", x: 619, y: 428, width: 413, height: 200, fontSize: 48, color: "#000000", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -115,9 +115,9 @@ export const memeTemplates: MemeTemplate[] = [
     width: 804,
     height: 767,
     textFields: [
-      { id: "highway_sign", label: "Highway Sign Text", x: 402, y: 153, maxWidth: 482, maxHeight: 192, fontSize: 24, color: "#FFFFFF", outline: false, align: "center" },
-      { id: "exit_ramp", label: "Exit Ramp Choice", x: 603, y: 499, maxWidth: 322, maxHeight: 153, fontSize: 20, color: "#000000", outline: true, align: "center" },
-      { id: "straight_path", label: "Straight Path Choice", x: 201, y: 575, maxWidth: 322, maxHeight: 153, fontSize: 20, color: "#000000", outline: true, align: "center" },
+      { id: "highway_sign", label: "Highway Sign Text", x: 161, y: 69, width: 466, height: 184, fontSize: 32, color: "#FFFFFF", outline: false, align: "center", valign: "middle" },
+      { id: "exit_ramp", label: "Exit Ramp Choice", x: 507, y: 422, width: 217, height: 138, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "straight_path", label: "Straight Path Choice", x: 40, y: 430, width: 241, height: 138, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -127,9 +127,9 @@ export const memeTemplates: MemeTemplate[] = [
     width: 761,
     height: 1024,
     textFields: [
-      { id: "balloon", label: "Balloon Text", x: 571, y: 205, maxWidth: 266, maxHeight: 256, fontSize: 18, color: "#000000", outline: false, align: "center" },
-      { id: "person", label: "Person Text", x: 190, y: 358, maxWidth: 228, maxHeight: 205, fontSize: 16, color: "#000000", outline: true, align: "center" },
-      { id: "girlfriend", label: "Girlfriend Text", x: 190, y: 870, maxWidth: 228, maxHeight: 205, fontSize: 16, color: "#000000", outline: true, align: "center" },
+      { id: "balloon", label: "Balloon Text", x: 464, y: 31, width: 221, height: 276, fontSize: 23, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "person", label: "Person Text", x: 38, y: 102, width: 244, height: 287, fontSize: 20, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "girlfriend", label: "Girlfriend Text", x: 23, y: 614, width: 228, height: 266, fontSize: 20, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -139,8 +139,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 702,
     height: 395,
     textFields: [
-      { id: "top", label: "Top Text", x: 351, y: 59, maxWidth: 632, maxHeight: 99, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 351, y: 336, maxWidth: 632, maxHeight: 99, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 35, y: 10, width: 632, height: 99, fontSize: 37, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 35, y: 286, width: 632, height: 99, fontSize: 37, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -150,8 +150,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 500,
     height: 375,
     textFields: [
-      { id: "top", label: "Top Text", x: 250, y: 56, maxWidth: 450, maxHeight: 75, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 250, y: 338, maxWidth: 450, maxHeight: 56, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 25, y: 19, width: 450, height: 75, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 25, y: 309, width: 450, height: 56, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -161,8 +161,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 400,
     height: 387,
     textFields: [
-      { id: "robin_speech", label: "Robin's Text", x: 100, y: 58, maxWidth: 180, maxHeight: 97, fontSize: 16, color: "#000000", outline: true, align: "center" },
-      { id: "batman_speech", label: "Batman's Text", x: 300, y: 58, maxWidth: 180, maxHeight: 97, fontSize: 16, color: "#000000", outline: true, align: "center" },
+      { id: "robin_speech", label: "Robin's Text", x: 16, y: 8, width: 140, height: 93, fontSize: 12, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "batman_speech", label: "Batman's Text", x: 224, y: 8, width: 140, height: 93, fontSize: 12, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -172,10 +172,10 @@ export const memeTemplates: MemeTemplate[] = [
     width: 700,
     height: 449,
     textFields: [
-      { id: "panel1", label: "Step 1", x: 266, y: 103, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
-      { id: "panel2", label: "Step 2", x: 616, y: 103, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
-      { id: "panel3", label: "Step 3", x: 266, y: 328, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
-      { id: "panel4", label: "Step 4 (Realization)", x: 616, y: 328, maxWidth: 154, maxHeight: 171, fontSize: 16, color: "#000000", outline: false, align: "center" },
+      { id: "panel1", label: "Step 1", x: 168, y: 18, width: 168, height: 180, fontSize: 19, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "panel2", label: "Step 2", x: 518, y: 18, width: 168, height: 180, fontSize: 19, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "panel3", label: "Step 3", x: 168, y: 242, width: 168, height: 180, fontSize: 19, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "panel4", label: "Step 4 (Realization)", x: 518, y: 242, width: 168, height: 180, fontSize: 19, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -185,8 +185,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 1893,
     height: 1892,
     textFields: [
-      { id: "top", label: "Top Text", x: 947, y: 284, maxWidth: 1704, maxHeight: 473, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 947, y: 1608, maxWidth: 1704, maxHeight: 473, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 95, y: 47, width: 1704, height: 473, fontSize: 101, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 95, y: 1372, width: 1704, height: 473, fontSize: 101, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -196,7 +196,7 @@ export const memeTemplates: MemeTemplate[] = [
     width: 500,
     height: 436,
     textFields: [
-      { id: "bottom", label: "Bottom Text", x: 250, y: 371, maxWidth: 450, maxHeight: 109, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "bottom", label: "Bottom Text", x: 25, y: 316, width: 450, height: 109, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -206,8 +206,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 502,
     height: 353,
     textFields: [
-      { id: "top", label: "Top Text", x: 251, y: 53, maxWidth: 452, maxHeight: 88, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 251, y: 300, maxWidth: 452, maxHeight: 88, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 25, y: 9, width: 452, height: 88, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 25, y: 256, width: 452, height: 88, fontSize: 27, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -217,10 +217,10 @@ export const memeTemplates: MemeTemplate[] = [
     width: 500,
     height: 649,
     textFields: [
-      { id: "boss_speech", label: "Boss Speech", x: 325, y: 78, maxWidth: 300, maxHeight: 97, fontSize: 16, color: "#000000", outline: false, align: "center" },
-      { id: "employee1_response", label: "Employee 1 Response", x: 100, y: 370, maxWidth: 125, maxHeight: 78, fontSize: 14, color: "#000000", outline: false, align: "center" },
-      { id: "employee2_response", label: "Employee 2 Response", x: 250, y: 370, maxWidth: 125, maxHeight: 78, fontSize: 14, color: "#000000", outline: false, align: "center" },
-      { id: "employee3_response", label: "Employee 3 Response", x: 400, y: 370, maxWidth: 175, maxHeight: 78, fontSize: 14, color: "#000000", outline: false, align: "center" },
+      { id: "boss_speech", label: "Boss Speech", x: 120, y: 0, width: 250, height: 97, fontSize: 13, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "employee1_response", label: "Employee 1 Response", x: 5, y: 227, width: 105, height: 71, fontSize: 12, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "employee2_response", label: "Employee 2 Response", x: 150, y: 221, width: 100, height: 71, fontSize: 12, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "employee3_response", label: "Employee 3 Response", x: 285, y: 195, width: 150, height: 117, fontSize: 12, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -230,7 +230,7 @@ export const memeTemplates: MemeTemplate[] = [
     width: 600,
     height: 446,
     textFields: [
-      { id: "button", label: "Button Text", x: 150, y: 223, maxWidth: 210, maxHeight: 112, fontSize: 16, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "button", label: "Button Text", x: 45, y: 167, width: 210, height: 112, fontSize: 16, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -240,8 +240,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 298,
     height: 403,
     textFields: [
-      { id: "top", label: "Top Text", x: 149, y: 60, maxWidth: 268, maxHeight: 81, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 149, y: 343, maxWidth: 268, maxHeight: 81, fontSize: 32, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 15, y: 20, width: 268, height: 81, fontSize: 16, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 15, y: 302, width: 268, height: 81, fontSize: 16, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -251,9 +251,9 @@ export const memeTemplates: MemeTemplate[] = [
     width: 900,
     height: 645,
     textFields: [
-      { id: "left_arm", label: "Left Person/Group", x: 225, y: 226, maxWidth: 315, maxHeight: 161, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "right_arm", label: "Right Person/Group", x: 675, y: 226, maxWidth: 315, maxHeight: 161, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "handshake", label: "Agreement/Common Ground", x: 450, y: 484, maxWidth: 360, maxHeight: 129, fontSize: 20, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "left_arm", label: "Left Person/Group", x: 68, y: 145, width: 315, height: 161, fontSize: 36, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "right_arm", label: "Right Person/Group", x: 518, y: 145, width: 315, height: 161, fontSize: 36, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "handshake", label: "Agreement/Common Ground", x: 270, y: 419, width: 360, height: 129, fontSize: 30, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -263,8 +263,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 2118,
     height: 1440,
     textFields: [
-      { id: "top", label: "Top Text", x: 1059, y: 216, maxWidth: 1906, maxHeight: 288, fontSize: 36, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom", label: "Bottom Text", x: 1059, y: 1267, maxWidth: 1906, maxHeight: 288, fontSize: 36, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top", label: "Top Text", x: 106, y: 72, width: 1906, height: 288, fontSize: 127, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom", label: "Bottom Text", x: 106, y: 1123, width: 1906, height: 288, fontSize: 127, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -274,8 +274,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 580,
     height: 282,
     textFields: [
-      { id: "panel1", label: "Panel 1 Text", x: 145, y: 240, maxWidth: 261, maxHeight: 71, fontSize: 16, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "panel2", label: "Panel 2 Text", x: 435, y: 240, maxWidth: 261, maxHeight: 71, fontSize: 16, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "panel1", label: "Panel 1 Text", x: 15, y: 204, width: 261, height: 71, fontSize: 15, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "panel2", label: "Panel 2 Text", x: 305, y: 204, width: 261, height: 71, fontSize: 15, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -285,7 +285,7 @@ export const memeTemplates: MemeTemplate[] = [
     width: 500,
     height: 494,
     textFields: [
-      { id: "card_text", label: "UNO Card Text", x: 110, y: 138, maxWidth: 125, maxHeight: 148, fontSize: 14, color: "#000000", outline: false, align: "center" },
+      { id: "card_text", label: "UNO Card Text", x: 48, y: 64, width: 125, height: 148, fontSize: 12, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -295,9 +295,9 @@ export const memeTemplates: MemeTemplate[] = [
     width: 500,
     height: 680,
     textFields: [
-      { id: "panel1", label: "Panel 1 (riding bike)", x: 375, y: 102, maxWidth: 225, maxHeight: 170, fontSize: 20, color: "#000000", outline: false, align: "center" },
-      { id: "panel2", label: "Panel 2 (putting stick in wheel)", x: 375, y: 326, maxWidth: 225, maxHeight: 170, fontSize: 20, color: "#000000", outline: false, align: "center" },
-      { id: "panel3", label: "Panel 3 (fallen down)", x: 375, y: 578, maxWidth: 225, maxHeight: 170, fontSize: 20, color: "#000000", outline: false, align: "center" },
+      { id: "panel1", label: "Panel 1 (riding bike)", x: 263, y: 17, width: 225, height: 170, fontSize: 17, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "panel2", label: "Panel 2 (putting stick in wheel)", x: 263, y: 241, width: 225, height: 170, fontSize: 17, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "panel3", label: "Panel 3 (fallen down)", x: 263, y: 493, width: 225, height: 170, fontSize: 17, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -307,8 +307,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 480,
     height: 601,
     textFields: [
-      { id: "top_panel", label: "Top Panel Text", x: 240, y: 60, maxWidth: 432, maxHeight: 108, fontSize: 28, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "bottom_panel", label: "Bottom Panel Text", x: 240, y: 541, maxWidth: 432, maxHeight: 108, fontSize: 28, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "top_panel", label: "Top Panel Text", x: 24, y: 6, width: 432, height: 108, fontSize: 22, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "bottom_panel", label: "Bottom Panel Text", x: 24, y: 487, width: 432, height: 108, fontSize: 22, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
   {
@@ -318,10 +318,10 @@ export const memeTemplates: MemeTemplate[] = [
     width: 620,
     height: 620,
     textFields: [
-      { id: "top_left", label: "Top Left Text", x: 155, y: 155, maxWidth: 248, maxHeight: 186, fontSize: 18, color: "#FF6600", outline: false, align: "center" },
-      { id: "top_right", label: "Top Right Text", x: 465, y: 155, maxWidth: 248, maxHeight: 186, fontSize: 18, color: "#FF6600", outline: false, align: "center" },
-      { id: "bottom_left", label: "Bottom Left Text", x: 155, y: 465, maxWidth: 248, maxHeight: 186, fontSize: 18, color: "#FF6600", outline: false, align: "center" },
-      { id: "bottom_right", label: "Bottom Right Text", x: 465, y: 465, maxWidth: 248, maxHeight: 186, fontSize: 18, color: "#FF6600", outline: false, align: "center" },
+      { id: "top_left", label: "Top Left Text", x: 31, y: 62, width: 248, height: 186, fontSize: 19, color: "#FF6600", outline: false, align: "center", valign: "middle" },
+      { id: "top_right", label: "Top Right Text", x: 341, y: 62, width: 248, height: 186, fontSize: 19, color: "#FF6600", outline: false, align: "center", valign: "middle" },
+      { id: "bottom_left", label: "Bottom Left Text", x: 31, y: 372, width: 248, height: 186, fontSize: 19, color: "#FF6600", outline: false, align: "center", valign: "middle" },
+      { id: "bottom_right", label: "Bottom Right Text", x: 341, y: 372, width: 248, height: 186, fontSize: 19, color: "#FF6600", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -331,8 +331,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 937,
     height: 720,
     textFields: [
-      { id: "left", label: "Buff Doge Text", x: 234, y: 612, maxWidth: 422, maxHeight: 180, fontSize: 24, color: "#000000", outline: false, align: "center" },
-      { id: "right", label: "Cheems Text", x: 703, y: 612, maxWidth: 422, maxHeight: 180, fontSize: 24, color: "#000000", outline: false, align: "center" },
+      { id: "left", label: "Buff Doge Text", x: 23, y: 522, width: 422, height: 180, fontSize: 37, color: "#000000", outline: false, align: "center", valign: "middle" },
+      { id: "right", label: "Cheems Text", x: 492, y: 522, width: 422, height: 180, fontSize: 37, color: "#000000", outline: false, align: "center", valign: "middle" },
     ],
   },
   {
@@ -342,8 +342,8 @@ export const memeTemplates: MemeTemplate[] = [
     width: 960,
     height: 540,
     textFields: [
-      { id: "question", label: "Question Text", x: 240, y: 162, maxWidth: 384, maxHeight: 135, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
-      { id: "answer", label: "Answer Text", x: 720, y: 432, maxWidth: 384, maxHeight: 135, fontSize: 24, color: "#FFFFFF", outline: true, align: "center" },
+      { id: "question", label: "Question Text", x: 134, y: 97, width: 250, height: 97, fontSize: 38, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
+      { id: "answer", label: "Answer Text", x: 662, y: 351, width: 211, height: 92, fontSize: 38, color: "#FFFFFF", outline: true, align: "center", valign: "middle" },
     ],
   },
 ];
