@@ -96,7 +96,7 @@ function drawField(
   while (fontSize >= MIN_FONT) {
     ctx.font = `bold ${fontSize}px ${fontFamily}`;
     lines = wrapText(ctx, displayText, field.maxWidth);
-    lineHeight = fontSize * 1.08;
+    lineHeight = fontSize * 1.2;
     const totalHeight = lines.length * lineHeight;
 
     // Check: all lines fit width AND total height fits zone
@@ -112,7 +112,7 @@ function drawField(
   ctx.textBaseline = "middle";
   ctx.textAlign = field.align;
 
-  lineHeight = fontSize * 1.08;
+  lineHeight = fontSize * 1.2;
   const startY = field.y - ((lines.length - 1) * lineHeight) / 2;
 
   lines.forEach((line, index) => {
@@ -126,8 +126,15 @@ function drawField(
       ctx.strokeText(line.text, x, y, field.maxWidth);
     }
 
+    // Classic mode: white text for outlined fields (overlay on photos),
+    // field.color for non-outlined fields (text on signs/boards).
+    // Modern mode: user-chosen color or field default.
     ctx.fillStyle =
-      style.mode === "classic" ? "#FFFFFF" : style.color || field.color;
+      style.mode === "classic"
+        ? field.outline
+          ? "#FFFFFF"
+          : field.color
+        : style.color || field.color;
     ctx.fillText(line.text, x, y, field.maxWidth);
   });
 }
@@ -182,26 +189,38 @@ const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeC
             const h = field.maxHeight ?? 40;
 
             context.save();
-            context.strokeStyle = "rgba(255, 0, 0, 0.8)";
+
+            // Semi-transparent fill
+            context.fillStyle = "rgba(255, 0, 0, 0.15)";
+            const left = field.align === "center" ? cx - w / 2 : cx;
+            context.fillRect(left, cy - h / 2, w, h);
+
+            // Dashed border
+            context.strokeStyle = "red";
             context.lineWidth = 3;
             context.setLineDash([8, 4]);
-            // For center-aligned text, the zone is centered on (cx, cy)
-            const left = field.align === "center" ? cx - w / 2 : cx;
             context.strokeRect(left, cy - h / 2, w, h);
 
-            context.fillStyle = "red";
+            // Center crosshair
+            context.setLineDash([]);
             context.beginPath();
-            context.arc(cx, cy, 5, 0, Math.PI * 2);
-            context.fill();
+            context.moveTo(cx - 10, cy);
+            context.lineTo(cx + 10, cy);
+            context.moveTo(cx, cy - 10);
+            context.lineTo(cx, cy + 10);
+            context.strokeStyle = "red";
+            context.lineWidth = 2;
+            context.stroke();
 
-            context.font = "14px monospace";
+            // Label
+            context.font = "bold 16px monospace";
             context.fillStyle = "red";
             context.textAlign = "left";
             context.textBaseline = "top";
             context.fillText(
               `${field.id} (${cx},${cy})`,
-              left,
-              cy - h / 2 - 18
+              left + 4,
+              cy - h / 2 + 4
             );
             context.restore();
           });
