@@ -41,26 +41,36 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 pb-24">
         {/* Hero */}
-        <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent">
-          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
-            <div className="mb-8 text-center">
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                Free tools. No signup. Zero data collection.
-              </h1>
-              <p className="mt-3 text-muted-foreground sm:text-lg">
-                File converters, calculators, typing tests, and developer tools. Everything runs in your browser — nothing leaves your device.
-              </p>
-            </div>
+        <section className="px-4 pt-6 sm:px-6 sm:pt-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(160deg,rgba(255,255,255,0.76),rgba(239,241,242,0.96))] px-5 py-12 shadow-[var(--ambient-shadow)] dark:bg-[linear-gradient(160deg,rgba(15,25,48,0.92),rgba(9,19,40,0.98))] sm:px-8 sm:py-16 lg:px-12 lg:py-20">
+              <div className="mx-auto max-w-4xl">
+                <div className="mb-8 flex flex-wrap justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                  <span className="rounded-full bg-card/80 px-3 py-1.5">Free tools</span>
+                  <span className="rounded-full bg-card/80 px-3 py-1.5">No signup</span>
+                  <span className="rounded-full bg-card/80 px-3 py-1.5">Local browser processing</span>
+                </div>
 
-            {/* Smart converter */}
-            <SmartConverterDeferred />
+                <div className="mb-10 text-center">
+                  <h1 className="text-5xl font-black tracking-[-0.04em] sm:text-6xl lg:text-[3.5rem]">
+                    Free tools. No signup. <span className="text-primary">Zero</span> data collection.
+                  </h1>
+                  <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+                    File converters, calculators, typing tests, and developer tools. Everything runs in your browser — nothing leaves your device.
+                  </p>
+                </div>
+
+                {/* Smart converter */}
+                <SmartConverterDeferred />
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Category grid */}
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
           <DailyChallengeBanner
             puzzleNumber={puzzle.puzzleNumber}
             target={puzzle.target}
