@@ -380,44 +380,47 @@ export default function ImageCompressor() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-5 rounded-[1.5rem] bg-muted/55 p-5 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-primary/12 text-2xl font-black text-primary">
-                      {savedPercent}%
+                <div className="space-y-8 rounded-[1.75rem] bg-muted/55 p-8">
+                  <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
+                    <div className="flex justify-center lg:justify-start">
+                      <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full bg-primary/12 text-primary">
+                        <span className="text-[1.9rem] font-black leading-none">{savedPercent}%</span>
+                      </div>
                     </div>
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      <div className="rounded-[1rem] bg-card/80 px-4 py-3">
+
+                    <div className="grid flex-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 xl:gap-8">
+                      <div className="min-w-[120px] rounded-[1rem] bg-card/80 px-5 py-4">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                          Saved
+                          Storage savings
                         </p>
-                        <p className="mt-2 text-sm font-semibold text-foreground">
+                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground">
                           {bytesSaved > 0 ? `-${formatBytes(bytesSaved)}` : "No reduction"}
                         </p>
                       </div>
-                      <div className="rounded-[1rem] bg-card/80 px-4 py-3">
+                      <div className="min-w-[120px] rounded-[1rem] bg-card/80 px-5 py-4">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Process time
                         </p>
-                        <p className="mt-2 text-sm font-semibold text-foreground">
+                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground">
                           {lastProcessMs ? `${lastProcessMs}ms` : "Pending"}
                         </p>
                       </div>
-                      <div className="rounded-[1rem] bg-card/80 px-4 py-3">
+                      <div className="min-w-[120px] rounded-[1rem] bg-card/80 px-5 py-4">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Export
                         </p>
-                        <p className="mt-2 text-sm font-semibold text-foreground">
+                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground">
                           {primaryResult.file.type.replace("image/", "").toUpperCase()}
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap justify-center gap-4 lg:justify-end">
                     <button
                       type="button"
                       onClick={reset}
-                      className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-muted/80"
+                      className="inline-flex min-h-14 items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-8 py-4 text-sm font-semibold text-primary transition-colors hover:bg-muted/80"
                     >
                       <RotateCcw className="h-4 w-4" />
                       Process Another
@@ -426,7 +429,7 @@ export default function ImageCompressor() {
                       href={primaryResult.url}
                       download={primaryResult.file.name}
                       onClick={() => setDownloaded(true)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-5 py-3 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-opacity hover:opacity-95"
+                      className="inline-flex min-h-14 items-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-8 py-4 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-opacity hover:opacity-95"
                     >
                       <Download className="h-4 w-4" />
                       Download Optimized
