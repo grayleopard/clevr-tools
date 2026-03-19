@@ -22,11 +22,11 @@ function CategoryMenu({
   return (
     <>
       {category.subcategories.map((sub) => (
-        <div key={sub.label}>
-          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <div key={sub.label} className="space-y-3">
+          <h4 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             {sub.label}
           </h4>
-          <ul className={`space-y-0.5 ${sub.seeAllRoute ? "grid grid-cols-2 gap-x-4 gap-y-0.5 space-y-0" : ""}`}>
+          <ul className={`space-y-1 ${sub.seeAllRoute ? "grid grid-cols-2 gap-x-4 gap-y-1 space-y-0" : ""}`}>
             {sub.slugs.map((slug) => {
               const tool = getToolBySlug(slug);
               if (!tool || tool.live === false) return null;
@@ -34,7 +34,7 @@ function CategoryMenu({
                 <li key={slug}>
                   <Link
                     href={tool.route}
-                    className="block rounded-md px-2 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition-[background-color,color,transform] duration-150 hover:bg-muted/70 hover:text-primary"
                     data-close={closeOnClick ? "true" : undefined}
                   >
                     {tool.name}
@@ -46,7 +46,7 @@ function CategoryMenu({
           {sub.seeAllRoute && (
             <Link
               href={sub.seeAllRoute}
-              className="mt-2 flex items-center gap-1 px-2 py-1 text-xs text-primary transition-colors hover:text-primary/80"
+              className="flex items-center gap-1 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary transition-colors hover:text-primary/80"
               data-close={closeOnClick ? "true" : undefined}
             >
               {sub.seeAllLabel ?? "See all"}
@@ -75,182 +75,182 @@ function PlayLinkIcon({
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        <NavbarLogo />
+    <header className="sticky top-0 z-50 px-4 pt-4 sm:px-6">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex h-16 items-center justify-between rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/70 px-3 shadow-[var(--ambient-shadow)] backdrop-blur-xl">
+          <NavbarLogo />
 
-        <nav className="hidden items-center gap-0.5 md:flex" aria-label="Primary navigation">
-          {siteCategories.map((cat) => (
-            <div key={cat.id} className="group relative">
+          <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
+            {siteCategories.map((cat) => (
+              <div key={cat.id} className="group relative">
+                <Link
+                  href={cat.route}
+                  className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+                >
+                  {cat.label}
+                  <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" />
+                </Link>
+
+                <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
+                  <div
+                    className={`rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-6 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl ${
+                      cat.subcategories.length === 1
+                        ? "min-w-[260px]"
+                        : cat.subcategories.length === 2
+                        ? "min-w-[440px]"
+                        : "min-w-[620px]"
+                    }`}
+                  >
+                    <div
+                      className={`grid gap-8 ${
+                        cat.subcategories.length === 1
+                          ? "grid-cols-1"
+                          : cat.subcategories.length === 2
+                          ? "grid-cols-2"
+                          : "grid-cols-3"
+                      }`}
+                    >
+                      <CategoryMenu category={cat} />
+                    </div>
+
+                    <div className="mt-5 rounded-2xl bg-muted/60 px-4 py-3">
+                      <Link
+                        href={cat.route}
+                        className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
+                      >
+                        View all {cat.label} tools
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="group relative">
               <Link
-                href={cat.route}
-                className="flex items-center gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                href="/play"
+                className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
               >
-                {cat.label}
+                Play
                 <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" />
               </Link>
 
-              <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-1 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
-                <div
-                  className={`rounded-xl border border-border bg-popover p-5 shadow-xl ${
-                    cat.subcategories.length === 1
-                      ? "min-w-[220px]"
-                      : cat.subcategories.length === 2
-                      ? "min-w-[400px]"
-                      : "min-w-[560px]"
-                  }`}
-                >
-                  <div
-                    className={`grid gap-6 ${
-                      cat.subcategories.length === 1
-                        ? "grid-cols-1"
-                        : cat.subcategories.length === 2
-                        ? "grid-cols-2"
-                        : "grid-cols-3"
-                    }`}
-                  >
-                    <CategoryMenu category={cat} />
-                  </div>
-
-                  <div className="mt-4 border-t border-border pt-3">
-                    <Link
-                      href={cat.route}
-                      className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      View all {cat.label} tools
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-          <div className="group relative">
-            <Link
-              href="/play"
-              className="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
-            >
-              Play
-              <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" />
-            </Link>
-
-            <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-1 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
-              <div className="min-w-[320px] rounded-xl border border-border bg-popover p-3 shadow-xl">
-                <div className="space-y-1">
-                  {playLinks.map((item) => (
-                    <Link
-                      key={item.route}
-                      href={item.route}
-                      className="flex items-start gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-muted"
-                    >
-                      <span className="rounded-md bg-primary/10 p-2 text-primary">
-                        <PlayLinkIcon icon={item.icon} className="h-4 w-4" />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block text-sm font-medium text-foreground">
-                          {item.label}
-                        </span>
-                        <span className="block text-xs text-muted-foreground">
-                          {item.description}
-                        </span>
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-
-                <div className="mt-3 border-t border-border pt-3">
-                  <Link
-                    href="/play"
-                    className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
-                  >
-                    View all Play tools
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Link
-            href="/blog"
-            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            Blog
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
-
-          <details className="group relative md:hidden">
-            <summary className="list-none rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer">
-              <span className="sr-only">Toggle menu</span>
-              <Menu className="h-5 w-5 group-open:hidden" />
-              <X className="hidden h-5 w-5 group-open:block" />
-            </summary>
-
-            <div className="absolute right-0 top-11 z-50 w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto rounded-xl border border-border bg-background p-2 shadow-xl">
-              <nav className="space-y-1" aria-label="Mobile navigation">
-                <details className="group/category rounded-md border border-transparent open:border-border">
-                  <summary className="flex cursor-pointer list-none items-center justify-between rounded-md px-2 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10">
-                    Play
-                    <ChevronDown className="h-4 w-4 text-primary transition-transform group-open/category:rotate-180" />
-                  </summary>
-                  <div className="ml-2 mb-1 border-l border-border pl-3">
+              <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
+                <div className="min-w-[360px] rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-4 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
+                  <div className="space-y-1.5">
                     {playLinks.map((item) => (
                       <Link
                         key={item.route}
                         href={item.route}
-                        className="flex items-start gap-2 rounded-md px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+                        className="flex items-start gap-3 rounded-2xl px-3 py-3 transition-colors hover:bg-muted/70"
                       >
-                        <span className="mt-0.5 text-primary">
+                        <span className="rounded-xl bg-primary/10 p-2 text-primary">
                           <PlayLinkIcon icon={item.icon} className="h-4 w-4" />
                         </span>
                         <span className="min-w-0">
-                          <span className="block font-medium">{item.label}</span>
+                          <span className="block text-sm font-semibold text-foreground">
+                            {item.label}
+                          </span>
                           <span className="block text-xs text-muted-foreground">
                             {item.description}
                           </span>
                         </span>
                       </Link>
                     ))}
+                  </div>
+
+                  <div className="mt-4 rounded-2xl bg-muted/60 px-4 py-3">
                     <Link
                       href="/play"
-                      className="mt-2 flex items-center gap-1 px-2 py-2 text-sm text-primary transition-colors hover:text-primary/80"
+                      className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
                     >
                       View all Play tools
                       <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                   </div>
-                </details>
-                <div className="border-t border-border my-1" />
-                {siteCategories.map((cat) => (
-                  <details key={cat.id} className="group/category rounded-md border border-transparent open:border-border">
-                    <summary className="flex cursor-pointer list-none items-center justify-between rounded-md px-2 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-                      {cat.label}
-                      <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open/category:rotate-180" />
+                </div>
+              </div>
+            </div>
+            <Link
+              href="/blog"
+              className="rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+            >
+              Blog
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+
+            <details className="group relative md:hidden">
+              <summary className="cursor-pointer list-none rounded-xl border border-[color:var(--ghost-border)] bg-muted/70 p-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-primary">
+                <span className="sr-only">Toggle menu</span>
+                <Menu className="h-5 w-5 group-open:hidden" />
+                <X className="hidden h-5 w-5 group-open:block" />
+              </summary>
+
+              <div className="absolute right-0 top-14 z-50 w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-3 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
+                <nav className="space-y-2" aria-label="Mobile navigation">
+                  <details className="group/category rounded-2xl bg-muted/55 p-2">
+                    <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary transition-colors hover:bg-primary/10">
+                      Play
+                      <ChevronDown className="h-4 w-4 text-primary transition-transform group-open/category:rotate-180" />
                     </summary>
-                    <div className="ml-2 mb-1 border-l border-border pl-3">
-                      <CategoryMenu category={cat} closeOnClick />
+                    <div className="mt-2 space-y-1 rounded-2xl bg-card/80 p-2">
+                      {playLinks.map((item) => (
+                        <Link
+                          key={item.route}
+                          href={item.route}
+                          className="flex items-start gap-3 rounded-xl px-3 py-3 text-sm text-foreground transition-colors hover:bg-muted/70"
+                        >
+                          <span className="mt-0.5 rounded-lg bg-primary/10 p-2 text-primary">
+                            <PlayLinkIcon icon={item.icon} className="h-4 w-4" />
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block font-semibold">{item.label}</span>
+                            <span className="block text-xs text-muted-foreground">
+                              {item.description}
+                            </span>
+                          </span>
+                        </Link>
+                      ))}
                       <Link
-                        href={cat.route}
-                        className="mt-2 flex items-center gap-1 px-2 py-2 text-sm text-primary transition-colors hover:text-primary/80"
+                        href="/play"
+                        className="mt-1 flex items-center gap-1 rounded-xl px-3 py-3 text-sm text-primary transition-colors hover:bg-primary/[0.08] hover:text-primary/80"
                       >
-                        View all {cat.label} tools
+                        View all Play tools
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
                     </div>
                   </details>
-                ))}
-                <div className="border-t border-border my-1" />
-                <Link
-                  href="/blog"
-                  className="block rounded-md px-2 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                >
-                  Blog
-                </Link>
-              </nav>
-            </div>
-          </details>
+                  {siteCategories.map((cat) => (
+                    <details key={cat.id} className="group/category rounded-2xl bg-muted/55 p-2">
+                      <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-muted/80 hover:text-primary">
+                        {cat.label}
+                        <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open/category:rotate-180" />
+                      </summary>
+                      <div className="mt-2 space-y-4 rounded-2xl bg-card/80 p-3">
+                        <CategoryMenu category={cat} closeOnClick />
+                        <Link
+                          href={cat.route}
+                          className="flex items-center gap-1 rounded-xl px-3 py-3 text-sm text-primary transition-colors hover:bg-primary/[0.08] hover:text-primary/80"
+                        >
+                          View all {cat.label} tools
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </Link>
+                      </div>
+                    </details>
+                  ))}
+                  <Link
+                    href="/blog"
+                    className="block rounded-2xl bg-muted/55 px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground transition-colors hover:text-primary"
+                  >
+                    Blog
+                  </Link>
+                </nav>
+              </div>
+            </details>
+          </div>
         </div>
       </div>
     </header>
