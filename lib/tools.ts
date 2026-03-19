@@ -53,8 +53,42 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['png-to-jpg', 'png-to-webp', 'resize-image'],
+    relatedTools: ['gif-compressor', 'png-to-jpg', 'png-to-webp', 'resize-image'],
     badge: 'popular',
+  },
+  {
+    slug: 'gif-compressor',
+    name: 'GIF Compressor',
+    shortDescription: 'Compress animated GIFs in your browser while preserving motion.',
+    category: 'compress',
+    route: '/tools/gif-compressor',
+    acceptedFormats: ['.gif'],
+    icon: 'Minimize2',
+    metaTitle: 'GIF Compressor — Compress GIFs Free, No Signup | clevr.tools',
+    metaDescription:
+      'Compress animated GIFs to reduce file size. Perfect for Discord, social media, and web. Free, browser-based, no upload required.',
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>Animated GIFs are still the format that shows up everywhere size limits hurt: Discord uploads, product changelogs, social posts, support docs, and website embeds. You have motion that matters, but the file is too large to send or too heavy to ship on the page. That is the compression problem this tool solves.</p>
+      <p>It is especially useful when a screen recording was exported as a GIF and came out huge. A short UI walkthrough can easily land at 15 to 40 MB, which is too large for many chat apps and far too heavy for a help center article. Reducing colors, trimming frames, and scaling down dimensions usually gets it under control without removing the animation.</p>
+      <p>The other common use case is Discord and community platforms with hard file caps. Even when you cannot hit the target perfectly on the first pass, dialing in color count, frame reduction, and scale is usually enough to get an animated GIF into a shareable range.</p>
+
+      <h2>How compression works</h2>
+      <p>This compressor runs fully in your browser. It decodes the GIF, keeps the animation timing as closely as practical, reduces the color palette, optionally skips frames, and can scale the output dimensions before re-encoding an animated GIF. Nothing is uploaded to a server.</p>
+      <p><strong>Color reduction is the biggest lever.</strong> GIFs are palette-based images with a limited number of colors per frame. Dropping from 256 colors to 128 or 64 usually cuts size materially with only a modest quality tradeoff.</p>
+      <p><strong>Frame reduction lowers motion cost.</strong> Keeping every second or third frame preserves the overall animation while reducing the amount of data that has to be encoded. The tool combines skipped-frame timing so the playback speed stays close to the original.</p>
+      <p><strong>Scaling is the emergency lever.</strong> If a GIF is still too large after color reduction, dropping dimensions to 75% or 50% is often what gets it under platform limits.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Animation is preserved.</strong> This is not a still-image extractor. The output remains an animated GIF and continues looping in standard viewers and browsers.</p>
+      <p><strong>Compression is lossy.</strong> Smaller files come from fewer colors, fewer frames, smaller dimensions, or some mix of all three. Keep the original if you may need to export again later.</p>
+      <p><strong>Browser-based means private.</strong> Your GIF stays on your device. The processing happens locally in the tab, which makes this suitable for private product demos and internal assets that should not be uploaded.</p>
+
+      <h2>Supported input and output</h2>
+      <p>Input: animated GIF files up to 50 MB. Output: animated GIF. The tool is designed for browser-based optimization, not format conversion to MP4 or WebM.</p>
+    `,
+    relatedTools: ['image-compressor', 'pdf-compressor', 'png-to-webp', 'resize-image'],
+    badge: 'new',
   },
   {
     slug: 'png-to-jpg',
@@ -245,7 +279,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['webp-to-png', 'image-compressor', 'png-to-jpg'],
+    relatedTools: ['gif-compressor', 'webp-to-png', 'image-compressor', 'png-to-jpg'],
     badge: 'new',
   },
   {
@@ -325,6 +359,7 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['resize-image', 'image-compressor', 'png-to-webp'],
     badge: 'new',
+    live: false,
   },
   {
     slug: 'pdf-compressor',
@@ -361,7 +396,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['merge-pdf', 'split-pdf', 'pdf-to-jpg'],
+    relatedTools: ['gif-compressor', 'merge-pdf', 'split-pdf', 'pdf-to-jpg'],
   },
   // ─── New PDF Tools ────────────────────────────────────────────────────────
   {
@@ -626,7 +661,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['image-compressor', 'png-to-jpg', 'jpg-to-png'],
+    relatedTools: ['gif-compressor', 'image-compressor', 'png-to-jpg', 'jpg-to-png'],
     badge: 'new',
   },
   {

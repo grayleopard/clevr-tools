@@ -313,6 +313,28 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
         "No app is required. It is free and online, runs in your browser, and keeps your files private.",
     },
   ],
+  "gif-compressor": [
+    {
+      question: "How do I compress a GIF for Discord?",
+      answer:
+        "Start with the Discord preset, then reduce colors or scale further if the file still misses the upload limit. The tool keeps the GIF animated and runs fully in your browser.",
+    },
+    {
+      question: "Does compressing a GIF remove the animation?",
+      answer:
+        "No. The output stays animated. Compression works by reducing colors, optionally dropping frames, and shrinking dimensions while preserving the looped GIF format.",
+    },
+    {
+      question: "What's the best way to reduce GIF file size?",
+      answer:
+        "Color reduction is usually the first lever, followed by frame reduction and scale. A smaller palette and fewer frames cut file size faster than guessing at random exports.",
+    },
+    {
+      question: "Are my GIFs uploaded to a server?",
+      answer:
+        "No. GIF compression happens locally in your browser. Your file stays on your device and is not uploaded by this tool.",
+    },
+  ],
   "resize-image": [
     {
       question: "Is Image Resizer free and online?",

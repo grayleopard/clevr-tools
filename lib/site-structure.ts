@@ -45,8 +45,8 @@ export const siteCategories: SiteCategory[] = [
     route: "/files",
     description: "Compress, convert, and transform files directly in your browser.",
     featuredSlugs: [
-      "background-remover",
       "image-compressor",
+      "gif-compressor",
       "resize-image",
       "pdf-to-jpg",
       "merge-pdf",
@@ -54,12 +54,8 @@ export const siteCategories: SiteCategory[] = [
     ],
     subcategories: [
       {
-        label: "AI Tools",
-        slugs: ["background-remover"],
-      },
-      {
         label: "Compress",
-        slugs: ["image-compressor", "pdf-compressor"],
+        slugs: ["image-compressor", "gif-compressor", "pdf-compressor"],
       },
       {
         label: "Convert Images",

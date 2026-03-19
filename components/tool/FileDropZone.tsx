@@ -16,6 +16,8 @@ interface FileDropZoneProps {
   compact?: boolean;
   /** Optional clipboard action for tools that support direct paste. */
   onPasteClipboard?: () => void;
+  headline?: string;
+  privacyNote?: string;
 }
 
 function formatBytes(bytes: number): string {
@@ -54,6 +56,8 @@ export default function FileDropZone({
   resetKey,
   compact = false,
   onPasteClipboard,
+  headline = "Drop files here",
+  privacyNote = "Files stay in your browser — nothing is uploaded",
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<DropState>("idle");
@@ -267,7 +271,7 @@ export default function FileDropZone({
               </div>
               <div className="space-y-2">
                 <p className="text-lg font-semibold tracking-[-0.02em] text-foreground">
-                  {state === "hover" ? "Drop it here" : "Drop files here"}
+                  {state === "hover" ? "Drop it here" : headline}
                 </p>
                 <p className="text-sm leading-7 text-muted-foreground">
                   Upload once, process locally, and keep the original workflow intact.
@@ -319,7 +323,7 @@ export default function FileDropZone({
 
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground/80">
                 <Lock className="h-3 w-3 shrink-0" />
-                Files stay in your browser — nothing is uploaded
+                {privacyNote}
               </p>
             </div>
           )}

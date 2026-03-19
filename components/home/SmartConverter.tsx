@@ -17,7 +17,6 @@ import {
   Maximize2,
   Crop,
   Merge,
-  Bot,
   ClipboardPaste,
   Lock,
 } from "lucide-react";
@@ -30,9 +29,9 @@ import { formatBytes, truncateFilename } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type FileType = "png" | "jpg" | "webp" | "heic" | "pdf" | "docx" | "unknown";
+type FileType = "png" | "jpg" | "gif" | "webp" | "heic" | "pdf" | "docx" | "unknown";
 type ActionId =
-  | "remove-background"
+  | "compress-gif"
   | "compress-image"
   | "to-jpg"
   | "to-png"
@@ -58,9 +57,10 @@ interface DetectedFile {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
-  png: ["remove-background", "compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  jpg: ["remove-background", "compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  webp: ["remove-background", "to-png", "to-jpg", "resize-image"],
+  png: ["compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  jpg: ["compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  gif: ["compress-gif"],
+  webp: ["to-png", "to-jpg", "resize-image"],
   heic: ["to-jpg", "to-png"],
   pdf: ["compress-pdf", "pdf-to-jpg", "merge-pdf", "split-pdf", "rotate-pdf"],
   docx: ["word-to-pdf"],
@@ -75,11 +75,11 @@ interface ActionDef {
 }
 
 const ACTION_DEFS: Record<ActionId, ActionDef> = {
-  "remove-background": {
-    icon: Bot,
-    name: "Remove Background",
-    description: "AI cutout with transparent PNG output",
-    accent: "text-sky-600 dark:text-sky-400",
+  "compress-gif": {
+    icon: Minimize2,
+    name: "Compress GIF",
+    description: "Reduce animated GIF size while keeping motion intact",
+    accent: "text-primary",
   },
   "compress-image": {
     icon: Minimize2,
@@ -165,7 +165,7 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
 
 function getRoute(fileType: FileType, actionId: ActionId): string {
   switch (actionId) {
-    case "remove-background": return "/tools/background-remover";
+    case "compress-gif":   return "/tools/gif-compressor";
     case "compress-image": return "/compress/image";
     case "to-jpg":         return fileType === "heic" ? "/convert/heic-to-jpg" : "/convert/png-to-jpg";
     case "to-png":         return fileType === "webp" ? "/convert/webp-to-png" : "/convert/jpg-to-png";
@@ -189,6 +189,7 @@ function detectFileType(file: File): FileType {
   const mime = file.type.toLowerCase();
   if (mime === "image/png" || ext === "png") return "png";
   if (mime === "image/jpeg" || ext === "jpg" || ext === "jpeg") return "jpg";
+  if (mime === "image/gif" || ext === "gif") return "gif";
   if (mime === "image/webp" || ext === "webp") return "webp";
   if (mime === "image/heic" || mime === "image/heif" || ext === "heic" || ext === "heif")
     return "heic";
@@ -205,6 +206,7 @@ function FileTypeIcon({ type, className }: { type: FileType; className?: string 
   switch (type) {
     case "pdf":  return <FileText className={className} />;
     case "docx": return <FileOutput className={className} />;
+    case "gif":  return <Layers className={className} />;
     case "heic": return <Smartphone className={className} />;
     default:     return <FileImage className={className} />;
   }
@@ -304,7 +306,7 @@ function IdleView({
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
-          {["PNG", "JPG", "WebP", "HEIC", "PDF", "DOCX"].map((fmt) => (
+          {["PNG", "JPG", "GIF", "WebP", "HEIC", "PDF", "DOCX"].map((fmt) => (
             <span
               key={fmt}
               className="rounded-full bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
@@ -567,7 +569,7 @@ export default function SmartConverter({
     setNavigatingAction(null);
 
     const type = detectFileType(file);
-    const isPreviewable = (["png", "jpg", "webp"] as FileType[]).includes(type);
+    const isPreviewable = (["png", "jpg", "gif", "webp"] as FileType[]).includes(type);
     let previewUrl: string | null = null;
     let dimensions: { width: number; height: number } | null = null;
 
@@ -756,7 +758,7 @@ export default function SmartConverter({
       <input
         ref={fileInputRef}
         type="file"
-        accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.pdf,.docx,.doc"
+        accept=".png,.jpg,.jpeg,.gif,.webp,.heic,.heif,.pdf,.docx,.doc"
         className="hidden"
         onChange={handleFileInput}
       />

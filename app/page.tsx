@@ -62,8 +62,8 @@ const categoryIcons: Record<string, ComponentType<{ className?: string }>> = {
 };
 
 const homeToolIcons: Record<string, ComponentType<{ className?: string }>> = {
-  "background-remover": Sparkles,
   "image-compressor": Minimize2,
+  "gif-compressor": Sparkles,
   "resize-image": Maximize2,
   "pdf-to-jpg": FileImage,
 };
