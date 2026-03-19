@@ -16,6 +16,10 @@ import {
   Keyboard,
   ArrowRight,
   Gamepad2,
+  Sparkles,
+  Minimize2,
+  Maximize2,
+  FileImage,
 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -33,6 +37,7 @@ type HomeCardItem = {
   href: string;
   badge?: string;
   description?: string;
+  Icon?: ComponentType<{ className?: string }>;
 };
 
 type HomeCardData = {
@@ -54,6 +59,13 @@ const categoryIcons: Record<string, ComponentType<{ className?: string }>> = {
   calculate: Calculator,
   time: Clock,
   type: Keyboard,
+};
+
+const homeToolIcons: Record<string, ComponentType<{ className?: string }>> = {
+  "background-remover": Sparkles,
+  "image-compressor": Minimize2,
+  "resize-image": Maximize2,
+  "pdf-to-jpg": FileImage,
 };
 
 const categoryPresentation: Record<
@@ -96,6 +108,8 @@ const categoryPresentation: Record<
 
 function HomeCategoryCard({ card }: { card: HomeCardData }) {
   const Icon = card.Icon;
+  const showFilesSubcards = card.id === "files";
+  const filesPreviewItems = showFilesSubcards ? card.items.slice(0, 4) : [];
 
   return (
     <div
@@ -103,9 +117,10 @@ function HomeCategoryCard({ card }: { card: HomeCardData }) {
     >
       <div className="mb-8 flex items-start justify-between gap-6">
         <div className="space-y-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            {card.eyebrow}
-          </p>
+          <div className="inline-flex items-center gap-2 rounded-full bg-muted/60 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            <Icon className="h-3.5 w-3.5 text-primary" />
+            <span>{card.eyebrow}</span>
+          </div>
           <div className="space-y-3">
             <h2 className="text-2xl font-bold tracking-[-0.03em] text-foreground sm:text-[2rem]">
               {card.title}
@@ -120,39 +135,82 @@ function HomeCategoryCard({ card }: { card: HomeCardData }) {
         </div>
       </div>
 
-      <ul className={`grid gap-3 ${card.itemGridClassName ?? ""}`}>
-        {card.items.map((item) => (
-          <li key={item.href} className="min-w-0">
-            <Link
-              href={item.href}
-              className="group/link flex h-full flex-col justify-between rounded-[1.2rem] bg-muted/65 px-4 py-3 transition-[background-color,color] duration-150 hover:bg-muted/90"
-            >
-              <span className="flex items-center justify-between gap-3">
-                <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-primary">
-                  {item.label}
+      {showFilesSubcards ? (
+        <ul className="grid gap-3 sm:grid-cols-2">
+          {filesPreviewItems.map((item) => {
+            const ItemIcon = item.Icon ?? ArrowRight;
+
+            return (
+              <li key={item.href} className="min-w-0">
+                <Link
+                  href={item.href}
+                  className="group/link flex h-full flex-col rounded-[1rem] bg-muted/70 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-0.5 hover:bg-muted"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="rounded-full bg-primary/12 p-2 text-primary">
+                      <ItemIcon className="h-4 w-4" />
+                    </div>
+                    {item.badge ? (
+                      <Badge
+                        variant={item.badge === "popular" ? "default" : "secondary"}
+                        className={
+                          item.badge === "popular"
+                            ? "text-[10px] capitalize"
+                            : "border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
+                        }
+                      >
+                        {item.badge}
+                      </Badge>
+                    ) : null}
+                  </div>
+                  <span className="mt-5 text-base font-semibold text-foreground transition-colors group-hover/link:text-primary">
+                    {item.label}
+                  </span>
+                  {item.description ? (
+                    <span className="mt-2 text-xs leading-6 text-muted-foreground">
+                      {item.description}
+                    </span>
+                  ) : null}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <ul className={`grid gap-3 ${card.itemGridClassName ?? ""}`}>
+          {card.items.map((item) => (
+            <li key={item.href} className="min-w-0">
+              <Link
+                href={item.href}
+                className="group/link flex h-full flex-col justify-between rounded-[1.2rem] bg-muted/65 px-4 py-3 transition-[background-color,color] duration-150 hover:bg-muted/90"
+              >
+                <span className="flex items-center justify-between gap-3">
+                  <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-primary">
+                    {item.label}
+                  </span>
+                  {item.badge ? (
+                    <Badge
+                      variant={item.badge === "popular" ? "default" : "secondary"}
+                      className={
+                        item.badge === "popular"
+                          ? "text-[10px] capitalize"
+                          : "border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
+                      }
+                    >
+                      {item.badge}
+                    </Badge>
+                  ) : null}
                 </span>
-                {item.badge ? (
-                  <Badge
-                    variant={item.badge === "popular" ? "default" : "secondary"}
-                    className={
-                      item.badge === "popular"
-                        ? "text-[10px] capitalize"
-                        : "border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
-                    }
-                  >
-                    {item.badge}
-                  </Badge>
+                {item.description ? (
+                  <span className="mt-2 text-xs leading-6 text-muted-foreground">
+                    {item.description}
+                  </span>
                 ) : null}
-              </span>
-              {item.description ? (
-                <span className="mt-2 text-xs leading-6 text-muted-foreground">
-                  {item.description}
-                </span>
-              ) : null}
-            </Link>
-          </li>
-        ))}
-      </ul>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Link
         href={card.route}
@@ -192,6 +250,8 @@ export default function HomePage() {
             label: tool.name,
             href: tool.route,
             badge: tool.badge,
+            description: tool.shortDescription,
+            Icon: homeToolIcons[tool.slug],
           }];
         }),
         Icon,
@@ -266,7 +326,7 @@ export default function HomePage() {
               </h2>
             </div>
             <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              Files, text, calculators, timers, typing tools, and a small Play section are all here. The layout is quieter, but the destinations and tool behavior are unchanged.
+              Files, text, calculators, timers, typing tools, and play links stay easy to scan with more hierarchy, clearer discovery, and room to move fast.
             </p>
           </div>
 
