@@ -36,7 +36,7 @@ function getCategoryColor(label: string) {
   switch (label) {
     case "Essential Fat": return "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400";
     case "Athletes": return "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400";
-    case "Fitness": return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400";
+    case "Fitness": return "bg-emerald-100 text-emerald-500 dark:bg-emerald-500/10 dark:text-emerald-300";
     case "Average": return "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400";
     case "Obese": return "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400";
     default: return "bg-muted text-muted-foreground";

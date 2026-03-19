@@ -171,7 +171,7 @@ export default function CreditCardPayoffCalculator() {
                           {fmt((parseFloat(monthlyPayment) || 0) + e.extra)}
                         </td>
                         <td className="px-3 py-2 text-right text-foreground">{formatMonths(e.result.months)}</td>
-                        <td className="px-3 py-2 text-right tabular-nums font-medium text-emerald-600 dark:text-emerald-400">
+                        <td className="px-3 py-2 text-right tabular-nums font-medium text-emerald-500 dark:text-emerald-300">
                           {fmt(e.interestSaved)}
                         </td>
                       </tr>

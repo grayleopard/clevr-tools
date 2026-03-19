@@ -22,8 +22,8 @@ interface DebtItem {
 let nextId = 1;
 
 function getRating(dti: number): { label: string; color: string; description: string } {
-  if (dti <= 20) return { label: "Excellent", color: "text-emerald-600 dark:text-emerald-400", description: "Very manageable debt level" };
-  if (dti <= 36) return { label: "Good", color: "text-emerald-600 dark:text-emerald-400", description: "Within most lender guidelines" };
+  if (dti <= 20) return { label: "Excellent", color: "text-emerald-500 dark:text-emerald-300", description: "Very manageable debt level" };
+  if (dti <= 36) return { label: "Good", color: "text-emerald-500 dark:text-emerald-300", description: "Within most lender guidelines" };
   if (dti <= 43) return { label: "Fair", color: "text-yellow-600 dark:text-yellow-400", description: "May qualify for some loans" };
   if (dti <= 50) return { label: "High", color: "text-orange-600 dark:text-orange-400", description: "Difficult to qualify for new credit" };
   return { label: "Very High", color: "text-red-600 dark:text-red-400", description: "Significant financial stress" };

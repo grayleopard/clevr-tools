@@ -118,7 +118,7 @@ export default function NetWorthCalculator() {
       {/* Summary */}
       <div className="grid grid-cols-2 gap-2">
         <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-          <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{fmt(result.totalAssets)}</span>
+          <span className="text-sm font-semibold text-emerald-500 dark:text-emerald-300">{fmt(result.totalAssets)}</span>
           <span className="text-xs text-muted-foreground">Total Assets</span>
         </div>
         <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
