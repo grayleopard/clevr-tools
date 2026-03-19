@@ -14,6 +14,8 @@ interface ToolPageLayoutProps {
   children: ReactNode;
   settingsPanel?: ReactNode;
   infoPanel?: ReactNode;
+  settingsTitle?: string;
+  infoTitle?: string;
 }
 
 function SidebarLinks({
@@ -67,6 +69,8 @@ export default function ToolPageLayout({
   children,
   settingsPanel,
   infoPanel,
+  settingsTitle = "Settings",
+  infoTitle = "Tool notes",
 }: ToolPageLayoutProps) {
   return (
     <div className="space-y-5">
@@ -110,7 +114,7 @@ export default function ToolPageLayout({
             {settingsPanel ? (
               <div className="rounded-[1.5rem] bg-muted/55 p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                  Settings
+                  {settingsTitle}
                 </p>
                 <div className="mt-4">{settingsPanel}</div>
               </div>
@@ -121,7 +125,7 @@ export default function ToolPageLayout({
             {infoPanel ? (
               <div className="rounded-[1.5rem] bg-muted/55 p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                  Tool notes
+                  {infoTitle}
                 </p>
                 <div className="mt-4">{infoPanel}</div>
               </div>

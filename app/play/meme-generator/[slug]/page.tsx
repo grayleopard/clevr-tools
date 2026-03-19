@@ -4,9 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import ToolPageLayout from "@/components/layout/ToolPageLayout";
 import FaqSchema, { type FaqItem } from "@/components/seo/FaqSchema";
 import MemeEditor from "@/components/meme/MemeEditor";
 import { memeTemplates } from "@/lib/memes/templates";
+import { Zap } from "lucide-react";
 
 function getTemplate(slug: string) {
   return memeTemplates.find((t) => t.id === slug);
@@ -166,30 +168,62 @@ export default async function MemeTemplatePage({
       <div className="flex min-h-screen flex-col">
         <Navbar />
         <main className="flex-1">
-          <section className="border-b border-border bg-muted/20">
-            <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-              <div className="max-w-3xl space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  Meme Generator
-                </p>
-                <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <div className="bg-muted/20">
+            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+              <header className="mb-8 max-w-3xl">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
+                  <Zap className="h-[14px] w-[14px]" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                    PLAY
+                  </span>
+                </div>
+                <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-4xl">
                   {template.name} Meme Maker
                 </h1>
-                {description && (
-                  <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                {description ? (
+                  <p className="text-base text-muted-foreground">
                     {description}
                   </p>
-                )}
-              </div>
-            </div>
-          </section>
+                ) : null}
+              </header>
 
-          <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-            <MemeEditor
-              initialTemplate={template}
-              showDebugRegions={showDebugRegions}
-            />
-          </section>
+              <ToolPageLayout
+                categoryName="Play"
+                categoryHref="/play"
+                relatedTools={[
+                  { name: "All meme templates", href: "/play/meme-generator" },
+                  { name: "Numble", href: "/play/numble" },
+                  ...related.slice(0, 3).map((item) => ({
+                    name: item.name,
+                    href: `/play/meme-generator/${item.id}`,
+                  })),
+                ]}
+                settingsTitle="Workspace notes"
+                settingsPanel={
+                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
+                    <p>Adjust text, style, and scale in the main editor while the preview updates live.</p>
+                    <div className="rounded-[1rem] bg-card/80 p-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
+                        Export
+                      </p>
+                      <p className="mt-3">Templates export as PNG files at the current meme resolution.</p>
+                    </div>
+                  </div>
+                }
+                infoTitle="Processing"
+                infoPanel={
+                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
+                    <p>Editing and export happen locally in your browser. Debug regions remain opt-in via the existing query flag.</p>
+                  </div>
+                }
+              >
+                <MemeEditor
+                  initialTemplate={template}
+                  showDebugRegions={showDebugRegions}
+                />
+              </ToolPageLayout>
+            </div>
+          </div>
 
           {related.length > 0 && (
             <section className="border-t border-border bg-muted/20">

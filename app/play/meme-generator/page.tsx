@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import ToolPageLayout from "@/components/layout/ToolPageLayout";
 import FaqSchema, { type FaqItem } from "@/components/seo/FaqSchema";
 import MemeEditor from "@/components/meme/MemeEditor";
+import { Zap } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Meme Generator — Free, No Signup | clevr.tools",
@@ -61,26 +63,54 @@ export default async function MemeGeneratorPage({
       <div className="flex min-h-screen flex-col">
         <Navbar />
         <main className="flex-1">
-          <section className="border-b border-border bg-muted/20">
-            <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-              <div className="max-w-3xl space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  Play
-                </p>
-                <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <div className="bg-muted/20">
+            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+              <header className="mb-8 max-w-3xl">
+                <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
+                  <Zap className="h-[14px] w-[14px]" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                    PLAY
+                  </span>
+                </div>
+                <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-4xl">
                   Meme Generator
                 </h1>
-                <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  Create memes instantly with built-in templates or your own image.
-                  Edit text live on a canvas preview and download a PNG without leaving the browser.
+                <p className="text-base text-muted-foreground">
+                  Create memes instantly with built-in templates or your own image. Edit text
+                  live on a canvas preview and download a PNG without leaving the browser.
                 </p>
-              </div>
-            </div>
-          </section>
+              </header>
 
-          <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-            <MemeEditor showDebugRegions={showDebugRegions} />
-          </section>
+              <ToolPageLayout
+                categoryName="Play"
+                categoryHref="/play"
+                relatedTools={[
+                  { name: "Numble", href: "/play/numble" },
+                  { name: "Browse templates", href: "/play/meme-generator" },
+                ]}
+                settingsTitle="Workspace notes"
+                settingsPanel={
+                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
+                    <p>Template selection, text controls, and export actions live in the main workspace.</p>
+                    <div className="rounded-[1rem] bg-card/80 p-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
+                        Export
+                      </p>
+                      <p className="mt-3">Memes download as PNG files directly from the browser.</p>
+                    </div>
+                  </div>
+                }
+                infoTitle="Processing"
+                infoPanel={
+                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
+                    <p>Rendering happens locally in your browser. Uploaded images stay on your device while you edit.</p>
+                  </div>
+                }
+              >
+                <MemeEditor showDebugRegions={showDebugRegions} />
+              </ToolPageLayout>
+            </div>
+          </div>
         </main>
         <Footer />
       </div>
