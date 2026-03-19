@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ResizeImagePage() {
   if (!tool) notFound();
   return (
-    <ToolLayout tool={tool}>
+    <ToolLayout tool={tool} fullWidth>
       <ImageResizer />
       <FaqSchema items={faqItems} />
     </ToolLayout>

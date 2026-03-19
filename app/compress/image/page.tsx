@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ImageCompressorPage() {
   if (!tool) notFound();
   return (
-    <ToolLayout tool={tool}>
+    <ToolLayout tool={tool} fullWidth>
       <ImageCompressor />
       <FaqSchema items={faqItems} />
     </ToolLayout>
