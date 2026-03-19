@@ -62,7 +62,7 @@ html {
 }
 
 :root {
-  --font-ui: var(--font-geist-sans, "Inter", ui-sans-serif, system-ui, sans-serif);
+  --font-ui: var(--font-inter, "Inter", ui-sans-serif, system-ui, sans-serif);
   --font-mono-ui: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 1rem;
 
@@ -150,6 +150,9 @@ html {
   --ghost-border: rgba(171, 173, 174, 0.2);
   --ambient-shadow: 0 24px 80px rgba(44, 47, 48, 0.05);
   --ambient-shadow-strong: 0 36px 110px rgba(44, 47, 48, 0.08);
+  --page-glow-primary: rgba(0, 105, 71, 0.1);
+  --page-glow-secondary: rgba(0, 101, 117, 0.06);
+  --page-film: rgba(255, 255, 255, 0.56);
 }
 
 [data-theme="dark"] {
@@ -237,14 +240,62 @@ html {
   --ghost-border: rgba(58, 64, 96, 0.24);
   --ambient-shadow: 0 26px 90px rgba(0, 0, 0, 0.24);
   --ambient-shadow-strong: 0 40px 130px rgba(0, 0, 0, 0.34);
+  --page-glow-primary: rgba(148, 170, 255, 0.12);
+  --page-glow-secondary: rgba(125, 233, 255, 0.08);
+  --page-film: rgba(4, 10, 24, 0.28);
 }
 
 @layer base {
+  html,
+  body {
+    min-height: 100%;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+
+  ::selection {
+    background: color-mix(in srgb, var(--primary-fixed) 58%, transparent);
+    color: var(--on-surface);
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground antialiased;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    background-image:
+      radial-gradient(circle at top right, var(--page-glow-primary), transparent 34%),
+      radial-gradient(circle at left 78%, var(--page-glow-secondary), transparent 28%),
+      linear-gradient(180deg, var(--page-film), transparent 30%);
+    background-attachment: fixed;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--on-surface);
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, opacity 180ms ease;
   }
 }
 
