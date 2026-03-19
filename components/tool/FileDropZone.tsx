@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState, useCallback, useMemo, useEffect } from "react";
-import { AlertCircle, FileText, ImageIcon, Smartphone, Lock, Plus } from "lucide-react";
+import { useRef, useState, useCallback, useMemo, useEffect, useId } from "react";
+import { AlertCircle, ClipboardPaste, Lock, Plus, Upload } from "lucide-react";
 import { usePdfXRayContext } from "@/lib/xray/pdf-xray-context";
 
 interface FileDropZoneProps {
@@ -14,6 +14,8 @@ interface FileDropZoneProps {
   resetKey?: number;
   /** When true, render a compact "Add more files" bar instead of the full drop zone. */
   compact?: boolean;
+  /** Optional clipboard action for tools that support direct paste. */
+  onPasteClipboard?: () => void;
 }
 
 function formatBytes(bytes: number): string {
@@ -41,14 +43,6 @@ function parseFormats(accept: string): string[] {
   return out;
 }
 
-/** Pick a sensible icon from the accept string. */
-function DropIcon({ accept, className = "h-6 w-6 text-primary" }: { accept: string; className?: string }) {
-  if (accept.includes("pdf")) return <FileText className={className} />;
-  if (accept.includes("heic") || accept.includes("heif"))
-    return <Smartphone className={className} />;
-  return <ImageIcon className={className} />;
-}
-
 type DropState = "idle" | "hover" | "loaded" | "error";
 
 export default function FileDropZone({
@@ -59,6 +53,7 @@ export default function FileDropZone({
   className = "",
   resetKey,
   compact = false,
+  onPasteClipboard,
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<DropState>("idle");
@@ -66,6 +61,7 @@ export default function FileDropZone({
   const [errorMsg, setErrorMsg] = useState("");
   const xrayCtx = usePdfXRayContext();
   const dragCounter = useRef(0);
+  const gridPatternId = useId().replace(/:/g, "");
   const hasSelection = loadedFiles.length > 0;
   const showCompact = compact || hasSelection;
 
@@ -150,9 +146,9 @@ export default function FileDropZone({
   }, [xrayCtx]);
 
   const stateStyles: Record<DropState, string> = {
-    idle: "border-border hover:border-primary/50 hover:bg-primary/[0.02]",
-    hover: "border-primary bg-primary/5",
-    loaded: "border-primary/60 bg-primary/5",
+    idle: "border-[color:var(--ghost-border)] bg-muted/[0.28] hover:border-primary/40 hover:bg-primary/[0.03]",
+    hover: "border-primary/45 bg-primary/[0.05]",
+    loaded: "border-primary/50 bg-primary/[0.05]",
     error: "border-destructive bg-destructive/5",
   };
 
@@ -162,6 +158,7 @@ export default function FileDropZone({
 
   const totalSize = loadedFiles.reduce((sum, file) => sum + file.size, 0);
   const compactLabel = multiple ? "Add more files" : "Choose another file";
+  const supportsClipboard = typeof onPasteClipboard === "function";
 
   return (
     <div className={`relative ${className}`}>
@@ -177,7 +174,7 @@ export default function FileDropZone({
       {showCompact ? (
         <div className="space-y-2">
           <div
-            className="flex min-h-14 items-center justify-center gap-3 rounded-lg border border-dashed border-border px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary cursor-pointer"
+            className="flex min-h-14 items-center justify-center gap-3 rounded-[1.15rem] border border-dashed border-[color:var(--ghost-border)] bg-muted/50 px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary cursor-pointer"
             onClick={openPicker}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
@@ -213,7 +210,7 @@ export default function FileDropZone({
         </div>
       ) : (
         <div
-          className={`relative min-h-[220px] rounded-xl border-2 border-dashed p-8 text-center transition-[border-color,background-color] duration-200 cursor-pointer ${stateStyles[state]}`}
+          className={`group relative min-h-[260px] overflow-hidden rounded-[2rem] border-2 border-dashed p-8 text-center transition-[border-color,background-color] duration-200 cursor-pointer ${stateStyles[state]}`}
           onDragEnter={(e) => {
             e.preventDefault();
             if (!e.dataTransfer.types.includes("Files")) return;
@@ -234,8 +231,20 @@ export default function FileDropZone({
           tabIndex={0}
           onKeyDown={(e) => e.key === "Enter" && openPicker()}
         >
+          <div className="pointer-events-none absolute inset-0 opacity-[0.03] text-foreground">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id={gridPatternId} width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill={`url(#${gridPatternId})`} />
+            </svg>
+          </div>
+          <div className="pointer-events-none absolute inset-x-[18%] top-8 h-20 rounded-full bg-primary/10 blur-3xl" />
+
           {state === "error" ? (
-            <div className="flex flex-col items-center gap-2">
+            <div className="relative z-10 flex flex-col items-center gap-2">
               <AlertCircle className="h-10 w-10 text-destructive" />
               <p className="text-sm font-medium text-destructive">{errorMsg}</p>
               <button
@@ -250,36 +259,65 @@ export default function FileDropZone({
               </button>
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-3">
-              <div className="rounded-full bg-primary/10 p-3">
-                <DropIcon accept={accept} />
+            <div className="relative z-10 flex flex-col items-center gap-5">
+              <div className="rounded-full bg-card p-4 shadow-[var(--shadow-sm)] transition-transform duration-500 group-hover:scale-110">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <Upload className="h-5 w-5 text-primary" />
+                </span>
               </div>
-              <div>
-                <p className="font-medium text-foreground">
-                  {state === "hover" ? "Drop it here" : "Drag & drop files here"}
+              <div className="space-y-2">
+                <p className="text-lg font-semibold tracking-[-0.02em] text-foreground">
+                  {state === "hover" ? "Drop it here" : "Drop files here"}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  or <span className="text-primary underline">click to browse</span>
+                <p className="text-sm leading-7 text-muted-foreground">
+                  Upload once, process locally, and keep the original workflow intact.
                 </p>
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    openPicker();
+                  }}
+                  className="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-5 py-3 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98]"
+                >
+                  <Upload className="h-4 w-4" />
+                  Browse Files
+                </button>
+                {supportsClipboard ? (
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onPasteClipboard?.();
+                    }}
+                    className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-muted/80"
+                  >
+                    <ClipboardPaste className="h-4 w-4" />
+                    Paste Clipboard
+                  </button>
+                ) : null}
               </div>
 
               <div className="flex flex-wrap justify-center gap-1.5">
                 {formatLabels.map((fmt) => (
                   <span
                     key={fmt}
-                    className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                    className="rounded-full bg-muted/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
                   >
                     {fmt}
                   </span>
                 ))}
                 {maxSizeMB && (
-                  <span className="rounded-full border border-border bg-muted/60 px-2.5 py-0.5 text-xs text-muted-foreground">
+                  <span className="rounded-full bg-muted/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                     Max {maxSizeMB} MB
                   </span>
                 )}
               </div>
 
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground/80">
                 <Lock className="h-3 w-3 shrink-0" />
                 Files stay in your browser — nothing is uploaded
               </p>
