@@ -292,7 +292,7 @@ export default function HomePage() {
                   <span className="rounded-full bg-card/80 px-3 py-1.5">Local browser processing</span>
                 </div>
 
-                <div className="mb-6 text-center">
+                <div className="mb-4 text-center">
                   <h1 className="text-5xl font-black tracking-[-0.04em] sm:text-6xl lg:text-[3.5rem]">
                     Free tools. No signup. <span className="text-primary">Zero</span> data collection.
                   </h1>

@@ -244,7 +244,7 @@ function IdleView({
       }}
       role="button"
       tabIndex={0}
-      className={`relative overflow-hidden rounded-[1.75rem] border border-dashed px-6 py-12 text-center transition-[border-color,background-color,transform] duration-200 ${
+      className={`relative overflow-hidden rounded-[1.75rem] border border-dashed px-6 py-10 text-center transition-[border-color,background-color,transform] duration-200 ${
         isDraggingOver
           ? "border-primary/55 bg-primary/[0.08]"
           : "border-[color:var(--ghost-border)] bg-card/[0.88] hover:border-primary/40 hover:bg-card"
@@ -255,7 +255,7 @@ function IdleView({
         <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_1px_1px,var(--ghost-border)_1px,transparent_0)] [background-size:16px_16px]" />
       </div>
 
-      <div className="relative z-10 flex min-h-[280px] flex-col items-center justify-center gap-6">
+      <div className="relative z-10 flex min-h-[256px] flex-col items-center justify-center gap-5">
         <div className="rounded-full bg-muted/80 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           Smart converter
         </div>

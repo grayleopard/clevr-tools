@@ -10,7 +10,7 @@ export default function NavbarLogo() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-xl tracking-tight text-foreground transition-colors hover:text-primary"
+      className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-2xl tracking-tight text-foreground transition-colors hover:text-primary"
       onClick={() => {
         if (pathname === "/") {
           window.dispatchEvent(new CustomEvent("clevr:reset-home"));
