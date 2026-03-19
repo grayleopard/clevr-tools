@@ -10,7 +10,7 @@ export default function NavbarLogo() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-base font-black tracking-[-0.08em] text-foreground transition-colors hover:text-primary"
+      className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-xl tracking-tight text-foreground transition-colors hover:text-primary"
       onClick={() => {
         if (pathname === "/") {
           window.dispatchEvent(new CustomEvent("clevr:reset-home"));
@@ -21,8 +21,8 @@ export default function NavbarLogo() {
         <Zap className="h-[18px] w-[18px]" />
       </span>
       <span>
-        <span className="text-primary">clevr</span>
-        <span className="text-muted-foreground/80">.tools</span>
+        <span className="font-black text-primary">clevr</span>
+        <span className="font-medium text-muted-foreground/80">.tools</span>
       </span>
     </Link>
   );

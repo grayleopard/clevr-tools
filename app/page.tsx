@@ -282,21 +282,21 @@ export default function HomePage() {
       <Navbar />
       <main className="flex-1 pb-24">
         {/* Hero */}
-        <section className="px-4 pt-6 sm:px-6 sm:pt-8">
+        <section className="px-4 pt-4 sm:px-6 sm:pt-5">
           <div className="mx-auto max-w-7xl">
-            <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(160deg,rgba(255,255,255,0.76),rgba(239,241,242,0.96))] px-5 py-12 shadow-[var(--ambient-shadow)] dark:bg-[linear-gradient(160deg,rgba(15,25,48,0.92),rgba(9,19,40,0.98))] sm:px-8 sm:py-16 lg:px-12 lg:py-20">
+            <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(160deg,rgba(255,255,255,0.76),rgba(239,241,242,0.96))] px-5 py-8 shadow-[var(--ambient-shadow)] dark:bg-[linear-gradient(160deg,rgba(15,25,48,0.92),rgba(9,19,40,0.98))] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
               <div className="mx-auto max-w-4xl">
-                <div className="mb-8 flex flex-wrap justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                <div className="mb-5 flex flex-wrap justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   <span className="rounded-full bg-card/80 px-3 py-1.5">Free tools</span>
                   <span className="rounded-full bg-card/80 px-3 py-1.5">No signup</span>
                   <span className="rounded-full bg-card/80 px-3 py-1.5">Local browser processing</span>
                 </div>
 
-                <div className="mb-10 text-center">
+                <div className="mb-6 text-center">
                   <h1 className="text-5xl font-black tracking-[-0.04em] sm:text-6xl lg:text-[3.5rem]">
                     Free tools. No signup. <span className="text-primary">Zero</span> data collection.
                   </h1>
-                  <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+                  <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-lg sm:leading-8">
                     File converters, calculators, typing tests, and developer tools. Everything runs in your browser — nothing leaves your device.
                   </p>
                 </div>
