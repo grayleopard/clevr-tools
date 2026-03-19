@@ -39,8 +39,8 @@ export default function BlogIndexPage() {
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="border-b border-border bg-muted/20">
-          <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <section className="bg-muted/20">
+          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               Blog
             </h1>
@@ -50,18 +50,18 @@ export default function BlogIndexPage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+        <section className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
           {posts.length === 0 ? (
-            <p className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+            <p className="rounded-2xl border border-[color:var(--ghost-border)] bg-card p-6 text-sm text-muted-foreground">
               Posts coming soon.
             </p>
           ) : (
-            <div className="space-y-6">
+            <div className="grid gap-6">
               {posts.map((post) => (
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="block rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md sm:p-6"
+                  className="block rounded-2xl border border-[color:var(--ghost-border)] bg-card p-6 shadow-[var(--shadow-sm)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[var(--ambient-shadow)]"
                 >
                   <h2 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
                     {post.title}
@@ -80,7 +80,7 @@ export default function BlogIndexPage() {
                           {post.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                              className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary"
                             >
                               {tag}
                             </span>

@@ -165,7 +165,7 @@ export default function ToolCard({ tool }: { tool: Tool }) {
   return (
     <Link
       href={tool.route}
-      className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:hover:border-emerald-500/40 dark:hover:shadow-[0_0_20px_rgba(16,185,129,0.06)]"
+      className="group flex flex-col gap-4 rounded-xl border border-[color:var(--ghost-border)] bg-card p-6 shadow-[var(--shadow-sm)] transition-[transform,box-shadow,background-color] duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-[var(--ambient-shadow)]"
     >
       <div className="flex items-start justify-between">
         <div className="rounded-lg bg-primary/10 p-2.5">
@@ -174,17 +174,17 @@ export default function ToolCard({ tool }: { tool: Tool }) {
         {tool.badge && (
           <Badge
             variant={tool.badge === "popular" ? "default" : "secondary"}
-            className="text-xs capitalize dark:bg-emerald-500/10 dark:text-emerald-400"
+            className="text-[10px] font-semibold uppercase tracking-[0.18em] capitalize"
           >
             {tool.badge}
           </Badge>
         )}
       </div>
       <div>
-        <h3 className="font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+        <h3 className="text-sm font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
           {tool.name}
         </h3>
-        <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+        <p className="mt-2 text-xs leading-6 text-muted-foreground">
           {tool.shortDescription}
         </p>
       </div>
