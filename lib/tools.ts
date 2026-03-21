@@ -1287,7 +1287,48 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['unit-converter'],
+    relatedTools: ['odds-calculator', 'unit-converter'],
+  },
+  {
+    slug: 'odds-calculator',
+    name: 'Odds Calculator',
+    shortDescription: 'Convert betting odds, calculate parlays, payouts, and implied probability.',
+    category: 'calc',
+    route: '/calc/odds-calculator',
+    acceptedFormats: [],
+    icon: 'Percent',
+    metaTitle: 'Odds Calculator — Convert Odds, Parlays & Implied Probability | clevr.tools',
+    metaDescription: 'Free odds calculator: convert American, decimal, and fractional odds. Calculate parlays, implied probability, and payouts. No signup required.',
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You have a price in one odds format and need it in another right now. Or you are building a parlay and want to know the real payout before placing it. Maybe you are comparing market prices across books and need to translate everything into implied probability so you can see whether the bet has value. This calculator handles those conversions fast, in one place, without switching between separate tools.</p>
+      <p>It is also useful for bankroll discipline. Betting odds are easy to read incorrectly when you stay inside the sports-betting UI all day. Converting everything into probability makes the tradeoff clearer: what win rate do you actually need to break even, and what does a given price imply about the market's view of the game?</p>
+      <p>The parlay and payout views solve the two practical questions people ask most often: "What does this ticket return if it wins?" and "How quickly does the probability collapse as I add more legs?" Those numbers matter more than the excitement of stacking prices.</p>
+
+      <h2>Odds formats explained</h2>
+      <p><strong>American odds</strong> show how much you win on a $100 stake when the number is positive, or how much you need to risk to win $100 when the number is negative. +150 means $100 returns $250 total. -200 means you risk $200 to profit $100.</p>
+      <p><strong>Decimal odds</strong> are the cleanest format for multiplication. They show total return per $1 staked, including your stake back. A 2.50 price means a $100 wager returns $250 total.</p>
+      <p><strong>Fractional odds</strong> express profit relative to stake. 3/2 means you win $3 for every $2 risked. They are common in UK and horse-racing contexts and convert directly to decimal by adding 1 after dividing the fraction.</p>
+
+      <h2>Implied probability and vig basics</h2>
+      <p>Every odds price encodes an implied probability. Decimal 2.00 equals 50.0%. Decimal 1.50 equals 66.7%. American +150 implies 40.0%, while -200 implies 66.7%.</p>
+      <p>The bookmaker's edge appears when both sides of a market add up to more than 100%. A -110 / -110 market implies about 104.8% combined probability, which means the vig is roughly 4.8%. Removing that margin shows the fair no-vig probability split.</p>
+      <p>This is why probability is the best comparison layer. Once every price is translated into percentage terms, you can compare books, evaluate parlays, and decide whether the market is worth the risk.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>American</th><th>Decimal</th><th>Fractional</th><th>Implied Probability</th></tr></thead>
+        <tbody>
+          <tr><td>-200</td><td>1.50</td><td>1/2</td><td>66.7%</td></tr>
+          <tr><td>-110</td><td>1.91</td><td>10/11</td><td>52.4%</td></tr>
+          <tr><td>+100</td><td>2.00</td><td>1/1</td><td>50.0%</td></tr>
+          <tr><td>+150</td><td>2.50</td><td>3/2</td><td>40.0%</td></tr>
+          <tr><td>+300</td><td>4.00</td><td>3/1</td><td>25.0%</td></tr>
+        </tbody>
+      </table>
+    `,
+    relatedTools: ['percentage-calculator', 'salary', 'loan', 'credit-card-payoff'],
+    badge: 'new',
   },
   {
     slug: 'unit-converter',

@@ -141,6 +141,7 @@ export const siteCategories: SiteCategory[] = [
       "sleep",
       "auto-loan",
       "credit-card-payoff",
+      "odds-calculator",
     ],
     subcategories: [
       {
@@ -162,6 +163,10 @@ export const siteCategories: SiteCategory[] = [
       {
         label: "Health & Lifestyle",
         slugs: ["calorie", "macro", "body-fat", "bmi-calculator", "due-date", "ovulation", "ideal-weight", "calories-burned", "sleep", "pace"],
+      },
+      {
+        label: "Sports & Betting",
+        slugs: ["odds-calculator"],
       },
       {
         label: "General",
