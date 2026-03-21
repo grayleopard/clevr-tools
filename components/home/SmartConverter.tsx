@@ -17,19 +17,21 @@ import {
   Maximize2,
   Crop,
   Merge,
-  Bot,
+  ClipboardPaste,
+  Lock,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import AdSlot from "@/components/tool/AdSlot";
 import { usePasteImage } from "@/lib/usePasteImage";
 import { setPendingFile } from "@/lib/file-handoff";
+import { addToast } from "@/lib/toast";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type FileType = "png" | "jpg" | "webp" | "heic" | "pdf" | "docx" | "unknown";
+type FileType = "png" | "jpg" | "gif" | "webp" | "heic" | "pdf" | "docx" | "unknown";
 type ActionId =
-  | "remove-background"
+  | "compress-gif"
   | "compress-image"
   | "to-jpg"
   | "to-png"
@@ -55,9 +57,10 @@ interface DetectedFile {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
-  png: ["remove-background", "compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  jpg: ["remove-background", "compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  webp: ["remove-background", "to-png", "to-jpg", "resize-image"],
+  png: ["compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  jpg: ["compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
+  gif: ["compress-gif"],
+  webp: ["to-png", "to-jpg", "resize-image"],
   heic: ["to-jpg", "to-png"],
   pdf: ["compress-pdf", "pdf-to-jpg", "merge-pdf", "split-pdf", "rotate-pdf"],
   docx: ["word-to-pdf"],
@@ -72,11 +75,11 @@ interface ActionDef {
 }
 
 const ACTION_DEFS: Record<ActionId, ActionDef> = {
-  "remove-background": {
-    icon: Bot,
-    name: "Remove Background",
-    description: "AI cutout with transparent PNG output",
-    accent: "text-sky-600 dark:text-sky-400",
+  "compress-gif": {
+    icon: Minimize2,
+    name: "Compress GIF",
+    description: "Reduce animated GIF size while keeping motion intact",
+    accent: "text-primary",
   },
   "compress-image": {
     icon: Minimize2,
@@ -162,7 +165,7 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
 
 function getRoute(fileType: FileType, actionId: ActionId): string {
   switch (actionId) {
-    case "remove-background": return "/tools/background-remover";
+    case "compress-gif":   return "/tools/gif-compressor";
     case "compress-image": return "/compress/image";
     case "to-jpg":         return fileType === "heic" ? "/convert/heic-to-jpg" : "/convert/png-to-jpg";
     case "to-png":         return fileType === "webp" ? "/convert/webp-to-png" : "/convert/jpg-to-png";
@@ -186,6 +189,7 @@ function detectFileType(file: File): FileType {
   const mime = file.type.toLowerCase();
   if (mime === "image/png" || ext === "png") return "png";
   if (mime === "image/jpeg" || ext === "jpg" || ext === "jpeg") return "jpg";
+  if (mime === "image/gif" || ext === "gif") return "gif";
   if (mime === "image/webp" || ext === "webp") return "webp";
   if (mime === "image/heic" || mime === "image/heif" || ext === "heic" || ext === "heif")
     return "heic";
@@ -202,6 +206,7 @@ function FileTypeIcon({ type, className }: { type: FileType; className?: string 
   switch (type) {
     case "pdf":  return <FileText className={className} />;
     case "docx": return <FileOutput className={className} />;
+    case "gif":  return <Layers className={className} />;
     case "heic": return <Smartphone className={className} />;
     default:     return <FileImage className={className} />;
   }
@@ -216,6 +221,7 @@ function IdleView({
   onDragOver,
   onDrop,
   onBrowse,
+  onPasteClipboard,
 }: {
   isDraggingOver: boolean;
   onDragEnter: React.DragEventHandler;
@@ -223,6 +229,7 @@ function IdleView({
   onDragOver: React.DragEventHandler;
   onDrop: React.DragEventHandler;
   onBrowse: () => void;
+  onPasteClipboard: () => void;
 }) {
   return (
     <div
@@ -231,41 +238,88 @@ function IdleView({
       onDragOver={onDragOver}
       onDrop={onDrop}
       onClick={onBrowse}
-      className={`flex min-h-[320px] cursor-pointer flex-col items-center justify-center gap-5 rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-[border-color,background-color] duration-200 ${
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onBrowse();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      className={`relative overflow-hidden rounded-[1.75rem] border border-dashed px-6 py-10 text-center transition-[border-color,background-color,transform] duration-200 ${
         isDraggingOver
-          ? "border-primary bg-primary/10"
-          : "border-border bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
+          ? "border-primary/55 bg-primary/[0.08]"
+          : "border-[color:var(--ghost-border)] bg-card/[0.88] hover:border-primary/40 hover:bg-card"
       }`}
     >
-      <div className="relative animate-bob">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-          <Upload className="h-7 w-7 text-primary" />
-        </div>
-        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary/20">
-          <Sparkles className="h-3 w-3 text-primary" />
-        </div>
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-x-[18%] top-8 h-20 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_1px_1px,var(--ghost-border)_1px,transparent_0)] [background-size:16px_16px]" />
       </div>
 
-      <div className="space-y-1.5">
-        <p className="text-base font-semibold text-foreground">
-          {isDraggingOver ? "Drop it!" : "Drop any file here"}
-        </p>
-        <p className="text-sm text-muted-foreground">
-          or{" "}
-          <span className="text-primary underline underline-offset-2">click to browse</span>
-          {" "}· paste with Ctrl+V
-        </p>
-      </div>
+      <div className="relative z-10 flex min-h-[256px] flex-col items-center justify-center gap-5">
+        <div className="rounded-full bg-muted/80 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          Smart converter
+        </div>
 
-      <div className="flex flex-wrap justify-center gap-1.5">
-        {["PNG", "JPG", "WebP", "HEIC", "PDF", "DOCX"].map((fmt) => (
-          <span
-            key={fmt}
-            className="rounded-full border border-border bg-background px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+        <div className="relative animate-bob">
+          <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.4rem] bg-primary/10">
+            <Upload className="h-7 w-7 text-primary" />
+          </div>
+          <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary/[0.15]">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <p className="text-2xl font-extrabold tracking-[-0.03em] text-foreground sm:text-[2rem]">
+            {isDraggingOver ? "Release to detect your file" : "Drop any file here"}
+          </p>
+          <p className="mx-auto max-w-xl text-sm leading-7 text-muted-foreground sm:text-[15px]">
+            Convert, compress, or route files instantly. Drag a file in, browse from your device, or paste a copied image from the clipboard.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-3">
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onBrowse();
+            }}
+            className="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(135deg,var(--primary-fixed),var(--primary))] px-5 py-3 text-sm font-semibold text-[var(--on-primary)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98] dark:bg-[linear-gradient(135deg,var(--primary),var(--primary-dim))]"
           >
-            {fmt}
-          </span>
-        ))}
+            <Upload className="h-4 w-4" />
+            Browse Files
+          </button>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onPasteClipboard();
+            }}
+            className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/[0.85] px-5 py-3 text-sm font-semibold text-primary transition-[background-color,color,border-color,transform] duration-150 hover:bg-muted/80 active:scale-[0.98]"
+          >
+            <ClipboardPaste className="h-4 w-4" />
+            Paste Clipboard
+          </button>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-2">
+          {["PNG", "JPG", "GIF", "WebP", "HEIC", "PDF", "DOCX"].map((fmt) => (
+            <span
+              key={fmt}
+              className="rounded-full bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {fmt}
+            </span>
+          ))}
+        </div>
+
+        <p className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Lock className="h-3.5 w-3.5 shrink-0" />
+          All processing happens in your browser. Your files never leave your device.
+        </p>
       </div>
     </div>
   );
@@ -291,9 +345,9 @@ function DetectedView({
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
 
         {/* File info card */}
-        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+        <div className="flex flex-col gap-4 rounded-[1.5rem] bg-card/[0.92] p-5 shadow-[var(--shadow-sm)]">
           {/* Thumbnail or icon */}
-          <div className="flex items-center justify-center overflow-hidden rounded-lg bg-muted/40 h-36">
+          <div className="flex h-40 items-center justify-center overflow-hidden rounded-[1.25rem] bg-muted/55">
             {isPreviewable ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -310,15 +364,15 @@ function DetectedView({
           </div>
 
           {/* Metadata */}
-          <div className="min-w-0 space-y-1.5">
-            <p className="truncate text-sm font-semibold text-foreground" title={detected.file.name}>
+          <div className="min-w-0 space-y-2">
+            <p className="truncate text-base font-semibold text-foreground" title={detected.file.name}>
               {truncateFilename(detected.file.name, 28)}
             </p>
             <div className="flex flex-wrap gap-1.5">
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary uppercase">
+              <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
                 {detected.type === "unknown" ? "File" : detected.type}
               </span>
-              <span className="text-xs text-muted-foreground self-center">
+              <span className="self-center text-xs text-muted-foreground">
                 {formatBytes(detected.file.size)}
               </span>
             </div>
@@ -333,7 +387,7 @@ function DetectedView({
           <button
             onClick={onReset}
             disabled={navigatingAction !== null}
-            className="flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground self-start disabled:opacity-40"
+            className="flex items-center gap-1.5 self-start rounded-full bg-muted/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-40"
           >
             <X className="h-3.5 w-3.5" />
             Change file
@@ -341,16 +395,23 @@ function DetectedView({
         </div>
 
         {/* Action cards panel */}
-        <div className="flex flex-col gap-3">
-          <p className="text-sm font-semibold text-foreground">{typeLabel} detected — what do you want to do?</p>
+        <div className="flex flex-col gap-4 rounded-[1.5rem] bg-muted/[0.45] p-5">
+          <div className="space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              Detected file
+            </p>
+            <p className="text-lg font-bold tracking-[-0.02em] text-foreground">
+              {typeLabel} detected — what do you want to do?
+            </p>
+          </div>
           {actions.length === 0 ? (
-            <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-[color:var(--ghost-border)] bg-card/70 p-8 text-center text-sm text-muted-foreground">
               No tools available for this file type yet.
               <br />
               Browse the tools below.
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {actions.map((actionId) => {
                 const def = ACTION_DEFS[actionId];
                 const Icon = def.icon;
@@ -363,21 +424,21 @@ function DetectedView({
                     onClick={() => onAction(actionId)}
                     disabled={navigatingAction !== null}
                     className={[
-                      "group flex items-start gap-3 rounded-xl border bg-background p-4 text-left",
-                      "transition-[border-color,background-color,opacity,transform] duration-150",
+                      "group flex items-start gap-3 rounded-[1.25rem] bg-card/[0.88] p-4 text-left shadow-[var(--shadow-sm)]",
+                      "transition-[background-color,opacity,transform] duration-150",
                       isNavigating
-                        ? "border-primary/50 bg-primary/5 scale-[0.98] shadow-sm"
+                        ? "bg-primary/10 scale-[0.98]"
                         : isOtherNavigating
-                        ? "border-border opacity-35 cursor-default"
-                        : "border-border hover:border-primary/40 hover:bg-primary/5 active:scale-[0.98]",
+                        ? "opacity-35 cursor-default"
+                        : "hover:bg-card active:scale-[0.98]",
                     ].join(" ")}
                   >
                     <div
                       className={[
-                        "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
+                        "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
                         isNavigating
                           ? "bg-primary/10"
-                          : "bg-muted group-hover:bg-primary/10",
+                          : "bg-muted/80 group-hover:bg-primary/10",
                       ].join(" ")}
                     >
                       {isNavigating ? (
@@ -391,7 +452,7 @@ function DetectedView({
                         {isNavigating ? "Opening…" : def.name}
                       </p>
                       {!isNavigating && (
-                        <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
+                        <p className="mt-1 text-xs leading-snug text-muted-foreground">
                           {def.description}
                         </p>
                       )}
@@ -508,7 +569,7 @@ export default function SmartConverter({
     setNavigatingAction(null);
 
     const type = detectFileType(file);
-    const isPreviewable = (["png", "jpg", "webp"] as FileType[]).includes(type);
+    const isPreviewable = (["png", "jpg", "gif", "webp"] as FileType[]).includes(type);
     let previewUrl: string | null = null;
     let dimensions: { width: number; height: number } | null = null;
 
@@ -596,14 +657,41 @@ export default function SmartConverter({
     [processFile]
   );
 
+  const handlePasteFromClipboard = useCallback(async () => {
+    if (!navigator.clipboard?.read) {
+      addToast("Clipboard access is limited here — paste manually with Ctrl+V", "info");
+      return;
+    }
+
+    try {
+      const items = await navigator.clipboard.read();
+
+      for (const item of items) {
+        const imageType = item.types.find((type) => type.startsWith("image/"));
+        if (!imageType) continue;
+
+        const blob = await item.getType(imageType);
+        const extension = imageType.split("/").pop() === "jpeg" ? "jpg" : imageType.split("/").pop() ?? "png";
+        const file = new File([blob], `clipboard.${extension}`, { type: imageType });
+        await processFile(file);
+        addToast("Image pasted from clipboard", "success");
+        return;
+      }
+
+      addToast("No image found in clipboard — paste manually with Ctrl+V if needed", "info");
+    } catch {
+      addToast("Clipboard access denied — paste manually with Ctrl+V", "info");
+    }
+  }, [processFile]);
+
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <>
       {/* Full-page drag overlay */}
       {isPageDragging && (
-        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-primary/5 backdrop-blur-[1px]">
-          <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-primary border-dashed bg-background/80 px-12 py-8 shadow-xl">
+        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-primary/[0.06] backdrop-blur-[2px]">
+          <div className="flex flex-col items-center gap-3 rounded-[1.75rem] border border-dashed border-primary/55 bg-card/[0.88] px-12 py-8 shadow-[var(--ambient-shadow-strong)]">
             <Upload className="h-8 w-8 text-primary animate-bob" />
             <p className="text-base font-semibold text-primary">Drop anywhere</p>
           </div>
@@ -613,7 +701,7 @@ export default function SmartConverter({
       <div className="relative">
         {/* Error banner */}
         {error && (
-          <div className="mb-3 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-400">
+          <div className="mb-3 flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {error}
             <button onClick={() => setError(null)} className="ml-auto shrink-0 opacity-70 hover:opacity-100">
               <X className="h-3.5 w-3.5" />
@@ -638,6 +726,9 @@ export default function SmartConverter({
               if (file) processFile(file);
             }}
             onBrowse={() => fileInputRef.current?.click()}
+            onPasteClipboard={() => {
+              void handlePasteFromClipboard();
+            }}
           />
         </div>
 
@@ -667,7 +758,7 @@ export default function SmartConverter({
       <input
         ref={fileInputRef}
         type="file"
-        accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.pdf,.docx,.doc"
+        accept=".png,.jpg,.jpeg,.gif,.webp,.heic,.heif,.pdf,.docx,.doc"
         className="hidden"
         onChange={handleFileInput}
       />

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { getToolBySlug } from "@/lib/tools";
-import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import { notFound } from "next/navigation";
 import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
-import ImageCompressor from "@/components/tools/ImageCompressor";
-import { notFound } from "next/navigation";
+import GifCompressor from "@/components/tools/GifCompressor";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import { getToolBySlug } from "@/lib/tools";
 
-const tool = getToolBySlug("image-compressor")!;
-const faqItems = getToolFaqs("image-compressor");
+const tool = getToolBySlug("gif-compressor")!;
+const faqItems = getToolFaqs("gif-compressor");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -32,11 +32,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function ImageCompressorPage() {
+export default function GifCompressorPage() {
   if (!tool) notFound();
+
   return (
     <ToolLayout tool={tool} fullWidth embeddedShell>
-      <ImageCompressor />
+      <GifCompressor />
       <FaqSchema items={faqItems} />
     </ToolLayout>
   );

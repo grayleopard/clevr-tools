@@ -75,8 +75,8 @@ export default async function BlogPostPage({
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="border-b border-border bg-muted/20">
-          <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <section className="bg-muted/20">
+          <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
             <nav className="mb-4 text-sm text-muted-foreground">
               <Link
                 href="/blog"
@@ -101,7 +101,7 @@ export default async function BlogPostPage({
                     {post.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-muted-foreground"
+                        className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary"
                       >
                         {tag}
                       </span>
@@ -113,15 +113,15 @@ export default async function BlogPostPage({
           </div>
         </section>
 
-        <article className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
-          <div className="prose prose-zinc dark:prose-invert max-w-none prose-headings:tracking-tight prose-p:leading-[1.7] prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl">
+        <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+          <div className="prose prose-zinc dark:prose-invert max-w-none prose-headings:tracking-tight prose-p:leading-[1.7] prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-pre:rounded-lg prose-pre:bg-muted prose-pre:p-4">
             <MDXRemote source={post.content} />
           </div>
         </article>
 
         {relatedTools.length > 0 && (
           <section className="border-t border-border bg-muted/20">
-            <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+            <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
               <h2 className="mb-4 text-lg font-semibold tracking-tight text-foreground">
                 Tools mentioned in this post
               </h2>
@@ -130,7 +130,7 @@ export default async function BlogPostPage({
                   <Link
                     key={tool.route}
                     href={tool.route}
-                    className="rounded-2xl border border-border bg-card p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+                    className="rounded-2xl border border-[color:var(--ghost-border)] bg-card p-5 shadow-[var(--shadow-sm)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[var(--ambient-shadow)]"
                   >
                     <p className="text-sm font-semibold text-foreground">
                       {tool.name}

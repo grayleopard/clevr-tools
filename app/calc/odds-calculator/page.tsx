@@ -1,0 +1,32 @@
+import type { Metadata } from "next";
+import ToolLayout from "@/components/tool/ToolLayout";
+import OddsCalculator from "@/components/tools/OddsCalculator";
+import FaqSchema from "@/components/seo/FaqSchema";
+import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import { getToolBySlug } from "@/lib/tools";
+
+const tool = getToolBySlug("odds-calculator")!;
+const faqItems = getToolFaqs("odds-calculator");
+
+export const metadata: Metadata = {
+  title: tool.metaTitle,
+  description: tool.metaDescription,
+  alternates: { canonical: `https://www.clevr.tools${tool.route}` },
+  openGraph: {
+    title: tool.metaTitle,
+    description: tool.metaDescription,
+    url: `https://www.clevr.tools${tool.route}`,
+    siteName: "clevr.tools",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+  },
+  twitter: { card: "summary_large_image", title: tool.metaTitle, description: tool.metaDescription },
+};
+
+export default function Page() {
+  return (
+    <ToolLayout tool={tool} fullWidth embeddedShell>
+      <OddsCalculator />
+      <FaqSchema items={faqItems} />
+    </ToolLayout>
+  );
+}

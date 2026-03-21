@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function PngToJpgPage() {
   if (!tool) notFound();
   return (
-    <ToolLayout tool={tool}>
+    <ToolLayout tool={tool} fullWidth embeddedShell>
       <PngToJpg />
       <FaqSchema items={faqItems} />
     </ToolLayout>

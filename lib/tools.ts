@@ -53,8 +53,42 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['png-to-jpg', 'png-to-webp', 'resize-image'],
+    relatedTools: ['gif-compressor', 'png-to-jpg', 'png-to-webp', 'resize-image'],
     badge: 'popular',
+  },
+  {
+    slug: 'gif-compressor',
+    name: 'GIF Compressor',
+    shortDescription: 'Compress animated GIFs in your browser while preserving motion.',
+    category: 'compress',
+    route: '/tools/gif-compressor',
+    acceptedFormats: ['.gif'],
+    icon: 'Minimize2',
+    metaTitle: 'GIF Compressor — Compress GIFs Free, No Signup | clevr.tools',
+    metaDescription:
+      'Compress animated GIFs to reduce file size. Perfect for Discord, social media, and web. Free, browser-based, no upload required.',
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>Animated GIFs are still the format that shows up everywhere size limits hurt: Discord uploads, product changelogs, social posts, support docs, and website embeds. You have motion that matters, but the file is too large to send or too heavy to ship on the page. That is the compression problem this tool solves.</p>
+      <p>It is especially useful when a screen recording was exported as a GIF and came out huge. A short UI walkthrough can easily land at 15 to 40 MB, which is too large for many chat apps and far too heavy for a help center article. Reducing colors, trimming frames, and scaling down dimensions usually gets it under control without removing the animation.</p>
+      <p>The other common use case is Discord and community platforms with hard file caps. Even when you cannot hit the target perfectly on the first pass, dialing in color count, frame reduction, and scale is usually enough to get an animated GIF into a shareable range.</p>
+
+      <h2>How compression works</h2>
+      <p>This compressor runs fully in your browser. It decodes the GIF, keeps the animation timing as closely as practical, reduces the color palette, optionally skips frames, and can scale the output dimensions before re-encoding an animated GIF. Nothing is uploaded to a server.</p>
+      <p><strong>Color reduction is the biggest lever.</strong> GIFs are palette-based images with a limited number of colors per frame. Dropping from 256 colors to 128 or 64 usually cuts size materially with only a modest quality tradeoff.</p>
+      <p><strong>Frame reduction lowers motion cost.</strong> Keeping every second or third frame preserves the overall animation while reducing the amount of data that has to be encoded. The tool combines skipped-frame timing so the playback speed stays close to the original.</p>
+      <p><strong>Scaling is the emergency lever.</strong> If a GIF is still too large after color reduction, dropping dimensions to 75% or 50% is often what gets it under platform limits.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Animation is preserved.</strong> This is not a still-image extractor. The output remains an animated GIF and continues looping in standard viewers and browsers.</p>
+      <p><strong>Compression is lossy.</strong> Smaller files come from fewer colors, fewer frames, smaller dimensions, or some mix of all three. Keep the original if you may need to export again later.</p>
+      <p><strong>Browser-based means private.</strong> Your GIF stays on your device. The processing happens locally in the tab, which makes this suitable for private product demos and internal assets that should not be uploaded.</p>
+
+      <h2>Supported input and output</h2>
+      <p>Input: animated GIF files up to 50 MB. Output: animated GIF. The tool is designed for browser-based optimization, not format conversion to MP4 or WebM.</p>
+    `,
+    relatedTools: ['image-compressor', 'pdf-compressor', 'png-to-webp', 'resize-image'],
+    badge: 'new',
   },
   {
     slug: 'png-to-jpg',
@@ -245,7 +279,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['webp-to-png', 'image-compressor', 'png-to-jpg'],
+    relatedTools: ['gif-compressor', 'webp-to-png', 'image-compressor', 'png-to-jpg'],
     badge: 'new',
   },
   {
@@ -325,6 +359,7 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['resize-image', 'image-compressor', 'png-to-webp'],
     badge: 'new',
+    live: false,
   },
   {
     slug: 'pdf-compressor',
@@ -361,7 +396,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['merge-pdf', 'split-pdf', 'pdf-to-jpg'],
+    relatedTools: ['gif-compressor', 'merge-pdf', 'split-pdf', 'pdf-to-jpg'],
   },
   // ─── New PDF Tools ────────────────────────────────────────────────────────
   {
@@ -626,7 +661,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['image-compressor', 'png-to-jpg', 'jpg-to-png'],
+    relatedTools: ['gif-compressor', 'image-compressor', 'png-to-jpg', 'jpg-to-png'],
     badge: 'new',
   },
   {
@@ -1252,7 +1287,48 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['unit-converter'],
+    relatedTools: ['odds-calculator', 'unit-converter'],
+  },
+  {
+    slug: 'odds-calculator',
+    name: 'Odds Calculator',
+    shortDescription: 'Convert betting odds, calculate parlays, payouts, and implied probability.',
+    category: 'calc',
+    route: '/calc/odds-calculator',
+    acceptedFormats: [],
+    icon: 'Percent',
+    metaTitle: 'Odds Calculator — Convert Odds, Parlays & Implied Probability | clevr.tools',
+    metaDescription: 'Free odds calculator: convert American, decimal, and fractional odds. Calculate parlays, implied probability, and payouts. No signup required.',
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You have a price in one odds format and need it in another right now. Or you are building a parlay and want to know the real payout before placing it. Maybe you are comparing market prices across books and need to translate everything into implied probability so you can see whether the bet has value. This calculator handles those conversions fast, in one place, without switching between separate tools.</p>
+      <p>It is also useful for bankroll discipline. Betting odds are easy to read incorrectly when you stay inside the sports-betting UI all day. Converting everything into probability makes the tradeoff clearer: what win rate do you actually need to break even, and what does a given price imply about the market's view of the game?</p>
+      <p>The parlay and payout views solve the two practical questions people ask most often: "What does this ticket return if it wins?" and "How quickly does the probability collapse as I add more legs?" Those numbers matter more than the excitement of stacking prices.</p>
+
+      <h2>Odds formats explained</h2>
+      <p><strong>American odds</strong> show how much you win on a $100 stake when the number is positive, or how much you need to risk to win $100 when the number is negative. +150 means $100 returns $250 total. -200 means you risk $200 to profit $100.</p>
+      <p><strong>Decimal odds</strong> are the cleanest format for multiplication. They show total return per $1 staked, including your stake back. A 2.50 price means a $100 wager returns $250 total.</p>
+      <p><strong>Fractional odds</strong> express profit relative to stake. 3/2 means you win $3 for every $2 risked. They are common in UK and horse-racing contexts and convert directly to decimal by adding 1 after dividing the fraction.</p>
+
+      <h2>Implied probability and vig basics</h2>
+      <p>Every odds price encodes an implied probability. Decimal 2.00 equals 50.0%. Decimal 1.50 equals 66.7%. American +150 implies 40.0%, while -200 implies 66.7%.</p>
+      <p>The bookmaker's edge appears when both sides of a market add up to more than 100%. A -110 / -110 market implies about 104.8% combined probability, which means the vig is roughly 4.8%. Removing that margin shows the fair no-vig probability split.</p>
+      <p>This is why probability is the best comparison layer. Once every price is translated into percentage terms, you can compare books, evaluate parlays, and decide whether the market is worth the risk.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>American</th><th>Decimal</th><th>Fractional</th><th>Implied Probability</th></tr></thead>
+        <tbody>
+          <tr><td>-200</td><td>1.50</td><td>1/2</td><td>66.7%</td></tr>
+          <tr><td>-110</td><td>1.91</td><td>10/11</td><td>52.4%</td></tr>
+          <tr><td>+100</td><td>2.00</td><td>1/1</td><td>50.0%</td></tr>
+          <tr><td>+150</td><td>2.50</td><td>3/2</td><td>40.0%</td></tr>
+          <tr><td>+300</td><td>4.00</td><td>3/1</td><td>25.0%</td></tr>
+        </tbody>
+      </table>
+    `,
+    relatedTools: ['percentage-calculator', 'salary', 'loan', 'credit-card-payoff'],
+    badge: 'new',
   },
   {
     slug: 'unit-converter',

@@ -313,6 +313,55 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
         "No app is required. It is free and online, runs in your browser, and keeps your files private.",
     },
   ],
+  "gif-compressor": [
+    {
+      question: "How do I compress a GIF for Discord?",
+      answer:
+        "Start with the Discord preset, then reduce colors or scale further if the file still misses the upload limit. The tool keeps the GIF animated and runs fully in your browser.",
+    },
+    {
+      question: "Does compressing a GIF remove the animation?",
+      answer:
+        "No. The output stays animated. Compression works by reducing colors, optionally dropping frames, and shrinking dimensions while preserving the looped GIF format.",
+    },
+    {
+      question: "What's the best way to reduce GIF file size?",
+      answer:
+        "Color reduction is usually the first lever, followed by frame reduction and scale. A smaller palette and fewer frames cut file size faster than guessing at random exports.",
+    },
+    {
+      question: "Are my GIFs uploaded to a server?",
+      answer:
+        "No. GIF compression happens locally in your browser. Your file stays on your device and is not uploaded by this tool.",
+    },
+  ],
+  "odds-calculator": [
+    {
+      question: "How do I convert American odds to decimal?",
+      answer:
+        "Positive American odds convert with (odds / 100) + 1. Negative American odds convert with (100 / absolute odds) + 1. For example, +150 becomes 2.50 and -200 becomes 1.50.",
+    },
+    {
+      question: "What is implied probability in betting?",
+      answer:
+        "Implied probability is the break-even win rate built into the price. Decimal odds convert with 1 / decimal odds, and American odds convert with separate formulas for positive and negative prices.",
+    },
+    {
+      question: "How do I calculate a parlay payout?",
+      answer:
+        "Convert every leg to decimal odds, multiply them together to get the combined decimal price, then multiply that number by your stake. Profit is total payout minus the original stake.",
+    },
+    {
+      question: "What does -110 odds mean?",
+      answer:
+        "At -110, you need to risk $110 to win $100 in profit. The implied probability is about 52.4%, which is why -110 is a common standard spread or total price.",
+    },
+    {
+      question: "What is the vig or juice in sports betting?",
+      answer:
+        "The vig is the bookmaker margin built into a market. If both sides of a market add up to more than 100% implied probability, the extra percentage above 100% is the juice.",
+    },
+  ],
   "resize-image": [
     {
       question: "Is Image Resizer free and online?",

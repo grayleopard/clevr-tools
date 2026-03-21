@@ -179,7 +179,7 @@ export default function DownPaymentCalculator() {
                       {c.needsPMI ? (
                         <span className="text-yellow-600 dark:text-yellow-400 text-xs">Yes</span>
                       ) : (
-                        <span className="text-emerald-600 dark:text-emerald-400 text-xs">No</span>
+                        <span className="text-emerald-500 dark:text-emerald-300 text-xs">No</span>
                       )}
                     </td>
                   </tr>
