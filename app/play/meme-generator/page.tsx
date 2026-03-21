@@ -94,12 +94,6 @@ export default async function MemeGeneratorPage({
                     <p>Memes download as PNG files directly from the browser.</p>
                   </div>
                 }
-                infoTitle="Processing"
-                infoPanel={
-                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-                    <p>Rendering happens locally in your browser. Uploaded images stay on your device while you edit.</p>
-                  </div>
-                }
               >
                 <MemeEditor showDebugRegions={showDebugRegions} />
               </ToolPageLayout>

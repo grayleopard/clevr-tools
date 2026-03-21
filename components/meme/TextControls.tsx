@@ -56,29 +56,29 @@ export default function TextControls({
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <span className="text-sm font-medium text-foreground">Text style</span>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => onStyleChange({ ...style, mode: "classic" })}
-                className={`flex-1 rounded-xl border px-4 py-2 text-sm font-medium transition ${modeButtonClass(style.mode === "classic")}`}
-              >
-                Classic
-              </button>
-              <button
-                type="button"
-                onClick={() => onStyleChange({ ...style, mode: "modern" })}
-                className={`flex-1 rounded-xl border px-4 py-2 text-sm font-medium transition ${modeButtonClass(style.mode === "modern")}`}
-              >
-                Modern
-              </button>
-            </div>
+        <div className="space-y-2">
+          <span className="text-sm font-medium text-foreground">Text style</span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => onStyleChange({ ...style, mode: "classic" })}
+              className={`flex-1 rounded-xl border px-4 py-2 text-sm font-medium transition ${modeButtonClass(style.mode === "classic")}`}
+            >
+              Classic
+            </button>
+            <button
+              type="button"
+              onClick={() => onStyleChange({ ...style, mode: "modern" })}
+              className={`flex-1 rounded-xl border px-4 py-2 text-sm font-medium transition ${modeButtonClass(style.mode === "modern")}`}
+            >
+              Modern
+            </button>
           </div>
+        </div>
 
-          <label className="space-y-2">
-            <span className="text-sm font-medium text-foreground">Modern text color</span>
+        {style.mode === "modern" && (
+          <label className="block space-y-2">
+            <span className="text-sm font-medium text-foreground">Text color</span>
             <div className="flex h-11 items-center gap-3 rounded-xl border border-border bg-background px-3">
               <input
                 type="color"
@@ -91,7 +91,7 @@ export default function TextControls({
               <span className="text-sm text-muted-foreground">{style.color.toUpperCase()}</span>
             </div>
           </label>
-        </div>
+        )}
 
         <label className="block space-y-2">
           <div className="flex items-center justify-between gap-4">

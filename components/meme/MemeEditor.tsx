@@ -212,7 +212,7 @@ export default function MemeEditor({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(260px,0.6fr)] lg:items-start">
+      <div className="space-y-6">
         <div className="rounded-[28px] border border-border bg-card p-3 shadow-sm sm:p-5">
           <MemeCanvas
             ref={canvasRef}
@@ -223,34 +223,32 @@ export default function MemeEditor({
           />
         </div>
 
-        <div className="space-y-6">
-          <TextControls
-            template={selectedTemplate}
-            texts={texts}
-            style={style}
-            onTextChange={(id, value) =>
-              setTexts((current) => ({
-                ...current,
-                [id]: value,
-              }))
-            }
-            onStyleChange={setStyle}
-          />
+        <TextControls
+          template={selectedTemplate}
+          texts={texts}
+          style={style}
+          onTextChange={(id, value) =>
+            setTexts((current) => ({
+              ...current,
+              [id]: value,
+            }))
+          }
+          onStyleChange={setStyle}
+        />
 
-          <button
-            type="button"
-            onClick={handleDownload}
-            disabled={isDownloading}
-            className="inline-flex w-full min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {isDownloading ? (
-              <LoaderCircle className="h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-            {isDownloading ? "Rendering PNG..." : "Download PNG"}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleDownload}
+          disabled={isDownloading}
+          className="inline-flex w-full min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {isDownloading ? (
+            <LoaderCircle className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
+          {isDownloading ? "Rendering PNG..." : "Download PNG"}
+        </button>
       </div>
     </section>
   );

@@ -204,12 +204,6 @@ export default async function MemeTemplatePage({
                     <p>Templates export as PNG files at the current meme resolution.</p>
                   </div>
                 }
-                infoTitle="Processing"
-                infoPanel={
-                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-                    <p>Editing and export happen locally in your browser. Debug regions remain opt-in via the existing query flag.</p>
-                  </div>
-                }
               >
                 <MemeEditor
                   initialTemplate={template}
