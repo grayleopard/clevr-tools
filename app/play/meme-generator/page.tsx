@@ -88,16 +88,10 @@ export default async function MemeGeneratorPage({
                   { name: "Numble", href: "/play/numble" },
                   { name: "Browse templates", href: "/play/meme-generator" },
                 ]}
-                settingsTitle="Workspace notes"
+                settingsTitle="Export"
                 settingsPanel={
-                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-                    <p>Template selection, text controls, and export actions live in the main workspace.</p>
-                    <div className="rounded-[1rem] bg-card/80 p-4">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
-                        Export
-                      </p>
-                      <p className="mt-3">Memes download as PNG files directly from the browser.</p>
-                    </div>
+                  <div className="text-sm leading-7 text-muted-foreground">
+                    <p>Memes download as PNG files directly from the browser.</p>
                   </div>
                 }
                 infoTitle="Processing"

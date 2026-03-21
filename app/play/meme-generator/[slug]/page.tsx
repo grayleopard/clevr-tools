@@ -198,16 +198,10 @@ export default async function MemeTemplatePage({
                     href: `/play/meme-generator/${item.id}`,
                   })),
                 ]}
-                settingsTitle="Workspace notes"
+                settingsTitle="Export"
                 settingsPanel={
-                  <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-                    <p>Adjust text, style, and scale in the main editor while the preview updates live.</p>
-                    <div className="rounded-[1rem] bg-card/80 p-4">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
-                        Export
-                      </p>
-                      <p className="mt-3">Templates export as PNG files at the current meme resolution.</p>
-                    </div>
+                  <div className="text-sm leading-7 text-muted-foreground">
+                    <p>Templates export as PNG files at the current meme resolution.</p>
                   </div>
                 }
                 infoTitle="Processing"

@@ -212,7 +212,7 @@ export default function MemeEditor({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(260px,0.6fr)] lg:items-start">
         <div className="rounded-[28px] border border-border bg-card p-3 shadow-sm sm:p-5">
           <MemeCanvas
             ref={canvasRef}

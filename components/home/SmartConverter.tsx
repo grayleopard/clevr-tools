@@ -272,7 +272,8 @@ function IdleView({
             {isDraggingOver ? "Release to detect your file" : "Drop any file here"}
           </p>
           <p className="mx-auto max-w-xl text-sm leading-7 text-muted-foreground sm:text-[15px]">
-            Convert, compress, or route files instantly. Drag a file in, browse from your device, or paste a copied image from the clipboard.
+            <span className="md:hidden">Convert, compress, or route files instantly.</span>
+            <span className="hidden md:inline">Convert, compress, or route files instantly. Drag a file in, browse from your device, or paste a copied image from the clipboard.</span>
           </p>
         </div>
 

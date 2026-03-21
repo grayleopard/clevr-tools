@@ -138,7 +138,7 @@ function HomeCategoryCard({ card }: { card: HomeCardData }) {
 
       {showFilesSubcards ? (
         <ul className="grid gap-3 sm:grid-cols-2">
-          <CollapsibleToolList totalCount={filesPreviewItems.length} previewCount={3}>
+          <CollapsibleToolList previewCount={3}>
             {filesPreviewItems.map((item) => {
               const ItemIcon = item.Icon ?? ArrowRight;
 
@@ -181,7 +181,7 @@ function HomeCategoryCard({ card }: { card: HomeCardData }) {
         </ul>
       ) : (
         <ul className={`grid gap-3 ${card.itemGridClassName ?? ""}`}>
-          <CollapsibleToolList totalCount={card.items.length} previewCount={3}>
+          <CollapsibleToolList previewCount={3}>
             {card.items.map((item) => (
               <li key={item.href} className="min-w-0">
                 <Link

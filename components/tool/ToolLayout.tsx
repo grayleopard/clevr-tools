@@ -163,24 +163,19 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
   }
 
   return {
-    settingsTitle: acceptedFormats.length > 0 ? "Supported input" : "Workspace notes",
-    settingsPanel: (
-      <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-        {acceptedFormats.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {acceptedFormats.map((format) => (
-              <span
-                key={format}
-                className="rounded-full bg-card/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
-              >
-                {format}
-              </span>
-            ))}
-          </div>
-        ) : null}
-        <p>{tool.shortDescription}</p>
+    settingsTitle: acceptedFormats.length > 0 ? "Supported input" : undefined,
+    settingsPanel: acceptedFormats.length > 0 ? (
+      <div className="flex flex-wrap gap-2">
+        {acceptedFormats.map((format) => (
+          <span
+            key={format}
+            className="rounded-full bg-card/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            {format}
+          </span>
+        ))}
       </div>
-    ),
+    ) : undefined,
     infoTitle: "Related tools",
     infoPanel: <RelatedToolLinkList tools={relatedTools} />,
   };
