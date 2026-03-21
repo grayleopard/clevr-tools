@@ -1,0 +1,62 @@
+---
+title: "How to Remove Line Breaks from Text (Instant, Free)"
+slug: "remove-line-breaks"
+description: "Remove unwanted line breaks from text copied from PDFs, emails, or websites — instant, free, browser-based."
+date: "2026-03-21"
+author: "clevr.tools"
+tags: ["text", "formatting", "tutorial"]
+relatedTools: ["/text/remove-line-breaks", "/text/word-counter", "/text/case-converter", "/text/find-and-replace"]
+---
+
+You've copied text from a PDF, an email, or a website, and it's full of hard line breaks in the middle of sentences. Every line ends prematurely. Pasting it into a document or form looks terrible. Here's how to fix it instantly.
+
+## How to remove line breaks
+
+1. Open [Remove Line Breaks](/text/remove-line-breaks)
+2. Paste your text into the input area
+3. Choose your mode — remove all line breaks, or just remove extra line breaks (preserving paragraph spacing)
+4. Copy the cleaned text from the output
+
+Done. Your text is now a continuous paragraph (or properly separated paragraphs, if you preserved paragraph breaks).
+
+## "Remove all" vs "Remove extra"
+
+This is the most important choice:
+
+**Remove all line breaks** joins every line into a single continuous block. Use this when the source text has a hard break at the end of every line (common when copying from PDFs or fixed-width email clients) and you want it to reflow naturally.
+
+**Remove extra line breaks** collapses runs of multiple blank lines into a single paragraph break while joining lines within paragraphs. Use this when your text has the right paragraph structure but has unwanted single line breaks within sentences.
+
+Most of the time, "remove extra" is what you want. It fixes the mid-sentence breaks while keeping your paragraphs separate.
+
+## Where do these line breaks come from?
+
+PDF files are the biggest culprit. PDFs store text as positioned glyphs, not flowing paragraphs. When you copy text from a PDF, your system inserts a line break at the end of every visual line — even in the middle of a sentence.
+
+Other common sources: email clients that wrap at 72 or 80 characters, plain text exports from legacy systems, OCR output from scanned documents, and text copied from terminal/console windows.
+
+## Cleaning up text for other uses
+
+After removing line breaks, you might want to:
+
+- Count the words with [Word Counter](/text/word-counter)
+- Change the casing with [Case Converter](/text/case-converter)
+- Find and replace specific strings with [Find & Replace](/text/find-and-replace)
+
+All of these run in the browser — paste, transform, copy, move on.
+
+### Will this remove my paragraph breaks too?
+
+Only if you choose "Remove all." If you choose "Remove extra," paragraph breaks are preserved — only the unwanted mid-sentence breaks are removed.
+
+### Can I remove line breaks from a whole document?
+
+Yes. Paste the entire document text into the tool. There's no character limit. The processing happens instantly in your browser regardless of text length.
+
+### Why does text copied from PDFs have so many line breaks?
+
+PDFs don't store text as flowing paragraphs. They store each character at a specific position on the page. When you copy text, your PDF viewer inserts a newline character at the end of every visual line — even in the middle of sentences. The original document's paragraph structure is lost.
+
+### Is there a keyboard shortcut to remove line breaks?
+
+In most text editors, Find & Replace with regex can do this (`\n` replaced with a space). But if you don't want to mess with regex, the [Remove Line Breaks](/text/remove-line-breaks) tool does it in one click.
