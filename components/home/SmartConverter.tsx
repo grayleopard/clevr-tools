@@ -258,10 +258,6 @@ function IdleView({
       </div>
 
       <div className="relative z-10 flex min-h-[256px] flex-col items-center justify-center gap-5">
-        <div className="rounded-full bg-muted/80 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          Smart converter
-        </div>
-
         <div className="relative animate-bob">
           <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.4rem] bg-primary/10">
             <Upload className="h-7 w-7 text-primary" />

@@ -55,11 +55,7 @@ function RelatedToolLinkList({
   tools: ReturnType<typeof getRelatedTools>;
 }) {
   if (tools.length === 0) {
-    return (
-      <p className="text-sm leading-7 text-muted-foreground">
-        This workspace stands on its own, so the main panel stays focused on the tool.
-      </p>
-    );
+    return null;
   }
 
   return (
@@ -117,8 +113,7 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
               Reference
             </p>
             <p className="mt-3">
-              Inputs, assumptions, and calculation outputs live in the center workspace so the
-              main result remains readable.
+              Adjust the inputs and see the result update in real time.
             </p>
           </div>
         </div>
@@ -133,10 +128,7 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
       settingsTitle: "Session settings",
       settingsPanel: (
         <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>
-            Duration, intervals, and pacing controls stay in the workspace so you can adjust
-            them without losing focus.
-          </p>
+          <p>{tool.shortDescription}</p>
         </div>
       ),
       infoTitle: "Related tools",
@@ -149,10 +141,7 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
       settingsTitle: "Session controls",
       settingsPanel: (
         <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>
-            Difficulty, duration, and accuracy controls stay in the main panel to keep the test
-            loop fast and readable.
-          </p>
+          <p>{tool.shortDescription}</p>
         </div>
       ),
       infoTitle: "Related tools",
@@ -167,9 +156,7 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
       infoTitle: "Tool notes",
       infoPanel: (
         <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>
-            Paste content, tweak inputs, and copy output directly from the center workspace.
-          </p>
+          <p>{tool.shortDescription}</p>
         </div>
       ),
     };
@@ -191,10 +178,7 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
             ))}
           </div>
         ) : null}
-        <p>
-          Controls and output details stay in the workspace so the tool remains the primary
-          focus.
-        </p>
+        <p>{tool.shortDescription}</p>
       </div>
     ),
     infoTitle: "Related tools",

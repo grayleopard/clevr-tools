@@ -18,7 +18,7 @@ export default function Footer() {
                 </span>
               </div>
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                © 2024 clevr.tools. Built for precision.
+                © {new Date().getFullYear()} clevr.tools. Built for precision.
               </p>
               <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
                 All file processing happens in your browser. Your files never leave your device.

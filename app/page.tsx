@@ -4,6 +4,7 @@ import { getToolBySlug } from "@/lib/tools";
 import { siteCategories, getCategoryToolCount, playLinks } from "@/lib/site-structure";
 import { generateDailyPuzzle, getUTCDateString } from "@/lib/numble";
 import SmartConverterDeferred from "@/components/home/SmartConverterDeferred";
+import CollapsibleToolList from "@/components/home/CollapsibleToolList";
 import DailyChallengeBanner from "@/components/numble/DailyChallengeBanner";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -137,19 +138,60 @@ function HomeCategoryCard({ card }: { card: HomeCardData }) {
 
       {showFilesSubcards ? (
         <ul className="grid gap-3 sm:grid-cols-2">
-          {filesPreviewItems.map((item) => {
-            const ItemIcon = item.Icon ?? ArrowRight;
+          <CollapsibleToolList totalCount={filesPreviewItems.length} previewCount={3}>
+            {filesPreviewItems.map((item) => {
+              const ItemIcon = item.Icon ?? ArrowRight;
 
-            return (
+              return (
+                <li key={item.href} className="min-w-0">
+                  <Link
+                    href={item.href}
+                    className="group/link flex h-full flex-col rounded-[1rem] bg-muted/70 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-0.5 hover:bg-muted"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="rounded-full bg-primary/12 p-2 text-primary">
+                        <ItemIcon className="h-4 w-4" />
+                      </div>
+                      {item.badge ? (
+                        <Badge
+                          variant={item.badge === "popular" ? "default" : "secondary"}
+                          className={
+                            item.badge === "popular"
+                              ? "text-[10px] capitalize"
+                              : "border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
+                          }
+                        >
+                          {item.badge}
+                        </Badge>
+                      ) : null}
+                    </div>
+                    <span className="mt-5 text-base font-semibold text-foreground transition-colors group-hover/link:text-primary">
+                      {item.label}
+                    </span>
+                    {item.description ? (
+                      <span className="mt-2 hidden text-xs leading-6 text-muted-foreground md:block">
+                        {item.description}
+                      </span>
+                    ) : null}
+                  </Link>
+                </li>
+              );
+            })}
+          </CollapsibleToolList>
+        </ul>
+      ) : (
+        <ul className={`grid gap-3 ${card.itemGridClassName ?? ""}`}>
+          <CollapsibleToolList totalCount={card.items.length} previewCount={3}>
+            {card.items.map((item) => (
               <li key={item.href} className="min-w-0">
                 <Link
                   href={item.href}
-                  className="group/link flex h-full flex-col rounded-[1rem] bg-muted/70 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-0.5 hover:bg-muted"
+                  className="group/link flex h-full flex-col justify-between rounded-[1.2rem] bg-muted/65 px-4 py-3 transition-[background-color,color] duration-150 hover:bg-muted/90"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="rounded-full bg-primary/12 p-2 text-primary">
-                      <ItemIcon className="h-4 w-4" />
-                    </div>
+                  <span className="flex items-center justify-between gap-3">
+                    <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-primary">
+                      {item.label}
+                    </span>
                     {item.badge ? (
                       <Badge
                         variant={item.badge === "popular" ? "default" : "secondary"}
@@ -162,53 +204,16 @@ function HomeCategoryCard({ card }: { card: HomeCardData }) {
                         {item.badge}
                       </Badge>
                     ) : null}
-                  </div>
-                  <span className="mt-5 text-base font-semibold text-foreground transition-colors group-hover/link:text-primary">
-                    {item.label}
                   </span>
                   {item.description ? (
-                    <span className="mt-2 text-xs leading-6 text-muted-foreground">
+                    <span className="mt-2 hidden text-xs leading-6 text-muted-foreground md:block">
                       {item.description}
                     </span>
                   ) : null}
                 </Link>
               </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <ul className={`grid gap-3 ${card.itemGridClassName ?? ""}`}>
-          {card.items.map((item) => (
-            <li key={item.href} className="min-w-0">
-              <Link
-                href={item.href}
-                className="group/link flex h-full flex-col justify-between rounded-[1.2rem] bg-muted/65 px-4 py-3 transition-[background-color,color] duration-150 hover:bg-muted/90"
-              >
-                <span className="flex items-center justify-between gap-3">
-                  <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-primary">
-                    {item.label}
-                  </span>
-                  {item.badge ? (
-                    <Badge
-                      variant={item.badge === "popular" ? "default" : "secondary"}
-                      className={
-                        item.badge === "popular"
-                          ? "text-[10px] capitalize"
-                          : "border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
-                      }
-                    >
-                      {item.badge}
-                    </Badge>
-                  ) : null}
-                </span>
-                {item.description ? (
-                  <span className="mt-2 text-xs leading-6 text-muted-foreground">
-                    {item.description}
-                  </span>
-                ) : null}
-              </Link>
-            </li>
-          ))}
+            ))}
+          </CollapsibleToolList>
         </ul>
       )}
 
@@ -280,18 +285,12 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex-1 pb-24">
+      <main className="flex-1">
         {/* Hero */}
         <section className="px-4 pt-4 sm:px-6 sm:pt-5">
           <div className="mx-auto max-w-7xl">
             <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(160deg,rgba(255,255,255,0.76),rgba(239,241,242,0.96))] px-5 py-8 shadow-[var(--ambient-shadow)] dark:bg-[linear-gradient(160deg,rgba(15,25,48,0.92),rgba(9,19,40,0.98))] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
               <div className="mx-auto max-w-4xl">
-                <div className="mb-5 flex flex-wrap justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  <span className="rounded-full bg-card/80 px-3 py-1.5">Free tools</span>
-                  <span className="rounded-full bg-card/80 px-3 py-1.5">No signup</span>
-                  <span className="rounded-full bg-card/80 px-3 py-1.5">Local browser processing</span>
-                </div>
-
                 <div className="mb-4 text-center">
                   <h1 className="text-5xl font-black tracking-[-0.04em] sm:text-6xl lg:text-[3.5rem]">
                     Free tools. No signup. <span className="text-primary">Zero</span> data collection.
@@ -310,34 +309,22 @@ export default function HomePage() {
 
         {/* Category grid */}
         <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
-          <DailyChallengeBanner
-            puzzleNumber={puzzle.puzzleNumber}
-            target={puzzle.target}
-            difficulty={puzzle.difficulty}
-            todayDate={todayDate}
-          />
-          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                Browse by category
-              </p>
-              <h2 className="mt-3 text-3xl font-black tracking-[-0.03em] sm:text-[2.25rem]">
-                Choose the workflow you need.
-              </h2>
-            </div>
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-              Files, text, calculators, timers, typing tools, and play links stay easy to scan with more hierarchy, clearer discovery, and room to move fast.
-            </p>
-          </div>
-
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-12">
             {orderedCards.map((card) => (
               <HomeCategoryCard key={card.id} card={card} />
             ))}
             <HomeCategoryCard card={playCard} />
           </div>
+        </section>
 
-          <div aria-hidden="true" className="h-12 sm:h-16" />
+        {/* Daily challenge — after all categories */}
+        <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 sm:pb-20">
+          <DailyChallengeBanner
+            puzzleNumber={puzzle.puzzleNumber}
+            target={puzzle.target}
+            difficulty={puzzle.difficulty}
+            todayDate={todayDate}
+          />
         </section>
       </main>
       <Footer />
