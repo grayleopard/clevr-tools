@@ -3,6 +3,7 @@ import type { ComponentType } from "react";
 import { getToolBySlug } from "@/lib/tools";
 import { siteCategories, getCategoryToolCount, playLinks } from "@/lib/site-structure";
 import { generateDailyPuzzle, getUTCDateString } from "@/lib/numble";
+import { getToolIcon, type IconComponent } from "@/lib/tool-icons";
 import SmartConverterDeferred from "@/components/home/SmartConverterDeferred";
 import CollapsibleToolList from "@/components/home/CollapsibleToolList";
 import DailyChallengeBanner from "@/components/numble/DailyChallengeBanner";
@@ -17,10 +18,8 @@ import {
   Keyboard,
   ArrowRight,
   Gamepad2,
-  Sparkles,
-  Minimize2,
-  Maximize2,
-  FileImage,
+  Hash,
+  ImageIcon,
 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -38,7 +37,7 @@ type HomeCardItem = {
   href: string;
   badge?: string;
   description?: string;
-  Icon?: ComponentType<{ className?: string }>;
+  Icon: ComponentType<{ className?: string }>;
 };
 
 type HomeCardData = {
@@ -60,13 +59,6 @@ const categoryIcons: Record<string, ComponentType<{ className?: string }>> = {
   calculate: Calculator,
   time: Clock,
   type: Keyboard,
-};
-
-const homeToolIcons: Record<string, ComponentType<{ className?: string }>> = {
-  "image-compressor": Minimize2,
-  "gif-compressor": Sparkles,
-  "resize-image": Maximize2,
-  "pdf-to-jpg": FileImage,
 };
 
 const categoryPresentation: Record<
@@ -107,10 +99,62 @@ const categoryPresentation: Record<
   },
 };
 
+const playIconMap: Record<string, IconComponent> = {
+  hash: Hash,
+  image: ImageIcon,
+};
+
+/** Sort items so popular-badged tools come first, then new, then unbadged.
+ *  // TODO: Replace badge-based sorting with pageview-based sorting once analytics data is available */
+function sortByBadgePriority(items: HomeCardItem[]): HomeCardItem[] {
+  const priority = (badge?: string) =>
+    badge === "popular" ? 0 : badge === "new" ? 1 : 2;
+  return [...items].sort((a, b) => priority(a.badge) - priority(b.badge));
+}
+
+function HomeToolCard({ item }: { item: HomeCardItem }) {
+  const ItemIcon = item.Icon;
+
+  return (
+    <li className="min-w-0">
+      <Link
+        href={item.href}
+        className="group/link flex h-full items-center gap-3 rounded-[1.2rem] bg-muted/65 px-4 py-3 transition-[background-color,color] duration-150 hover:bg-muted/90"
+      >
+        <div className="shrink-0 rounded-full bg-primary/12 p-2 text-primary">
+          <ItemIcon className="h-4 w-4" />
+        </div>
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center justify-between gap-3">
+            <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-primary">
+              {item.label}
+            </span>
+            {item.badge ? (
+              <Badge
+                variant={item.badge === "popular" ? "default" : "secondary"}
+                className={
+                  item.badge === "popular"
+                    ? "shrink-0 text-[10px] capitalize"
+                    : "shrink-0 border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
+                }
+              >
+                {item.badge}
+              </Badge>
+            ) : null}
+          </span>
+          {item.description ? (
+            <span className="mt-1 hidden text-xs leading-6 text-muted-foreground md:block">
+              {item.description}
+            </span>
+          ) : null}
+        </span>
+      </Link>
+    </li>
+  );
+}
+
 function HomeCategoryCard({ card }: { card: HomeCardData }) {
   const Icon = card.Icon;
-  const showFilesSubcards = card.id === "files";
-  const filesPreviewItems = showFilesSubcards ? card.items.slice(0, 4) : [];
 
   return (
     <div
@@ -136,86 +180,13 @@ function HomeCategoryCard({ card }: { card: HomeCardData }) {
         </div>
       </div>
 
-      {showFilesSubcards ? (
-        <ul className="grid gap-3 sm:grid-cols-2">
-          <CollapsibleToolList previewCount={3}>
-            {filesPreviewItems.map((item) => {
-              const ItemIcon = item.Icon ?? ArrowRight;
-
-              return (
-                <li key={item.href} className="min-w-0">
-                  <Link
-                    href={item.href}
-                    className="group/link flex h-full flex-col rounded-[1rem] bg-muted/70 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-0.5 hover:bg-muted"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="rounded-full bg-primary/12 p-2 text-primary">
-                        <ItemIcon className="h-4 w-4" />
-                      </div>
-                      {item.badge ? (
-                        <Badge
-                          variant={item.badge === "popular" ? "default" : "secondary"}
-                          className={
-                            item.badge === "popular"
-                              ? "text-[10px] capitalize"
-                              : "border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
-                          }
-                        >
-                          {item.badge}
-                        </Badge>
-                      ) : null}
-                    </div>
-                    <span className="mt-5 text-base font-semibold text-foreground transition-colors group-hover/link:text-primary">
-                      {item.label}
-                    </span>
-                    {item.description ? (
-                      <span className="mt-2 hidden text-xs leading-6 text-muted-foreground md:block">
-                        {item.description}
-                      </span>
-                    ) : null}
-                  </Link>
-                </li>
-              );
-            })}
-          </CollapsibleToolList>
-        </ul>
-      ) : (
-        <ul className={`grid gap-3 ${card.itemGridClassName ?? ""}`}>
-          <CollapsibleToolList previewCount={3}>
-            {card.items.map((item) => (
-              <li key={item.href} className="min-w-0">
-                <Link
-                  href={item.href}
-                  className="group/link flex h-full flex-col justify-between rounded-[1.2rem] bg-muted/65 px-4 py-3 transition-[background-color,color] duration-150 hover:bg-muted/90"
-                >
-                  <span className="flex items-center justify-between gap-3">
-                    <span className="truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-primary">
-                      {item.label}
-                    </span>
-                    {item.badge ? (
-                      <Badge
-                        variant={item.badge === "popular" ? "default" : "secondary"}
-                        className={
-                          item.badge === "popular"
-                            ? "text-[10px] capitalize"
-                            : "border-transparent bg-secondary/[0.12] text-[10px] capitalize text-secondary"
-                        }
-                      >
-                        {item.badge}
-                      </Badge>
-                    ) : null}
-                  </span>
-                  {item.description ? (
-                    <span className="mt-2 hidden text-xs leading-6 text-muted-foreground md:block">
-                      {item.description}
-                    </span>
-                  ) : null}
-                </Link>
-              </li>
-            ))}
-          </CollapsibleToolList>
-        </ul>
-      )}
+      <ul className={`grid gap-3 ${card.itemGridClassName ?? ""}`}>
+        <CollapsibleToolList previewCount={3}>
+          {card.items.map((item) => (
+            <HomeToolCard key={item.href} item={item} />
+          ))}
+        </CollapsibleToolList>
+      </ul>
 
       <Link
         href={card.route}
@@ -240,6 +211,19 @@ export default function HomePage() {
       const presentation = categoryPresentation[category.id];
       const Icon = categoryIcons[category.id] ?? FolderOpen;
 
+      const items = category.featuredSlugs.flatMap((slug) => {
+        const tool = getToolBySlug(slug);
+        if (!tool || tool.live === false) return [];
+
+        return [{
+          label: tool.name,
+          href: tool.route,
+          badge: tool.badge,
+          description: tool.shortDescription,
+          Icon: getToolIcon(tool.icon),
+        }];
+      });
+
       return {
         id: category.id,
         title: presentation.title,
@@ -247,18 +231,7 @@ export default function HomePage() {
         description: category.description,
         route: category.route,
         itemCount: getCategoryToolCount(category),
-        items: category.featuredSlugs.flatMap((slug) => {
-          const tool = getToolBySlug(slug);
-          if (!tool || tool.live === false) return [];
-
-          return [{
-            label: tool.name,
-            href: tool.route,
-            badge: tool.badge,
-            description: tool.shortDescription,
-            Icon: homeToolIcons[tool.slug],
-          }];
-        }),
+        items: sortByBadgePriority(items),
         Icon,
         className: presentation.className,
         itemGridClassName: presentation.itemGridClassName,
@@ -276,6 +249,7 @@ export default function HomePage() {
       label: item.label,
       href: item.route,
       description: item.description,
+      Icon: playIconMap[item.icon] ?? Hash,
     })),
     Icon: Gamepad2,
     className: categoryPresentation.play.className,
