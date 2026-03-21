@@ -43,15 +43,27 @@ export default function DailyChallengeBanner({
   todayDate,
 }: DailyChallengeBannerProps) {
   const initialRef = useState(() => getInitialLocalState(todayDate))[0];
-  const [countdown, setCountdown] = useState(() =>
-    formatCountdown(getSecondsUntilMidnight())
-  );
+  const [mounted, setMounted] = useState(false);
+  const [countdown, setCountdown] = useState("--:--:--");
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const updateCountdown = () => {
       setCountdown(formatCountdown(getSecondsUntilMidnight()));
+    };
+
+    const mountTimer = window.setTimeout(() => {
+      setMounted(true);
+      updateCountdown();
+    }, 0);
+
+    const interval = setInterval(() => {
+      updateCountdown();
     }, 1000);
-    return () => clearInterval(interval);
+
+    return () => {
+      window.clearTimeout(mountTimer);
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -74,7 +86,9 @@ export default function DailyChallengeBanner({
               Target <span className="font-semibold text-foreground">{target}</span>
             </span>
             <span className="rounded-full bg-card/75 px-3 py-1.5">{difficulty}</span>
-            <span className="rounded-full bg-card/75 px-3 py-1.5">Next puzzle in {countdown}</span>
+            <span className="rounded-full bg-card/75 px-3 py-1.5">
+              Next puzzle in {mounted ? countdown : "--:--:--"}
+            </span>
           </div>
           {initialRef.state === "completed" ? (
             <p className="text-sm leading-7 text-muted-foreground">
