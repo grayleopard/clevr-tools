@@ -47,6 +47,13 @@ function parseFormats(accept: string): string[] {
 
 type DropState = "idle" | "hover" | "loaded" | "error";
 
+const stateStyles: Record<DropState, string> = {
+  idle: "border-[color:var(--ghost-border)] bg-muted/[0.28] hover:border-primary/40 hover:bg-primary/[0.03]",
+  hover: "border-primary/45 bg-primary/[0.05] scale-[1.005]",
+  loaded: "border-primary/50 bg-primary/[0.05] animate-success-pulse",
+  error: "border-destructive bg-destructive/5",
+};
+
 export default function FileDropZone({
   accept,
   multiple = false,
@@ -149,13 +156,6 @@ export default function FileDropZone({
     xrayCtx?.setFile(null);
   }, [xrayCtx]);
 
-  const stateStyles: Record<DropState, string> = {
-    idle: "border-[color:var(--ghost-border)] bg-muted/[0.28] hover:border-primary/40 hover:bg-primary/[0.03]",
-    hover: "border-primary/45 bg-primary/[0.05]",
-    loaded: "border-primary/50 bg-primary/[0.05]",
-    error: "border-destructive bg-destructive/5",
-  };
-
   const openPicker = useCallback(() => {
     inputRef.current?.click();
   }, []);
@@ -184,7 +184,8 @@ export default function FileDropZone({
             onDrop={handleDrop}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && openPicker()}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openPicker())}
+            aria-label={compactLabel}
           >
             <Plus className="h-4 w-4 shrink-0" />
             <span className="font-medium">{compactLabel}</span>
@@ -214,7 +215,7 @@ export default function FileDropZone({
         </div>
       ) : (
         <div
-          className={`group relative min-h-[260px] overflow-hidden rounded-[2rem] border-2 border-dashed p-8 text-center transition-[border-color,background-color] duration-200 cursor-pointer ${stateStyles[state]}`}
+          className={`group relative min-h-[260px] overflow-hidden rounded-[2rem] border-2 border-dashed p-5 sm:p-8 text-center transition-[border-color,background-color,transform] duration-200 cursor-pointer ${stateStyles[state]}`}
           onDragEnter={(e) => {
             e.preventDefault();
             if (!e.dataTransfer.types.includes("Files")) return;
@@ -233,7 +234,8 @@ export default function FileDropZone({
           onClick={openPicker}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && openPicker()}
+          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openPicker())}
+          aria-label={headline}
         >
           <div className="pointer-events-none absolute inset-0 opacity-[0.03] text-foreground">
             <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
@@ -264,9 +266,9 @@ export default function FileDropZone({
             </div>
           ) : (
             <div className="relative z-10 flex flex-col items-center gap-5">
-              <div className="rounded-full bg-card p-4 shadow-[var(--shadow-sm)] transition-transform duration-500 group-hover:scale-110">
+              <div className={`rounded-full bg-card p-4 shadow-[var(--shadow-sm)] transition-[transform,box-shadow] duration-300 group-hover:scale-110 ${state === "hover" ? "scale-115 shadow-[0_0_24px_var(--primary)/0.15]" : ""}`}>
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                  <Upload className="h-5 w-5 text-primary" />
+                  <Upload className={`h-5 w-5 text-primary transition-transform duration-300 ${state === "hover" ? "-translate-y-0.5" : ""}`} />
                 </span>
               </div>
               <div className="space-y-2">

@@ -7,6 +7,7 @@ export function TipJar() {
         target="_blank"
         rel="noopener noreferrer"
         className="text-muted-foreground underline-offset-2 hover:underline"
+        aria-label="Buy me a coffee (opens in new tab)"
       >
         buy me a coffee
       </a>

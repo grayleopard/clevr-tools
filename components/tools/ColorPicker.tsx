@@ -345,6 +345,7 @@ export default function ColorPicker() {
               onClick={() => copyText(hex)}
               className="flex shrink-0 items-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title="Copy HEX"
+              aria-label="Copy HEX value"
             >
               <Copy className="h-4 w-4" />
             </button>
@@ -364,6 +365,7 @@ export default function ColorPicker() {
                 onChange={(e) => handleRgbChange("r", e.target.value)}
                 className={inputClass}
                 placeholder="R"
+                aria-label="Red (0-255)"
               />
               <input
                 type="number"
@@ -373,6 +375,7 @@ export default function ColorPicker() {
                 onChange={(e) => handleRgbChange("g", e.target.value)}
                 className={inputClass}
                 placeholder="G"
+                aria-label="Green (0-255)"
               />
               <input
                 type="number"
@@ -382,12 +385,14 @@ export default function ColorPicker() {
                 onChange={(e) => handleRgbChange("b", e.target.value)}
                 className={inputClass}
                 placeholder="B"
+                aria-label="Blue (0-255)"
               />
             </div>
             <button
               onClick={() => copyText(`rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`)}
               className="flex shrink-0 items-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title="Copy RGB"
+              aria-label="Copy RGB value"
             >
               <Copy className="h-4 w-4" />
             </button>
@@ -407,6 +412,7 @@ export default function ColorPicker() {
                 onChange={(e) => handleHslChange("h", e.target.value)}
                 className={inputClass}
                 placeholder="H"
+                aria-label="Hue (0-360)"
               />
               <input
                 type="number"
@@ -416,6 +422,7 @@ export default function ColorPicker() {
                 onChange={(e) => handleHslChange("s", e.target.value)}
                 className={inputClass}
                 placeholder="S"
+                aria-label="Saturation (0-100)"
               />
               <input
                 type="number"
@@ -425,12 +432,14 @@ export default function ColorPicker() {
                 onChange={(e) => handleHslChange("l", e.target.value)}
                 className={inputClass}
                 placeholder="L"
+                aria-label="Lightness (0-100)"
               />
             </div>
             <button
               onClick={() => copyText(`hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`)}
               className="flex shrink-0 items-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title="Copy HSL"
+              aria-label="Copy HSL value"
             >
               <Copy className="h-4 w-4" />
             </button>
@@ -450,6 +459,7 @@ export default function ColorPicker() {
                 onChange={(e) => handleHsbChange("h", e.target.value)}
                 className={inputClass}
                 placeholder="H"
+                aria-label="Hue (0-360)"
               />
               <input
                 type="number"
@@ -459,6 +469,7 @@ export default function ColorPicker() {
                 onChange={(e) => handleHsbChange("s", e.target.value)}
                 className={inputClass}
                 placeholder="S"
+                aria-label="Saturation (0-100)"
               />
               <input
                 type="number"
@@ -468,12 +479,14 @@ export default function ColorPicker() {
                 onChange={(e) => handleHsbChange("b", e.target.value)}
                 className={inputClass}
                 placeholder="B"
+                aria-label="Brightness (0-100)"
               />
             </div>
             <button
               onClick={() => copyText(`hsb(${hsb.h}, ${hsb.s}%, ${hsb.b}%)`)}
               className="flex shrink-0 items-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               title="Copy HSB"
+              aria-label="Copy HSB value"
             >
               <Copy className="h-4 w-4" />
             </button>
@@ -495,6 +508,7 @@ export default function ColorPicker() {
                 className="h-8 w-8 rounded-md border border-border transition-transform hover:scale-110"
                 style={{ backgroundColor: color }}
                 title={color}
+                aria-label={`Select color ${color}`}
               />
             ))}
           </div>

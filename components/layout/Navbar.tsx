@@ -86,14 +86,15 @@ export default function Navbar() {
                 <Link
                   href={cat.route}
                   className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+                  aria-haspopup="true"
                 >
                   {cat.label}
-                  <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" />
+                  <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" aria-hidden="true" />
                 </Link>
 
-                <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
+                <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100" role="menu" aria-label={`${cat.label} tools`}>
                   <div
-                    className={`rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-6 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl ${
+                    className={`rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-6 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl max-w-[calc(100vw-2rem)] ${
                       cat.subcategories.length === 1
                         ? "min-w-[260px]"
                         : cat.subcategories.length === 2
@@ -130,12 +131,13 @@ export default function Navbar() {
               <Link
                 href="/play"
                 className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+                aria-haspopup="true"
               >
                 Play
-                <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" />
+                <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" aria-hidden="true" />
               </Link>
 
-              <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
+              <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100" role="menu" aria-label="Play tools">
                 <div className="min-w-[360px] rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-4 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
                   <div className="space-y-1.5">
                     {playLinks.map((item) => (

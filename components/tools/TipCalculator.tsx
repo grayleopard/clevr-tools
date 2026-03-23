@@ -56,11 +56,12 @@ export default function TipCalculator() {
         <label className="block text-sm font-medium text-foreground mb-2">
           Tip Percentage
         </label>
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2 mb-3" role="group" aria-label="Tip percentage presets">
           {TIP_PRESETS.map((pct) => (
             <button
               key={pct}
               onClick={() => setTipPercent(pct.toString())}
+              aria-pressed={tipPercent === pct.toString()}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 tipPercent === pct.toString()
                   ? "bg-primary text-primary-foreground"
