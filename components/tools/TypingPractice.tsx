@@ -351,7 +351,7 @@ function getHeatColor(
   accuracy: number,
   samples: number
 ): string {
-  if (samples < 3) return "bg-gray-700";
+  if (samples < 3) return "bg-zone-raised";
   if (accuracy >= 95) return "bg-green-500/40";
   if (accuracy >= 85) return "bg-yellow-500/40";
   if (accuracy >= 70) return "bg-orange-500/40";
@@ -759,7 +759,7 @@ export default function TypingPractice() {
       {/* Typing zone */}
       {status !== "done" ? (
         <div
-          className="relative rounded-xl bg-gray-900 p-6 cursor-text min-h-[200px]"
+          className="relative rounded-xl bg-zone p-6 cursor-text min-h-[200px]"
           onClick={handleContainerClick}
         >
           <div
@@ -785,13 +785,13 @@ export default function TypingPractice() {
                   className="inline-block mr-[0.5em]"
                 >
                   {word.split("").map((char, charIdx) => {
-                    let cls = "text-gray-500";
+                    let cls = "text-zone-dim";
 
                     if (isPastWord) {
                       if (charIdx < pastTyped.length) {
                         cls =
                           pastTyped[charIdx] === char
-                            ? "text-white"
+                            ? "text-zone-text"
                             : "text-red-400";
                       } else {
                         cls = "text-red-400/50";
@@ -800,12 +800,12 @@ export default function TypingPractice() {
                       if (charIdx < currentInput.length) {
                         cls =
                           currentInput[charIdx] === char
-                            ? "text-white"
+                            ? "text-zone-text"
                             : "text-red-400";
                       } else if (charIdx === currentInput.length) {
-                        cls = "text-white border-b-2 border-white";
+                        cls = "text-zone-text border-b-2 border-zone-text";
                       } else {
-                        cls = "text-gray-500";
+                        cls = "text-zone-dim";
                       }
                     }
 
@@ -841,7 +841,7 @@ export default function TypingPractice() {
           </div>
 
           {/* Progress */}
-          <div className="mt-4 text-center text-sm text-gray-400 tabular-nums">
+          <div className="mt-4 text-center text-sm text-zone-muted tabular-nums">
             {currentWordIndex} / {words.length} words
           </div>
 
@@ -859,7 +859,7 @@ export default function TypingPractice() {
           />
 
           {status === "idle" && (
-            <p className="text-center text-sm text-gray-500 mt-2">
+            <p className="text-center text-sm text-zone-dim mt-2">
               Click here or start typing to begin
             </p>
           )}
@@ -867,11 +867,11 @@ export default function TypingPractice() {
       ) : result ? (
         /* Results screen */
         <div className="space-y-6">
-          <div className="rounded-xl bg-gray-900 p-8 text-center animate-in fade-in duration-300">
+          <div className="rounded-xl bg-zone p-8 text-center animate-in fade-in duration-300">
             <div className="text-7xl font-bold text-primary mb-2">
               {result.wpm}
             </div>
-            <div className="text-gray-400 text-sm mb-6">WPM</div>
+            <div className="text-zone-muted text-sm mb-6">WPM</div>
 
             {isNewPB && (
               <div className="text-yellow-400 font-medium mb-4">
@@ -879,29 +879,29 @@ export default function TypingPractice() {
               </div>
             )}
             {!isNewPB && previousBest !== null && (
-              <div className="text-sm text-gray-500 mb-4">
+              <div className="text-sm text-zone-dim mb-4">
                 Personal best: {previousBest} WPM
               </div>
             )}
 
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div>
-                <div className="text-2xl font-semibold text-white tabular-nums">
+                <div className="text-2xl font-semibold text-zone-text tabular-nums">
                   {result.accuracy}%
                 </div>
-                <div className="text-xs text-gray-400">Accuracy</div>
+                <div className="text-xs text-zone-muted">Accuracy</div>
               </div>
               <div>
-                <div className="text-2xl font-semibold text-white tabular-nums">
+                <div className="text-2xl font-semibold text-zone-text tabular-nums">
                   {result.correctChars}
                 </div>
-                <div className="text-xs text-gray-400">Correct Chars</div>
+                <div className="text-xs text-zone-muted">Correct Chars</div>
               </div>
               <div>
-                <div className="text-2xl font-semibold text-white tabular-nums">
+                <div className="text-2xl font-semibold text-zone-text tabular-nums">
                   {result.duration}s
                 </div>
-                <div className="text-xs text-gray-400">Duration</div>
+                <div className="text-xs text-zone-muted">Duration</div>
               </div>
             </div>
 
@@ -930,11 +930,11 @@ export default function TypingPractice() {
                     const data = heatmapData[key];
                     const colorCls = data
                       ? getHeatColor(data.accuracy, data.samples)
-                      : "bg-gray-700";
+                      : "bg-zone-raised";
                     return (
                       <div
                         key={key}
-                        className={`w-8 h-8 rounded-md flex items-center justify-center text-xs font-mono text-gray-300 ${colorCls}`}
+                        className={`w-8 h-8 rounded-md flex items-center justify-center text-xs font-mono text-zone-text ${colorCls}`}
                         title={
                           data
                             ? `${key}: ${Math.round(data.accuracy)}% accuracy (${data.samples} samples)`
@@ -966,7 +966,7 @@ export default function TypingPractice() {
                 <span>&lt;70%</span>
               </div>
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-sm bg-gray-700" />
+                <div className="w-3 h-3 rounded-sm bg-zone-raised" />
                 <span>No data</span>
               </div>
             </div>

@@ -198,58 +198,58 @@ export default function CpsTest() {
           onTouchStart={handleTouchStart}
           onContextMenu={e => e.preventDefault()}
           className={`relative rounded-xl cursor-pointer select-none min-h-64 md:min-h-80 flex flex-col items-center justify-center transition-colors duration-100 ${
-            ripple ? "bg-gray-800" : "bg-gray-900"
-          } border border-gray-700`}
+            ripple ? "bg-zone-raised" : "bg-zone"
+          } border border-zone-border`}
           style={{ WebkitUserSelect: "none", userSelect: "none" } as React.CSSProperties}
         >
           {status === "idle" ? (
             <div className="text-center pointer-events-none">
-              <p className="text-2xl font-medium text-gray-400">Click here to start!</p>
-              <p className="text-sm text-gray-600 mt-2">First click starts the timer</p>
+              <p className="text-2xl font-medium text-zone-muted">Click here to start!</p>
+              <p className="text-sm text-zone-dim mt-2">First click starts the timer</p>
             </div>
           ) : (
             <div className="text-center pointer-events-none space-y-4">
               <div className="flex items-center justify-center gap-12">
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-white">{clicks}</div>
-                  <div className="text-sm text-gray-400 mt-1">Clicks</div>
+                  <div className="text-5xl font-bold text-zone-text">{clicks}</div>
+                  <div className="text-sm text-zone-muted mt-1">Clicks</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-gray-300">{timeLeft}</div>
-                  <div className="text-sm text-gray-400 mt-1">Seconds</div>
+                  <div className="text-5xl font-bold text-zone-text">{timeLeft}</div>
+                  <div className="text-sm text-zone-muted mt-1">Seconds</div>
                 </div>
               </div>
-              <p className="text-gray-500 text-sm">{cps} CPS</p>
-              <p className="text-gray-600 text-sm">Keep clicking!</p>
+              <p className="text-zone-dim text-sm">{cps} CPS</p>
+              <p className="text-zone-dim text-sm">Keep clicking!</p>
             </div>
           )}
         </div>
       ) : (
         /* Results */
-        <div className="rounded-xl bg-gray-900 p-8 text-center">
-          <p className="text-sm text-gray-400 mb-1">CPS</p>
+        <div className="rounded-xl bg-zone p-8 text-center">
+          <p className="text-sm text-zone-muted mb-1">CPS</p>
           <div className="text-7xl font-bold text-primary mb-2">{result?.cps}</div>
-          <p className="text-gray-400 text-sm mb-4">clicks per second</p>
+          <p className="text-zone-muted text-sm mb-4">clicks per second</p>
 
           {isNewPB && (
             <div className="text-yellow-400 font-medium mb-3">New Personal Best!</div>
           )}
           {!isNewPB && previousBest !== null && (
-            <p className="text-gray-500 text-sm mb-3">Previous best: {previousBest} CPS</p>
+            <p className="text-zone-dim text-sm mb-3">Previous best: {previousBest} CPS</p>
           )}
 
           <div className="grid grid-cols-3 gap-3 mb-6 max-w-sm mx-auto">
-            <div className="rounded-xl border border-gray-700 bg-gray-800 py-3">
-              <div className="text-lg font-semibold text-white">{result?.clicks}</div>
-              <div className="text-xs text-gray-400">Total Clicks</div>
+            <div className="rounded-xl border border-zone-border bg-zone-raised py-3">
+              <div className="text-lg font-semibold text-zone-text">{result?.clicks}</div>
+              <div className="text-xs text-zone-muted">Total Clicks</div>
             </div>
-            <div className="rounded-xl border border-gray-700 bg-gray-800 py-3">
-              <div className="text-lg font-semibold text-white">{result?.duration}s</div>
-              <div className="text-xs text-gray-400">Duration</div>
+            <div className="rounded-xl border border-zone-border bg-zone-raised py-3">
+              <div className="text-lg font-semibold text-zone-text">{result?.duration}s</div>
+              <div className="text-xs text-zone-muted">Duration</div>
             </div>
-            <div className="rounded-xl border border-gray-700 bg-gray-800 py-3">
-              <div className="text-lg font-semibold text-white">{result ? getRating(result.cps) : ""}</div>
-              <div className="text-xs text-gray-400">Rating</div>
+            <div className="rounded-xl border border-zone-border bg-zone-raised py-3">
+              <div className="text-lg font-semibold text-zone-text">{result ? getRating(result.cps) : ""}</div>
+              <div className="text-xs text-zone-muted">Rating</div>
             </div>
           </div>
 

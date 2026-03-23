@@ -230,10 +230,10 @@ export default function KeyboardTester() {
       </div>
 
       {/* Keyboard layout */}
-      <div className="rounded-xl bg-gray-900 p-4 sm:p-6 overflow-x-auto">
-        <div className="min-w-[700px] space-y-1.5">
+      <div className="rounded-xl bg-zone p-3 sm:p-6 overflow-x-auto">
+        <div className="min-w-[520px] sm:min-w-[700px] space-y-1 sm:space-y-1.5">
           {KEYBOARD_ROWS.map((row, rowIdx) => (
-            <div key={rowIdx} className={`flex gap-1 ${rowIdx === 0 ? "mb-2" : ""}`}>
+            <div key={rowIdx} className={`flex gap-0.5 sm:gap-1 ${rowIdx === 0 ? "mb-1 sm:mb-2" : ""}`}>
               {row.map((keyDef) => {
                 const isHeld = heldKeys.has(keyDef.code);
                 const isTested =
@@ -243,16 +243,16 @@ export default function KeyboardTester() {
                 return (
                   <div
                     key={keyDef.code}
-                    className={`rounded-md border text-xs font-mono flex items-center justify-center transition-colors cursor-default select-none h-10 ${
+                    className={`rounded-md border text-[10px] sm:text-xs font-mono flex items-center justify-center transition-colors cursor-default select-none h-8 sm:h-10 ${
                       isHeld
                         ? "bg-primary border-primary text-white ring-2 ring-primary/50"
                         : isTested
                           ? "bg-primary/80 border-primary/80 text-white"
-                          : "bg-gray-700 border-gray-600 text-gray-400"
+                          : "bg-zone-raised border-zone-border text-zone-muted"
                     }`}
                     style={{
                       flexBasis: `${keyDef.width * 3}rem`,
-                      minWidth: `${keyDef.width * 3}rem`,
+                      minWidth: `${keyDef.width * 2.2}rem`,
                     }}
                   >
                     {label}

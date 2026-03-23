@@ -14,7 +14,7 @@ const ICONS = {
 const ICON_COLORS = {
   success: "text-green-400 dark:text-green-600",
   error: "text-red-400 dark:text-red-500",
-  info: "text-zinc-400 dark:text-zinc-500",
+  info: "text-muted-foreground",
 };
 
 export function ToastContainer() {
@@ -37,7 +37,7 @@ export function ToastContainer() {
         return (
           <div
             key={toast.id}
-            className="animate-in slide-in-from-bottom-3 fade-in duration-200 pointer-events-auto flex items-center gap-3 rounded-xl bg-zinc-900 dark:bg-zinc-100 px-4 py-3 text-sm font-medium text-zinc-50 dark:text-zinc-900 shadow-lg shadow-black/10 max-w-xs"
+            className="animate-in slide-in-from-bottom-3 fade-in duration-200 pointer-events-auto flex items-center gap-3 rounded-xl bg-foreground px-4 py-3 text-sm font-medium text-background shadow-lg shadow-black/10 max-w-xs"
           >
             <Icon className={`h-4 w-4 shrink-0 ${ICON_COLORS[toast.type]}`} />
             <span className="flex-1 leading-snug">{toast.message}</span>

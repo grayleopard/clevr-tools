@@ -153,14 +153,14 @@ const TAB_SIZES: Record<Language, number> = {
 // ─── Syntax Coloring ────────────────────────────────────────────────────────
 
 function computeSyntaxColors(code: string, lang: Language): string[] {
-  const colors = new Array(code.length).fill("text-gray-300");
+  const colors = new Array(code.length).fill("text-zone-text");
 
   if (lang === "javascript" || lang === "typescript") {
     // Comments
     const comments = /(\/\/[^\n]*)/g;
     let m;
     while ((m = comments.exec(code)) !== null) {
-      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-gray-500";
+      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-zone-dim";
     }
     // Strings
     const strings = /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g;
@@ -181,7 +181,7 @@ function computeSyntaxColors(code: string, lang: Language): string[] {
     const comments = /(#[^\n]*)/g;
     let m;
     while ((m = comments.exec(code)) !== null) {
-      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-gray-500";
+      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-zone-dim";
     }
     const strings = /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|f"(?:[^"\\]|\\.)*"|f'(?:[^'\\]|\\.)*')/g;
     while ((m = strings.exec(code)) !== null) {
@@ -251,13 +251,13 @@ function computeSyntaxColors(code: string, lang: Language): string[] {
     // Comments
     const comments = /(--[^\n]*)/g;
     while ((m = comments.exec(code)) !== null) {
-      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-gray-500";
+      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-zone-dim";
     }
   } else if (lang === "go") {
     const comments = /(\/\/[^\n]*)/g;
     let m;
     while ((m = comments.exec(code)) !== null) {
-      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-gray-500";
+      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-zone-dim";
     }
     const strings = /("(?:[^"\\]|\\.)*"|`[^`]*`)/g;
     while ((m = strings.exec(code)) !== null) {
@@ -275,7 +275,7 @@ function computeSyntaxColors(code: string, lang: Language): string[] {
     const comments = /(\/\/[^\n]*)/g;
     let m;
     while ((m = comments.exec(code)) !== null) {
-      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-gray-500";
+      for (let i = m.index; i < m.index + m[0].length; i++) colors[i] = "text-zone-dim";
     }
     const strings = /("(?:[^"\\]|\\.)*")/g;
     while ((m = strings.exec(code)) !== null) {
@@ -594,14 +594,14 @@ export default function CodeChallenge() {
           tabIndex={0}
           onKeyDown={handleKeyDown}
           onClick={handleContainerClick}
-          className="relative rounded-xl bg-gray-900 p-6 cursor-text min-h-[200px] outline-none focus:ring-2 focus:ring-primary/50"
+          className="relative rounded-xl bg-zone p-6 cursor-text min-h-[200px] outline-none focus:ring-2 focus:ring-primary/50"
         >
           {/* Line numbers + code */}
           <div className="font-mono text-sm leading-[1.8] select-none overflow-x-auto">
             {codeLines.map((line, lineIdx) => (
               <div key={lineIdx} className="flex">
                 {/* Line number */}
-                <span className="text-gray-600 w-8 text-right mr-4 select-none shrink-0">
+                <span className="text-zone-dim w-8 text-right mr-4 select-none shrink-0">
                   {lineIdx + 1}
                 </span>
                 {/* Code characters */}
@@ -631,7 +631,7 @@ export default function CodeChallenge() {
                           " border-l-2 border-white";
                       } else {
                         // Untyped - use syntax color
-                        cls = syntaxColors[absIdx] || "text-gray-300";
+                        cls = syntaxColors[absIdx] || "text-zone-text";
                       }
 
                       // Show spaces as dots in untyped indentation
@@ -658,19 +658,19 @@ export default function CodeChallenge() {
           </div>
 
           {status === "idle" && (
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-sm text-zone-dim mt-4">
               Click here or start typing to begin
             </p>
           )}
         </div>
       ) : (
         /* Results screen */
-        <div className="rounded-xl bg-gray-900 p-8 text-center animate-in fade-in duration-300">
+        <div className="rounded-xl bg-zone p-8 text-center animate-in fade-in duration-300">
           {/* WPM large */}
           <div className="text-7xl font-bold text-primary mb-2">
             {result?.wpm}
           </div>
-          <div className="text-gray-400 text-sm mb-6">WPM</div>
+          <div className="text-zone-muted text-sm mb-6">WPM</div>
 
           {isNewPB && (
             <div className="text-yellow-400 font-medium mb-4">
@@ -678,7 +678,7 @@ export default function CodeChallenge() {
             </div>
           )}
           {!isNewPB && previousBest !== null && (
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-sm text-zone-dim mb-4">
               Personal best: {previousBest} WPM
             </div>
           )}
@@ -686,28 +686,28 @@ export default function CodeChallenge() {
           {/* Stats grid */}
           <div className="grid grid-cols-4 gap-4 mb-6">
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.accuracy}%
               </div>
-              <div className="text-xs text-gray-400">Accuracy</div>
+              <div className="text-xs text-zone-muted">Accuracy</div>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.specialAccuracy}%
               </div>
-              <div className="text-xs text-gray-400">Special Chars</div>
+              <div className="text-xs text-zone-muted">Special Chars</div>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.elapsedSec}s
               </div>
-              <div className="text-xs text-gray-400">Time</div>
+              <div className="text-xs text-zone-muted">Time</div>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums capitalize">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums capitalize">
                 {LANGUAGE_LABELS[language]}
               </div>
-              <div className="text-xs text-gray-400">Language</div>
+              <div className="text-xs text-zone-muted">Language</div>
             </div>
           </div>
 
@@ -722,7 +722,7 @@ export default function CodeChallenge() {
             </button>
             <button
               onClick={handleShare}
-              className="px-6 py-2.5 rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition-colors"
+              className="px-6 py-2.5 rounded-lg bg-zone-raised text-zone-text font-medium hover:bg-zone-raised transition-colors"
             >
               {copied ? "Copied!" : "Share Result"}
             </button>

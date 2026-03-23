@@ -417,7 +417,7 @@ export default function TypingRace() {
       {/* Typing zone */}
       {!isFinished ? (
         <div
-          className="relative rounded-xl bg-gray-900 p-6 cursor-text min-h-[280px]"
+          className="relative rounded-xl bg-zone p-6 cursor-text min-h-[280px]"
           onClick={handleContainerClick}
         >
           {/* Progress bars */}
@@ -425,8 +425,8 @@ export default function TypingRace() {
             <div className="mb-6 space-y-3">
               {/* You */}
               <div className="flex items-center gap-3">
-                <span className="text-xs text-gray-400 w-12">You</span>
-                <div className="flex-1 h-6 bg-gray-800 rounded-full overflow-hidden">
+                <span className="text-xs text-zone-muted w-12">You</span>
+                <div className="flex-1 h-6 bg-zone-raised rounded-full overflow-hidden">
                   <div
                     className="h-full bg-primary rounded-full transition-all duration-100"
                     style={{
@@ -434,14 +434,14 @@ export default function TypingRace() {
                     }}
                   />
                 </div>
-                <span className="text-xs text-gray-300 w-24 text-right font-mono tabular-nums">
+                <span className="text-xs text-zone-text w-24 text-right font-mono tabular-nums">
                   {Math.round(userProgress * 100)}% &middot; {currentWpm} WPM
                 </span>
               </div>
               {/* Ghost */}
               <div className="flex items-center gap-3">
-                <span className="text-xs text-gray-400 w-12">Ghost</span>
-                <div className="flex-1 h-6 bg-gray-800 rounded-full overflow-hidden">
+                <span className="text-xs text-zone-muted w-12">Ghost</span>
+                <div className="flex-1 h-6 bg-zone-raised rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gray-500 rounded-full transition-all duration-100"
                     style={{
@@ -449,7 +449,7 @@ export default function TypingRace() {
                     }}
                   />
                 </div>
-                <span className="text-xs text-gray-400 w-24 text-right font-mono tabular-nums">
+                <span className="text-xs text-zone-muted w-24 text-right font-mono tabular-nums">
                   {Math.round(ghostProgress * 100)}% &middot;{" "}
                   {DIFFICULTY_WPM[difficulty]} WPM
                 </span>
@@ -470,13 +470,13 @@ export default function TypingRace() {
               return (
                 <span key={`${absIdx}-${word}`} className="inline-block mr-[0.5em]">
                   {word.split("").map((char, charIdx) => {
-                    let cls = "text-gray-500"; // future
+                    let cls = "text-zone-dim"; // future
 
                     if (isPastWord) {
                       if (charIdx < pastTyped.length) {
                         cls =
                           pastTyped[charIdx] === char
-                            ? "text-white"
+                            ? "text-zone-text"
                             : "text-red-400";
                       } else {
                         cls = "text-red-400/50";
@@ -485,12 +485,12 @@ export default function TypingRace() {
                       if (charIdx < currentInput.length) {
                         cls =
                           currentInput[charIdx] === char
-                            ? "text-white"
+                            ? "text-zone-text"
                             : "text-red-400";
                       } else if (charIdx === currentInput.length) {
-                        cls = "text-white border-b-2 border-white";
+                        cls = "text-zone-text border-b-2 border-zone-text";
                       } else {
-                        cls = "text-gray-500";
+                        cls = "text-zone-dim";
                       }
                     }
 
@@ -529,7 +529,7 @@ export default function TypingRace() {
 
           {/* Timer */}
           {status === "racing" && (
-            <div className="mt-4 text-center text-2xl font-mono text-gray-400 tabular-nums">
+            <div className="mt-4 text-center text-2xl font-mono text-zone-muted tabular-nums">
               {(elapsedMs / 1000).toFixed(1)}s
             </div>
           )}
@@ -549,14 +549,14 @@ export default function TypingRace() {
           />
 
           {status === "idle" && (
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-sm text-zone-dim mt-4">
               Click here or start typing to begin the race
             </p>
           )}
         </div>
       ) : (
         /* Results screen */
-        <div className="rounded-xl bg-gray-900 p-8 text-center animate-in fade-in duration-300">
+        <div className="rounded-xl bg-zone p-8 text-center animate-in fade-in duration-300">
           {/* Win/Loss banner */}
           <div className="mb-4">
             {result?.won ? (
@@ -564,7 +564,7 @@ export default function TypingRace() {
                 You Win!
               </div>
             ) : (
-              <div className="text-3xl font-bold text-gray-400">
+              <div className="text-3xl font-bold text-zone-muted">
                 Ghost Wins
               </div>
             )}
@@ -574,7 +574,7 @@ export default function TypingRace() {
           <div className="text-7xl font-bold text-primary mb-2">
             {result?.wpm}
           </div>
-          <div className="text-gray-400 text-sm mb-6">WPM</div>
+          <div className="text-zone-muted text-sm mb-6">WPM</div>
 
           {isNewPB && (
             <div className="text-yellow-400 font-medium mb-4">
@@ -582,7 +582,7 @@ export default function TypingRace() {
             </div>
           )}
           {!isNewPB && previousBest !== null && (
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-sm text-zone-dim mb-4">
               Personal best: {previousBest} WPM
             </div>
           )}
@@ -590,34 +590,34 @@ export default function TypingRace() {
           {/* Stats grid */}
           <div className="grid grid-cols-3 gap-4 mb-6">
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.accuracy}%
               </div>
-              <div className="text-xs text-gray-400">Accuracy</div>
+              <div className="text-xs text-zone-muted">Accuracy</div>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.elapsedSec}s
               </div>
-              <div className="text-xs text-gray-400">Time</div>
+              <div className="text-xs text-zone-muted">Time</div>
             </div>
             <div>
               <div className="text-2xl font-semibold text-white tabular-nums capitalize">
                 {difficulty}
               </div>
-              <div className="text-xs text-gray-400">Difficulty</div>
+              <div className="text-xs text-zone-muted">Difficulty</div>
             </div>
           </div>
 
           {/* Beat ghost by */}
           {result?.won && result.beatGhostBySec !== null && (
-            <div className="inline-block bg-gray-800 rounded-lg px-4 py-2 text-sm text-gray-300 mb-6">
+            <div className="inline-block bg-zone-raised rounded-lg px-4 py-2 text-sm text-zone-text mb-6">
               Beat the ghost by {result.beatGhostBySec}s
             </div>
           )}
 
           {!result?.won && (
-            <div className="inline-block bg-gray-800 rounded-lg px-4 py-2 text-sm text-gray-300 mb-6">
+            <div className="inline-block bg-zone-raised rounded-lg px-4 py-2 text-sm text-zone-text mb-6">
               You reached {Math.round(userProgress * 100)}% at {result?.wpm} WPM
             </div>
           )}
@@ -633,7 +633,7 @@ export default function TypingRace() {
             </button>
             <button
               onClick={handleShare}
-              className="px-6 py-2.5 rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition-colors"
+              className="px-6 py-2.5 rounded-lg bg-zone-raised text-zone-text font-medium hover:bg-zone-raised/80 transition-colors"
             >
               {copied ? "Copied!" : "Share Result"}
             </button>

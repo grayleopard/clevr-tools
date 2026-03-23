@@ -730,7 +730,7 @@ export default function PdfToFillablePdf() {
               </p>
             </div>
 
-            <div className="relative overflow-auto rounded-xl border border-border bg-zinc-200/30 p-3">
+            <div className="relative overflow-auto rounded-xl border border-border bg-muted/30 p-3">
               <div className="relative mx-auto" style={{ width: "fit-content" }}>
                 <canvas
                   ref={canvasRef}

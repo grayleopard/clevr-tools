@@ -52,6 +52,12 @@ html {
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-zone: var(--zone);
+  --color-zone-raised: var(--zone-raised);
+  --color-zone-text: var(--on-zone);
+  --color-zone-muted: var(--on-zone-muted);
+  --color-zone-dim: var(--on-zone-dim);
+  --color-zone-border: var(--zone-border);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -97,6 +103,13 @@ html {
 
   --secondary: #006853;
   --tertiary: #006575;
+
+  --zone: #1c1f26;
+  --zone-raised: #282c34;
+  --on-zone: #e8eaed;
+  --on-zone-muted: #9ca3af;
+  --on-zone-dim: #6b7280;
+  --zone-border: rgba(255, 255, 255, 0.1);
 
   --foreground: var(--on-surface);
   --card: var(--surface-container-lowest);
@@ -189,6 +202,13 @@ html {
 
   --secondary: #372abf;
   --tertiary: #7de9ff;
+
+  --zone: var(--surface-container-highest);
+  --zone-raised: var(--surface-container-high);
+  --on-zone: var(--on-surface);
+  --on-zone-muted: var(--on-surface-variant);
+  --on-zone-dim: rgba(163, 170, 196, 0.5);
+  --zone-border: var(--border);
 
   --foreground: var(--on-surface);
   --card: var(--surface-container-lowest);
@@ -310,4 +330,44 @@ html {
 
 .animate-bob {
   animation: bob 2.8s ease-in-out infinite;
+}
+
+@keyframes success-pulse {
+  0% { box-shadow: 0 0 0 0 var(--primary); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.animate-success-pulse {
+  animation: success-pulse 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up-fade 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes check-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-check {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: check-draw 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

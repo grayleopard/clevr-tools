@@ -445,18 +445,18 @@ export default function WordBlitz() {
 
       {/* Game zone */}
       {status !== "done" ? (
-        <div className="rounded-xl bg-gray-900 p-8 min-h-[300px] flex flex-col items-center justify-between">
+        <div className="rounded-xl bg-zone p-8 min-h-[300px] flex flex-col items-center justify-between">
           {/* Stats row */}
           <div className="w-full flex justify-between text-sm font-mono">
-            <span className="text-gray-300">
+            <span className="text-zone-text">
               Score:{" "}
-              <span className="text-white font-bold">
+              <span className="text-zone-text font-bold">
                 {score.toLocaleString()}
               </span>
             </span>
             <span
               className={`font-bold ${
-                streak >= 5 ? "text-yellow-400" : "text-gray-300"
+                streak >= 5 ? "text-yellow-400" : "text-zone-text"
               }`}
             >
               {streakMultiplier}x streak
@@ -465,7 +465,7 @@ export default function WordBlitz() {
               className={`font-mono font-bold ${
                 timeLeft <= 10
                   ? "text-red-400 animate-pulse"
-                  : "text-gray-300"
+                  : "text-zone-text"
               }`}
             >
               {timeLeft}s
@@ -477,7 +477,7 @@ export default function WordBlitz() {
             <div className="text-4xl font-mono font-bold tracking-wide">
               {currentWord.split("").map((char, i) => {
                 const typedChar = currentInput[i];
-                let colorClass = "text-gray-400"; // untyped
+                let colorClass = "text-zone-muted"; // untyped
                 if (typedChar !== undefined) {
                   colorClass =
                     typedChar === char ? "text-green-400" : "text-red-400";
@@ -497,12 +497,12 @@ export default function WordBlitz() {
             value={currentInput}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            className={`text-xl font-mono text-center bg-transparent border-b-2 text-white outline-none w-64 pb-1 transition-colors ${
+            className={`text-xl font-mono text-center bg-transparent border-b-2 text-zone-text outline-none w-64 pb-1 transition-colors ${
               inputBorderState === "correct"
                 ? "border-green-500"
                 : inputBorderState === "error"
                   ? "border-red-500"
-                  : "border-gray-600 focus:border-primary"
+                  : "border-zone-border focus:border-primary"
             }`}
             autoComplete="off"
             autoCorrect="off"
@@ -512,19 +512,19 @@ export default function WordBlitz() {
           />
 
           {status === "idle" && (
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-zone-dim mt-2">
               Type the word above to start
             </p>
           )}
         </div>
       ) : (
         /* Results screen */
-        <div className="rounded-xl bg-gray-900 p-8 text-center animate-in fade-in duration-300">
+        <div className="rounded-xl bg-zone p-8 text-center animate-in fade-in duration-300">
           {/* Score large */}
           <div className="text-7xl font-bold text-primary mb-2">
             {result?.score.toLocaleString()}
           </div>
-          <div className="text-gray-400 text-sm mb-6">Score</div>
+          <div className="text-zone-muted text-sm mb-6">Score</div>
 
           {isNewHighScore && (
             <div className="text-yellow-400 font-medium mb-4">
@@ -532,7 +532,7 @@ export default function WordBlitz() {
             </div>
           )}
           {!isNewHighScore && previousHighScore !== null && (
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-sm text-zone-dim mb-4">
               Previous best: {previousHighScore.toLocaleString()}
             </div>
           )}
@@ -540,28 +540,28 @@ export default function WordBlitz() {
           {/* Stats grid */}
           <div className="grid grid-cols-4 gap-4 mb-6">
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.wpm}
               </div>
-              <div className="text-xs text-gray-400">WPM</div>
+              <div className="text-xs text-zone-muted">WPM</div>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.accuracy}%
               </div>
-              <div className="text-xs text-gray-400">Accuracy</div>
+              <div className="text-xs text-zone-muted">Accuracy</div>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.wordsCompleted}
               </div>
-              <div className="text-xs text-gray-400">Words</div>
+              <div className="text-xs text-zone-muted">Words</div>
             </div>
             <div>
-              <div className="text-2xl font-semibold text-white tabular-nums">
+              <div className="text-2xl font-semibold text-zone-text tabular-nums">
                 {result?.longestStreak}
               </div>
-              <div className="text-xs text-gray-400">Best Streak</div>
+              <div className="text-xs text-zone-muted">Best Streak</div>
             </div>
           </div>
 
@@ -576,7 +576,7 @@ export default function WordBlitz() {
             </button>
             <button
               onClick={handleShare}
-              className="px-6 py-2.5 rounded-lg bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 transition-colors"
+              className="px-6 py-2.5 rounded-lg bg-zone-raised text-zone-text font-medium hover:bg-zone-raised transition-colors"
             >
               {copied ? "Copied!" : "Share Result"}
             </button>

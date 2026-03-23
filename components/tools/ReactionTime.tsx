@@ -184,13 +184,13 @@ export default function ReactionTime() {
 
   // Determine click area appearance
   const getAreaStyle = () => {
-    if (testState === "idle") return { bg: "bg-gray-900 border border-gray-700", text: "text-gray-400", label: "Click to start", sublabel: "5 rounds \u00B7 Click when the screen turns green" };
+    if (testState === "idle") return { bg: "bg-zone border border-zone-border", text: "text-zone-muted", label: "Click to start", sublabel: "5 rounds \u00B7 Click when the screen turns green" };
     if (roundState === "waiting") return { bg: "bg-red-500", text: "text-white", label: "Wait for green...", sublabel: "" };
     if (roundState === "ready") return { bg: "bg-green-500", text: "text-white", label: "CLICK NOW!", sublabel: "" };
     if (roundState === "too-early") return { bg: "bg-amber-500", text: "text-white", label: "Too early!", sublabel: "Click to try again" };
     if (roundState === "showing-result") return { bg: "bg-primary/20 border border-primary/30", text: "text-foreground", label: `${lastReactionTime} ms`, sublabel: getRating(lastReactionTime || 0) };
-    if (testState === "done") return { bg: "bg-gray-900 border border-gray-700", text: "text-gray-400", label: "Click to play again", sublabel: "" };
-    return { bg: "bg-gray-900 border border-gray-700", text: "text-gray-400", label: "", sublabel: "" };
+    if (testState === "done") return { bg: "bg-zone border border-zone-border", text: "text-zone-muted", label: "Click to play again", sublabel: "" };
+    return { bg: "bg-zone border border-zone-border", text: "text-zone-muted", label: "", sublabel: "" };
   };
 
   const areaStyle = getAreaStyle();
@@ -227,30 +227,30 @@ export default function ReactionTime() {
         </div>
       ) : (
         /* Results screen */
-        <div className="rounded-xl bg-gray-900 p-8 text-center">
-          <p className="text-sm text-gray-400 mb-1">Average Reaction Time</p>
+        <div className="rounded-xl bg-zone p-8 text-center">
+          <p className="text-sm text-zone-muted mb-1">Average Reaction Time</p>
           <div className="text-7xl font-bold text-primary mb-1">{result?.avg}</div>
-          <p className="text-gray-400 text-sm mb-2">milliseconds</p>
-          <p className="text-lg font-medium text-white mb-4">{result ? getRating(result.avg) : ""}</p>
+          <p className="text-zone-muted text-sm mb-2">milliseconds</p>
+          <p className="text-lg font-medium text-zone-text mb-4">{result ? getRating(result.avg) : ""}</p>
 
           {isNewPB && (
             <div className="text-yellow-400 font-medium mb-3">New Personal Best!</div>
           )}
           {!isNewPB && previousBest !== null && (
-            <p className="text-gray-500 text-sm mb-3">Previous best: {previousBest} ms</p>
+            <p className="text-zone-dim text-sm mb-3">Previous best: {previousBest} ms</p>
           )}
 
           {/* Round breakdown */}
           <div className="mb-6 max-w-xs mx-auto">
             {result?.times.map((t, i) => (
-              <div key={i} className="flex justify-between py-1 border-b border-gray-800 text-sm">
-                <span className="text-gray-400">Round {i + 1}</span>
-                <span className="text-white font-medium">{t} ms</span>
+              <div key={i} className="flex justify-between py-1 border-b border-zone-border text-sm">
+                <span className="text-zone-muted">Round {i + 1}</span>
+                <span className="text-zone-text font-medium">{t} ms</span>
               </div>
             ))}
             {result && (
               <div className="flex justify-between pt-2 text-sm">
-                <span className="text-gray-400">Best: {result.best} ms &middot; Worst: {result.worst} ms</span>
+                <span className="text-zone-muted">Best: {result.best} ms &middot; Worst: {result.worst} ms</span>
               </div>
             )}
           </div>

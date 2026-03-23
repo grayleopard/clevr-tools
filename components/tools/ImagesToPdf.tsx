@@ -128,7 +128,7 @@ function PdfPagePreview({
 
   return (
     <div
-      className="relative rounded-sm bg-white dark:bg-zinc-100 overflow-hidden shadow-md border border-zinc-200 dark:border-zinc-300"
+      className="relative rounded-sm bg-white overflow-hidden shadow-md border border-border"
       style={{ width: mockupW, height: mockupH }}
     >
       <div
@@ -145,7 +145,7 @@ function PdfPagePreview({
         </div>
       </div>
       {showLabel && (
-        <div className="absolute bottom-1 right-1.5 text-[9px] text-zinc-400 font-medium">
+        <div className="absolute bottom-1 right-1.5 text-[9px] text-muted-foreground font-medium">
           {pageSize === "fit" ? "Fit" : `${pageSize} ${orientation}`}
         </div>
       )}
