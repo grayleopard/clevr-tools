@@ -259,7 +259,7 @@ export default function BackgroundRemover() {
                     <div className="absolute inset-0 bg-slate-950/5" />
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-sky-500/8 to-transparent" />
                     <div
-                      className="absolute left-0 right-0 h-[3px] animate-[xray-scan_2.2s_ease-in-out_infinite]"
+                      className="absolute left-0 right-0 h-[3px] animate-[xray-scan_2.2s_ease-in-out_infinite] will-change-[top,opacity]"
                       style={{
                         background: "var(--scan-line)",
                         boxShadow:

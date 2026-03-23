@@ -62,7 +62,7 @@ export default function DownloadCard({
         href={href}
         download={filename}
         onClick={handleDownload}
-        className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border-2 border-primary/25 bg-primary/5 px-5 py-4 transition-all hover:border-primary/50 hover:bg-primary/10 active:scale-[0.99]"
+        className="animate-slide-up group flex w-full cursor-pointer items-center gap-4 rounded-xl border-2 border-primary/25 bg-primary/5 px-5 py-4 transition-all hover:border-primary/50 hover:bg-primary/10 active:scale-[0.99]"
       >
         {/* Optional thumbnail */}
         {thumbnailUrl && (
@@ -79,6 +79,7 @@ export default function DownloadCard({
               src={thumbnailUrl}
               alt={filename}
               className="h-10 w-10 rounded-md object-cover border border-border hover:ring-2 hover:ring-primary/40 transition-all"
+              decoding="async"
             />
           </div>
         )}
@@ -95,7 +96,11 @@ export default function DownloadCard({
                 <ArrowRight className="h-3 w-3 shrink-0" />
                 <span className="font-medium text-foreground">{formatBytes(fileSize)}</span>
                 {reduction !== null && reduction > 0 && (
-                  <span className="rounded-full bg-green-100 px-1.5 py-0.5 font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-1.5 py-0.5 font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                    <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+                      <path d="M5 8.5 7 10.5 11 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-check" />
+                    </svg>
                     −{reduction}%
                   </span>
                 )}

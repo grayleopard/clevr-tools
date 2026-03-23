@@ -136,7 +136,7 @@ function XRayAnalyzing() {
         ))}
         {/* Scan beam */}
         <div
-          className="absolute left-0 right-0 h-[3px] animate-[xray-scan_2.2s_ease-in-out_infinite]"
+          className="absolute left-0 right-0 h-[3px] animate-[xray-scan_2.2s_ease-in-out_infinite] will-change-[top,opacity]"
           style={{
             background: "var(--scan-line)",
             boxShadow: "0 0 12px 4px var(--scan-line), 0 0 40px 8px var(--scan-glow)",

@@ -759,7 +759,7 @@ export default function InvoiceGenerator() {
       <div className="space-y-4">
         <div className="sticky top-20">
           {/* Preview card */}
-          <div className="rounded-xl border border-border bg-white shadow-sm p-8 text-[11px] leading-relaxed text-gray-800 min-h-[600px]">
+          <div className="rounded-xl border border-border bg-white shadow-sm p-4 sm:p-8 text-[11px] leading-relaxed text-gray-800 min-h-[600px] overflow-x-auto">
             {/* Header */}
             <div className="flex justify-between items-start mb-6">
               <div>

@@ -9,7 +9,7 @@ export default function ToolCard({ tool }: { tool: Tool }) {
   return (
     <Link
       href={tool.route}
-      className="group flex flex-col gap-4 rounded-xl border border-[color:var(--ghost-border)] bg-card p-6 shadow-[var(--shadow-sm)] transition-[transform,box-shadow,background-color] duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-[var(--ambient-shadow)]"
+      className="group flex flex-col gap-4 rounded-xl border border-[color:var(--ghost-border)] bg-card p-6 shadow-[var(--shadow-sm)] transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-[var(--ambient-shadow)]"
     >
       <div className="flex items-start justify-between">
         <div className="rounded-lg bg-primary/10 p-2.5">

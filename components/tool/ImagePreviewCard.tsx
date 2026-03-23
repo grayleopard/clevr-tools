@@ -40,7 +40,7 @@ export default function ImagePreviewCard({
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="animate-slide-up grid grid-cols-1 gap-3 sm:grid-cols-2">
         {/* Original */}
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -67,6 +67,7 @@ export default function ImagePreviewCard({
                   alt={`Original: ${originalName}`}
                   onError={() => setOriginalError(true)}
                   className="h-44 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
                   <span className="flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-xs font-medium shadow backdrop-blur-sm">
@@ -97,6 +98,7 @@ export default function ImagePreviewCard({
               src={processedUrl}
               alt={`Result: ${processedName}`}
               className="h-44 w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+              decoding="async"
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
               <span className="flex items-center gap-1 rounded-full bg-background/85 px-2.5 py-1 text-xs font-medium shadow backdrop-blur-sm">
