@@ -77,6 +77,7 @@ import {
   Code2,
   MousePointer2,
   Wrench,
+  Spade,
 } from "lucide-react";
 
 export type IconComponent = ComponentType<{ className?: string }>;
@@ -160,6 +161,7 @@ export const toolIconMap: Record<string, IconComponent> = {
   Code2,
   MousePointer2,
   Wrench,
+  Spade,
 };
 
 /** Default fallback icon when a tool's icon string isn't found */

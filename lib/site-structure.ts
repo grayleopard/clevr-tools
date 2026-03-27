@@ -166,7 +166,7 @@ export const siteCategories: SiteCategory[] = [
       },
       {
         label: "Sports & Betting",
-        slugs: ["odds-calculator"],
+        slugs: ["odds-calculator", "poker"],
       },
       {
         label: "General",

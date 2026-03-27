@@ -1327,7 +1327,50 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['percentage-calculator', 'salary', 'loan', 'credit-card-payoff'],
+    relatedTools: ['poker', 'percentage-calculator', 'salary', 'loan'],
+    badge: 'new',
+  },
+  {
+    slug: 'poker',
+    name: 'Poker Calculator',
+    shortDescription: 'Hand rankings, odds calculator, Texas Hold\'em rules, and starting hand charts.',
+    category: 'calc',
+    route: '/calc/poker',
+    acceptedFormats: [],
+    icon: 'Spade',
+    metaTitle: 'Poker Calculator — Hand Rankings, Odds & Rules | clevr.tools',
+    metaDescription: 'Free poker reference tool. See hand rankings, calculate pot odds and drawing probabilities, learn Texas Hold\'em rules, and view starting hand charts. No signup.',
+    seoContent: `
+      <h2>When to use this</h2>
+      <p>You're at a home game and can't remember whether a flush beats a straight. Or you're watching poker on TV and want to understand why the commentator said "he has 9 outs." Maybe you're learning Texas Hold'em for the first time and need a clean, fast reference that isn't buried in a 5,000-word article. This tool covers the essentials: hand rankings, odds calculations, game rules, and starting hand strength.</p>
+      <p>The odds calculator is useful when you want to understand drawing probabilities without doing the math in your head. Select your draw (flush draw, straight draw, etc.), see the exact probability of hitting, and compare it to the pot odds being offered. If your probability of hitting exceeds the pot odds, calling is profitable over time. If not, fold.</p>
+      <p>The starting hands chart is a visual cheat sheet for pre-flop decisions. The 13×13 grid shows all 169 unique starting hand combinations color-coded by strength. It won't make you a poker pro, but it'll stop you from calling raises with 7-2 offsuit.</p>
+
+      <h2>Good to know</h2>
+      <p><strong>Hand rankings are universal.</strong> Whether you're playing Texas Hold'em, Omaha, or Five-Card Draw, the hand rankings are the same. A flush always beats a straight, and a full house always beats a flush.</p>
+      <p><strong>The "Rule of 2 and 4" is a quick approximation.</strong> Multiply your outs by 4 on the flop (two cards to come) or by 2 on the turn (one card to come) to estimate your probability of hitting. It's not exact, but it's close enough for in-game decisions.</p>
+      <p><strong>Pot odds compare risk to reward.</strong> If the pot is $100 and you need to call $25, you're risking $25 to win $125 — that's 5:1 pot odds. You only need to win 20% of the time to break even. Compare that to your drawing probability to decide.</p>
+      <p><strong>Position matters more than cards.</strong> The starting hands chart assumes no context. In practice, a "marginal" hand in late position (acting last) is often stronger than a "good" hand in early position (acting first), because you have more information.</p>
+      <p><strong>Everything runs in your browser.</strong> No data is sent anywhere. Use this at the table, in front of the TV, or while studying hand histories — it's always instant.</p>
+
+      <h2>Quick Reference</h2>
+      <table>
+        <thead><tr><th>Hand</th><th>Example</th><th>Probability</th></tr></thead>
+        <tbody>
+          <tr><td>Royal Flush</td><td>A♠ K♠ Q♠ J♠ 10♠</td><td>1 in 649,740</td></tr>
+          <tr><td>Straight Flush</td><td>9♥ 8♥ 7♥ 6♥ 5♥</td><td>1 in 72,193</td></tr>
+          <tr><td>Four of a Kind</td><td>K♠ K♥ K♦ K♣ 9♠</td><td>1 in 4,165</td></tr>
+          <tr><td>Full House</td><td>J♠ J♥ J♦ 8♠ 8♥</td><td>1 in 694</td></tr>
+          <tr><td>Flush</td><td>A♦ J♦ 8♦ 5♦ 3♦</td><td>1 in 509</td></tr>
+          <tr><td>Straight</td><td>10♠ 9♥ 8♦ 7♣ 6♠</td><td>1 in 255</td></tr>
+          <tr><td>Three of a Kind</td><td>Q♠ Q♥ Q♦ 7♣ 4♠</td><td>1 in 47</td></tr>
+          <tr><td>Two Pair</td><td>A♠ A♥ 9♦ 9♣ 5♠</td><td>1 in 21</td></tr>
+          <tr><td>One Pair</td><td>10♠ 10♥ K♦ 7♣ 3♠</td><td>1 in 2.4</td></tr>
+          <tr><td>High Card</td><td>A♠ J♥ 8♦ 5♣ 2♠</td><td>1 in 2</td></tr>
+        </tbody>
+      </table>
+    `,
+    relatedTools: ['odds-calculator', 'percentage-calculator'],
     badge: 'new',
   },
   {
