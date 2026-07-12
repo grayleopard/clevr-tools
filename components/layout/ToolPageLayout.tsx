@@ -95,24 +95,6 @@ export default function ToolPageLayout({
 }: ToolPageLayoutProps) {
   return (
     <div className="space-y-5">
-      <details className="rounded-[1.4rem] bg-muted/55 p-3 lg:hidden">
-        <summary className="flex cursor-pointer list-none items-center justify-between rounded-[1rem] px-3 py-3 text-sm font-semibold text-foreground">
-          <span className="flex items-center gap-2">
-            <Menu className="h-4 w-4 text-primary" />
-            Navigation
-          </span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-        </summary>
-        <div className="mt-3 rounded-[1.15rem] bg-card/80 p-3">
-          <SidebarLinks
-            categoryName={categoryName}
-            categoryHref={categoryHref}
-            relatedTools={relatedTools}
-            privacyContext={privacyContext}
-          />
-        </div>
-      </details>
-
       <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)_300px]">
         <aside className="hidden lg:block">
           <div className="sticky top-24 rounded-[1.5rem] bg-muted/55 p-5">
@@ -129,6 +111,27 @@ export default function ToolPageLayout({
           <div data-toc-scope className="rounded-[2rem] bg-card/[0.96] p-6 shadow-[var(--shadow-sm)] lg:p-10">
             {children}
           </div>
+
+          {/* Mobile only — the tool itself comes first on mobile; navigation
+              follows rather than pushing the tool below the fold. */}
+          <details className="rounded-[1.4rem] bg-muted/55 p-3 lg:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between rounded-[1rem] px-3 py-3 text-sm font-semibold text-foreground">
+              <span className="flex items-center gap-2">
+                <Menu className="h-4 w-4 text-primary" />
+                Navigation
+              </span>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </summary>
+            <div className="mt-3 rounded-[1.15rem] bg-card/80 p-3">
+              <SidebarLinks
+                categoryName={categoryName}
+                categoryHref={categoryHref}
+                relatedTools={relatedTools}
+                privacyContext={privacyContext}
+              />
+            </div>
+          </details>
+
           <div aria-hidden="true" className="hidden h-[90px] lg:block" />
         </div>
 
