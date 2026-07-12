@@ -5,14 +5,14 @@ import Footer from "@/components/layout/Footer";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "clevr.tools processes all files entirely in your browser. Your files never leave your device. Learn what data we collect and how we use it.",
+    "clevr.tools processes files locally in your browser by default. Learn what data we collect and how we use it.",
   alternates: {
     canonical: "https://www.clevr.tools/privacy",
   },
   openGraph: {
     title: "Privacy Policy | clevr.tools",
     description:
-      "clevr.tools processes all files entirely in your browser. Your files never leave your device.",
+      "clevr.tools processes files locally in your browser by default. Your files stay on your device.",
     url: "https://www.clevr.tools/privacy",
     siteName: "clevr.tools",
   },
@@ -27,18 +27,19 @@ export default function PrivacyPage() {
           {/* Header */}
           <div className="mb-10">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Privacy Policy</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Last updated: February 2026</p>
+            <p className="mt-2 text-sm text-muted-foreground">Last updated: July 2026</p>
           </div>
 
           {/* Core trust statement */}
           <div className="mb-10 rounded-xl border border-primary/25 bg-primary/5 px-6 py-5">
             <p className="font-semibold text-primary">
-              Your files never leave your device.
+              Your files stay on your device, by default.
             </p>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Every tool on clevr.tools runs entirely in your browser. When you compress an image,
-              convert a file, or generate a QR code, the processing happens locally on your machine.
-              Nothing is uploaded to our servers — because we don&apos;t have servers that touch your files.
+              Nearly every tool on clevr.tools runs entirely in your browser. When you compress an
+              image, convert a file, or generate a QR code, the processing happens locally on your
+              machine — we never see the file. The rare tool that needs a server is always labeled
+              before you use it; see &ldquo;AI-Powered Tools&rdquo; below for exactly what that means.
             </p>
           </div>
 
@@ -47,11 +48,11 @@ export default function PrivacyPage() {
             <section className="space-y-3">
               <h2 className="text-lg font-semibold tracking-tight">How the Tools Work</h2>
               <p className="text-muted-foreground">
-                All file processing uses browser APIs — the Canvas API, the File API, and
-                JavaScript libraries that run entirely on your device. When you drop a file into
-                one of our tools, it&apos;s read directly into your browser&apos;s memory and
-                processed there. The result is handed back to you as a download. We never see the
-                file, and neither does any external server.
+                Local tools use browser APIs — the Canvas API, the File API, and JavaScript
+                libraries that run entirely on your device. When you drop a file into one of these
+                tools, it&apos;s read directly into your browser&apos;s memory and processed there.
+                The result is handed back to you as a download. We never see the file, and neither
+                does any external server.
               </p>
               <p className="text-muted-foreground">
                 Files exist only in your browser&apos;s memory during processing. When you close
@@ -79,12 +80,13 @@ export default function PrivacyPage() {
             <section className="space-y-3">
               <h2 className="text-lg font-semibold tracking-tight">Advertising</h2>
               <p className="text-muted-foreground">
-                clevr.tools uses Google AdSense to show ads. AdSense may set cookies and use your
-                browsing history to show you personalized ads. This is Google&apos;s system — we
-                don&apos;t have access to that data and don&apos;t control how ads are targeted.
+                clevr.tools does not currently run ads. If we add Google AdSense in the future,
+                this page will be updated first. AdSense may set cookies and use your browsing
+                history to show personalized ads — that&apos;s Google&apos;s system, and we
+                won&apos;t have access to that data or control how ads are targeted.
               </p>
               <p className="text-muted-foreground">
-                You can opt out of personalized ads through{" "}
+                When ads do launch, you&apos;ll be able to opt out of personalized ads through{" "}
                 <a
                   href="https://adssettings.google.com"
                   target="_blank"
@@ -93,7 +95,7 @@ export default function PrivacyPage() {
                 >
                   Google&apos;s Ad Settings
                 </a>
-                . You can also install an ad blocker if you prefer not to see ads at all.
+                , or install an ad blocker if you prefer not to see ads at all.
               </p>
               <p className="text-muted-foreground">
                 For more details, see{" "}
@@ -120,15 +122,16 @@ export default function PrivacyPage() {
               </p>
             </section>
 
-            {/* Future AI tools */}
+            {/* AI-powered tools */}
             <section className="space-y-3">
-              <h2 className="text-lg font-semibold tracking-tight">Future AI-Powered Tools</h2>
+              <h2 className="text-lg font-semibold tracking-tight">AI-Powered Tools</h2>
               <p className="text-muted-foreground">
-                We&apos;re building AI-powered tools that will require sending data to external
-                APIs for processing. When those launch, we&apos;ll clearly label them with an
-                &ldquo;AI&rdquo; badge and explain exactly what data is sent, to whom, and why.
-                You&apos;ll always know before using them, and any tools that send data externally
-                will be clearly distinguished from the local-only tools on the site today.
+                A small number of tools use AI models too large to run in a browser tab, so they
+                send your file to a server for processing. Every one of these is clearly labeled
+                &mdash; a server badge on the tool itself, plus a note wherever it&apos;s linked
+                &mdash; so you always know before you use it. Files are processed in memory and
+                deleted immediately after; nothing is stored. Every other tool on the site stays
+                fully local, with no exceptions.
               </p>
             </section>
 

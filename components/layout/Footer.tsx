@@ -21,7 +21,7 @@ export default function Footer() {
                 © {new Date().getFullYear()} clevr.tools
               </p>
               <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-                All file processing happens in your browser. Your files never leave your device.
+                File processing happens in your browser. Your files stay on your device.
               </p>
             </div>
 

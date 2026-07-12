@@ -267,7 +267,9 @@ export default function HomePage() {
               <div className="mx-auto max-w-4xl">
                 <div className="mb-4 text-center">
                   <h1 className="text-5xl font-black tracking-[-0.04em] sm:text-6xl lg:text-[3.5rem]">
-                    Free tools. No signup. <span className="text-primary">Zero</span> data collection.
+                    Free tools. No signup.
+                    <br />
+                    <span className="text-primary">Nothing</span> leaves your device.
                   </h1>
                   <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-lg sm:leading-8">
                     File converters, calculators, typing tests, and developer tools. Everything runs in your browser — nothing leaves your device.
