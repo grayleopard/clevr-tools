@@ -419,7 +419,7 @@ export const tools: Tool[] = [
       <h2>Good to know</h2>
       <p><strong>85% quality is the sweet spot.</strong> It's visually indistinguishable from 100% for most documents but produces files 40-60% smaller. Only go higher if you're printing or zooming into fine detail.</p>
       <p><strong>DPI controls the resolution, not the quality slider.</strong> Higher DPI means more pixels per page — bigger files, but sharper output when printed or zoomed. For screen viewing, default DPI is fine. For print, bump it up.</p>
-      <p><strong>Text stays sharp because of how rendering works.</strong> PDF.js renders text as vector outlines first, then rasterizes to your chosen resolution. This means text is as sharp as the DPI allows, not limited by the original PDF's internal resolution.</p>
+      <p><strong>Text stays sharp because of how rendering works.</strong> Text renders as vector outlines first, then rasterizes to your chosen resolution. This means text is as sharp as the DPI allows, not limited by the original PDF's internal resolution.</p>
       <p><strong>Use page range to save time.</strong> A 200-page PDF doesn't need all 200 pages converted. Select just the pages you need — the tool skips everything else, which is dramatically faster on long documents.</p>
 
       <h2>Quick Reference</h2>
@@ -483,7 +483,7 @@ export const tools: Tool[] = [
     icon: 'GitMerge',
     metaTitle: 'Merge PDF Files Online Free — No Signup | clevr.tools',
     metaDescription:
-      'Merge multiple PDF files into one online free. Drag to reorder, see page counts. No upload — combines PDFs entirely in your browser using pdf-lib.',
+      'Merge multiple PDF files into one online free. Drag to reorder, see page counts. No upload — combines PDFs entirely in your browser.',
     seoContent: `
       <h2>When to use this</h2>
       <p>You have five separate PDFs from different departments and the client wants one file. Or you scanned a stack of receipts and now you need a single expense report. Maybe you are assembling a proposal from a cover letter, scope document, and pricing sheet that live in different folders. These are the moments when merging matters.</p>

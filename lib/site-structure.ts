@@ -65,7 +65,6 @@ export const siteCategories: SiteCategory[] = [
           "png-to-jpg",
           "png-to-webp",
           "webp-to-png",
-          "resize-image",
         ],
       },
       {

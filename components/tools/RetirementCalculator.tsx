@@ -288,7 +288,7 @@ export default function RetirementCalculator() {
             $3,333/month. The calculator above uses this rule to estimate your monthly retirement income.
           </p>
           <p className="mt-3">
-            Some planners now suggest 3--3.5% for longer retirements or low-yield environments. The 4%
+            Some planners now suggest 3–3.5% for longer retirements or low-yield environments. The 4%
             figure is a useful starting benchmark, not a guarantee.
           </p>
         </section>

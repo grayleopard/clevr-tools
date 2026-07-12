@@ -209,19 +209,19 @@ export default function CreditCardPayoffCalculator() {
             <li>You&apos;d pay back nearly double the original balance</li>
           </ul>
           <p className="mt-3">
-            The calculator above shows exactly how much faster you can pay off your balance -- and how much
-            interest you save -- by paying more than the minimum each month.
+            The calculator above shows exactly how much faster you can pay off your balance — and how much
+            interest you save — by paying more than the minimum each month.
           </p>
         </section>
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">Debt Payoff Strategies</h2>
           <p>
             <strong className="text-foreground">The Avalanche Method:</strong> Pay off the card with the highest interest rate first, while making
-            minimums on others. Mathematically optimal -- you&apos;ll pay less total interest.
+            minimums on others. Mathematically optimal — you&apos;ll pay less total interest.
           </p>
           <p className="mt-3">
             <strong className="text-foreground">The Snowball Method:</strong> Pay off the smallest balance first, regardless of interest rate.
-            Psychologically motivating -- quick wins help you stay on track.
+            Psychologically motivating — quick wins help you stay on track.
           </p>
           <p className="mt-3">
             Both work. Research suggests the snowball method may lead to better follow-through because

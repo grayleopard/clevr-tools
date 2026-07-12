@@ -346,7 +346,7 @@ export default function PaycheckCalculator() {
           <p>
             If you consistently get a large tax refund, you&apos;re giving the government an interest-free
             loan. If you owe money each year, you may face underpayment penalties. The IRS W-4 form
-            controls your withholding -- claiming more allowances reduces withholding (more take-home
+            controls your withholding — claiming more allowances reduces withholding (more take-home
             pay but a smaller refund or potential underpayment), while claiming fewer increases withholding.
           </p>
           <p className="mt-3">

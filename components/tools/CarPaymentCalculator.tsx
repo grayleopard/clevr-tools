@@ -144,7 +144,7 @@ export default function CarPaymentCalculator() {
             If insurance and gas cost $250/month, your max payment would be $250.
           </p>
           <p className="mt-3">
-            This rule is conservative -- many people spend more and manage fine. But stretching too far on
+            This rule is conservative — many people spend more and manage fine. But stretching too far on
             a car (a depreciating asset) limits money available for savings and investments.
           </p>
           <p className="mt-3">

@@ -190,7 +190,7 @@ export default function InvestmentReturnCalculator() {
         </section>
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">The Hidden Cost of Investment Fees</h2>
-          <p>Investment fees compound just like returns do -- but against you.</p>
+          <p>Investment fees compound just like returns do — but against you.</p>
           <div className="overflow-x-auto mt-3">
             <table className="w-full text-sm border-collapse">
               <thead>
@@ -217,7 +217,7 @@ export default function InvestmentReturnCalculator() {
           </div>
           <p className="mt-3">
             A 1% annual fee on a $100K portfolio over 30 years costs over $187,000 in lost growth. Low-cost
-            index funds and ETFs (expense ratios of 0.03--0.20%) leave dramatically more of your returns in
+            index funds and ETFs (expense ratios of 0.03–0.20%) leave dramatically more of your returns in
             your portfolio. See our{" "}
             <Link href="/calc/retirement" className="text-primary underline hover:no-underline">retirement calculator</Link>{" "}
             to model long-term growth.

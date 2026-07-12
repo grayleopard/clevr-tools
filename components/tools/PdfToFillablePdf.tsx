@@ -924,7 +924,7 @@ export default function PdfToFillablePdf() {
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Field positions and sizes are stored in PDF points and projected through the active pdf.js viewport.
+                  Field positions and sizes are stored in PDF points and scale with the page preview.
                 </p>
               </div>
             )}

@@ -156,7 +156,7 @@ export default function SalesTaxCalculator() {
           <option value="">Select a state...</option>
           {STATE_RATES.map((s) => (
             <option key={s.name} value={s.rate.toString()}>
-              {s.name} -- {s.rate}%
+              {s.name} — {s.rate}%
             </option>
           ))}
         </select>
@@ -264,7 +264,7 @@ export default function SalesTaxCalculator() {
             </table>
           </div>
           <p className="mt-3">
-            Note: Local taxes (city/county) can add 0.5--5% on top of state rates. The total rate
+            Note: Local taxes (city/county) can add 0.5–5% on top of state rates. The total rate
             varies by purchase location.
           </p>
         </section>
@@ -277,7 +277,7 @@ export default function SalesTaxCalculator() {
           <p className="mt-3">
             Shopping across a state border to avoid sales tax is rarely worth the hassle unless the
             purchase is very large. A $10,000 purchase at 8% sales tax saves $800 if bought in a
-            no-tax state -- but only if you&apos;re already near the border or shopping online.
+            no-tax state — but only if you&apos;re already near the border or shopping online.
           </p>
         </section>
       </div>

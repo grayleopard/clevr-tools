@@ -230,7 +230,7 @@ export default function AutoLoanCalculator() {
             </table>
           </div>
           <p className="mt-3">
-            These are approximations -- rates vary by lender, whether the car is new or used, and current
+            These are approximations — rates vary by lender, whether the car is new or used, and current
             market conditions. Credit unions often offer lower rates than dealerships. Getting pre-approved
             before visiting a dealer gives you negotiating power.
           </p>
@@ -266,7 +266,7 @@ export default function AutoLoanCalculator() {
           </div>
           <p className="mt-3">
             Choosing 72 months instead of 36 cuts your payment by $483/month but costs $3,796 more in
-            interest. More importantly, long-term loans increase the risk of being &quot;underwater&quot; -- owing
+            interest. More importantly, long-term loans increase the risk of being &quot;underwater&quot; — owing
             more than the car is worth as it depreciates.
           </p>
         </section>
@@ -274,7 +274,7 @@ export default function AutoLoanCalculator() {
           <h2 className="text-lg font-semibold text-foreground mb-3">The Case for a Down Payment</h2>
           <p>
             Making a down payment reduces your loan amount, which means lower monthly payments and less
-            total interest. It also protects against depreciation -- new cars lose 15--20% of their value
+            total interest. It also protects against depreciation — new cars lose 15–20% of their value
             in the first year. With no down payment, you may owe more than the car is worth within months.
           </p>
           <p className="mt-3">

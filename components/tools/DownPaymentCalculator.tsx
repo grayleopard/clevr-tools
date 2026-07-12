@@ -120,7 +120,7 @@ export default function DownPaymentCalculator() {
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               {result.remaining > 0
-                ? `${fmt(result.remaining)} remaining -- ${formatMonths(result.monthsNeeded)} to goal`
+                ? `${fmt(result.remaining)} remaining — ${formatMonths(result.monthsNeeded)} to goal`
                 : "You have enough saved!"}
             </p>
           </div>
@@ -224,11 +224,11 @@ export default function DownPaymentCalculator() {
           </div>
           <p className="mt-3">
             PMI (private mortgage insurance) is required on conventional loans with less than 20% down.
-            It typically costs 0.5--1.5% of the loan amount annually. On a $400,000 loan, that&apos;s
-            $2,000--$6,000 per year until you reach 20% equity.
+            It typically costs 0.5–1.5% of the loan amount annually. On a $400,000 loan, that&apos;s
+            $2,000–$6,000 per year until you reach 20% equity.
           </p>
           <p className="mt-3">
-            The PMI cost often makes reaching 20% down worth pursuing -- but if it delays buying by
+            The PMI cost often makes reaching 20% down worth pursuing — but if it delays buying by
             years while rents and home prices rise, the math may favor buying sooner with less down.
           </p>
         </section>

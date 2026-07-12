@@ -178,7 +178,7 @@ export default function NetWorthCalculator() {
           </div>
           <p className="mt-3">
             The gap between median and mean reflects wealth concentration at the top. Median is more
-            representative of a &quot;typical&quot; household. Don&apos;t let benchmarks discourage you -- the goal is
+            representative of a &quot;typical&quot; household. Don&apos;t let benchmarks discourage you — the goal is
             steady progress over time.
           </p>
         </section>
@@ -186,7 +186,7 @@ export default function NetWorthCalculator() {
           <h2 className="text-lg font-semibold text-foreground mb-3">The Levers of Net Worth Growth</h2>
           <p>
             <strong className="text-foreground">Grow assets:</strong> Max out tax-advantaged accounts (401k, IRA, HSA) before taxable accounts.
-            Contribute enough to get any employer 401k match -- that&apos;s an immediate 50--100% return.
+            Contribute enough to get any employer 401k match — that&apos;s an immediate 50–100% return.
             Use our{" "}
             <Link href="/calc/retirement" className="text-primary underline hover:no-underline">retirement calculator</Link>{" "}
             and{" "}
@@ -195,7 +195,7 @@ export default function NetWorthCalculator() {
           </p>
           <p className="mt-3">
             <strong className="text-foreground">Reduce liabilities:</strong> Prioritize high-interest debt (credit cards, personal loans).
-            Low-interest debt (mortgages, student loans at below 4%) is lower priority -- your money
+            Low-interest debt (mortgages, student loans at below 4%) is lower priority — your money
             likely grows faster invested than it saves in interest.
           </p>
           <p className="mt-3">

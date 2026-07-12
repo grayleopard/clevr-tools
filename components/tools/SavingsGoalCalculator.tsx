@@ -163,9 +163,9 @@ export default function SavingsGoalCalculator() {
           </p>
           <p className="mt-3">
             <strong className="text-foreground">Use a high-yield savings account.</strong> As of 2025, many online banks and credit unions offer
-            4--5% APY on savings accounts. Traditional brick-and-mortar banks often offer 0.01--0.1%.
+            4–5% APY on savings accounts. Traditional brick-and-mortar banks often offer 0.01–0.1%.
             This difference compounds significantly over time. For a $20,000 emergency fund, the
-            difference is $800--$1,000 per year in interest.
+            difference is $800–$1,000 per year in interest.
           </p>
           <p className="mt-3">
             <strong className="text-foreground">Set specific goals, not vague intentions.</strong> &quot;Save $10,000 by December&quot; is more effective
@@ -175,13 +175,13 @@ export default function SavingsGoalCalculator() {
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">The Emergency Fund</h2>
           <p>
-            Financial advisors typically recommend 3--6 months of essential expenses (housing, food,
+            Financial advisors typically recommend 3–6 months of essential expenses (housing, food,
             utilities, transportation, minimum debt payments) in an accessible, liquid account. This
             provides a buffer against job loss, medical expenses, or unexpected repairs without resorting
             to high-interest credit card debt.
           </p>
           <p className="mt-3">
-            If you have variable income or work in a cyclical industry, aim for 6--12 months. Use the
+            If you have variable income or work in a cyclical industry, aim for 6–12 months. Use the
             calculator above to set a savings goal and see how long it will take to reach it. Once your
             emergency fund is complete, redirect those monthly contributions toward{" "}
             <Link href="/calc/retirement" className="text-primary underline hover:no-underline">retirement savings</Link>.

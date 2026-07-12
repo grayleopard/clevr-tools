@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import {
   formatCountdown,
@@ -14,6 +14,8 @@ interface DailyChallengeBannerProps {
   difficulty: string;
   todayDate: string;
 }
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 function getInitialLocalState(todayDate: string) {
   const todayState = getTodayState();
@@ -46,24 +48,15 @@ export default function DailyChallengeBanner({
   const [mounted, setMounted] = useState(false);
   const [countdown, setCountdown] = useState("--:--:--");
 
-  useEffect(() => {
-    const updateCountdown = () => {
-      setCountdown(formatCountdown(getSecondsUntilMidnight()));
-    };
-
-    const mountTimer = window.setTimeout(() => {
-      setMounted(true);
-      updateCountdown();
-    }, 0);
+  useIsomorphicLayoutEffect(() => {
+    setMounted(true);
+    setCountdown(formatCountdown(getSecondsUntilMidnight()));
 
     const interval = setInterval(() => {
-      updateCountdown();
+      setCountdown(formatCountdown(getSecondsUntilMidnight()));
     }, 1000);
 
-    return () => {
-      window.clearTimeout(mountTimer);
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   return (

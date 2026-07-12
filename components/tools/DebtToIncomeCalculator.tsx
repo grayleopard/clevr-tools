@@ -125,7 +125,7 @@ export default function DebtToIncomeCalculator() {
               {result.dti.toFixed(1)}%
             </p>
             <p className={`text-sm font-medium mt-2 ${result.rating.color}`}>
-              {result.rating.label} -- {result.rating.description}
+              {result.rating.label} — {result.rating.description}
             </p>
           </div>
 

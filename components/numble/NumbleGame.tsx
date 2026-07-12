@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BarChart3, CircleHelp, Settings } from "lucide-react";
 import {
   formatCountdown,
   generateDailyPuzzle,
@@ -205,10 +206,10 @@ function formatModeTitle(mode: NumbleMode, puzzle: DailyPuzzle): string {
   return mode === "daily" ? `Numble #${puzzle.puzzleNumber}` : "Practice Puzzle";
 }
 
-function getDifficultyTone(difficulty: NumbleDifficulty) {
-  if (difficulty === "Hard") return "bg-rose-500/15 text-rose-200 border-rose-400/30";
-  if (difficulty === "Medium") return "bg-amber-500/15 text-amber-100 border-amber-400/30";
-  return "bg-emerald-500/15 text-emerald-100 border-emerald-400/30";
+function getDifficultyDotColor(difficulty: NumbleDifficulty) {
+  if (difficulty === "Hard") return "bg-rose-400";
+  if (difficulty === "Medium") return "bg-amber-400";
+  return "bg-emerald-400";
 }
 
 function computeHintTileIds(
@@ -669,7 +670,10 @@ function ResultsPanel({
             <div className="text-sm uppercase tracking-[0.2em] text-[var(--text-tertiary)]">{formatModeTitle(mode, puzzle)}</div>
             <div className="mt-2 text-5xl font-bold text-[var(--text-primary)]">{puzzle.target}</div>
             <div className="mt-3 flex items-center gap-3 text-sm text-[var(--text-secondary)]">
-              <span className={`rounded-full border px-3 py-1 ${getDifficultyTone(puzzle.difficulty)}`}>{puzzle.difficulty}</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] px-3 py-1 text-[var(--text-primary)]">
+                <span className={`h-1.5 w-1.5 rounded-full ${getDifficultyDotColor(puzzle.difficulty)}`} />
+                {puzzle.difficulty}
+              </span>
               {mode === "daily" ? <span>Next puzzle in {formatCountdown(countdownSec)}</span> : <span>Practice mode</span>}
             </div>
           </div>
@@ -1193,9 +1197,15 @@ export default function NumbleGame() {
             </div>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setShowStats(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Stats">📊</button>
-            <button onClick={() => setShowTutorial(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Tutorial">❓</button>
-            <button onClick={() => setShowSettings(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Settings">⚙️</button>
+            <button onClick={() => setShowStats(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Stats" aria-label="Stats">
+              <BarChart3 className="h-4 w-4" />
+            </button>
+            <button onClick={() => setShowTutorial(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Tutorial" aria-label="Tutorial">
+              <CircleHelp className="h-4 w-4" />
+            </button>
+            <button onClick={() => setShowSettings(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Settings" aria-label="Settings">
+              <Settings className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </div>
@@ -1220,7 +1230,10 @@ export default function NumbleGame() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--text-secondary)]">
-            <span className={`rounded-full border px-3 py-1 ${getDifficultyTone(puzzle.difficulty)}`}>Difficulty: {puzzle.difficulty}</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] px-3 py-1 text-[var(--text-primary)]">
+              <span className={`h-1.5 w-1.5 rounded-full ${getDifficultyDotColor(puzzle.difficulty)}`} />
+              Difficulty: {puzzle.difficulty}
+            </span>
             {stats.currentStreak >= 2 ? <span>🔥 {stats.currentStreak}-day streak</span> : null}
           </div>
         </div>
@@ -1334,14 +1347,22 @@ export default function NumbleGame() {
                       <div className="text-xs text-[var(--text-tertiary)]">Optimal</div>
                       <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{puzzle.optimalSteps} steps</div>
                     </div>
-                    <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
-                      <div className="text-xs text-[var(--text-tertiary)]">Solve rate</div>
-                      <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{stats.totalGames > 0 ? Math.round((stats.solvedGames / stats.totalGames) * 100) : 0}%</div>
-                    </div>
-                    <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
-                      <div className="text-xs text-[var(--text-tertiary)]">Best streak</div>
-                      <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{stats.maxStreak}</div>
-                    </div>
+                    {stats.totalGames > 0 ? (
+                      <>
+                        <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
+                          <div className="text-xs text-[var(--text-tertiary)]">Solve rate</div>
+                          <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{Math.round((stats.solvedGames / stats.totalGames) * 100)}%</div>
+                        </div>
+                        <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
+                          <div className="text-xs text-[var(--text-tertiary)]">Best streak</div>
+                          <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{stats.maxStreak}</div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="col-span-2 rounded-2xl bg-[var(--bg-surface)] p-3 text-sm text-[var(--text-secondary)]">
+                        Play your first puzzle to start tracking stats.
+                      </div>
+                    )}
                   </div>
                 </div>
 

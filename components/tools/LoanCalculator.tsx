@@ -231,15 +231,15 @@ export default function LoanCalculator() {
             </table>
           </div>
           <p className="mt-3">
-            Each 1% increase in rate adds roughly $190--$200/month and $70,000--$75,000 in total interest.
-            This is why rate shopping matters -- even a 0.25% difference saves meaningful money over time.
+            Each 1% increase in rate adds roughly $190–$200/month and $70,000–$75,000 in total interest.
+            This is why rate shopping matters — even a 0.25% difference saves meaningful money over time.
           </p>
         </section>
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">Tips for Getting a Lower Interest Rate</h2>
           <p>
             A higher credit score is the single biggest factor. Lenders offer their best rates to borrowers
-            with scores above 740--760. Even improving from 680 to 720 can save half a percentage point.
+            with scores above 740–760. Even improving from 680 to 720 can save half a percentage point.
           </p>
           <p className="mt-3">
             Shop at least three lenders. Rates vary more than most borrowers realize, even for the same

@@ -359,7 +359,7 @@ export default function TakeHomePayCalculator() {
           </p>
           <p className="mt-3">
             Federal income tax is the largest deduction for most workers. The US uses a progressive
-            bracket system -- you pay 10% on income up to $11,925, 12% on the next portion, and so on up
+            bracket system — you pay 10% on income up to $11,925, 12% on the next portion, and so on up
             to 37%. Only income within each bracket is taxed at that rate.
           </p>
           <p className="mt-3">
@@ -383,7 +383,7 @@ export default function TakeHomePayCalculator() {
           </p>
           <p className="mt-3">
             Living in a no-income-tax state can meaningfully increase your take-home pay. On a $75,000
-            salary, someone in Texas keeps roughly $3,000--5,000 more per year compared to someone in a
+            salary, someone in Texas keeps roughly $3,000–5,000 more per year compared to someone in a
             mid-rate state like North Carolina (4.5%).
           </p>
         </section>
@@ -391,18 +391,18 @@ export default function TakeHomePayCalculator() {
           <h2 className="text-lg font-semibold text-foreground mb-3">Marginal vs. Effective Tax Rate</h2>
           <p>
             Your marginal rate is the rate on your last dollar of income. Your effective rate is what you
-            actually pay as a percentage of total income -- always lower.
+            actually pay as a percentage of total income — always lower.
           </p>
           <p className="mt-3">
             Example: A single filer earning $75,000 in 2025 pays:
           </p>
           <ul className="list-disc pl-5 mt-2 space-y-1">
             <li>10% on the first $11,925 = $1,193</li>
-            <li>12% on $11,925--$48,475 = $4,386</li>
-            <li>22% on $48,475--$75,000 = $5,835</li>
+            <li>12% on $11,925–$48,475 = $4,386</li>
+            <li>22% on $48,475–$75,000 = $5,835</li>
           </ul>
           <p className="mt-2">
-            Total federal tax: ~$11,413 -- effective rate of ~15.2%, not 22%.
+            Total federal tax: ~$11,413 — effective rate of ~15.2%, not 22%.
           </p>
           <p className="mt-3">
             You never take home less money by earning more. A raise always increases your net pay.

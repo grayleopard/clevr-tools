@@ -276,7 +276,7 @@ export default function FileDropZone({
                   {state === "hover" ? "Drop it here" : headline}
                 </p>
                 <p className="text-sm leading-7 text-muted-foreground">
-                  Upload once, process locally, and keep the original workflow intact.
+                  Drop a file, get the result. Nothing is uploaded.
                 </p>
               </div>
 

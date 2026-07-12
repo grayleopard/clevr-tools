@@ -271,7 +271,7 @@ export default function AmortizationCalculator() {
               </thead>
               <tbody>
                 {[
-                  ["$0 (baseline)", "--", "--", "30 years"],
+                  ["$0 (baseline)", "—", "—", "30 years"],
                   ["$100/month", "~$47,000", "~3 years", "~27 years"],
                   ["$200/month", "~$89,000", "~6 years", "~24 years"],
                   ["$500/month", "~$175,000", "~12 years", "~18 years"],
@@ -291,7 +291,7 @@ export default function AmortizationCalculator() {
           </p>
           <p className="mt-3">
             The key insight: extra payments reduce the balance faster, which means less interest
-            accrues each month, which means future payments pay down principal even faster -- a
+            accrues each month, which means future payments pay down principal even faster — a
             compounding benefit that works in your favor. See also our{" "}
             <Link href="/calc/loan" className="text-primary underline hover:no-underline">loan calculator</Link>{" "}
             for a simpler view of your base payment.

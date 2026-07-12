@@ -184,7 +184,7 @@ export default function PdfToJpg() {
 
       {/* Info */}
       <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
-        Renders each PDF page to a high-quality JPG using PDF.js. Click thumbnails to select which pages to convert.
+        Converts each page to a high-quality JPG. Click thumbnails to select which pages to convert.
       </div>
 
       {/* Drop zone */}

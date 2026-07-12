@@ -82,8 +82,8 @@ function SmartConverterSkeleton({
             {isDraggingOver ? "Release to detect your file" : "Drop any file here"}
           </p>
           <p className="mx-auto max-w-xl text-sm leading-7 text-muted-foreground sm:text-[15px]">
-            <span className="md:hidden">Convert, compress, or route files instantly.</span>
-            <span className="hidden md:inline">Convert, compress, or route files instantly. Drag a file in, browse from your device, or paste a copied image from the clipboard.</span>
+            <span className="md:hidden">Convert or compress files instantly.</span>
+            <span className="hidden md:inline">Convert or compress files instantly. Drag one in, browse from your device, or paste from your clipboard.</span>
           </p>
         </div>
 
