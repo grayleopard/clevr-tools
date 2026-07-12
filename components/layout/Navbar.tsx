@@ -12,6 +12,7 @@ import { playLinks, siteCategories } from "@/lib/site-structure";
 import { getPrivacyContext, getToolBySlug } from "@/lib/tools";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import NavbarLogo from "@/components/layout/NavbarLogo";
+import CommandPalette, { MobileSearchTrigger } from "@/components/search/CommandPalette";
 
 function CategoryMenu({
   category,
@@ -190,6 +191,7 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <CommandPalette />
             <ThemeToggle />
 
             <details className="group relative md:hidden">
@@ -201,6 +203,7 @@ export default function Navbar() {
 
               <div className="absolute right-0 top-14 z-50 w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-3 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
                 <nav className="space-y-2" aria-label="Mobile navigation">
+                  <MobileSearchTrigger className="flex w-full items-center gap-2 rounded-2xl bg-muted/55 px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground transition-colors hover:text-primary" />
                   <details className="group/category rounded-2xl bg-muted/55 p-2">
                     <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary transition-colors hover:bg-primary/10">
                       Play
