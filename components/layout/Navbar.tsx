@@ -2,13 +2,14 @@ import Link from "next/link";
 import {
   ArrowRight,
   ChevronDown,
+  Cloud,
   Hash,
   ImageIcon,
   Menu,
   X,
 } from "lucide-react";
 import { playLinks, siteCategories } from "@/lib/site-structure";
-import { getToolBySlug } from "@/lib/tools";
+import { getPrivacyContext, getToolBySlug } from "@/lib/tools";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import NavbarLogo from "@/components/layout/NavbarLogo";
 
@@ -30,14 +31,21 @@ function CategoryMenu({
             {sub.slugs.map((slug) => {
               const tool = getToolBySlug(slug);
               if (!tool || tool.live === false) return null;
+              const usesServer = getPrivacyContext(tool) === "server";
               return (
                 <li key={slug}>
                   <Link
                     href={tool.route}
-                    className="block rounded-xl px-3 py-2 text-sm text-foreground transition-[background-color,color,transform] duration-150 hover:bg-muted/70 hover:text-primary"
+                    className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm text-foreground transition-[background-color,color,transform] duration-150 hover:bg-muted/70 hover:text-primary"
                     data-close={closeOnClick ? "true" : undefined}
                   >
                     {tool.name}
+                    {usesServer && (
+                      <Cloud
+                        className="h-3 w-3 shrink-0 text-muted-foreground"
+                        aria-label="Uses a server-side AI model"
+                      />
+                    )}
                   </Link>
                 </li>
               );

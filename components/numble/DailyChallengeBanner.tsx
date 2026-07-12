@@ -80,7 +80,18 @@ export default function DailyChallengeBanner({
             </span>
             <span className="rounded-full bg-card/75 px-3 py-1.5">{difficulty}</span>
             <span className="rounded-full bg-card/75 px-3 py-1.5">
-              Next puzzle in {mounted ? countdown : "--:--:--"}
+              Next puzzle in{" "}
+              {mounted ? (
+                countdown
+              ) : (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-[1em] w-[8ch] animate-pulse rounded bg-muted-foreground/25 align-middle"
+                  />
+                  <span className="sr-only">loading</span>
+                </>
+              )}
             </span>
           </div>
           {initialRef.state === "completed" ? (

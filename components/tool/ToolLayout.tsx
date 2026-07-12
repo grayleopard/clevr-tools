@@ -8,6 +8,7 @@ import ToolPageLayout from "@/components/layout/ToolPageLayout";
 import OnThisPageNav from "@/components/tool/OnThisPageNav";
 import { getPrivacyContext, getRelatedTools, toolCategories } from "@/lib/tools";
 import { siteCategories } from "@/lib/site-structure";
+import { extractHeadings, injectHeadingIds, type TocHeading } from "@/lib/seo/toc";
 import type { Tool } from "@/lib/tools";
 
 interface ToolLayoutProps {
@@ -75,7 +76,11 @@ function RelatedToolLinkList({
   );
 }
 
-function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelatedTools>) {
+function getSidebarContent(
+  tool: Tool,
+  relatedTools: ReturnType<typeof getRelatedTools>,
+  seoHeadings: TocHeading[]
+) {
   const acceptedFormats = tool.acceptedFormats.map(formatAcceptedFormat);
 
   if (tool.slug === "background-remover") {
@@ -111,7 +116,7 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
   ) {
     return {
       settingsTitle: "On this page",
-      settingsPanel: <OnThisPageNav />,
+      settingsPanel: <OnThisPageNav seedHeadings={seoHeadings} />,
       infoTitle: tool.category === "calc" ? "Related calculators" : "Related tools",
       infoPanel: <RelatedToolLinkList tools={relatedTools} />,
     };
@@ -205,7 +210,11 @@ export default function ToolLayout({
     siteCategories.find((category) => category.id === siteCategoryIdByToolCategory[tool.category]) ??
     siteCategories[0];
   const contentWidth = fullWidth || !embeddedShell ? "max-w-7xl" : "max-w-7xl";
-  const sidebarContent = getSidebarContent(tool, relatedTools);
+  const seoHeadings = tool.seoContent ? extractHeadings(tool.seoContent) : [];
+  const seoContentWithIds = tool.seoContent
+    ? injectHeadingIds(tool.seoContent, seoHeadings)
+    : tool.seoContent;
+  const sidebarContent = getSidebarContent(tool, relatedTools, seoHeadings);
   const privacyContext = getPrivacyContext(tool);
 
   return (
@@ -274,7 +283,7 @@ export default function ToolLayout({
               <div
                 data-toc-scope
                 className={`mx-auto ${contentWidth} max-w-none px-4 py-10 prose prose-zinc prose-sm dark:prose-invert sm:px-6`}
-                dangerouslySetInnerHTML={{ __html: tool.seoContent }}
+                dangerouslySetInnerHTML={{ __html: seoContentWithIds }}
               />
             </div>
           ) : null}

@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { Cloud } from "lucide-react";
 import { getToolIcon } from "@/lib/tool-icons";
 import { Badge } from "@/components/ui/badge";
-import type { Tool } from "@/lib/tools";
+import { getPrivacyContext, type Tool } from "@/lib/tools";
 
 export default function ToolCard({ tool }: { tool: Tool }) {
   const Icon = getToolIcon(tool.icon);
+  const usesServer = getPrivacyContext(tool) === "server";
 
   return (
     <Link
@@ -15,14 +17,26 @@ export default function ToolCard({ tool }: { tool: Tool }) {
         <div className="rounded-lg bg-primary/10 p-2.5">
           <Icon className="h-5 w-5 text-primary" />
         </div>
-        {tool.badge && (
-          <Badge
-            variant={tool.badge === "popular" ? "default" : "secondary"}
-            className="text-[10px] font-semibold uppercase tracking-[0.18em] capitalize"
-          >
-            {tool.badge}
-          </Badge>
-        )}
+        <div className="flex items-center gap-1.5">
+          {usesServer && (
+            <Badge
+              variant="outline"
+              className="gap-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              title="Uses a server-side AI model for this one tool"
+            >
+              <Cloud className="h-3 w-3" />
+              Server
+            </Badge>
+          )}
+          {tool.badge && (
+            <Badge
+              variant={tool.badge === "popular" ? "default" : "secondary"}
+              className="text-[10px] font-semibold uppercase tracking-[0.18em] capitalize"
+            >
+              {tool.badge}
+            </Badge>
+          )}
+        </div>
       </div>
       <div>
         <h3 className="text-sm font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
