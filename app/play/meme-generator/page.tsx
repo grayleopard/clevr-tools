@@ -94,6 +94,7 @@ export default async function MemeGeneratorPage({
                     <p>Memes download as PNG files directly from the browser.</p>
                   </div>
                 }
+                privacyContext="quiet"
               >
                 <MemeEditor showDebugRegions={showDebugRegions} />
               </ToolPageLayout>

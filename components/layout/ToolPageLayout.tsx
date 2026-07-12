@@ -7,6 +7,8 @@ interface RelatedToolLink {
   href: string;
 }
 
+type PrivacyContext = "files" | "input" | "quiet" | "server";
+
 interface ToolPageLayoutProps {
   categoryName: string;
   categoryHref: string;
@@ -16,13 +18,38 @@ interface ToolPageLayoutProps {
   infoPanel?: ReactNode;
   settingsTitle?: string;
   infoTitle?: string;
+  /** "files" and "server" are handled at point of contact elsewhere (dropzone footnote /
+   *  tool-specific disclosure), so they render nothing here. Defaults to "input". */
+  privacyContext?: PrivacyContext;
+}
+
+function PrivacyNote({ privacyContext = "input" }: { privacyContext?: PrivacyContext }) {
+  if (privacyContext === "input") {
+    return (
+      <div className="rounded-[1.25rem] bg-card/80 px-4 py-4 text-sm text-muted-foreground">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
+          Private by default
+        </p>
+        <p className="mt-3 leading-7">
+          Your inputs never leave your browser. Nothing is stored or sent anywhere.
+        </p>
+      </div>
+    );
+  }
+
+  if (privacyContext === "quiet") {
+    return <p className="px-1 text-xs text-muted-foreground">Runs entirely in your browser.</p>;
+  }
+
+  return null;
 }
 
 function SidebarLinks({
   categoryName,
   categoryHref,
   relatedTools,
-}: Pick<ToolPageLayoutProps, "categoryName" | "categoryHref" | "relatedTools">) {
+  privacyContext,
+}: Pick<ToolPageLayoutProps, "categoryName" | "categoryHref" | "relatedTools" | "privacyContext">) {
   return (
     <div className="space-y-6">
       <div>
@@ -50,14 +77,7 @@ function SidebarLinks({
         </div>
       </div>
 
-      <div className="rounded-[1.25rem] bg-card/80 px-4 py-4 text-sm text-muted-foreground">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
-          Private by default
-        </p>
-        <p className="mt-3 leading-7">
-          Files stay in your browser. Nothing is uploaded unless a tool says otherwise.
-        </p>
-      </div>
+      <PrivacyNote privacyContext={privacyContext} />
     </div>
   );
 }
@@ -71,6 +91,7 @@ export default function ToolPageLayout({
   infoPanel,
   settingsTitle = "Settings",
   infoTitle = "Tool notes",
+  privacyContext,
 }: ToolPageLayoutProps) {
   return (
     <div className="space-y-5">
@@ -87,6 +108,7 @@ export default function ToolPageLayout({
             categoryName={categoryName}
             categoryHref={categoryHref}
             relatedTools={relatedTools}
+            privacyContext={privacyContext}
           />
         </div>
       </details>
@@ -98,12 +120,13 @@ export default function ToolPageLayout({
               categoryName={categoryName}
               categoryHref={categoryHref}
               relatedTools={relatedTools}
+              privacyContext={privacyContext}
             />
           </div>
         </aside>
 
         <div className="space-y-6">
-          <div className="rounded-[2rem] bg-card/[0.96] p-6 shadow-[var(--shadow-sm)] lg:p-10">
+          <div data-toc-scope className="rounded-[2rem] bg-card/[0.96] p-6 shadow-[var(--shadow-sm)] lg:p-10">
             {children}
           </div>
           <div aria-hidden="true" className="hidden h-[90px] lg:block" />

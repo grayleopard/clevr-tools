@@ -214,11 +214,9 @@ export default function BackgroundRemover() {
         onFiles={handleFiles}
         resetKey={resetKey}
         compact={Boolean(source)}
+        subline="Drop a file, get the result. Your image is sent to our AI server for processing."
+        privacyNote="Sent to our AI server for processing, then deleted"
       />
-
-      <div className="rounded-xl border border-sky-500/15 bg-sky-500/5 px-4 py-3 text-sm text-muted-foreground">
-        <span className="font-medium text-foreground">🔒 Privacy note:</span> Your image is sent to our AI server for processing, then immediately deleted. Never stored.
-      </div>
 
       {source ? (
         <section className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6">

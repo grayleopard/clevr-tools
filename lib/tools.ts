@@ -13,6 +13,19 @@ export interface Tool {
   badge?: 'new' | 'popular';
   /** false = page not built yet — hidden from homepage grid and sitemap */
   live?: boolean;
+  /** Overrides the auto-derived sidebar privacy message. Defaults based on category. */
+  privacyContext?: 'files' | 'input' | 'quiet' | 'server';
+}
+
+const FILE_CATEGORIES: Tool['category'][] = ['compress', 'convert', 'ai', 'tools', 'files'];
+const INPUT_CATEGORIES: Tool['category'][] = ['calc', 'text', 'dev', 'generate'];
+
+/** Which privacy sidebar variant a tool should show, derived from category unless overridden. */
+export function getPrivacyContext(tool: Tool): 'files' | 'input' | 'quiet' | 'server' {
+  if (tool.privacyContext) return tool.privacyContext;
+  if (FILE_CATEGORIES.includes(tool.category)) return 'files';
+  if (INPUT_CATEGORIES.includes(tool.category)) return 'input';
+  return 'quiet';
 }
 
 export const tools: Tool[] = [
@@ -325,6 +338,7 @@ export const tools: Tool[] = [
     name: 'AI Background Remover',
     shortDescription: 'Remove backgrounds from images instantly with AI — no signup required.',
     category: 'tools',
+    privacyContext: 'server',
     route: '/tools/background-remover',
     acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp'],
     icon: 'Bot',

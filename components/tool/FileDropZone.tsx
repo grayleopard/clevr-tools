@@ -17,6 +17,7 @@ interface FileDropZoneProps {
   /** Optional clipboard action for tools that support direct paste. */
   onPasteClipboard?: () => void;
   headline?: string;
+  subline?: string;
   privacyNote?: string;
 }
 
@@ -64,6 +65,7 @@ export default function FileDropZone({
   compact = false,
   onPasteClipboard,
   headline = "Drop files here",
+  subline = "Drop a file, get the result. Nothing is uploaded.",
   privacyNote = "Files stay in your browser — nothing is uploaded",
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -276,7 +278,7 @@ export default function FileDropZone({
                   {state === "hover" ? "Drop it here" : headline}
                 </p>
                 <p className="text-sm leading-7 text-muted-foreground">
-                  Drop a file, get the result. Nothing is uploaded.
+                  {subline}
                 </p>
               </div>
 

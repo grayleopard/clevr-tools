@@ -358,6 +358,7 @@ export default function OddsCalculator() {
       infoPanel={infoPanel}
       settingsTitle="Odds reference"
       infoTitle="Related calculators"
+      privacyContext="input"
     >
       <div className="space-y-8">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as OddsTab)} className="gap-6">

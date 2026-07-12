@@ -204,6 +204,7 @@ export default async function MemeTemplatePage({
                     <p>Templates export as PNG files at the current meme resolution.</p>
                   </div>
                 }
+                privacyContext="quiet"
               >
                 <MemeEditor
                   initialTemplate={template}

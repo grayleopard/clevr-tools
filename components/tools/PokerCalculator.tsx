@@ -697,6 +697,7 @@ export default function PokerCalculator() {
       infoPanel={infoPanel}
       settingsTitle="Reference"
       infoTitle="Related calculators"
+      privacyContext="input"
     >
       <div className="space-y-8">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as PokerTab)} className="gap-6">

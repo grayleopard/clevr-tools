@@ -419,6 +419,7 @@ export default function GifCompressor() {
       infoPanel={infoPanel}
       settingsTitle="Compression settings"
       infoTitle="Tool notes"
+      privacyContext="files"
     >
       <div className="space-y-6">
         <PageDragOverlay onFiles={handleFiles} />

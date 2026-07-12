@@ -543,6 +543,7 @@ export default function ImageResizer() {
       relatedTools={relatedTools}
       settingsPanel={settingsPanel}
       infoPanel={infoPanel}
+      privacyContext="files"
     >
       <div className="space-y-6">
         <FileDropZone

@@ -322,6 +322,7 @@ export default function ImageCompressor() {
       relatedTools={relatedTools}
       settingsPanel={settingsPanel}
       infoPanel={infoPanel}
+      privacyContext="files"
     >
       <div className="space-y-6">
         <PageDragOverlay onFiles={handleFiles} />

@@ -5,7 +5,8 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ToolCard from "@/components/tool/ToolCard";
 import ToolPageLayout from "@/components/layout/ToolPageLayout";
-import { getRelatedTools, toolCategories } from "@/lib/tools";
+import OnThisPageNav from "@/components/tool/OnThisPageNav";
+import { getPrivacyContext, getRelatedTools, toolCategories } from "@/lib/tools";
 import { siteCategories } from "@/lib/site-structure";
 import type { Tool } from "@/lib/tools";
 
@@ -102,63 +103,50 @@ function getSidebarContent(tool: Tool, relatedTools: ReturnType<typeof getRelate
     };
   }
 
-  if (tool.category === "calc") {
+  if (
+    tool.category === "calc" ||
+    tool.category === "text" ||
+    tool.category === "dev" ||
+    tool.category === "generate"
+  ) {
     return {
-      settingsTitle: "Formula reference",
-      settingsPanel: (
-        <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>{tool.shortDescription}</p>
-          <div className="rounded-[1rem] bg-card/80 p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
-              Reference
-            </p>
-            <p className="mt-3">
-              Adjust the inputs and see the result update in real time.
-            </p>
+      settingsTitle: "On this page",
+      settingsPanel: <OnThisPageNav />,
+      infoTitle: tool.category === "calc" ? "Related calculators" : "Related tools",
+      infoPanel: <RelatedToolLinkList tools={relatedTools} />,
+    };
+  }
+
+  if (tool.category === "type") {
+    if (tool.slug === "typing-test") {
+      return {
+        settingsTitle: "Shortcuts",
+        settingsPanel: (
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <kbd className="rounded-md border border-border bg-card/80 px-2 py-1 font-mono text-xs text-foreground">
+              Tab
+            </kbd>
+            <span>+</span>
+            <kbd className="rounded-md border border-border bg-card/80 px-2 py-1 font-mono text-xs text-foreground">
+              Enter
+            </kbd>
+            <span>to restart</span>
           </div>
-        </div>
-      ),
-      infoTitle: "Related calculators",
+        ),
+        infoTitle: "Related tools",
+        infoPanel: <RelatedToolLinkList tools={relatedTools} />,
+      };
+    }
+    return {
+      infoTitle: "Related tools",
       infoPanel: <RelatedToolLinkList tools={relatedTools} />,
     };
   }
 
   if (tool.category === "time") {
     return {
-      settingsTitle: "Session settings",
-      settingsPanel: (
-        <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>{tool.shortDescription}</p>
-        </div>
-      ),
       infoTitle: "Related tools",
       infoPanel: <RelatedToolLinkList tools={relatedTools} />,
-    };
-  }
-
-  if (tool.category === "type") {
-    return {
-      settingsTitle: "Session controls",
-      settingsPanel: (
-        <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>{tool.shortDescription}</p>
-        </div>
-      ),
-      infoTitle: "Related tools",
-      infoPanel: <RelatedToolLinkList tools={relatedTools} />,
-    };
-  }
-
-  if (tool.category === "text" || tool.category === "dev" || tool.category === "generate") {
-    return {
-      settingsTitle: "Related tools",
-      settingsPanel: <RelatedToolLinkList tools={relatedTools} />,
-      infoTitle: "Tool notes",
-      infoPanel: (
-        <div className="space-y-4 text-sm leading-7 text-muted-foreground">
-          <p>{tool.shortDescription}</p>
-        </div>
-      ),
     };
   }
 
@@ -218,6 +206,7 @@ export default function ToolLayout({
     siteCategories[0];
   const contentWidth = fullWidth || !embeddedShell ? "max-w-7xl" : "max-w-7xl";
   const sidebarContent = getSidebarContent(tool, relatedTools);
+  const privacyContext = getPrivacyContext(tool);
 
   return (
     <>
@@ -272,6 +261,7 @@ export default function ToolLayout({
                   infoPanel={sidebarContent.infoPanel}
                   settingsTitle={sidebarContent.settingsTitle}
                   infoTitle={sidebarContent.infoTitle}
+                  privacyContext={privacyContext}
                 >
                   {children}
                 </ToolPageLayout>
@@ -282,6 +272,7 @@ export default function ToolLayout({
           {tool.seoContent ? (
             <div className="border-t border-border bg-muted/10">
               <div
+                data-toc-scope
                 className={`mx-auto ${contentWidth} max-w-none px-4 py-10 prose prose-zinc prose-sm dark:prose-invert sm:px-6`}
                 dangerouslySetInnerHTML={{ __html: tool.seoContent }}
               />
