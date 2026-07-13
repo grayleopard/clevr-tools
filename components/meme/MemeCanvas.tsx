@@ -15,6 +15,8 @@ interface MemeCanvasProps {
   texts: MemeTextValues;
   style: MemeStyleState;
   showDebugRegions?: boolean;
+  /** Called after each render with the set of field ids whose text is truncated at the minimum font size. */
+  onOverflowChange?: (overflowingFieldIds: Set<string>) => void;
 }
 
 interface WrappedLine {
@@ -40,6 +42,8 @@ interface FittedTextLayout {
   innerY: number;
   innerWidth: number;
   innerHeight: number;
+  /** True if the text still didn't fit at MIN_FONT_SIZE and got clipped. */
+  overflowed: boolean;
 }
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>();
@@ -120,12 +124,16 @@ function wrapText(
   return lines;
 }
 
-function getFieldRegion(field: TextFieldConfig): TextRegion {
+function getFieldRegion(
+  field: TextFieldConfig,
+  templateWidth: number,
+  templateHeight: number
+): TextRegion {
   return {
-    x: field.x,
-    y: field.y,
-    width: field.width,
-    height: field.height,
+    x: field.x * templateWidth,
+    y: field.y * templateHeight,
+    width: field.width * templateWidth,
+    height: field.height * templateHeight,
     align: field.align,
     valign: field.valign ?? "middle",
   };
@@ -139,7 +147,9 @@ function fitTextToRegion(
   ctx: CanvasRenderingContext2D,
   field: TextFieldConfig,
   value: string,
-  style: MemeStyleState
+  style: MemeStyleState,
+  templateWidth: number,
+  templateHeight: number
 ): FittedTextLayout | null {
   const text = value.trim();
   if (!text) return null;
@@ -150,7 +160,7 @@ function fitTextToRegion(
       ? "Impact, 'Arial Black', sans-serif"
       : "Geist, 'Helvetica Neue', Arial, sans-serif";
 
-  const region = getFieldRegion(field);
+  const region = getFieldRegion(field, templateWidth, templateHeight);
   let fontSize = Math.max(MIN_FONT_SIZE, Math.round(field.fontSize * style.fontScale));
   let fallbackLayout: FittedTextLayout | null = null;
 
@@ -165,6 +175,7 @@ function fitTextToRegion(
     const lineHeight = getLineHeight(fontSize, style);
     const totalHeight = lines.length * lineHeight;
     const allFit = lines.every((line) => line.width <= innerWidth + 1);
+    const fits = lines.length && allFit && totalHeight <= innerHeight;
 
     if (lines.length) {
       fallbackLayout = {
@@ -176,10 +187,11 @@ function fitTextToRegion(
         innerY: region.y + paddingY,
         innerWidth,
         innerHeight,
+        overflowed: !fits && fontSize === MIN_FONT_SIZE,
       };
     }
 
-    if (lines.length && allFit && totalHeight <= innerHeight) {
+    if (fits) {
       return fallbackLayout;
     }
 
@@ -193,10 +205,12 @@ function drawField(
   ctx: CanvasRenderingContext2D,
   field: TextFieldConfig,
   value: string,
-  style: MemeStyleState
-) {
-  const layout = fitTextToRegion(ctx, field, value, style);
-  if (!layout) return;
+  style: MemeStyleState,
+  templateWidth: number,
+  templateHeight: number
+): boolean {
+  const layout = fitTextToRegion(ctx, field, value, style, templateWidth, templateHeight);
+  if (!layout) return false;
 
   const fontFamily =
     style.mode === "classic"
@@ -248,6 +262,7 @@ function drawField(
   });
 
   ctx.restore();
+  return layout.overflowed;
 }
 
 function drawWatermark(ctx: CanvasRenderingContext2D, width: number, height: number) {
@@ -265,10 +280,15 @@ function drawWatermark(ctx: CanvasRenderingContext2D, width: number, height: num
 }
 
 const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeCanvas(
-  { template, texts, style, showDebugRegions = false },
+  { template, texts, style, showDebugRegions = false, onOverflowChange },
   forwardedRef
 ) {
   const localRef = useRef<HTMLCanvasElement | null>(null);
+  const onOverflowChangeRef = useRef(onOverflowChange);
+
+  useEffect(() => {
+    onOverflowChangeRef.current = onOverflowChange;
+  }, [onOverflowChange]);
 
   useEffect(() => {
     let cancelled = false;
@@ -290,9 +310,19 @@ const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeC
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(image, 0, 0, template.width, template.height);
 
+        const overflowing = new Set<string>();
         template.textFields.forEach((field) => {
-          drawField(context, field, texts[field.id] ?? "", style);
+          const overflowed = drawField(
+            context,
+            field,
+            texts[field.id] ?? "",
+            style,
+            template.width,
+            template.height
+          );
+          if (overflowed) overflowing.add(field.id);
         });
+        onOverflowChangeRef.current?.(overflowing);
 
         drawWatermark(context, template.width, template.height);
       } catch {
@@ -334,10 +364,10 @@ const MemeCanvas = forwardRef<HTMLCanvasElement, MemeCanvasProps>(function MemeC
               key={field.id}
               className="absolute border-2 border-rose-500/90 bg-rose-500/15"
               style={{
-                left: `${(field.x / template.width) * 100}%`,
-                top: `${(field.y / template.height) * 100}%`,
-                width: `${(field.width / template.width) * 100}%`,
-                height: `${(field.height / template.height) * 100}%`,
+                left: `${field.x * 100}%`,
+                top: `${field.y * 100}%`,
+                width: `${field.width * 100}%`,
+                height: `${field.height * 100}%`,
               }}
             >
               <span className="absolute left-1 top-1 rounded bg-rose-600 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm sm:text-xs">

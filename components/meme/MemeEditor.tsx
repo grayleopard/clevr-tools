@@ -42,10 +42,10 @@ function createUploadedTemplate(
       {
         id: "top",
         label: "Top text",
-        x: width * 0.05,
-        y: height * 0.04,
-        width: width * 0.9,
-        height: height * 0.18,
+        x: 0.05,
+        y: 0.04,
+        width: 0.9,
+        height: 0.18,
         fontSize,
         align: "center",
         valign: "middle",
@@ -55,10 +55,10 @@ function createUploadedTemplate(
       {
         id: "bottom",
         label: "Bottom text",
-        x: width * 0.05,
-        y: height * 0.78,
-        width: width * 0.9,
-        height: height * 0.18,
+        x: 0.05,
+        y: 0.78,
+        width: 0.9,
+        height: 0.18,
         fontSize,
         align: "center",
         valign: "middle",
@@ -87,6 +87,7 @@ export default function MemeEditor({
   const [style, setStyle] = useState<MemeStyleState>(defaultStyle);
   const [isDownloading, setIsDownloading] = useState(false);
   const [uploadedSrc, setUploadedSrc] = useState<string | null>(null);
+  const [overflowingFieldIds, setOverflowingFieldIds] = useState<Set<string>>(new Set());
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -220,6 +221,7 @@ export default function MemeEditor({
             texts={texts}
             style={style}
             showDebugRegions={showDebugRegions}
+            onOverflowChange={setOverflowingFieldIds}
           />
         </div>
 
@@ -227,6 +229,7 @@ export default function MemeEditor({
           template={selectedTemplate}
           texts={texts}
           style={style}
+          overflowingFieldIds={overflowingFieldIds}
           onTextChange={(id, value) =>
             setTexts((current) => ({
               ...current,

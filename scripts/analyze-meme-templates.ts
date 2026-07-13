@@ -1,6 +1,18 @@
 /**
  * Analyzes meme template images using Claude vision to determine
- * where text should be placed. Run once to generate template metadata.
+ * where text should be placed. Run for NEW templates only.
+ *
+ * DRAFT GENERATOR, NOT AUTHORITATIVE: this produces a first guess, not a
+ * shippable region. Vision-estimated boxes are frequently wrong on tilted
+ * or perspective real-world objects (signs, boards, speech bubbles) — an
+ * axis-aligned bounding box can't match a photographed quadrilateral, and
+ * the model sometimes just mismeasures. Every template this script (or
+ * generate-meme-templates.ts) touches MUST be verified against the
+ * `?memeDebug=1` region overlay — with sample text in every field — before
+ * its output is trusted in lib/memes/templates.ts. Do not re-run this
+ * script to "fix" a bad region on an existing template; that produces a
+ * differently-wrong guess. Hand-correct the coordinates in templates.ts
+ * against the debug overlay instead.
  *
  * Usage: ANTHROPIC_API_KEY=... npx tsx scripts/analyze-meme-templates.ts
  */

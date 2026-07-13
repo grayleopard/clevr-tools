@@ -1,6 +1,12 @@
 /**
  * Generates lib/memes/templates.ts from template-zones.json and image files.
  *
+ * Only ever appends new templates by hand after running this for a single
+ * new entry — do not run wholesale against the existing file. This will
+ * blow away any hand-corrected regions already in templates.ts, since it
+ * always regenerates straight from the vision draft in template-zones.json.
+ * See the DRAFT GENERATOR note in analyze-meme-templates.ts.
+ *
  * Usage: npx tsx scripts/generate-meme-templates.ts
  */
 import fs from "fs";
@@ -183,7 +189,7 @@ export const memeTemplates: MemeTemplate[] = [\n`;
     const dims = getImageDimensions(filePath);
     const templateZones = zones[id];
 
-    // Convert percentage-based zones to absolute pixel box regions.
+    // Convert percentage-based zones to fractional (0-1) box regions.
     const fields = templateZones.map((z) => {
       const box = resolveZoneBox(z);
       const scaledFontSize = Math.max(12, Math.round((z.fontSize / 600) * dims.width));
@@ -191,10 +197,10 @@ export const memeTemplates: MemeTemplate[] = [\n`;
       return {
         id: z.id,
         label: z.label,
-        x: Math.round((box.x / 100) * dims.width),
-        y: Math.round((box.y / 100) * dims.height),
-        width: Math.round((box.width / 100) * dims.width),
-        height: Math.round((box.height / 100) * dims.height),
+        x: box.x / 100,
+        y: box.y / 100,
+        width: box.width / 100,
+        height: box.height / 100,
         fontSize: scaledFontSize,
         color: z.color,
         outline: z.outline,
@@ -211,8 +217,10 @@ export const memeTemplates: MemeTemplate[] = [\n`;
     output += `    height: ${dims.height},\n`;
     output += `    textFields: [\n`;
 
+    const round4 = (n: number) => Math.round(n * 10000) / 10000;
+
     for (const f of fields) {
-      output += `      { id: ${JSON.stringify(f.id)}, label: ${JSON.stringify(f.label)}, x: ${f.x}, y: ${f.y}, width: ${f.width}, height: ${f.height}, fontSize: ${f.fontSize}, color: ${JSON.stringify(f.color)}, outline: ${f.outline}, align: ${JSON.stringify(f.align)}, valign: ${JSON.stringify(f.valign)} },\n`;
+      output += `      { id: ${JSON.stringify(f.id)}, label: ${JSON.stringify(f.label)}, x: ${round4(f.x)}, y: ${round4(f.y)}, width: ${round4(f.width)}, height: ${round4(f.height)}, fontSize: ${f.fontSize}, color: ${JSON.stringify(f.color)}, outline: ${f.outline}, align: ${JSON.stringify(f.align)}, valign: ${JSON.stringify(f.valign)} },\n`;
     }
 
     output += `    ],\n`;

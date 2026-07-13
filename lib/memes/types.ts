@@ -13,9 +13,13 @@ export type MemeTextVAlign = "top" | "middle" | "bottom";
 export interface TextFieldConfig {
   id: string;
   label: string;
+  /** Fraction (0-1) of the template's width — not absolute pixels. */
   x: number;
+  /** Fraction (0-1) of the template's height — not absolute pixels. */
   y: number;
+  /** Fraction (0-1) of the template's width. */
   width: number;
+  /** Fraction (0-1) of the template's height. */
   height: number;
   fontSize: number;
   align: MemeTextAlign;

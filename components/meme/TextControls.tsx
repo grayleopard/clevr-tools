@@ -10,6 +10,7 @@ interface TextControlsProps {
   template: MemeTemplate;
   texts: MemeTextValues;
   style: MemeStyleState;
+  overflowingFieldIds?: Set<string>;
   onTextChange: (id: string, value: string) => void;
   onStyleChange: (nextStyle: MemeStyleState) => void;
 }
@@ -24,6 +25,7 @@ export default function TextControls({
   template,
   texts,
   style,
+  overflowingFieldIds,
   onTextChange,
   onStyleChange,
 }: TextControlsProps) {
@@ -43,6 +45,11 @@ export default function TextControls({
                 rows={field.align === "left" ? 2 : 3}
                 className="min-h-24 w-full resize-y rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/20"
               />
+              {overflowingFieldIds?.has(field.id) ? (
+                <span className="block text-xs text-amber-600 dark:text-amber-500">
+                  Text may be cut off — try a shorter caption.
+                </span>
+              ) : null}
             </label>
           ))}
         </div>
