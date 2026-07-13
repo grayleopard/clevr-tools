@@ -67,33 +67,33 @@ const categoryPresentation: Record<
 > = {
   files: {
     title: "Files & Assets",
-    eyebrow: "Core workflow",
+    eyebrow: "Files & Workflow",
     className: "xl:col-span-8",
     itemGridClassName: "sm:grid-cols-2",
   },
   time: {
     title: "Time",
-    eyebrow: "Focus tools",
+    eyebrow: "Focus & Time",
     className: "xl:col-span-4",
   },
   "text-code": {
     title: "Text & Code",
-    eyebrow: "Write + transform",
+    eyebrow: "Write & Transform",
     className: "xl:col-span-4",
   },
   calculate: {
     title: "Calculate",
-    eyebrow: "Money + life",
+    eyebrow: "Money & Life",
     className: "xl:col-span-5",
   },
   type: {
     title: "Type",
-    eyebrow: "Speed + rhythm",
+    eyebrow: "Speed & Rhythm",
     className: "xl:col-span-3",
   },
   play: {
     title: "Play",
-    eyebrow: "Daily + creative",
+    eyebrow: "Daily & Play",
     className: "xl:col-span-12",
     itemGridClassName: "md:grid-cols-2",
   },
