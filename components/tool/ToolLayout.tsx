@@ -228,7 +228,7 @@ export default function ToolLayout({
         <main className="flex-1">
           <div className="bg-muted/20">
             <div className={`mx-auto ${contentWidth} px-4 py-10 sm:px-6 sm:py-14`}>
-              <nav className="mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+              <nav className="mb-6 flex items-center gap-2 text-xs font-medium text-muted-foreground">
                 <Link href="/" className="transition-colors hover:text-primary">
                   Home
                 </Link>

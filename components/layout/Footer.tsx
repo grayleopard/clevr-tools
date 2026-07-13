@@ -17,7 +17,7 @@ export default function Footer() {
                   <span className="text-muted-foreground/80">.tools</span>
                 </span>
               </div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 © {new Date().getFullYear()} clevr.tools
               </p>
               <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
@@ -25,7 +25,7 @@ export default function Footer() {
               </p>
             </div>
 
-            <nav className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground" aria-label="Footer">
+            <nav className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm font-medium text-muted-foreground" aria-label="Footer">
               <Link href="/about" className="transition-colors hover:text-primary">
                 About
               </Link>

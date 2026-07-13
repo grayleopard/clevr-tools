@@ -37,7 +37,7 @@ export default function CategoryPageScaffold({
       <main className="flex-1">
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="mb-16 max-w-3xl">
-            <nav className="mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+            <nav className="mb-6 flex items-center gap-2 text-xs font-medium text-muted-foreground">
               <Link href="/" className="transition-colors hover:text-primary">
                 Home
               </Link>

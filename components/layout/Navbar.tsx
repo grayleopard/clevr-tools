@@ -94,7 +94,7 @@ export default function Navbar() {
               <div key={cat.id} className="group relative">
                 <Link
                   href={cat.route}
-                  className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+                  className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
                   aria-haspopup="true"
                 >
                   {cat.label}
@@ -139,7 +139,7 @@ export default function Navbar() {
             <div className="group relative">
               <Link
                 href="/play"
-                className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+                className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
                 aria-haspopup="true"
               >
                 Play
@@ -184,7 +184,7 @@ export default function Navbar() {
             </div>
             <Link
               href="/blog"
-              className="rounded-xl px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+              className="rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
             >
               Blog
             </Link>
@@ -203,9 +203,9 @@ export default function Navbar() {
 
               <div className="absolute right-0 top-14 z-50 w-[calc(100vw-2rem)] max-h-[70dvh] overflow-y-auto rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-3 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
                 <nav className="space-y-2" aria-label="Mobile navigation">
-                  <MobileSearchTrigger className="flex w-full items-center gap-2 rounded-2xl bg-muted/55 px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground transition-colors hover:text-primary" />
+                  <MobileSearchTrigger className="flex w-full items-center gap-2 rounded-2xl bg-muted/55 px-5 py-4 text-sm font-medium text-foreground transition-colors hover:text-primary" />
                   <details className="group/category rounded-2xl bg-muted/55 p-2">
-                    <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary transition-colors hover:bg-primary/10">
+                    <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10">
                       Play
                       <ChevronDown className="h-4 w-4 text-primary transition-transform group-open/category:rotate-180" />
                     </summary>
@@ -238,7 +238,7 @@ export default function Navbar() {
                   </details>
                   {siteCategories.map((cat) => (
                     <details key={cat.id} className="group/category rounded-2xl bg-muted/55 p-2">
-                      <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-muted/80 hover:text-primary">
+                      <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted/80 hover:text-primary">
                         {cat.label}
                         <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open/category:rotate-180" />
                       </summary>
@@ -256,7 +256,7 @@ export default function Navbar() {
                   ))}
                   <Link
                     href="/blog"
-                    className="block rounded-2xl bg-muted/55 px-5 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground transition-colors hover:text-primary"
+                    className="block rounded-2xl bg-muted/55 px-5 py-4 text-sm font-medium text-foreground transition-colors hover:text-primary"
                   >
                     Blog
                   </Link>
