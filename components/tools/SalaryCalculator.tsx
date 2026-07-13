@@ -126,7 +126,7 @@ export default function SalaryCalculator() {
             <p className="text-sm text-muted-foreground mb-1">
               {payType === "hourly" ? "Annual Salary" : "Hourly Rate"}
             </p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {fmt(payType === "hourly" ? result.annual : result.hourly)}
             </p>
           </div>

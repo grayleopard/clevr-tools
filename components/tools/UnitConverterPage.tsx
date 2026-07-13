@@ -162,7 +162,7 @@ export default function UnitConverterPage({
 
         {/* Result summary */}
         {fromValue && toValue && (
-          <p className="mt-4 text-center text-sm text-muted-foreground">
+          <p className="mt-4 text-center text-sm text-muted-foreground tabular-nums">
             <span className="font-semibold text-primary">{fromValue} {fromUnitObj.symbol}</span>
             {" = "}
             <span className="font-semibold text-primary">{toValue} {toUnitObj.symbol}</span>

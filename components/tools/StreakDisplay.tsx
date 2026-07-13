@@ -21,7 +21,7 @@ export default function StreakDisplay() {
   if (!data) return null;
 
   return (
-    <p className="text-sm text-muted-foreground mb-4">
+    <p className="text-sm text-muted-foreground mb-4 tabular-nums">
       {"\uD83D\uDD25"} {data.streak} day streak &middot; {data.tests} tests
       completed
     </p>

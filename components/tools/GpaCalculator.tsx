@@ -180,10 +180,10 @@ export default function GpaCalculator() {
       {result && (
         <div className="text-center rounded-xl border border-border bg-card p-6 space-y-2">
           <p className="text-sm text-muted-foreground">Semester GPA</p>
-          <p className={`text-4xl sm:text-5xl font-bold ${gpaColor(result.gpa)}`}>
+          <p className={`text-4xl sm:text-5xl font-bold tabular-nums ${gpaColor(result.gpa)}`}>
             {result.gpa.toFixed(2)}
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground tabular-nums">
             {result.totalCredits} credits | {result.totalPoints.toFixed(1)}{" "}
             grade points
           </p>
@@ -269,7 +269,7 @@ export default function GpaCalculator() {
                   New Cumulative GPA
                 </p>
                 <p
-                  className={`text-3xl font-bold ${gpaColor(result.cumulativeGpa)}`}
+                  className={`text-3xl font-bold tabular-nums ${gpaColor(result.cumulativeGpa)}`}
                 >
                   {result.cumulativeGpa.toFixed(2)}
                 </p>

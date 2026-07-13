@@ -121,7 +121,7 @@ export default function DebtToIncomeCalculator() {
           {/* DTI result */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Debt-to-Income Ratio</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {result.dti.toFixed(1)}%
             </p>
             <p className={`text-sm font-medium mt-2 ${result.rating.color}`}>
@@ -157,11 +157,11 @@ export default function DebtToIncomeCalculator() {
           {/* Summary */}
           <div className="grid grid-cols-2 gap-2">
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.totalDebt)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalDebt)}</span>
               <span className="text-xs text-muted-foreground">Total Monthly Debt</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.income - result.totalDebt)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.income - result.totalDebt)}</span>
               <span className="text-xs text-muted-foreground">Remaining Income</span>
             </div>
           </div>

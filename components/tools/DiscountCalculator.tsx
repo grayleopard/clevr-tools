@@ -173,7 +173,7 @@ export default function DiscountCalculator() {
             <div className="rounded-xl border border-border bg-card p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">You save</span>
-                <span className="text-xl font-semibold text-foreground">
+                <span className="text-xl font-semibold text-foreground tabular-nums">
                   {fmt(normalResult.savings)}
                 </span>
               </div>
@@ -182,7 +182,7 @@ export default function DiscountCalculator() {
                 <span className="text-sm font-medium text-foreground">
                   Sale Price
                 </span>
-                <span className="text-2xl font-bold text-foreground dark:text-emerald-500">
+                <span className="text-2xl font-bold text-foreground dark:text-emerald-500 tabular-nums">
                   {fmt(normalResult.salePrice)}
                 </span>
               </div>
@@ -194,7 +194,7 @@ export default function DiscountCalculator() {
                     <span className="text-sm text-muted-foreground">
                       After second discount
                     </span>
-                    <span className="text-xl font-semibold text-foreground dark:text-emerald-500">
+                    <span className="text-xl font-semibold text-foreground dark:text-emerald-500 tabular-nums">
                       {fmt(normalResult.doubleResult.after2)}
                     </span>
                   </div>
@@ -202,7 +202,7 @@ export default function DiscountCalculator() {
                     <span className="text-sm text-muted-foreground">
                       Total savings
                     </span>
-                    <span className="text-sm text-foreground">
+                    <span className="text-sm text-foreground tabular-nums">
                       {fmt(normalResult.doubleResult.totalSavings)} (
                       {normalResult.doubleResult.effectiveDiscount}% effective)
                     </span>
@@ -244,14 +244,14 @@ export default function DiscountCalculator() {
                 <span className="text-sm text-muted-foreground">
                   Discount applied
                 </span>
-                <span className="text-2xl font-bold text-foreground dark:text-emerald-500">
+                <span className="text-2xl font-bold text-foreground dark:text-emerald-500 tabular-nums">
                   {reverseResult.discountPercent}% off
                 </span>
               </div>
               <div className="border-t border-border" />
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">You saved</span>
-                <span className="text-xl font-semibold text-foreground">
+                <span className="text-xl font-semibold text-foreground tabular-nums">
                   {fmt(reverseResult.savings)}
                 </span>
               </div>

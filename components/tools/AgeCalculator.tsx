@@ -237,7 +237,7 @@ export default function AgeCalculator() {
         <>
           {/* Primary result */}
           <div className="text-center rounded-xl border border-border bg-card p-6">
-            <p className="text-2xl sm:text-3xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-2xl sm:text-3xl font-bold text-foreground dark:text-emerald-500 tabular-nums">
               {result.years} years, {result.months} months, {result.days} days
             </p>
           </div>

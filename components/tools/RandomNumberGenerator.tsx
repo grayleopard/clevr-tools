@@ -259,7 +259,7 @@ export default function RandomNumberGenerator() {
             ))}
           </div>
           {diceCount > 1 && (
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground tabular-nums">
               Sum: {diceResults.reduce((a, b) => a + b, 0)}
             </span>
           )}

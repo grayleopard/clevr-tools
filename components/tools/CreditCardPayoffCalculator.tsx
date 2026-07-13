@@ -124,7 +124,7 @@ export default function CreditCardPayoffCalculator() {
           {/* Payoff time */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Time to Pay Off</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {formatMonths(result.months)}
             </p>
           </div>
@@ -132,15 +132,15 @@ export default function CreditCardPayoffCalculator() {
           {/* Summary */}
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(parseFloat(balance) || 0)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(parseFloat(balance) || 0)}</span>
               <span className="text-xs text-muted-foreground">Balance</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.totalInterest)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalInterest)}</span>
               <span className="text-xs text-muted-foreground">Total Interest</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.totalPaid)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalPaid)}</span>
               <span className="text-xs text-muted-foreground">Total Paid</span>
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function CreditCardPayoffCalculator() {
                         <td className="px-3 py-2 text-right tabular-nums text-foreground">
                           {fmt((parseFloat(monthlyPayment) || 0) + e.extra)}
                         </td>
-                        <td className="px-3 py-2 text-right text-foreground">{formatMonths(e.result.months)}</td>
+                        <td className="px-3 py-2 text-right tabular-nums text-foreground">{formatMonths(e.result.months)}</td>
                         <td className="px-3 py-2 text-right tabular-nums font-medium text-emerald-500 dark:text-emerald-300">
                           {fmt(e.interestSaved)}
                         </td>

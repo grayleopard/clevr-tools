@@ -115,10 +115,10 @@ export default function DownPaymentCalculator() {
             <p className="text-sm text-muted-foreground mb-1">
               Down Payment Goal ({downPaymentPercent}%)
             </p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {fmt(result.goal)}
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground mt-2 tabular-nums">
               {result.remaining > 0
                 ? `${fmt(result.remaining)} remaining — ${formatMonths(result.monthsNeeded)} to goal`
                 : "You have enough saved!"}
@@ -128,11 +128,11 @@ export default function DownPaymentCalculator() {
           {/* Summary */}
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.goal)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.goal)}</span>
               <span className="text-xs text-muted-foreground">Down Payment</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.loanAmount)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.loanAmount)}</span>
               <span className="text-xs text-muted-foreground">Loan Amount</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
@@ -174,7 +174,7 @@ export default function DownPaymentCalculator() {
                     </td>
                     <td className="px-3 py-2 text-right tabular-nums text-foreground">{fmt(c.amount)}</td>
                     <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">{fmt(c.loanAmount)}</td>
-                    <td className="px-3 py-2 text-right text-foreground">{formatMonths(c.months)}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-foreground">{formatMonths(c.months)}</td>
                     <td className="px-3 py-2 text-center">
                       {c.needsPMI ? (
                         <span className="text-yellow-600 dark:text-yellow-400 text-xs">Yes</span>

@@ -347,7 +347,7 @@ export default function ImageCompressor() {
               <section className="space-y-6">
                 <div className="grid gap-4 xl:grid-cols-2">
                   <div className="relative overflow-hidden rounded-[1.5rem] bg-muted/45 p-4">
-                    <span className="absolute left-7 top-7 z-10 rounded-full bg-foreground/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-background">
+                    <span className="absolute left-7 top-7 z-10 rounded-full bg-foreground/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-background tabular-nums">
                       Original ({formatBytes(primaryResult.originalFile.size)})
                     </span>
                     <div className="flex h-[320px] items-center justify-center rounded-[1.2rem] bg-card/80">
@@ -364,7 +364,7 @@ export default function ImageCompressor() {
                   </div>
 
                   <div className="relative overflow-hidden rounded-[1.5rem] bg-primary/8 p-4">
-                    <span className="absolute right-7 top-7 z-10 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--on-primary)]">
+                    <span className="absolute right-7 top-7 z-10 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--on-primary)] tabular-nums">
                       Optimized ({formatBytes(primaryResult.file.size)})
                     </span>
                     <div className="flex h-[320px] items-center justify-center rounded-[1.2rem] bg-card/85">
@@ -385,7 +385,7 @@ export default function ImageCompressor() {
                   <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
                     <div className="flex justify-center lg:justify-start">
                       <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full bg-primary/12 text-primary">
-                        <span className="text-[1.9rem] font-black leading-none">{savedPercent}%</span>
+                        <span className="text-[1.9rem] font-black leading-none tabular-nums">{savedPercent}%</span>
                       </div>
                     </div>
 
@@ -394,7 +394,7 @@ export default function ImageCompressor() {
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Storage savings
                         </p>
-                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground">
+                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                           {bytesSaved > 0 ? `-${formatBytes(bytesSaved)}` : "No reduction"}
                         </p>
                       </div>
@@ -402,7 +402,7 @@ export default function ImageCompressor() {
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Process time
                         </p>
-                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground">
+                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                           {lastProcessMs ? `${lastProcessMs}ms` : "Pending"}
                         </p>
                       </div>

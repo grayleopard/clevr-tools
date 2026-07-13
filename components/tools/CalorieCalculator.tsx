@@ -189,7 +189,7 @@ export default function CalorieCalculator() {
             <p className="text-sm text-muted-foreground mb-1">
               Daily Calories to {goal === "lose" ? "Lose Weight" : goal === "gain" ? "Gain Weight" : "Maintain Weight"}
             </p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {goalCalories.toLocaleString()}
             </p>
             <p className="text-sm text-muted-foreground mt-1">calories/day</p>
@@ -214,7 +214,7 @@ export default function CalorieCalculator() {
 
           <div className="rounded-xl border border-border bg-card px-4 py-3 text-center">
             <span className="text-sm text-muted-foreground">Basal Metabolic Rate (BMR): </span>
-            <span className="text-sm font-semibold text-foreground">{result.bmr.toLocaleString()} cal/day</span>
+            <span className="text-sm font-semibold text-foreground tabular-nums">{result.bmr.toLocaleString()} cal/day</span>
           </div>
         </>
       )}

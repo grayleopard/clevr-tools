@@ -430,7 +430,7 @@ function StatsModal({
             { label: "Perfect streak", value: stats.maxPerfectSolveStreak },
           ].map((item) => (
             <div key={item.label} className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-4 text-center">
-              <div className="text-2xl font-bold text-[var(--text-primary)]">{item.value}</div>
+              <div className="text-2xl font-bold text-[var(--text-primary)] tabular-nums">{item.value}</div>
               <div className="mt-1 text-xs uppercase tracking-widest text-[var(--text-tertiary)]">{item.label}</div>
             </div>
           ))}
@@ -668,7 +668,7 @@ function ResultsPanel({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="text-sm uppercase tracking-[0.2em] text-[var(--text-tertiary)]">{formatModeTitle(mode, puzzle)}</div>
-            <div className="mt-2 text-5xl font-bold text-[var(--text-primary)]">{puzzle.target}</div>
+            <div className="mt-2 text-5xl font-bold text-[var(--text-primary)] tabular-nums">{puzzle.target}</div>
             <div className="mt-3 flex items-center gap-3 text-sm text-[var(--text-secondary)]">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] px-3 py-1 text-[var(--text-primary)]">
                 <span className={`h-1.5 w-1.5 rounded-full ${getDifficultyDotColor(puzzle.difficulty)}`} />
@@ -687,24 +687,24 @@ function ResultsPanel({
           <div className="rounded-2xl bg-[var(--bg-surface)] p-4">
             <div className="text-xs uppercase tracking-widest text-[var(--text-tertiary)]">Your result</div>
             <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">{gameStatus === "won" ? "Solved" : "Gave up"}</div>
-            <div className="text-sm text-[var(--text-secondary)]">{steps.length} steps</div>
+            <div className="text-sm text-[var(--text-secondary)] tabular-nums">{steps.length} steps</div>
           </div>
           <div className="rounded-2xl bg-[var(--bg-surface)] p-4">
             <div className="text-xs uppercase tracking-widest text-[var(--text-tertiary)]">Optimal</div>
-            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">{puzzle.optimalSteps} steps</div>
+            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)] tabular-nums">{puzzle.optimalSteps} steps</div>
             <div className="text-sm text-[var(--text-secondary)]">{summaryText}</div>
           </div>
           <div className="rounded-2xl bg-[var(--bg-surface)] p-4">
             <div className="text-xs uppercase tracking-widest text-[var(--text-tertiary)]">Current streak</div>
-            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">{stats.currentStreak}</div>
-            <div className="text-sm text-[var(--text-secondary)]">Best {stats.maxStreak}</div>
+            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)] tabular-nums">{stats.currentStreak}</div>
+            <div className="text-sm text-[var(--text-secondary)] tabular-nums">Best {stats.maxStreak}</div>
           </div>
           <div className="rounded-2xl bg-[var(--bg-surface)] p-4">
             <div className="text-xs uppercase tracking-widest text-[var(--text-tertiary)]">Solve rate</div>
-            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">
+            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)] tabular-nums">
               {stats.totalGames > 0 ? Math.round((stats.solvedGames / stats.totalGames) * 100) : 0}%
             </div>
-            <div className="text-sm text-[var(--text-secondary)]">Average stars {stats.totalGames > 0 ? (stats.totalStars / stats.totalGames).toFixed(1) : "0.0"}</div>
+            <div className="text-sm text-[var(--text-secondary)] tabular-nums">Average stars {stats.totalGames > 0 ? (stats.totalStars / stats.totalGames).toFixed(1) : "0.0"}</div>
           </div>
         </div>
 
@@ -1242,7 +1242,7 @@ export default function NumbleGame() {
           <div className="space-y-6">
             <div className="text-center">
               <div className="text-xs uppercase tracking-[0.3em] text-[var(--text-tertiary)]">Target</div>
-              <div className="mt-3 text-7xl font-bold leading-none text-[var(--text-primary)] sm:text-8xl">{puzzle.target}</div>
+              <div className="mt-3 text-7xl font-bold leading-none text-[var(--text-primary)] sm:text-8xl tabular-nums">{puzzle.target}</div>
               <div className="mt-3 text-sm text-[var(--text-secondary)]">
                 {mode === "daily" ? "Daily puzzle" : "Practice does not affect your streak or stats"}
               </div>
@@ -1330,7 +1330,7 @@ export default function NumbleGame() {
                 {isDeadEnd && closestResult !== null ? (
                   <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-50">
                     <div className="font-semibold">No clean moves left.</div>
-                    <div className="mt-1">You got to {closestResult}, which is {Math.abs(closestResult - puzzle.target)} away from {puzzle.target}.</div>
+                    <div className="mt-1 tabular-nums">You got to {closestResult}, which is {Math.abs(closestResult - puzzle.target)} away from {puzzle.target}.</div>
                   </div>
                 ) : null}
               </div>
@@ -1341,21 +1341,21 @@ export default function NumbleGame() {
                   <div className="mt-3 grid grid-cols-2 gap-3">
                     <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
                       <div className="text-xs text-[var(--text-tertiary)]">Closest</div>
-                      <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{closestResult ?? "—"}</div>
+                      <div className="mt-1 text-lg font-semibold text-[var(--text-primary)] tabular-nums">{closestResult ?? "—"}</div>
                     </div>
                     <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
                       <div className="text-xs text-[var(--text-tertiary)]">Optimal</div>
-                      <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{puzzle.optimalSteps} steps</div>
+                      <div className="mt-1 text-lg font-semibold text-[var(--text-primary)] tabular-nums">{puzzle.optimalSteps} steps</div>
                     </div>
                     {stats.totalGames > 0 ? (
                       <>
                         <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
                           <div className="text-xs text-[var(--text-tertiary)]">Solve rate</div>
-                          <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{Math.round((stats.solvedGames / stats.totalGames) * 100)}%</div>
+                          <div className="mt-1 text-lg font-semibold text-[var(--text-primary)] tabular-nums">{Math.round((stats.solvedGames / stats.totalGames) * 100)}%</div>
                         </div>
                         <div className="rounded-2xl bg-[var(--bg-surface)] p-3">
                           <div className="text-xs text-[var(--text-tertiary)]">Best streak</div>
-                          <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{stats.maxStreak}</div>
+                          <div className="mt-1 text-lg font-semibold text-[var(--text-primary)] tabular-nums">{stats.maxStreak}</div>
                         </div>
                       </>
                     ) : (

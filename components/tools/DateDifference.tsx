@@ -183,7 +183,7 @@ export default function DateDifference() {
         <>
           {/* Primary result */}
           <div className="text-center rounded-xl border border-border bg-card p-6">
-            <p className="text-3xl sm:text-4xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-3xl sm:text-4xl font-bold text-foreground dark:text-emerald-500 tabular-nums">
               {result.absDays.toLocaleString()} days
             </p>
             <p className="text-sm text-muted-foreground mt-1">

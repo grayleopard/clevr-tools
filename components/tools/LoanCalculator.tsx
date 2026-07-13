@@ -119,7 +119,7 @@ export default function LoanCalculator() {
           {/* Monthly payment */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Monthly Payment</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {fmt(result.monthlyPayment)}
             </p>
           </div>
@@ -127,15 +127,15 @@ export default function LoanCalculator() {
           {/* Summary */}
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(parseFloat(loanAmount) || 0)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(parseFloat(loanAmount) || 0)}</span>
               <span className="text-xs text-muted-foreground">Loan Amount</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.totalInterest)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalInterest)}</span>
               <span className="text-xs text-muted-foreground">Total Interest</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.totalPaid)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalPaid)}</span>
               <span className="text-xs text-muted-foreground">Total Paid</span>
             </div>
           </div>

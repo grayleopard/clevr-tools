@@ -125,7 +125,7 @@ export default function IdealWeightCalculator() {
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Healthy BMI Range (18.5 - 24.9)</p>
-            <p className="text-3xl sm:text-4xl font-bold text-primary">
+            <p className="text-3xl sm:text-4xl font-bold text-primary tabular-nums">
               {fmtKg(result.bmiMin, unit)} - {fmtKg(result.bmiMax, unit)}
             </p>
           </div>

@@ -92,11 +92,11 @@ export default function DownloadCard({
           <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
             {originalSize ? (
               <>
-                <span>{formatBytes(originalSize)}</span>
+                <span className="tabular-nums">{formatBytes(originalSize)}</span>
                 <ArrowRight className="h-3 w-3 shrink-0" />
-                <span className="font-medium text-foreground">{formatBytes(fileSize)}</span>
+                <span className="font-medium text-foreground tabular-nums">{formatBytes(fileSize)}</span>
                 {reduction !== null && reduction > 0 && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-1.5 py-0.5 font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-1.5 py-0.5 font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400 tabular-nums">
                     <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                       <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
                       <path d="M5 8.5 7 10.5 11 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-check" />
@@ -111,7 +111,7 @@ export default function DownloadCard({
                 )}
               </>
             ) : (
-              <span>{formatBytes(fileSize)}</span>
+              <span className="tabular-nums">{formatBytes(fileSize)}</span>
             )}
           </div>
         </div>

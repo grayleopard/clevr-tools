@@ -470,7 +470,7 @@ export default function GifCompressor() {
                   <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     File size
                   </dt>
-                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground">
+                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                     {formatBytes(selected.file.size)}
                   </dd>
                 </div>
@@ -478,7 +478,7 @@ export default function GifCompressor() {
                   <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     Dimensions
                   </dt>
-                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground">
+                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                     {selected.analysis
                       ? `${selected.analysis.width} × ${selected.analysis.height}`
                       : "Reading…"}
@@ -488,7 +488,7 @@ export default function GifCompressor() {
                   <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     Frames
                   </dt>
-                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground">
+                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                     {selected.analysis ? selected.analysis.frameCount : "Reading…"}
                   </dd>
                 </div>
@@ -496,7 +496,7 @@ export default function GifCompressor() {
                   <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     Duration
                   </dt>
-                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground">
+                  <dd className="mt-3 text-xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                     {selected.analysis ? formatDuration(selected.analysis.durationMs) : "Reading…"}
                   </dd>
                 </div>
@@ -575,7 +575,7 @@ export default function GifCompressor() {
                 <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
                   <div className="flex justify-center lg:justify-start">
                     <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full bg-primary/12 text-primary">
-                      <span className="text-[1.9rem] font-black leading-none">{savedPercent}%</span>
+                      <span className="text-[1.9rem] font-black leading-none tabular-nums">{savedPercent}%</span>
                     </div>
                   </div>
 
@@ -584,7 +584,7 @@ export default function GifCompressor() {
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                         Storage savings
                       </p>
-                      <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground">
+                      <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                         {bytesSaved > 0 ? `-${formatBytes(bytesSaved)}` : "No reduction"}
                       </p>
                     </div>
@@ -592,7 +592,7 @@ export default function GifCompressor() {
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                         Process time
                       </p>
-                      <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground">
+                      <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
                         {result.processMs}ms
                       </p>
                     </div>
@@ -638,13 +638,13 @@ export default function GifCompressor() {
                   <h2 className="text-xl font-bold tracking-tight text-foreground">
                     {truncateFilename(result.file.name, 42)}
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground tabular-nums">
                     {formatBytes(selected.file.size)} → {formatBytes(result.file.size)}
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--on-primary)]">
+                  <span className="rounded-full bg-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--on-primary)] tabular-nums">
                     Saved {savedPercent}%
                   </span>
                   <a

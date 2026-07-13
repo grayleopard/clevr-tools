@@ -115,7 +115,7 @@ export default function SavingsGoalCalculator() {
           {/* Monthly needed */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Monthly Savings Needed</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {fmt(result.monthlyNeeded)}
             </p>
           </div>
@@ -135,15 +135,15 @@ export default function SavingsGoalCalculator() {
           {/* Summary */}
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(parseFloat(goalAmount) || 0)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(parseFloat(goalAmount) || 0)}</span>
               <span className="text-xs text-muted-foreground">Goal</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">{fmt(result.totalContributions)}</span>
+              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalContributions)}</span>
               <span className="text-xs text-muted-foreground">Total Contributions</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-primary">{fmt(result.interestEarned)}</span>
+              <span className="text-sm font-semibold text-primary tabular-nums">{fmt(result.interestEarned)}</span>
               <span className="text-xs text-muted-foreground">Interest Earned</span>
             </div>
           </div>

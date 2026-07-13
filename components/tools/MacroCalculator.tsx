@@ -152,7 +152,7 @@ export default function MacroCalculator() {
       {effectiveCalories > 0 && inputMode === "calculate" && (
         <div className="rounded-xl border border-border bg-card px-4 py-3 text-center">
           <span className="text-sm text-muted-foreground">Estimated TDEE: </span>
-          <span className="text-sm font-semibold text-primary">{effectiveCalories.toLocaleString()} cal/day</span>
+          <span className="text-sm font-semibold text-primary tabular-nums">{effectiveCalories.toLocaleString()} cal/day</span>
         </div>
       )}
 
@@ -214,8 +214,8 @@ export default function MacroCalculator() {
             ].map((m) => (
               <div key={m.label} className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-4">
                 <p className="text-xs text-muted-foreground">{m.label}</p>
-                <p className="text-2xl font-bold text-primary">{m.grams}g</p>
-                <p className="text-xs text-muted-foreground">{m.cal} cal ({m.pct}%)</p>
+                <p className="text-2xl font-bold text-primary tabular-nums">{m.grams}g</p>
+                <p className="text-xs text-muted-foreground tabular-nums">{m.cal} cal ({m.pct}%)</p>
               </div>
             ))}
           </div>

@@ -184,7 +184,7 @@ export default function BmiCalculator() {
           {/* BMI result card with blue accent */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {result.bmi}
             </p>
             <span
@@ -229,7 +229,7 @@ export default function BmiCalculator() {
             <p className="text-sm text-muted-foreground">
               Healthy weight range for your height
             </p>
-            <p className="text-lg font-semibold text-primary mt-1">
+            <p className="text-lg font-semibold text-primary mt-1 tabular-nums">
               {result.healthyRange}
             </p>
           </div>

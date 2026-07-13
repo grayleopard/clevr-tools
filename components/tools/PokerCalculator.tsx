@@ -431,19 +431,19 @@ export default function PokerCalculator() {
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-[1.25rem] bg-primary/[0.08] p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Probability</p>
-          <p className="mt-3 text-2xl font-bold tracking-tight text-primary">
+          <p className="mt-3 text-2xl font-bold tracking-tight text-primary tabular-nums">
             {(probability * 100).toFixed(1)}%
           </p>
         </div>
         <div className="rounded-[1.25rem] bg-muted/45 p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Odds Against</p>
-          <p className="mt-3 text-2xl font-bold tracking-tight text-foreground">
+          <p className="mt-3 text-2xl font-bold tracking-tight text-foreground tabular-nums">
             {oddsAgainst.toFixed(2)} : 1
           </p>
         </div>
         <div className="rounded-[1.25rem] bg-muted/45 p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Rule of {street === "flop" ? "4" : "2"}</p>
-          <p className="mt-3 text-2xl font-bold tracking-tight text-foreground">
+          <p className="mt-3 text-2xl font-bold tracking-tight text-foreground tabular-nums">
             ≈ {Math.min(ruleOfThumb, 100)}%
           </p>
         </div>
@@ -479,8 +479,8 @@ export default function PokerCalculator() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-[1rem] bg-muted/45 p-4">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Pot odds</p>
-                <p className="mt-2 text-lg font-bold text-foreground">{(potOddsRatio - 1).toFixed(1)} : 1</p>
-                <p className="text-xs text-muted-foreground">{(potOddsPercent * 100).toFixed(1)}% needed to break even</p>
+                <p className="mt-2 text-lg font-bold text-foreground tabular-nums">{(potOddsRatio - 1).toFixed(1)} : 1</p>
+                <p className="text-xs text-muted-foreground tabular-nums">{(potOddsPercent * 100).toFixed(1)}% needed to break even</p>
               </div>
               <div className={cn(
                 "rounded-[1rem] p-4",
@@ -493,7 +493,7 @@ export default function PokerCalculator() {
                 )}>
                   {isProfitableCall ? "Profitable call" : "Fold"}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground tabular-nums">
                   {isProfitableCall
                     ? `Your ${(probability * 100).toFixed(1)}% chance exceeds the ${(potOddsPercent * 100).toFixed(1)}% needed.`
                     : `Your ${(probability * 100).toFixed(1)}% chance is below the ${(potOddsPercent * 100).toFixed(1)}% needed.`}
@@ -676,7 +676,7 @@ export default function PokerCalculator() {
               )}>
                 {tierColors[getHandTier(selectedCell.r, selectedCell.c)].label}
               </span>
-              <p className="mt-1 text-sm font-bold text-foreground">
+              <p className="mt-1 text-sm font-bold text-foreground tabular-nums">
                 {getWinRate(selectedCell.r, selectedCell.c)} vs random
               </p>
             </div>

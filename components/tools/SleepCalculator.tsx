@@ -146,10 +146,10 @@ export default function SleepCalculator() {
                   : "border-border bg-card"
               }`}
             >
-              <p className={`text-xl font-bold ${opt.recommended ? "text-primary" : "text-foreground"}`}>
+              <p className={`text-xl font-bold tabular-nums ${opt.recommended ? "text-primary" : "text-foreground"}`}>
                 {opt.time}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1 tabular-nums">
                 {opt.cycles} cycles = {opt.duration}
               </p>
               {opt.recommended && (

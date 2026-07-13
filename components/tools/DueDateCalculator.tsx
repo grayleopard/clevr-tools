@@ -159,7 +159,7 @@ export default function DueDateCalculator() {
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Estimated Due Date</p>
-            <p className="text-2xl sm:text-3xl font-bold text-primary">{formatDate(result.dueDate)}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-primary tabular-nums">{formatDate(result.dueDate)}</p>
           </div>
 
           {result.weeksPregnant !== null && !result.isPast && (

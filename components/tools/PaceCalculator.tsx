@@ -183,22 +183,22 @@ export default function PaceCalculator() {
             {result.type === "pace" && (
               <>
                 <p className="text-sm text-muted-foreground mb-1">Pace per {distUnit === "miles" ? "mile" : "km"}</p>
-                <p className="text-4xl sm:text-5xl font-bold text-primary">{formatPace(result.pace)}</p>
-                <p className="text-sm text-muted-foreground mt-2">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
+                <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{formatPace(result.pace)}</p>
+                <p className="text-sm text-muted-foreground mt-2 tabular-nums">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
               </>
             )}
             {result.type === "time" && (
               <>
                 <p className="text-sm text-muted-foreground mb-1">Finish Time</p>
-                <p className="text-4xl sm:text-5xl font-bold text-primary">{formatTime(result.totalTimeSec)}</p>
-                <p className="text-sm text-muted-foreground mt-2">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
+                <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{formatTime(result.totalTimeSec)}</p>
+                <p className="text-sm text-muted-foreground mt-2 tabular-nums">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
               </>
             )}
             {result.type === "distance" && (
               <>
                 <p className="text-sm text-muted-foreground mb-1">Distance</p>
-                <p className="text-4xl sm:text-5xl font-bold text-primary">{result.distance.toFixed(2)} {distUnit}</p>
-                <p className="text-sm text-muted-foreground mt-2">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
+                <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{result.distance.toFixed(2)} {distUnit}</p>
+                <p className="text-sm text-muted-foreground mt-2 tabular-nums">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
               </>
             )}
           </div>

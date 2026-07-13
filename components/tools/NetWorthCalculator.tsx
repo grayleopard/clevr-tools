@@ -105,7 +105,7 @@ export default function NetWorthCalculator() {
       <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
         <p className="text-sm text-muted-foreground mb-1">Net Worth</p>
         <p
-          className={`text-4xl sm:text-5xl font-bold ${
+          className={`text-4xl sm:text-5xl font-bold tabular-nums ${
             result.netWorth >= 0
               ? "text-primary"
               : "text-red-600 dark:text-red-400"
@@ -118,11 +118,11 @@ export default function NetWorthCalculator() {
       {/* Summary */}
       <div className="grid grid-cols-2 gap-2">
         <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-          <span className="text-sm font-semibold text-emerald-500 dark:text-emerald-300">{fmt(result.totalAssets)}</span>
+          <span className="text-sm font-semibold text-emerald-500 dark:text-emerald-300 tabular-nums">{fmt(result.totalAssets)}</span>
           <span className="text-xs text-muted-foreground">Total Assets</span>
         </div>
         <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-          <span className="text-sm font-semibold text-red-600 dark:text-red-400">{fmt(result.totalLiabilities)}</span>
+          <span className="text-sm font-semibold text-red-600 dark:text-red-400 tabular-nums">{fmt(result.totalLiabilities)}</span>
           <span className="text-xs text-muted-foreground">Total Liabilities</span>
         </div>
       </div>

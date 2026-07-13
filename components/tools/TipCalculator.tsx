@@ -106,14 +106,14 @@ export default function TipCalculator() {
         <div className="rounded-xl border border-border bg-card p-6 space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Tip</span>
-            <span className="text-xl font-semibold text-foreground dark:text-emerald-500">
+            <span className="text-xl font-semibold text-foreground dark:text-emerald-500 tabular-nums">
               {fmt(result.tipAmount)}
             </span>
           </div>
           <div className="border-t border-border" />
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-foreground">Total</span>
-            <span className="text-2xl font-bold text-foreground dark:text-emerald-500">
+            <span className="text-2xl font-bold text-foreground dark:text-emerald-500 tabular-nums">
               {fmt(result.total)}
             </span>
           </div>
@@ -124,7 +124,7 @@ export default function TipCalculator() {
                 <span className="text-sm text-muted-foreground">
                   Per person ({result.splitNum})
                 </span>
-                <span className="text-xl font-semibold text-foreground dark:text-emerald-500">
+                <span className="text-xl font-semibold text-foreground dark:text-emerald-500 tabular-nums">
                   {fmt(result.perPerson)}
                 </span>
               </div>

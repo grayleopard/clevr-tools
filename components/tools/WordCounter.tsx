@@ -149,17 +149,17 @@ export default function WordCounter() {
       {/* Secondary stats */}
       <div className="grid grid-cols-3 gap-2">
         <div className="flex flex-col gap-0.5 rounded-xl border border-border bg-muted/20 px-4 py-3">
-          <span className="text-sm font-semibold text-foreground">{formatTime(stats.readingSec)}</span>
+          <span className="text-sm font-semibold text-foreground tabular-nums">{formatTime(stats.readingSec)}</span>
           <span className="text-xs text-muted-foreground">Reading time</span>
           <span className="text-xs text-muted-foreground/60">@ 238 wpm</span>
         </div>
         <div className="flex flex-col gap-0.5 rounded-xl border border-border bg-muted/20 px-4 py-3">
-          <span className="text-sm font-semibold text-foreground">{formatTime(stats.speakingSec)}</span>
+          <span className="text-sm font-semibold text-foreground tabular-nums">{formatTime(stats.speakingSec)}</span>
           <span className="text-xs text-muted-foreground">Speaking time</span>
           <span className="text-xs text-muted-foreground/60">@ 150 wpm</span>
         </div>
         <div className="flex flex-col gap-0.5 rounded-xl border border-border bg-muted/20 px-4 py-3">
-          <span className="text-sm font-semibold text-foreground">{stats.avgWordLen}</span>
+          <span className="text-sm font-semibold text-foreground tabular-nums">{stats.avgWordLen}</span>
           <span className="text-xs text-muted-foreground">Avg word length</span>
           <span className="text-xs text-muted-foreground/60">characters</span>
         </div>

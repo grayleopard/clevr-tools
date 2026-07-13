@@ -159,7 +159,7 @@ function ResultCard({
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
         {label}
       </p>
-      <p className={cn("mt-3 text-2xl font-bold tracking-tight", tone === "primary" ? "text-primary" : "text-foreground")}>
+      <p className={cn("mt-3 text-2xl font-bold tracking-tight tabular-nums", tone === "primary" ? "text-primary" : "text-foreground")}>
         {value}
       </p>
     </div>
@@ -436,10 +436,10 @@ export default function OddsCalculator() {
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                       $100 bet payout
                     </p>
-                    <p className="mt-3 text-xl font-bold tracking-tight text-foreground">
+                    <p className="mt-3 text-xl font-bold tracking-tight text-foreground tabular-nums">
                       Win {fmtCurrency(converterProfit ?? 0)} profit on a $100 bet
                     </p>
-                    <p className="mt-2 text-sm text-muted-foreground">
+                    <p className="mt-2 text-sm text-muted-foreground tabular-nums">
                       Total return: {fmtCurrency(converterReturn ?? 0)}
                     </p>
                   </div>
@@ -447,10 +447,10 @@ export default function OddsCalculator() {
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                       Break-even win rate
                     </p>
-                    <p className="mt-3 text-xl font-bold tracking-tight text-primary">
+                    <p className="mt-3 text-xl font-bold tracking-tight text-primary tabular-nums">
                       {formatProbability(converterResult.impliedProbability)}
                     </p>
-                    <p className="mt-2 text-sm text-muted-foreground">
+                    <p className="mt-2 text-sm text-muted-foreground tabular-nums">
                       You need to win {formatProbability(converterResult.impliedProbability)} of the time to break even at these odds.
                     </p>
                   </div>
@@ -539,7 +539,7 @@ export default function OddsCalculator() {
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Implied
                         </p>
-                        <p className="mt-2 font-semibold text-foreground">
+                        <p className="mt-2 font-semibold text-foreground tabular-nums">
                           {legDetail.probability !== null ? formatProbability(legDetail.probability) : "—"}
                         </p>
                       </div>
@@ -611,8 +611,8 @@ export default function OddsCalculator() {
                             <td className="px-4 py-3 text-foreground">
                               {leg.label.trim() || `Leg ${index + 1}`}
                             </td>
-                            <td className="px-4 py-3 text-foreground">{leg.odds}</td>
-                            <td className="px-4 py-3 text-right text-muted-foreground">
+                            <td className="px-4 py-3 text-foreground tabular-nums">{leg.odds}</td>
+                            <td className="px-4 py-3 text-right text-muted-foreground tabular-nums">
                               {leg.probability !== null ? formatProbability(leg.probability) : "—"}
                             </td>
                           </tr>

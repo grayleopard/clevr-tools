@@ -89,7 +89,7 @@ export default function OvulationCalculator() {
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Estimated Ovulation Date</p>
-            <p className="text-2xl sm:text-3xl font-bold text-primary">{formatDate(result.nextOvulation)}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-primary tabular-nums">{formatDate(result.nextOvulation)}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-2">

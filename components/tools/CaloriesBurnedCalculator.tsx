@@ -120,8 +120,8 @@ export default function CaloriesBurnedCalculator() {
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Total Calories Burned</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">{result.totalCalories.toLocaleString()}</p>
-            <p className="text-sm text-muted-foreground mt-1">{result.caloriesPerMin} cal/min</p>
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{result.totalCalories.toLocaleString()}</p>
+            <p className="text-sm text-muted-foreground mt-1 tabular-nums">{result.caloriesPerMin} cal/min</p>
           </div>
 
           <div className="grid grid-cols-2 gap-2">

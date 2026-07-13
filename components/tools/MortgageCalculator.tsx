@@ -243,7 +243,7 @@ export default function MortgageCalculator() {
             <p className="text-sm text-muted-foreground mb-1">
               Monthly Payment
             </p>
-            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500">
+            <p className="text-4xl sm:text-5xl font-bold text-foreground dark:text-emerald-500 tabular-nums">
               {fmt(result.totalMonthly)}
             </p>
           </div>
@@ -281,13 +281,13 @@ export default function MortgageCalculator() {
           {/* Loan summary */}
           <div className="grid grid-cols-3 gap-2">
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-sm font-semibold text-foreground tabular-nums">
                 {fmt(result.principal)}
               </span>
               <span className="text-xs text-muted-foreground">Loan Amount</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-sm font-semibold text-foreground tabular-nums">
                 {fmt(result.totalInterest)}
               </span>
               <span className="text-xs text-muted-foreground">
@@ -295,7 +295,7 @@ export default function MortgageCalculator() {
               </span>
             </div>
             <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-sm font-semibold text-foreground tabular-nums">
                 {fmt(result.totalCost)}
               </span>
               <span className="text-xs text-muted-foreground">Total Cost</span>

@@ -220,7 +220,7 @@ export default function ReactionTime() {
           className={`rounded-xl cursor-pointer select-none min-h-64 md:min-h-80 flex flex-col items-center justify-center transition-colors duration-100 ${areaStyle.bg}`}
           style={{ WebkitUserSelect: "none", userSelect: "none" } as React.CSSProperties}
         >
-          <p className={`text-3xl font-bold ${areaStyle.text}`}>{areaStyle.label}</p>
+          <p className={`text-3xl font-bold tabular-nums ${areaStyle.text}`}>{areaStyle.label}</p>
           {areaStyle.sublabel && (
             <p className={`text-base mt-2 ${areaStyle.text} opacity-80`}>{areaStyle.sublabel}</p>
           )}
@@ -229,7 +229,7 @@ export default function ReactionTime() {
         /* Results screen */
         <div className="rounded-xl bg-zone p-8 text-center">
           <p className="text-sm text-zone-muted mb-1">Average Reaction Time</p>
-          <div className="text-7xl font-bold text-primary mb-1">{result?.avg}</div>
+          <div className="text-7xl font-bold text-primary mb-1 tabular-nums">{result?.avg}</div>
           <p className="text-zone-muted text-sm mb-2">milliseconds</p>
           <p className="text-lg font-medium text-zone-text mb-4">{result ? getRating(result.avg) : ""}</p>
 
@@ -237,7 +237,7 @@ export default function ReactionTime() {
             <div className="text-yellow-400 font-medium mb-3">New Personal Best!</div>
           )}
           {!isNewPB && previousBest !== null && (
-            <p className="text-zone-dim text-sm mb-3">Previous best: {previousBest} ms</p>
+            <p className="text-zone-dim text-sm mb-3 tabular-nums">Previous best: {previousBest} ms</p>
           )}
 
           {/* Round breakdown */}
@@ -245,7 +245,7 @@ export default function ReactionTime() {
             {result?.times.map((t, i) => (
               <div key={i} className="flex justify-between py-1 border-b border-zone-border text-sm">
                 <span className="text-zone-muted">Round {i + 1}</span>
-                <span className="text-zone-text font-medium">{t} ms</span>
+                <span className="text-zone-text font-medium tabular-nums">{t} ms</span>
               </div>
             ))}
             {result && (

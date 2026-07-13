@@ -173,7 +173,7 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
 
       {/* Stats summary */}
       {stats && (
-        <div className="px-4 py-3 border-b border-border bg-muted/10 text-sm text-muted-foreground">
+        <div className="px-4 py-3 border-b border-border bg-muted/10 text-sm text-muted-foreground tabular-nums">
           {tool === "wpm-test" ? (
             <>
               <span className="font-medium text-foreground">
@@ -230,7 +230,7 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
                 <span className="font-medium text-foreground tabular-nums">
                   {s.wpm} {tool === "cps-test" ? "CPS" : tool === "reaction-time" ? "ms" : "WPM"}
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground tabular-nums">
                   {s.accuracy.toFixed(1)}%
                 </span>
                 <span className="text-muted-foreground text-xs truncate">
@@ -262,7 +262,7 @@ export default function TypingHistory({ tool, refreshTrigger }: Props) {
               <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border font-mono text-foreground">
                 {key.toUpperCase()}
               </kbd>
-              <span className="text-orange-600 dark:text-orange-400">
+              <span className="text-orange-600 dark:text-orange-400 tabular-nums">
                 {Math.round(keyStats.accuracy)}%
               </span>
             </span>

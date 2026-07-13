@@ -211,15 +211,15 @@ export default function CpsTest() {
             <div className="text-center pointer-events-none space-y-4">
               <div className="flex items-center justify-center gap-12">
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-zone-text">{clicks}</div>
+                  <div className="text-5xl font-bold text-zone-text tabular-nums">{clicks}</div>
                   <div className="text-sm text-zone-muted mt-1">Clicks</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-zone-text">{timeLeft}</div>
+                  <div className="text-5xl font-bold text-zone-text tabular-nums">{timeLeft}</div>
                   <div className="text-sm text-zone-muted mt-1">Seconds</div>
                 </div>
               </div>
-              <p className="text-zone-dim text-sm">{cps} CPS</p>
+              <p className="text-zone-dim text-sm tabular-nums">{cps} CPS</p>
               <p className="text-zone-dim text-sm">Keep clicking!</p>
             </div>
           )}
@@ -228,23 +228,23 @@ export default function CpsTest() {
         /* Results */
         <div className="rounded-xl bg-zone p-8 text-center">
           <p className="text-sm text-zone-muted mb-1">CPS</p>
-          <div className="text-7xl font-bold text-primary mb-2">{result?.cps}</div>
+          <div className="text-7xl font-bold text-primary mb-2 tabular-nums">{result?.cps}</div>
           <p className="text-zone-muted text-sm mb-4">clicks per second</p>
 
           {isNewPB && (
             <div className="text-yellow-400 font-medium mb-3">New Personal Best!</div>
           )}
           {!isNewPB && previousBest !== null && (
-            <p className="text-zone-dim text-sm mb-3">Previous best: {previousBest} CPS</p>
+            <p className="text-zone-dim text-sm mb-3 tabular-nums">Previous best: {previousBest} CPS</p>
           )}
 
           <div className="grid grid-cols-3 gap-3 mb-6 max-w-sm mx-auto">
             <div className="rounded-xl border border-zone-border bg-zone-raised py-3">
-              <div className="text-lg font-semibold text-zone-text">{result?.clicks}</div>
+              <div className="text-lg font-semibold text-zone-text tabular-nums">{result?.clicks}</div>
               <div className="text-xs text-zone-muted">Total Clicks</div>
             </div>
             <div className="rounded-xl border border-zone-border bg-zone-raised py-3">
-              <div className="text-lg font-semibold text-zone-text">{result?.duration}s</div>
+              <div className="text-lg font-semibold text-zone-text tabular-nums">{result?.duration}s</div>
               <div className="text-xs text-zone-muted">Duration</div>
             </div>
             <div className="rounded-xl border border-zone-border bg-zone-raised py-3">

@@ -667,7 +667,7 @@ export default function CodeChallenge() {
         /* Results screen */
         <div className="rounded-xl bg-zone p-8 text-center animate-in fade-in duration-300">
           {/* WPM large */}
-          <div className="text-7xl font-bold text-primary mb-2">
+          <div className="text-7xl font-bold text-primary mb-2 tabular-nums">
             {result?.wpm}
           </div>
           <div className="text-zone-muted text-sm mb-6">WPM</div>
@@ -678,7 +678,7 @@ export default function CodeChallenge() {
             </div>
           )}
           {!isNewPB && previousBest !== null && (
-            <div className="text-sm text-zone-dim mb-4">
+            <div className="text-sm text-zone-dim mb-4 tabular-nums">
               Personal best: {previousBest} WPM
             </div>
           )}

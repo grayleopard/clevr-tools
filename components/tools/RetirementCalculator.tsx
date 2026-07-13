@@ -154,10 +154,10 @@ export default function RetirementCalculator() {
             <p className="text-sm text-muted-foreground mb-1">
               Projected Savings at Age {parseInt(retirementAge) || 0}
             </p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {fmt(result.nominalValue)}
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground mt-2 tabular-nums">
               {fmt(result.realValue)} in today&apos;s dollars
             </p>
           </div>

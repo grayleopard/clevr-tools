@@ -284,7 +284,7 @@ export default function BodyFatCalculator() {
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Estimated Body Fat</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary">{result.bf}%</p>
+            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{result.bf}%</p>
             <span className={`inline-block mt-2 rounded-full px-3 py-1 text-sm font-medium ${getCategoryColor(result.category)}`}>
               {result.category}
             </span>
