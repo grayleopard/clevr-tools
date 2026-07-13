@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "clevr-tools",
+      "runtimeExecutable": "/Users/preet/.bun/bin/bun",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    }
+  ]
+}
