@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function addDays(date: Date, days: number): Date {
   const d = new Date(date);
@@ -23,11 +24,21 @@ export default function OvulationCalculator() {
   const [cycleLength, setCycleLength] = useState("28");
 
   const result = useMemo(() => {
-    if (!dateStr) return null;
+    if (!dateStr) {
+      return { ok: false as const, emptyMessage: "Enter the first day of your last period to see your fertile window." };
+    }
     const startDate = new Date(dateStr + "T00:00:00");
-    if (isNaN(startDate.getTime())) return null;
+    if (isNaN(startDate.getTime())) {
+      return { ok: false as const, emptyMessage: "Enter the first day of your last period to see your fertile window." };
+    }
     const cl = parseInt(cycleLength) || 28;
-    if (cl < 21 || cl > 35) return null;
+    if (cl < 21 || cl > 35) {
+      return {
+        ok: false as const,
+        emptyMessage:
+          "Date-based prediction works best for cycles between 21 and 35 days — outside that range it gets much less reliable. Tracking basal body temperature or ovulation test strips will serve you better than a date estimate.",
+      };
+    }
 
     const cycles = [];
     let periodStart = new Date(startDate);
@@ -55,7 +66,7 @@ export default function OvulationCalculator() {
     const fertileWindowEnd = cycles[0].fertileEnd;
     const nextPeriod = cycles[0].nextPeriod;
 
-    return { nextOvulation, fertileWindowStart, fertileWindowEnd, nextPeriod, cycles };
+    return { ok: true as const, nextOvulation, fertileWindowStart, fertileWindowEnd, nextPeriod, cycles };
   }, [dateStr, cycleLength]);
 
   return (
@@ -85,7 +96,9 @@ export default function OvulationCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Estimated Ovulation Date</p>

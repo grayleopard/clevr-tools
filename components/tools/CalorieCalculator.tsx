@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type Unit = "imperial" | "metric";
 type Gender = "male" | "female";
@@ -30,7 +31,9 @@ export default function CalorieCalculator() {
 
   const result = useMemo(() => {
     const ageVal = parseInt(age) || 0;
-    if (ageVal <= 0) return null;
+    if (ageVal <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your age, height, and weight to calculate your daily calorie needs." };
+    }
 
     let weightKgVal: number;
     let heightCmVal: number;
@@ -45,7 +48,9 @@ export default function CalorieCalculator() {
       weightKgVal = parseFloat(weightKg) || 0;
     }
 
-    if (heightCmVal <= 0 || weightKgVal <= 0) return null;
+    if (heightCmVal <= 0 || weightKgVal <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your age, height, and weight to calculate your daily calorie needs." };
+    }
 
     // Mifflin-St Jeor
     let bmr: number;
@@ -60,10 +65,10 @@ export default function CalorieCalculator() {
     const maintain = Math.round(tdee);
     const gain = Math.round(tdee + 500);
 
-    return { bmr: Math.round(bmr), tdee: maintain, lose, maintain, gain };
+    return { ok: true as const, bmr: Math.round(bmr), tdee: maintain, lose, maintain, gain };
   }, [unit, gender, age, heightFt, heightIn, heightCm, weightLbs, weightKg, activityIdx]);
 
-  const goalCalories = result
+  const goalCalories = result?.ok
     ? goal === "lose"
       ? result.lose
       : goal === "gain"
@@ -183,7 +188,9 @@ export default function CalorieCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">

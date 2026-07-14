@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type InputMode = "manual" | "calculate";
 type Gender = "male" | "female";
@@ -49,7 +50,15 @@ export default function MacroCalculator() {
   }, [inputMode, calories, gender, age, heightCm, weightKg, activityIdx]);
 
   const macros = useMemo(() => {
-    if (effectiveCalories <= 0) return null;
+    if (effectiveCalories <= 0) {
+      return {
+        ok: false as const,
+        emptyMessage:
+          inputMode === "manual"
+            ? "Enter a daily calorie target to see your macro breakdown."
+            : "Enter your age, height, and weight to estimate your calorie needs first.",
+      };
+    }
     let c: number, p: number, f: number;
     if (customMode) {
       c = parseFloat(customCarb) || 0;
@@ -62,7 +71,9 @@ export default function MacroCalculator() {
       f = preset.fat;
     }
     const total = c + p + f;
-    if (total === 0) return null;
+    if (total === 0) {
+      return { ok: false as const, emptyMessage: "Enter at least one macro percentage greater than zero." };
+    }
     // normalize
     const cn = c / total;
     const pn = p / total;
@@ -73,6 +84,7 @@ export default function MacroCalculator() {
     const fatCal = effectiveCalories * fn;
 
     return {
+      ok: true as const,
       carbGrams: Math.round(carbCal / 4),
       proteinGrams: Math.round(proteinCal / 4),
       fatGrams: Math.round(fatCal / 9),
@@ -83,7 +95,7 @@ export default function MacroCalculator() {
       proteinPct: Math.round(pn * 100),
       fatPct: Math.round(fn * 100),
     };
-  }, [effectiveCalories, presetIdx, customMode, customCarb, customProtein, customFat]);
+  }, [effectiveCalories, presetIdx, customMode, customCarb, customProtein, customFat, inputMode]);
 
   return (
     <div className="space-y-6">
@@ -204,7 +216,9 @@ export default function MacroCalculator() {
       )}
 
       {/* Results */}
-      {macros && (
+      {macros && !macros.ok && <CalculatorEmptyState message={macros.emptyMessage} />}
+
+      {macros?.ok && (
         <>
           <div className="grid grid-cols-3 gap-2">
             {[

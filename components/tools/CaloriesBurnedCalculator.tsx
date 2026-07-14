@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type Unit = "imperial" | "metric";
 
@@ -46,7 +47,9 @@ export default function CaloriesBurnedCalculator() {
 
   const result = useMemo(() => {
     const durationMin = parseFloat(duration) || 0;
-    if (durationMin <= 0) return null;
+    if (durationMin <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your weight and workout duration to see calories burned." };
+    }
 
     let weightKg: number;
     if (unit === "imperial") {
@@ -54,7 +57,9 @@ export default function CaloriesBurnedCalculator() {
     } else {
       weightKg = parseFloat(weightVal) || 0;
     }
-    if (weightKg <= 0) return null;
+    if (weightKg <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your weight and workout duration to see calories burned." };
+    }
 
     const activity = ACTIVITIES[activityIdx];
     const durationHours = durationMin / 60;
@@ -65,7 +70,7 @@ export default function CaloriesBurnedCalculator() {
     const pizzaSlices = Math.round(totalCalories / 285 * 10) / 10;
     const walkMinutes = Math.round(totalCalories / (4.3 * weightKg / 60));
 
-    return { totalCalories, caloriesPerMin, pizzaSlices, walkMinutes, activityName: activity.label };
+    return { ok: true as const, totalCalories, caloriesPerMin, pizzaSlices, walkMinutes, activityName: activity.label };
   }, [unit, weightVal, activityIdx, duration]);
 
   return (
@@ -116,7 +121,9 @@ export default function CaloriesBurnedCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Total Calories Burned</p>

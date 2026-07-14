@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type Method = "lmp" | "conception" | "ivf";
 type IvfType = "3day" | "5day";
@@ -30,10 +31,17 @@ export default function DueDateCalculator() {
   const [cycleLength, setCycleLength] = useState("28");
   const [ivfType, setIvfType] = useState<IvfType>("5day");
 
+  const emptyMessage =
+    method === "lmp"
+      ? "Enter the first day of your last period to estimate your due date."
+      : method === "conception"
+        ? "Enter your conception date to estimate your due date."
+        : "Enter your transfer date to estimate your due date.";
+
   const result = useMemo(() => {
-    if (!dateStr) return null;
+    if (!dateStr) return { ok: false as const, emptyMessage };
     const date = new Date(dateStr + "T00:00:00");
-    if (isNaN(date.getTime())) return null;
+    if (isNaN(date.getTime())) return { ok: false as const, emptyMessage };
 
     let dueDate: Date;
     let gestationStart: Date;
@@ -86,6 +94,7 @@ export default function DueDateCalculator() {
     ];
 
     return {
+      ok: true as const,
       dueDate,
       weeksPregnant: daysPregnant >= 0 ? weeksPregnant : null,
       daysRemainder: daysPregnant >= 0 ? daysRemainder : null,
@@ -95,7 +104,7 @@ export default function DueDateCalculator() {
       milestones,
       isPast: daysPregnant < 0,
     };
-  }, [method, dateStr, cycleLength, ivfType]);
+  }, [method, dateStr, cycleLength, ivfType, emptyMessage]);
 
   return (
     <div className="space-y-6">
@@ -155,7 +164,9 @@ export default function DueDateCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Estimated Due Date</p>

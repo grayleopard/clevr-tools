@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 const ZODIAC = [
   { sign: "Capricorn", emoji: "\u2651", end: [1, 19] },
@@ -120,11 +121,17 @@ export default function AgeCalculator() {
   const [asOf, setAsOf] = useState(today);
 
   const result = useMemo(() => {
-    if (!dob || !asOf) return null;
+    if (!dob || !asOf) {
+      return { ok: false as const, emptyMessage: "Enter a date of birth to see a full age breakdown." };
+    }
     const dobDate = new Date(dob + "T00:00:00");
     const asOfDate = new Date(asOf + "T00:00:00");
-    if (isNaN(dobDate.getTime()) || isNaN(asOfDate.getTime())) return null;
-    if (asOfDate < dobDate) return null;
+    if (isNaN(dobDate.getTime()) || isNaN(asOfDate.getTime())) {
+      return { ok: false as const, emptyMessage: "Enter a date of birth to see a full age breakdown." };
+    }
+    if (asOfDate < dobDate) {
+      return { ok: false as const, emptyMessage: "The \"as of\" date needs to be on or after the date of birth." };
+    }
 
     let years = asOfDate.getFullYear() - dobDate.getFullYear();
     let months = asOfDate.getMonth() - dobDate.getMonth();
@@ -177,6 +184,7 @@ export default function AgeCalculator() {
     const generation = getGeneration(dobDate.getFullYear());
 
     return {
+      ok: true as const,
       years,
       months,
       days,
@@ -227,13 +235,9 @@ export default function AgeCalculator() {
         </div>
       </div>
 
-      {!result && dob && (
-        <p className="text-sm text-muted-foreground text-center">
-          The &quot;As of&quot; date must be on or after the date of birth.
-        </p>
-      )}
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
 
-      {result && (
+      {result?.ok && (
         <>
           {/* Primary result */}
           <div className="text-center rounded-xl border border-border bg-card p-6">

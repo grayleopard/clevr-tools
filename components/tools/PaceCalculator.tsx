@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type Mode = "pace" | "time" | "distance";
 type DistUnit = "miles" | "km";
@@ -57,13 +58,16 @@ export default function PaceCalculator() {
 
     if (mode === "pace") {
       // Know distance + time, calculate pace
-      if (dist <= 0 || totalTimeSec <= 0) return null;
+      if (dist <= 0 || totalTimeSec <= 0) {
+        return { ok: false as const, emptyMessage: "Enter a distance and time to calculate your pace." };
+      }
       const pacePerUnit = totalTimeSec / dist;
       const speed = dist / (totalTimeSec / 3600);
       // Convert pace to other unit
       const convFactor = distUnit === "miles" ? 1.60934 : 1 / 1.60934;
       const altPace = pacePerUnit / convFactor;
       return {
+        ok: true as const,
         type: "pace" as const,
         pace: pacePerUnit,
         altPace,
@@ -73,10 +77,13 @@ export default function PaceCalculator() {
       };
     } else if (mode === "time") {
       // Know distance + pace, calculate time
-      if (dist <= 0 || paceSec <= 0) return null;
+      if (dist <= 0 || paceSec <= 0) {
+        return { ok: false as const, emptyMessage: "Enter a distance and pace to calculate your finish time." };
+      }
       const total = dist * paceSec;
       const speed = dist / (total / 3600);
       return {
+        ok: true as const,
         type: "time" as const,
         totalTimeSec: total,
         speed,
@@ -85,10 +92,13 @@ export default function PaceCalculator() {
       };
     } else {
       // Know pace + time, calculate distance
-      if (paceSec <= 0 || totalTimeSec <= 0) return null;
+      if (paceSec <= 0 || totalTimeSec <= 0) {
+        return { ok: false as const, emptyMessage: "Enter a pace and time to calculate the distance." };
+      }
       const d = totalTimeSec / paceSec;
       const speed = d / (totalTimeSec / 3600);
       return {
+        ok: true as const,
         type: "distance" as const,
         distance: d,
         speed,
@@ -100,9 +110,9 @@ export default function PaceCalculator() {
 
   // Splits
   const splits = useMemo(() => {
-    if (!result) return [];
+    if (!result?.ok) return [];
     const dist = result.distance;
-    const pace = result.type === "pace" ? result.pace : result.pace;
+    const pace = result.pace;
     const maxSplits = Math.min(Math.ceil(dist), 50);
     const arr = [];
     for (let i = 1; i <= maxSplits; i++) {
@@ -177,7 +187,9 @@ export default function PaceCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             {result.type === "pace" && (

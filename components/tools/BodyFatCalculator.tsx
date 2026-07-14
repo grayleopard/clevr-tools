@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type Gender = "male" | "female";
 type Method = "navy" | "bmi";
@@ -86,17 +87,31 @@ export default function BodyFatCalculator() {
         weightKg = parseFloat(weightVal) || 0;
       }
 
-      if (heightCmVal <= 0 || neckCmVal <= 0 || waistCmVal <= 0) return null;
-      if (gender === "female" && hipCmVal <= 0) return null;
+      if (heightCmVal <= 0 || neckCmVal <= 0 || waistCmVal <= 0) {
+        return {
+          ok: false as const,
+          emptyMessage:
+            gender === "female"
+              ? "Enter your height, neck, waist, and hip measurements to estimate body fat."
+              : "Enter your height, neck, and waist measurements to estimate body fat.",
+        };
+      }
+      if (gender === "female" && hipCmVal <= 0) {
+        return { ok: false as const, emptyMessage: "Enter your height, neck, waist, and hip measurements to estimate body fat." };
+      }
 
       let bf: number;
       if (gender === "male") {
         const diff = waistCmVal - neckCmVal;
-        if (diff <= 0) return null;
+        if (diff <= 0) {
+          return { ok: false as const, emptyMessage: "The waist measurement should be larger than the neck — double-check those two." };
+        }
         bf = 86.010 * Math.log10(diff) - 70.041 * Math.log10(heightCmVal) + 36.76;
       } else {
         const sum = waistCmVal + hipCmVal - neckCmVal;
-        if (sum <= 0) return null;
+        if (sum <= 0) {
+          return { ok: false as const, emptyMessage: "The waist measurement should be larger than the neck — double-check those measurements." };
+        }
         bf = 163.205 * Math.log10(sum) - 97.684 * Math.log10(heightCmVal) - 78.387;
       }
 
@@ -111,11 +126,13 @@ export default function BodyFatCalculator() {
         leanMass = Math.round((weightKg - fatMass) * 10) / 10;
       }
 
-      return { bf, category, fatMass, leanMass, weightKg };
+      return { ok: true as const, bf, category, fatMass, leanMass, weightKg };
     } else {
       // BMI method
       const ageVal = parseInt(age) || 0;
-      if (ageVal <= 0) return null;
+      if (ageVal <= 0) {
+        return { ok: false as const, emptyMessage: "Enter your age, height, and weight to estimate body fat." };
+      }
 
       let heightM: number, weightKg: number;
       if (unit === "imperial") {
@@ -127,7 +144,9 @@ export default function BodyFatCalculator() {
         weightKg = parseFloat(bmiWeightVal) || 0;
       }
 
-      if (heightM <= 0 || weightKg <= 0) return null;
+      if (heightM <= 0 || weightKg <= 0) {
+        return { ok: false as const, emptyMessage: "Enter your age, height, and weight to estimate body fat." };
+      }
 
       const bmi = weightKg / (heightM * heightM);
       const sexVal = gender === "male" ? 1 : 0;
@@ -139,7 +158,7 @@ export default function BodyFatCalculator() {
       const fatMass = Math.round(weightKg * bf / 100 * 10) / 10;
       const leanMass = Math.round((weightKg - fatMass) * 10) / 10;
 
-      return { bf, category, fatMass, leanMass, weightKg };
+      return { ok: true as const, bf, category, fatMass, leanMass, weightKg };
     }
   }, [method, gender, unit, neckIn, waistIn, hipIn, heightFt, heightIn, neckCm, waistCm, hipCm, heightCm, weightVal, age, bmiWeightVal, bmiHeightFt, bmiHeightIn, bmiHeightCm]);
 
@@ -280,7 +299,9 @@ export default function BodyFatCalculator() {
       )}
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Estimated Body Fat</p>

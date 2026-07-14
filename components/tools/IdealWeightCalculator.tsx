@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type Gender = "male" | "female";
 type Unit = "imperial" | "metric";
@@ -35,7 +36,23 @@ export default function IdealWeightCalculator() {
       heightInches = heightM / 0.0254;
     }
 
-    if (heightInches <= 60 || heightM <= 0) return null;
+    if (heightM <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your height to see ideal weight estimates from four different formulas." };
+    }
+    if (heightInches <= 60) {
+      return {
+        ok: false as const,
+        emptyMessage: (
+          <>
+            These formulas were built around a taller reference range and don&apos;t hold up well below 5&apos;0&quot;. The{" "}
+            <Link href="/calc/bmi" className="text-primary underline hover:no-underline">
+              BMI calculator
+            </Link>
+            &apos;s healthy-range estimate works at any height.
+          </>
+        ),
+      };
+    }
 
     const over60 = heightInches - 60;
     const isMale = gender === "male";
@@ -54,6 +71,7 @@ export default function IdealWeightCalculator() {
     const frameMultiplier = frame === "small" ? 0.9 : frame === "large" ? 1.1 : 1.0;
 
     return {
+      ok: true as const,
       devine: devine * frameMultiplier,
       robinson: robinson * frameMultiplier,
       miller: miller * frameMultiplier,
@@ -121,7 +139,9 @@ export default function IdealWeightCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">Healthy BMI Range (18.5 - 24.9)</p>

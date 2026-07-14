@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 type Unit = "imperial" | "metric";
 
@@ -46,7 +47,9 @@ export default function BmiCalculator() {
       const ft = parseFloat(heightFt) || 0;
       const inches = parseFloat(heightIn) || 0;
       const totalIn = ft * 12 + inches;
-      if (totalIn <= 0) return null;
+      if (totalIn <= 0) {
+        return { ok: false as const, emptyMessage: "Enter your height and weight to see your BMI." };
+      }
       heightM = totalIn * 0.0254;
       weightKgVal = (parseFloat(weightLbs) || 0) * 0.453592;
     } else {
@@ -54,7 +57,9 @@ export default function BmiCalculator() {
       weightKgVal = parseFloat(weightKg) || 0;
     }
 
-    if (heightM <= 0 || weightKgVal <= 0) return null;
+    if (heightM <= 0 || weightKgVal <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your height and weight to see your BMI." };
+    }
 
     const bmi = weightKgVal / (heightM * heightM);
     const bmiRounded = Math.round(bmi * 10) / 10;
@@ -75,7 +80,7 @@ export default function BmiCalculator() {
     // Scale position (clamped 15-40 range)
     const position = Math.max(0, Math.min(100, ((bmiRounded - 15) / 25) * 100));
 
-    return { bmi: bmiRounded, category, healthyRange, position };
+    return { ok: true as const, bmi: bmiRounded, category, healthyRange, position };
   }, [unit, heightFt, heightIn, weightLbs, heightCm, weightKg]);
 
   return (
@@ -179,7 +184,9 @@ export default function BmiCalculator() {
         )}
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* BMI result card with blue accent */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

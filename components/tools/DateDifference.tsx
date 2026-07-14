@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function countBusinessDays(start: Date, end: Date): number {
   let count = 0;
@@ -69,10 +70,14 @@ export default function DateDifference() {
   );
 
   const result = useMemo(() => {
-    if (!startDate || !endDate) return null;
+    if (!startDate || !endDate) {
+      return { ok: false as const, emptyMessage: "Enter a start and end date to see the difference." };
+    }
     const start = new Date(startDate + "T00:00:00");
     const end = new Date(endDate + "T00:00:00");
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return { ok: false as const, emptyMessage: "Enter a start and end date to see the difference." };
+    }
 
     const diffMs = end.getTime() - start.getTime();
     const daysDiff = Math.round(diffMs / 86400000);
@@ -105,6 +110,7 @@ export default function DateDifference() {
     const weekendDays = absDays + 1 - businessDays;
 
     return {
+      ok: true as const,
       daysDiff,
       absDays,
       direction,
@@ -179,7 +185,9 @@ export default function DateDifference() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Primary result */}
           <div className="text-center rounded-xl border border-border bg-card p-6">

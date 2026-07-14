@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Plus, X } from "lucide-react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 const GRADE_MAP: Record<string, number> = {
   "A+": 4.0,
@@ -68,7 +69,9 @@ export default function GpaCalculator() {
       (c) => c.grade !== "" && parseFloat(c.credits) > 0
     );
 
-    if (validCourses.length === 0) return null;
+    if (validCourses.length === 0) {
+      return { ok: false as const, emptyMessage: "Add a grade for at least one course to calculate your GPA." };
+    }
 
     const totalCredits = validCourses.reduce(
       (sum, c) => sum + (parseFloat(c.credits) || 0),
@@ -94,7 +97,7 @@ export default function GpaCalculator() {
       }
     }
 
-    return { gpa: gpaRounded, totalCredits, totalPoints, cumulativeGpa };
+    return { ok: true as const, gpa: gpaRounded, totalCredits, totalPoints, cumulativeGpa };
   }, [courses, showCumulative, prevGpa, prevCredits]);
 
   const gpaColor = (gpa: number) => {
@@ -177,7 +180,9 @@ export default function GpaCalculator() {
       </button>
 
       {/* GPA result */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <div className="text-center rounded-xl border border-border bg-card p-6 space-y-2">
           <p className="text-sm text-muted-foreground">Semester GPA</p>
           <p className={`text-4xl sm:text-5xl font-bold tabular-nums ${gpaColor(result.gpa)}`}>
@@ -263,7 +268,7 @@ export default function GpaCalculator() {
               </div>
             </div>
 
-            {result?.cumulativeGpa !== null && result?.cumulativeGpa !== undefined && (
+            {result?.ok && result.cumulativeGpa !== null && (
               <div className="text-center rounded-lg bg-muted/30 p-4">
                 <p className="text-sm text-muted-foreground mb-1">
                   New Cumulative GPA
