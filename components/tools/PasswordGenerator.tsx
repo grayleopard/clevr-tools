@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { Copy, RefreshCw, Check } from "lucide-react";
 import { addToast } from "@/lib/toast";
 import { TipJar } from "@/components/tool/TipJar";
@@ -215,11 +215,20 @@ export default function PasswordGenerator() {
 
   const noCharSets = !useUppercase && !useLowercase && !useNumbers && !useSymbols;
 
-  const { password, multiPasswords } = useMemo(() => {
+  // crypto.getRandomValues() must not run during render — the server and the
+  // client would each compute a different random password, guaranteeing a
+  // hydration mismatch on every load. Generate client-only, in an effect,
+  // matching UUIDGenerator.tsx's established pattern for this codebase.
+  const [password, setPassword] = useState("");
+  const [multiPasswords, setMultiPasswords] = useState<string[]>([]);
+
+  useEffect(() => {
     void regenNonce;
 
     if (noCharSets) {
-      return { password: "", multiPasswords: [] as string[] };
+      setPassword("");
+      setMultiPasswords([]);
+      return;
     }
 
     const pw = generatePassword(length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous);
@@ -230,9 +239,12 @@ export default function PasswordGenerator() {
       for (let i = 0; i < count; i++) {
         pws.push(generatePassword(length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous));
       }
-      return { password: pw, multiPasswords: pws };
+      setPassword(pw);
+      setMultiPasswords(pws);
+    } else {
+      setPassword(pw);
+      setMultiPasswords([]);
     }
-    return { password: pw, multiPasswords: [] as string[] };
   }, [length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous, multiCount, noCharSets, regenNonce]);
 
   const handleRegenerate = useCallback(() => {
