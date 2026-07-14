@@ -218,16 +218,19 @@ export default function PasswordGenerator() {
   // crypto.getRandomValues() must not run during render — the server and the
   // client would each compute a different random password, guaranteeing a
   // hydration mismatch on every load. Generate client-only, in an effect,
-  // matching UUIDGenerator.tsx's established pattern for this codebase.
-  const [password, setPassword] = useState("");
-  const [multiPasswords, setMultiPasswords] = useState<string[]>([]);
+  // matching UUIDGenerator.tsx's established pattern for this codebase. One
+  // combined state object so the effect makes a single setState call.
+  const [{ password, multiPasswords }, setGenerated] = useState<{ password: string; multiPasswords: string[] }>({
+    password: "",
+    multiPasswords: [],
+  });
 
   useEffect(() => {
     void regenNonce;
 
     if (noCharSets) {
-      setPassword("");
-      setMultiPasswords([]);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- crypto.getRandomValues() is unavailable during SSR render, so generation can only happen client-side in an effect
+      setGenerated({ password: "", multiPasswords: [] });
       return;
     }
 
@@ -239,11 +242,9 @@ export default function PasswordGenerator() {
       for (let i = 0; i < count; i++) {
         pws.push(generatePassword(length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous));
       }
-      setPassword(pw);
-      setMultiPasswords(pws);
+      setGenerated({ password: pw, multiPasswords: pws });
     } else {
-      setPassword(pw);
-      setMultiPasswords([]);
+      setGenerated({ password: pw, multiPasswords: [] });
     }
   }, [length, useUppercase, useLowercase, useNumbers, useSymbols, excludeAmbiguous, multiCount, noCharSets, regenNonce]);
 
