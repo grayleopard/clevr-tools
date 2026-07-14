@@ -1,7 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { ALL_TOOLS } from "./registry";
 import { UNIT_CONVERTER_SLUGS } from "./fixtures";
-import { locatorNearLabel } from "./helpers";
 
 // All 32 unit-converter tools (the 17 generic /calc/convert/* pages, the 14
 // single-pair shortcuts like cm-to-inches, and the standalone /calc/unit-
@@ -25,13 +24,13 @@ test.describe("unit converter family — generic From/To smoke", () => {
     test(`${tool.route} converts a value`, async ({ page }) => {
       await page.goto(tool.route, { waitUntil: "networkidle" });
 
-      // "From"/"To" labels in this app aren't programmatically associated with
-      // their inputs (no htmlFor/id) — see the accessibility finding in the
-      // audit report. locatorNearLabel walks the DOM instead of the a11y tree,
-      // and must be told to skip the unit <select> that sits between the
-      // label and the actual number input.
-      const fromInput = locatorNearLabel(page, "From", { tag: "input" });
-      const toInput = locatorNearLabel(page, "To", { tag: "input" });
+      // "From"/"To" are now properly associated with their value <input>
+      // (the unit <select> gets its own hidden "From unit"/"To unit" label)
+      // — see the accessibility fix. Same wiring in both UnitConverterPage
+      // (30 tools) and the standalone UnitConverter (1 tool), so one
+      // getByLabel() call works for the whole family.
+      const fromInput = page.getByLabel("From", { exact: true });
+      const toInput = page.getByLabel("To", { exact: true });
       await expect(fromInput, `no "From" input on ${tool.route}`).toBeVisible();
       await expect(toInput, `no "To" input on ${tool.route}`).toBeVisible();
 

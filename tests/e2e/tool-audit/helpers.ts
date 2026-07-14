@@ -82,35 +82,6 @@ export function toRegExp(pattern: string | RegExp): RegExp {
   return pattern instanceof RegExp ? pattern : new RegExp(escapeRegExp(pattern), "i");
 }
 
-/**
- * Finds a form control "labeled" by nearby text even when the <label> isn't
- * programmatically associated with its input (no htmlFor/id, not nested) —
- * which turns out to be the case across most of this app's calculators
- * (label and input are plain DOM siblings). page.getByLabel() can't see
- * that association because there isn't one; this walks the DOM directly:
- * find a <label> (or any element) containing the text, then take the
- * nearest following input/select/textarea. Prefer getByLabel() when a tool
- * *does* have proper label association — fall back to this otherwise.
- */
-export function locatorNearLabel(
-  page: Page,
-  labelText: string,
-  opts: { tag?: "input" | "select" | "textarea" } = {}
-): Locator {
-  const escaped = labelText.replace(/"/g, '\\"');
-  const tagTest = opts.tag ? `self::${opts.tag}` : "self::input or self::select or self::textarea";
-  // Not every "label" here is a <label> — some are <span>/<th> column headers
-  // (e.g. GpaCalculator's "Grade" table header) with no semantic label at
-  // all. Match the innermost element whose own text (not a descendant's)
-  // contains labelText, so a wrapping <div> that happens to contain the
-  // whole form doesn't match instead of the actual short label node.
-  return page
-    .locator(
-      `xpath=//*[contains(normalize-space(.), "${escaped}") and not(.//*[contains(normalize-space(.), "${escaped}")])]/following::*[${tagTest}][1]`
-    )
-    .first();
-}
-
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

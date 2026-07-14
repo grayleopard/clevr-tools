@@ -129,9 +129,8 @@ export const FIXTURES: Record<string, Fixture> = {
   "gpa-calculator": {
     kind: "form",
     defaultsProduceResult: false,
-    // "Grade" also appears in a "Show Grade Scale" button earlier in the DOM,
-    // which locatorNearLabel's text-matching picks up first — go straight for
-    // the one <select> on this page instead.
+    // Per-course grade <select>s have no <label> at all (placeholder-style
+    // table header only) — go straight for the one <select> on this page.
     steps: [{ type: "selectCss", css: "select", optionLabel: "A" }],
     successPattern: /4\.00/,
   },
@@ -258,10 +257,9 @@ export const FIXTURES: Record<string, Fixture> = {
   "ideal-weight": {
     kind: "form",
     defaultsProduceResult: true,
-    // NOTE: don't lower height below 5'0" — IdealWeightCalculator.tsx nulls the
-    // result for heightInches<=60 with no error message (jank, noted below).
-    // "Height" label covers both the ft and in inputs; locatorNearLabel takes
-    // the first following <input>, which is the ft field.
+    // NOTE: don't lower height below 5'0" — IdealWeightCalculator.tsx shows a
+    // "formulas don't hold up below 5'0"" message instead of a result there.
+    // "Height" is htmlFor-associated with the ft input specifically.
     steps: [{ type: "fill", label: "Height", value: "6" }],
     successPattern: /Healthy BMI Range/,
   },

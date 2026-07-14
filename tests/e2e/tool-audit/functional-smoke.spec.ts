@@ -2,7 +2,7 @@ import path from "node:path";
 import { expect, test, type Page } from "@playwright/test";
 import { LIVE_TOOLS, HIDDEN_TOOLS, type Tool } from "./registry";
 import { FIXTURES, UNIT_CONVERTER_SLUGS, TIME_TYPE_SLUGS, type Step, type FormFixture, type FileFixture } from "./fixtures";
-import { fixture, mainText, expectDownloadArtifact, toRegExp, locatorNearLabel } from "./helpers";
+import { fixture, mainText, expectDownloadArtifact, toRegExp } from "./helpers";
 
 // Level 2: feed each tool a known input, assert a known-shape output. Unlike
 // registry-smoke.spec.ts, this can't run itself off the registry alone — it
@@ -31,11 +31,13 @@ test.describe("fixture coverage", () => {
 async function runStep(page: Page, step: Step) {
   switch (step.type) {
     case "fill": {
-      // Most of this app's calculators render <label>Text</label><input/> as
-      // plain unassociated siblings (no htmlFor/id) — getByLabel() can't see
-      // that. locatorNearLabel() walks the DOM directly instead. See the
-      // accessibility finding in the audit report.
-      await locatorNearLabel(page, step.label).fill(step.value);
+      // Labels are now properly associated (htmlFor/id) app-wide — see the
+      // accessibility fix. getByLabel() is the standard, a11y-tree-based
+      // locator; if this can't find an input, the label isn't associated.
+      // exact: true — getByLabel()'s default substring match can also hit an
+      // unrelated control whose own accessible name happens to contain the
+      // same text (e.g. a "Copy HEX value" button next to a "HEX" input).
+      await page.getByLabel(step.label, { exact: true }).fill(step.value);
       break;
     }
     case "fillPlaceholder": {
@@ -43,7 +45,7 @@ async function runStep(page: Page, step: Step) {
       break;
     }
     case "select": {
-      await locatorNearLabel(page, step.label).selectOption({ label: step.optionLabel });
+      await page.getByLabel(step.label, { exact: true }).selectOption({ label: step.optionLabel });
       break;
     }
     case "selectCss": {
@@ -51,7 +53,7 @@ async function runStep(page: Page, step: Step) {
       break;
     }
     case "check": {
-      await locatorNearLabel(page, step.label).check();
+      await page.getByLabel(step.label, { exact: true }).check();
       break;
     }
     case "click": {
