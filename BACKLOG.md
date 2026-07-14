@@ -92,6 +92,39 @@ sheet, not confirmed field-by-field. Any new template added via the vision
 pipeline needs the same overlay verification before it ships — see the
 DRAFT GENERATOR note at the top of `analyze-meme-templates.ts`.
 
+## Accessibility: dynamic-list rows and Radix sliders still lack labels
+
+Surfaced during the app-wide `htmlFor`/`id` label-association pass (see
+`git log` — "fix: associate labels with their inputs app-wide"). Two classes
+of input remain unlabeled, deliberately left out of that pass because
+fixing them isn't a metadata-only change:
+
+**Dynamic-list rows use placeholder text only, no `<label>` at all.** Not a
+missing-association bug (there was no label to wire up) — these need actual
+new label copy, which is a design decision, not a mechanical fix. Affected:
+
+```
+GpaCalculator (per-course Course/Credits/Grade fields)
+DebtToIncomeCalculator (per-debt Description/Amount fields)
+NetWorthCalculator (per-asset and per-liability Description/Amount fields)
+InvoiceGenerator (per-line-item Description/Quantity/Price fields)
+OddsCalculator (per-leg description/odds/format fields in the parlay tab)
+```
+
+Likely fix: visually-hidden (`sr-only`) labels per row, incorporating the
+row's position or existing description text (e.g. "Course 1 name", "Course
+1 credits") so screen reader users get useful per-field context without
+changing the visible UI.
+
+**Radix `Slider`-based quality controls aren't labelable HTML elements.**
+`PdfToJpg.tsx`, `PngToJpg.tsx`, and `PngToWebp.tsx` each have a "JPG/JPEG/WebP
+Quality" label next to a Radix `Slider`, which renders as `<span
+role="slider">` — not an `input`/`select`/`textarea`/etc., so `<label for>`
+doesn't apply to it per the HTML spec. Fixing this needs `id`/`aria-labelledby`
+support threaded through the shared `components/ui/slider.tsx` primitive
+(used across the app), not a per-tool patch — worth doing once, centrally,
+rather than three one-off workarounds.
+
 ## AdSense integration
 
 `components/tool/AdSlot.tsx` is currently a no-op stub:
