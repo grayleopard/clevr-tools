@@ -18,6 +18,11 @@
 # perf reports (regenerated locally via perf:baseline / perf:after)
 /reports/perf/
 
+# scratch tooling — audit pages, calibration tools, comparison artifacts.
+# Local-only, never shipped. Put temporary investigation/verification tools
+# here instead of adding them as real app routes/pages.
+/scratch/
+
 # next.js
 /.next/
 /out/
