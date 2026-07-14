@@ -10,6 +10,8 @@ import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { toPng } from "@/lib/processors";
+import { ConversionErrorNotice } from "@/components/tool/ConversionErrorNotice";
+import { addToast } from "@/lib/toast";
 
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -27,14 +29,17 @@ interface Result {
 export default function WebpToPng() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
+  const [failedFilenames, setFailedFilenames] = useState<string[]>([]);
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
   const handleFiles = useCallback(async (files: File[]) => {
     setIsProcessing(true);
     setResults([]);
+    setFailedFilenames([]);
     setDownloaded(false);
     const converted: Result[] = [];
+    const failed: string[] = [];
 
     for (const file of files) {
       try {
@@ -50,10 +55,13 @@ export default function WebpToPng() {
         });
       } catch (err) {
         console.error(`Failed to convert ${file.name}:`, err);
+        failed.push(file.name);
+        addToast(`Couldn't convert ${file.name} — it may be corrupt or an unsupported format. Try a different file.`, "error");
       }
     }
 
     setResults(converted);
+    setFailedFilenames(failed);
     setIsProcessing(false);
   }, []);
 
@@ -83,6 +91,7 @@ export default function WebpToPng() {
       URL.revokeObjectURL(r.originalUrl);
     });
     setResults([]);
+    setFailedFilenames([]);
     setDownloaded(false);
     setResetKey((k) => k + 1);
   }, [results]);
@@ -96,6 +105,9 @@ export default function WebpToPng() {
 
       {/* 2. Processing */}
       {isProcessing && <ProcessingIndicator label="Converting to PNG…" />}
+
+      {/* 2b. Failures */}
+      {!isProcessing && <ConversionErrorNotice failedFilenames={failedFilenames} />}
 
       {/* 3. Results (pre-download) */}
       {results.length > 0 && !isProcessing && !downloaded && (

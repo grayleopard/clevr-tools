@@ -3,9 +3,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QRCode from "qrcode";
-import { Download } from "lucide-react";
+import { Download, AlertCircle } from "lucide-react";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import { TipJar } from "@/components/tool/TipJar";
+import { addToast } from "@/lib/toast";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 type QRSize = 128 | 256 | 512 | 1024;
@@ -19,13 +20,20 @@ export default function QrCodeGenerator() {
   const [errorLevel, setErrorLevel] = useState<ErrorCorrectionLevel>("M");
   const [dataUrl, setDataUrl] = useState<string>("");
   const [svgString, setSvgString] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const [downloaded, setDownloaded] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Generation re-runs on every debounced keystroke — only toast once when
+  // input first becomes unencodable, not again on every keystroke while it
+  // stays that way (the inline message below already persists).
+  const wasErroringRef = useRef(false);
 
   const generate = useCallback(async (val: string) => {
     if (!val.trim()) {
       setDataUrl("");
       setSvgString("");
+      setError(null);
+      wasErroringRef.current = false;
       return;
     }
 
@@ -46,8 +54,17 @@ export default function QrCodeGenerator() {
       ]);
       setDataUrl(png);
       setSvgString(svg);
-    } catch {
-      // invalid input
+      setError(null);
+      wasErroringRef.current = false;
+    } catch (err) {
+      console.error("Failed to generate QR code:", err);
+      setDataUrl("");
+      setSvgString("");
+      setError("Couldn't generate a QR code for that input — it's likely too long to encode. Try shortening the text or lowering the error-correction level.");
+      if (!wasErroringRef.current) {
+        addToast("Couldn't generate a QR code for that input — it's likely too long to encode.", "error");
+        wasErroringRef.current = true;
+      }
     }
   }, [size, fgColor, bgColor, errorLevel]);
 
@@ -82,6 +99,7 @@ export default function QrCodeGenerator() {
 
   const reset = useCallback(() => {
     setValue("");
+    setError(null);
     setDownloaded(false);
   }, []);
 
@@ -215,6 +233,13 @@ export default function QrCodeGenerator() {
                 </button>
               </div>
             </>
+          ) : error ? (
+            <div role="alert" className="text-center text-sm text-destructive">
+              <div className="mb-2 h-[180px] w-[180px] rounded-lg bg-destructive/5 border border-destructive/20 flex items-center justify-center">
+                <AlertCircle className="h-8 w-8" />
+              </div>
+              {error}
+            </div>
           ) : (
             <div className="text-center text-sm text-muted-foreground">
               <div className="mb-2 h-[180px] w-[180px] rounded-lg bg-muted/50 flex items-center justify-center">

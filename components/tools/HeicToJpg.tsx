@@ -11,6 +11,8 @@ import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { heicToJpg } from "@/lib/processors";
+import { ConversionErrorNotice } from "@/components/tool/ConversionErrorNotice";
+import { addToast } from "@/lib/toast";
 
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -29,6 +31,7 @@ export default function HeicToJpg() {
   const [quality, setQuality] = useState(90);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
+  const [failedFilenames, setFailedFilenames] = useState<string[]>([]);
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
@@ -46,8 +49,10 @@ export default function HeicToJpg() {
         });
         return [];
       });
+      setFailedFilenames([]);
 
       const converted: Result[] = [];
+      const failed: string[] = [];
       for (const file of files) {
         try {
           const blob = await heicToJpg(file, q);
@@ -62,10 +67,13 @@ export default function HeicToJpg() {
           });
         } catch (err) {
           console.error(`Failed to convert ${file.name}:`, err);
+          failed.push(file.name);
+          addToast(`Couldn't convert ${file.name} — it may be corrupt or an unsupported format. Try a different file.`, "error");
         }
       }
 
       setResults(converted);
+      setFailedFilenames(failed);
       setIsProcessing(false);
     },
     []
@@ -118,6 +126,7 @@ export default function HeicToJpg() {
       URL.revokeObjectURL(r.originalUrl);
     });
     setResults([]);
+    setFailedFilenames([]);
     setDownloaded(false);
     sourceFilesRef.current = [];
     setResetKey((k) => k + 1);
@@ -152,6 +161,9 @@ export default function HeicToJpg() {
 
       {/* 3. Processing */}
       {isProcessing && <ProcessingIndicator label="Converting HEIC to JPG…" />}
+
+      {/* 3b. Failures */}
+      {!isProcessing && <ConversionErrorNotice failedFilenames={failedFilenames} />}
 
       {/* 4. Results (pre-download) */}
       {results.length > 0 && !isProcessing && !downloaded && (

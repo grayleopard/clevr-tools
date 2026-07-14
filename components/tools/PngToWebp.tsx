@@ -11,6 +11,8 @@ import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { toWebp } from "@/lib/processors";
+import { ConversionErrorNotice } from "@/components/tool/ConversionErrorNotice";
+import { addToast } from "@/lib/toast";
 
 import { Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
@@ -29,6 +31,7 @@ export default function PngToWebp() {
   const [quality, setQuality] = useState(85);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
+  const [failedFilenames, setFailedFilenames] = useState<string[]>([]);
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [hasFiles, setHasFiles] = useState(false);
@@ -47,8 +50,10 @@ export default function PngToWebp() {
         });
         return [];
       });
+      setFailedFilenames([]);
 
       const converted: Result[] = [];
+      const failed: string[] = [];
       for (const file of files) {
         try {
           const blob = await toWebp(file, q);
@@ -63,10 +68,13 @@ export default function PngToWebp() {
           });
         } catch (err) {
           console.error(`Failed to convert ${file.name}:`, err);
+          failed.push(file.name);
+          addToast(`Couldn't convert ${file.name} — it may be corrupt or an unsupported format. Try a different file.`, "error");
         }
       }
 
       setResults(converted);
+      setFailedFilenames(failed);
       setIsProcessing(false);
     },
     []
@@ -120,6 +128,7 @@ export default function PngToWebp() {
       URL.revokeObjectURL(r.originalUrl);
     });
     setResults([]);
+    setFailedFilenames([]);
     setDownloaded(false);
     setHasFiles(false);
     sourceFilesRef.current = [];
@@ -155,6 +164,9 @@ export default function PngToWebp() {
 
       {/* 3. Processing */}
       {isProcessing && <ProcessingIndicator label="Converting to WebP…" />}
+
+      {/* 3b. Failures */}
+      {!isProcessing && <ConversionErrorNotice failedFilenames={failedFilenames} />}
 
       {/* 4. Results (pre-download) */}
       {results.length > 0 && !isProcessing && !downloaded && (
