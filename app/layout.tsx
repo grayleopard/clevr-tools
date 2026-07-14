@@ -28,6 +28,15 @@ export const metadata: Metadata = {
   },
 };
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "clevr.tools",
+  url: "https://www.clevr.tools",
+  description:
+    "Free online file and text utilities: compress images, convert formats, generate QR codes, count words, convert case, and more.",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,6 +46,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className={`${inter.variable} font-sans antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="system"

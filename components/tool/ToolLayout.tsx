@@ -193,11 +193,14 @@ export default function ToolLayout({
       price: "0",
       priceCurrency: "USD",
     },
-    url: `https://clevr.tools${tool.route}`,
+    // www, matching the canonical tag every page already sets — this was
+    // previously bare-host, inconsistent with the rest of the site's host
+    // canonicalization.
+    url: `https://www.clevr.tools${tool.route}`,
     creator: {
       "@type": "Organization",
       name: "clevr.tools",
-      url: "https://clevr.tools",
+      url: "https://www.clevr.tools",
     },
   };
 
@@ -209,6 +212,25 @@ export default function ToolLayout({
   const siteCategory =
     siteCategories.find((category) => category.id === siteCategoryIdByToolCategory[tool.category]) ??
     siteCategories[0];
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.clevr.tools" },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: siteCategory.label,
+        item: `https://www.clevr.tools${siteCategory.route}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: tool.name,
+        item: `https://www.clevr.tools${tool.route}`,
+      },
+    ],
+  };
   const contentWidth = fullWidth || !embeddedShell ? "max-w-7xl" : "max-w-7xl";
   const seoHeadings = tool.seoContent ? extractHeadings(tool.seoContent) : [];
   const seoContentWithIds = tool.seoContent
@@ -222,6 +244,10 @@ export default function ToolLayout({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="flex min-h-screen flex-col">
         <Navbar />
