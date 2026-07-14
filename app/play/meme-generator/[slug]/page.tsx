@@ -110,6 +110,12 @@ export async function generateMetadata({
   return {
     title,
     description,
+    // Every template page renders the identical MemeEditor with a different
+    // source image — 23 near-duplicate pages that will never outrank
+    // dedicated meme sites (Imgflip etc). Stays fully functional for users
+    // who land here directly or via the picker; this only asks Google not
+    // to index it as its own search result.
+    robots: { index: false, follow: true },
     alternates: { canonical: url },
     openGraph: {
       title,
