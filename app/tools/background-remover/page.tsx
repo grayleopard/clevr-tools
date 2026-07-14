@@ -5,6 +5,7 @@ import BackgroundRemover from "@/components/tools/BackgroundRemover";
 import FaqSchema from "@/components/seo/FaqSchema";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import { getToolBySlug } from "@/lib/tools";
+import { hiddenToolRobots } from "@/lib/seo/robots";
 
 const tool = getToolBySlug("background-remover")!;
 const faqItems = getToolFaqs("background-remover");
@@ -15,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: tool.metaTitle,
     description: tool.metaDescription,
+    ...hiddenToolRobots(tool),
     openGraph: {
       title: tool.metaTitle,
       description: tool.metaDescription,

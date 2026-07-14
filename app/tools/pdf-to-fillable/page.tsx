@@ -6,6 +6,7 @@ import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import PdfToFillablePdf from "@/components/tools/PdfToFillablePdf";
 import { notFound } from "next/navigation";
+import { hiddenToolRobots } from "@/lib/seo/robots";
 
 const tool = getToolBySlug("pdf-to-fillable")!;
 const faqItems = getToolFaqs("pdf-to-fillable");
@@ -15,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: tool.metaTitle,
     description: tool.metaDescription,
+    ...hiddenToolRobots(tool),
     openGraph: {
       title: tool.metaTitle,
       description: tool.metaDescription,
