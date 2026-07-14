@@ -44,6 +44,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        // Removed (git log: "remove(pdf-to-word): pull the tool until a
+        // working solution exists") with no redirect put in place — a real
+        // 404 Google has indexed. No current tool does the reverse of
+        // word-to-pdf, so send to the Files hub rather than a same-named
+        // but wrong-direction sibling.
+        source: "/convert/pdf-to-word",
+        destination: "/files",
+        permanent: true,
+      },
+      {
         source: "/files/image-resizer",
         destination: "/tools/resize-image",
         permanent: true,
