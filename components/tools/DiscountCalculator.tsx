@@ -25,7 +25,7 @@ export default function DiscountCalculator() {
 
   const normalResult = useMemo(() => {
     const orig = parseFloat(original) || 0;
-    const disc = parseFloat(discount) || 0;
+    const disc = Math.min(100, Math.max(0, parseFloat(discount) || 0));
     if (orig <= 0 || disc <= 0) {
       return { ok: false as const, emptyMessage: "Enter an original price and discount to see the sale price." };
     }
@@ -35,7 +35,7 @@ export default function DiscountCalculator() {
 
     let doubleResult = null;
     if (showDoubleDiscount) {
-      const disc2 = parseFloat(secondDiscount) || 0;
+      const disc2 = Math.min(100, Math.max(0, parseFloat(secondDiscount) || 0));
       if (disc2 > 0) {
         const after2 = saleAmt * (1 - disc2 / 100);
         const totalSavings = orig - after2;

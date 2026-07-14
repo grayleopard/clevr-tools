@@ -57,8 +57,8 @@ export default function CompoundInterestCalculator() {
   const [showTable, setShowTable] = useState(false);
 
   const result = useMemo(() => {
-    const p = parseFloat(principal) || 0;
-    const pmt = parseFloat(monthlyContribution) || 0;
+    const p = Math.max(0, parseFloat(principal) || 0);
+    const pmt = Math.max(0, parseFloat(monthlyContribution) || 0);
     const rate = parseFloat(annualRate) || 0;
     const yrs = parseInt(years) || 0;
 
@@ -81,8 +81,8 @@ export default function CompoundInterestCalculator() {
   const chartData = useMemo(() => {
     if (!result || !result.ok || result.yearData.length === 0) return null;
 
-    const p = parseFloat(principal) || 0;
-    const pmt = parseFloat(monthlyContribution) || 0;
+    const p = Math.max(0, parseFloat(principal) || 0);
+    const pmt = Math.max(0, parseFloat(monthlyContribution) || 0);
     const maxBalance = result.finalBalance;
     if (maxBalance <= 0) return null;
 

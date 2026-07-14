@@ -22,7 +22,7 @@ export default function TipCalculator() {
 
   const result = useMemo(() => {
     const billAmt = parseFloat(bill) || 0;
-    const tipPct = parseFloat(tipPercent) || 0;
+    const tipPct = Math.max(0, parseFloat(tipPercent) || 0);
     const splitNum = Math.max(1, parseInt(split) || 1);
 
     if (billAmt <= 0) {

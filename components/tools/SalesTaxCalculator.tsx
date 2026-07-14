@@ -76,7 +76,7 @@ export default function SalesTaxCalculator() {
 
   const result = useMemo(() => {
     const p = parseFloat(price) || 0;
-    const r = parseFloat(taxRate) || 0;
+    const r = Math.max(0, parseFloat(taxRate) || 0);
     if (p <= 0) {
       return {
         ok: false as const,
