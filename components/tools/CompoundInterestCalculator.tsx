@@ -106,10 +106,11 @@ export default function CompoundInterestCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="initial-investment" className="block text-sm font-medium text-foreground mb-1">
             Initial Investment ($)
           </label>
           <input
+            id="initial-investment"
             type="number"
             min="0"
             value={principal}
@@ -118,10 +119,11 @@ export default function CompoundInterestCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="monthly-contribution" className="block text-sm font-medium text-foreground mb-1">
             Monthly Contribution ($)
           </label>
           <input
+            id="monthly-contribution"
             type="number"
             min="0"
             value={monthlyContribution}
@@ -130,10 +132,11 @@ export default function CompoundInterestCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="annual-return-rate" className="block text-sm font-medium text-foreground mb-1">
             Annual Return Rate (%)
           </label>
           <input
+            id="annual-return-rate"
             type="number"
             min="0"
             step="0.1"
@@ -143,10 +146,11 @@ export default function CompoundInterestCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="years" className="block text-sm font-medium text-foreground mb-1">
             Years
           </label>
           <input
+            id="years"
             type="number"
             min="1"
             max="50"

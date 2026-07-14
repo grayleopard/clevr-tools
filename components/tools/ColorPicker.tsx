@@ -332,9 +332,10 @@ export default function ColorPicker() {
       <div className="rounded-xl border border-border bg-card p-5 space-y-4">
         {/* HEX */}
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground">HEX</label>
+          <label htmlFor="hex-value" className="text-xs font-medium text-muted-foreground">HEX</label>
           <div className="flex items-center gap-2">
             <input
+              id="hex-value"
               type="text"
               value={hexInput}
               onChange={(e) => handleHexTextChange(e.target.value)}

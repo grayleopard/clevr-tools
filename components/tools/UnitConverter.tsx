@@ -348,15 +348,18 @@ export default function UnitConverter() {
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           {/* From */}
           <div className="flex-1 w-full space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">From</label>
+            <label htmlFor="from-value" className="text-xs font-medium text-muted-foreground">From</label>
             <input
+              id="from-value"
               type="number"
               value={fromValue}
               onChange={(e) => handleFromChange(e.target.value)}
               className={inputClass}
               placeholder="0"
             />
+            <label htmlFor="from-unit" className="sr-only">From unit</label>
             <select
+              id="from-unit"
               value={fromUnit}
               onChange={(e) => handleFromUnitChange(e.target.value)}
               className={selectClass}
@@ -380,15 +383,18 @@ export default function UnitConverter() {
 
           {/* To */}
           <div className="flex-1 w-full space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">To</label>
+            <label htmlFor="to-value" className="text-xs font-medium text-muted-foreground">To</label>
             <input
+              id="to-value"
               type="number"
               value={toValue}
               onChange={(e) => handleToChange(e.target.value)}
               className={`${inputClass} dark:text-emerald-500`}
               placeholder="0"
             />
+            <label htmlFor="to-unit" className="sr-only">To unit</label>
             <select
+              id="to-unit"
               value={toUnit}
               onChange={(e) => handleToUnitChange(e.target.value)}
               className={selectClass}

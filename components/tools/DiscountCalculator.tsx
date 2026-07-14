@@ -103,10 +103,11 @@ export default function DiscountCalculator() {
 
       {/* Original price (shared) */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="original-price" className="block text-sm font-medium text-foreground mb-1">
           Original Price ($)
         </label>
         <input
+          id="original-price"
           type="number"
           min="0"
           step="0.01"
@@ -121,7 +122,7 @@ export default function DiscountCalculator() {
         <>
           {/* Discount presets + input */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
+            <label htmlFor="discount-percent" className="block text-sm font-medium text-foreground mb-2">
               Discount (%)
             </label>
             <div className="flex flex-wrap gap-2 mb-3">
@@ -140,6 +141,7 @@ export default function DiscountCalculator() {
               ))}
             </div>
             <input
+              id="discount-percent"
               type="number"
               min="0"
               max="100"
@@ -163,10 +165,11 @@ export default function DiscountCalculator() {
 
           {showDoubleDiscount && (
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
+              <label htmlFor="second-discount" className="block text-sm font-medium text-foreground mb-1">
                 Second Discount (%)
               </label>
               <input
+                id="second-discount"
                 type="number"
                 min="0"
                 max="100"
@@ -236,10 +239,11 @@ export default function DiscountCalculator() {
         <>
           {/* Reverse mode */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
+            <label htmlFor="sale-price" className="block text-sm font-medium text-foreground mb-1">
               Sale Price ($)
             </label>
             <input
+              id="sale-price"
               type="number"
               min="0"
               step="0.01"

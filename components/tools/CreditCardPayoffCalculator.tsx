@@ -97,10 +97,11 @@ export default function CreditCardPayoffCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="current-balance" className="block text-sm font-medium text-foreground mb-1">
             Current Balance ($)
           </label>
           <input
+            id="current-balance"
             type="number"
             min="0"
             value={balance}
@@ -109,10 +110,11 @@ export default function CreditCardPayoffCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="apr" className="block text-sm font-medium text-foreground mb-1">
             APR (%)
           </label>
           <input
+            id="apr"
             type="number"
             min="0"
             step="0.1"
@@ -122,10 +124,11 @@ export default function CreditCardPayoffCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="monthly-payment" className="block text-sm font-medium text-foreground mb-1">
             Monthly Payment ($)
           </label>
           <input
+            id="monthly-payment"
             type="number"
             min="0"
             value={monthlyPayment}

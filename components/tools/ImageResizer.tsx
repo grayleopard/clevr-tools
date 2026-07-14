@@ -397,8 +397,9 @@ export default function ImageResizer() {
 
           {usePercentage ? (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Scale: {percentage}%</label>
+              <label htmlFor="resize-scale-percentage" className="text-sm font-medium text-foreground">Scale: {percentage}%</label>
               <input
+                id="resize-scale-percentage"
                 type="range"
                 min={1}
                 max={200}
@@ -414,10 +415,11 @@ export default function ImageResizer() {
           ) : (
             <div className="grid gap-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                <label htmlFor="target-width" className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   Width
                 </label>
                 <input
+                  id="target-width"
                   type="number"
                   min={1}
                   max={10000}
@@ -441,10 +443,11 @@ export default function ImageResizer() {
                 {lockAspect ? "Aspect locked" : "Aspect unlocked"}
               </button>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                <label htmlFor="target-height" className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   Height
                 </label>
                 <input
+                  id="target-height"
                   type="number"
                   min={1}
                   max={10000}

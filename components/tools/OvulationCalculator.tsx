@@ -74,8 +74,9 @@ export default function OvulationCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">First Day of Last Period</label>
+          <label htmlFor="period-start-date" className="block text-sm font-medium text-foreground mb-1">First Day of Last Period</label>
           <input
+            id="period-start-date"
             type="date"
             value={dateStr}
             onChange={(e) => setDateStr(e.target.value)}
@@ -83,8 +84,9 @@ export default function OvulationCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Cycle Length (days)</label>
+          <label htmlFor="cycle-length" className="block text-sm font-medium text-foreground mb-1">Cycle Length (days)</label>
           <input
+            id="cycle-length"
             type="number"
             min="21"
             max="35"

@@ -54,8 +54,9 @@ export default function CarPaymentCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Car Price ($)</label>
+          <label htmlFor="car-price" className="block text-sm font-medium text-foreground mb-1">Car Price ($)</label>
           <input
+            id="car-price"
             type="number"
             min="0"
             value={carPrice}
@@ -64,8 +65,9 @@ export default function CarPaymentCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Down Payment ($)</label>
+          <label htmlFor="down-payment" className="block text-sm font-medium text-foreground mb-1">Down Payment ($)</label>
           <input
+            id="down-payment"
             type="number"
             min="0"
             value={downPayment}
@@ -74,8 +76,9 @@ export default function CarPaymentCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Interest Rate (%)</label>
+          <label htmlFor="interest-rate" className="block text-sm font-medium text-foreground mb-1">Interest Rate (%)</label>
           <input
+            id="interest-rate"
             type="number"
             min="0"
             step="0.1"
@@ -85,8 +88,9 @@ export default function CarPaymentCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Loan Term (months)</label>
+          <label htmlFor="loan-term-months" className="block text-sm font-medium text-foreground mb-1">Loan Term (months)</label>
           <select
+            id="loan-term-months"
             value={loanTermMonths}
             onChange={(e) => setLoanTermMonths(e.target.value)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"

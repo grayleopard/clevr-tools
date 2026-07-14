@@ -158,15 +158,15 @@ export default function PaceCalculator() {
       <div className="grid gap-4 sm:grid-cols-2">
         {mode !== "distance" && (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Distance ({distUnit})</label>
-            <input type="number" min="0" step="0.01" value={distance} onChange={(e) => setDistance(e.target.value)} className={inputClass} />
+            <label htmlFor="pace-distance" className="block text-sm font-medium text-foreground mb-1">Distance ({distUnit})</label>
+            <input id="pace-distance" type="number" min="0" step="0.01" value={distance} onChange={(e) => setDistance(e.target.value)} className={inputClass} />
           </div>
         )}
         {mode !== "time" && (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Time</label>
+            <label htmlFor="pace-time-hours" className="block text-sm font-medium text-foreground mb-1">Time</label>
             <div className="flex gap-1 items-center">
-              <input type="number" min="0" value={timeH} onChange={(e) => setTimeH(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="H" />
+              <input id="pace-time-hours" type="number" min="0" value={timeH} onChange={(e) => setTimeH(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="H" />
               <span className="text-foreground font-bold">:</span>
               <input type="number" min="0" max="59" value={timeM} onChange={(e) => setTimeM(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="M" />
               <span className="text-foreground font-bold">:</span>
@@ -176,9 +176,9 @@ export default function PaceCalculator() {
         )}
         {mode !== "pace" && (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Pace (per {distUnit === "miles" ? "mile" : "km"})</label>
+            <label htmlFor="pace-minutes" className="block text-sm font-medium text-foreground mb-1">Pace (per {distUnit === "miles" ? "mile" : "km"})</label>
             <div className="flex gap-1 items-center">
-              <input type="number" min="0" value={paceM} onChange={(e) => setPaceM(e.target.value)} className="w-20 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="min" />
+              <input id="pace-minutes" type="number" min="0" value={paceM} onChange={(e) => setPaceM(e.target.value)} className="w-20 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="min" />
               <span className="text-foreground font-bold">:</span>
               <input type="number" min="0" max="59" value={paceS} onChange={(e) => setPaceS(e.target.value)} className="w-20 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="sec" />
             </div>

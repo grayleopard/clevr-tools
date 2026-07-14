@@ -100,8 +100,10 @@ export default function UnitConverterPage({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
           {/* From */}
           <div className="flex-1 space-y-2">
-            <label className="block text-sm font-medium text-foreground">From</label>
+            <label htmlFor="from-value" className="block text-sm font-medium text-foreground">From</label>
+            <label htmlFor="from-unit" className="sr-only">From unit</label>
             <select
+              id="from-unit"
               value={fromUnit}
               onChange={(e) => setFromUnit(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -113,6 +115,7 @@ export default function UnitConverterPage({
               ))}
             </select>
             <input
+              id="from-value"
               type="number"
               value={fromValue}
               onChange={(e) => handleFromChange(e.target.value)}
@@ -140,8 +143,10 @@ export default function UnitConverterPage({
 
           {/* To */}
           <div className="flex-1 space-y-2">
-            <label className="block text-sm font-medium text-foreground">To</label>
+            <label htmlFor="to-value" className="block text-sm font-medium text-foreground">To</label>
+            <label htmlFor="to-unit" className="sr-only">To unit</label>
             <select
+              id="to-unit"
               value={toUnit}
               onChange={(e) => setToUnit(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -159,6 +164,7 @@ export default function UnitConverterPage({
               // literal, so the comma-grouped result never showed at all.
               // text + inputMode="decimal" keeps the numeric keyboard on
               // mobile while allowing the grouped display to actually render.
+              id="to-value"
               type="text"
               inputMode="decimal"
               value={toValue}

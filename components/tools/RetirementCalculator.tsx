@@ -86,8 +86,9 @@ export default function RetirementCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Current Age</label>
+          <label htmlFor="retirement-current-age" className="block text-sm font-medium text-foreground mb-1">Current Age</label>
           <input
+            id="retirement-current-age"
             type="number"
             min="18"
             max="100"
@@ -97,8 +98,9 @@ export default function RetirementCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Retirement Age</label>
+          <label htmlFor="retirement-retirement-age" className="block text-sm font-medium text-foreground mb-1">Retirement Age</label>
           <input
+            id="retirement-retirement-age"
             type="number"
             min="18"
             max="100"
@@ -108,8 +110,9 @@ export default function RetirementCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Current Savings ($)</label>
+          <label htmlFor="retirement-current-savings" className="block text-sm font-medium text-foreground mb-1">Current Savings ($)</label>
           <input
+            id="retirement-current-savings"
             type="number"
             min="0"
             value={currentSavings}
@@ -118,8 +121,9 @@ export default function RetirementCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Monthly Contribution ($)</label>
+          <label htmlFor="retirement-monthly-contribution" className="block text-sm font-medium text-foreground mb-1">Monthly Contribution ($)</label>
           <input
+            id="retirement-monthly-contribution"
             type="number"
             min="0"
             value={monthlyContribution}
@@ -128,8 +132,9 @@ export default function RetirementCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Annual Return (%)</label>
+          <label htmlFor="retirement-annual-return" className="block text-sm font-medium text-foreground mb-1">Annual Return (%)</label>
           <input
+            id="retirement-annual-return"
             type="number"
             min="0"
             step="0.1"
@@ -139,8 +144,9 @@ export default function RetirementCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Inflation Rate (%)</label>
+          <label htmlFor="retirement-inflation-rate" className="block text-sm font-medium text-foreground mb-1">Inflation Rate (%)</label>
           <input
+            id="retirement-inflation-rate"
             type="number"
             min="0"
             step="0.1"

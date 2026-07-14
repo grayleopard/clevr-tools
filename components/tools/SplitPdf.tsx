@@ -199,10 +199,11 @@ export default function SplitPdf() {
                   value={rangeInput}
                   onChange={(e) => setRangeInput(e.target.value)}
                   placeholder={`e.g. 1-3, 5, 7-${Math.min(9, pageCount)}`}
+                  aria-describedby="range-page-count-hint"
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/20"
                 />
                 {rangePageCount > 0 && (
-                  <p className="text-xs text-muted-foreground">{rangePageCount} page{rangePageCount > 1 ? "s" : ""} selected</p>
+                  <p id="range-page-count-hint" className="text-xs text-muted-foreground">{rangePageCount} page{rangePageCount > 1 ? "s" : ""} selected</p>
                 )}
               </div>
             )}

@@ -229,10 +229,11 @@ export default function TimerTool() {
             </p>
             <div className="flex items-end gap-2">
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">
+                <label htmlFor="timer-hours" className="block text-xs text-muted-foreground mb-1">
                   Hours
                 </label>
                 <input
+                  id="timer-hours"
                   type="number"
                   min="0"
                   max="99"
@@ -244,10 +245,11 @@ export default function TimerTool() {
               </div>
               <span className="pb-2 text-muted-foreground">:</span>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">
+                <label htmlFor="timer-minutes" className="block text-xs text-muted-foreground mb-1">
                   Min
                 </label>
                 <input
+                  id="timer-minutes"
                   type="number"
                   min="0"
                   max="59"
@@ -259,10 +261,11 @@ export default function TimerTool() {
               </div>
               <span className="pb-2 text-muted-foreground">:</span>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">
+                <label htmlFor="timer-seconds" className="block text-xs text-muted-foreground mb-1">
                   Sec
                 </label>
                 <input
+                  id="timer-seconds"
                   type="number"
                   min="0"
                   max="59"

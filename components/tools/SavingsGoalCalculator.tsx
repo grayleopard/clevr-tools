@@ -63,10 +63,11 @@ export default function SavingsGoalCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="savings-goal" className="block text-sm font-medium text-foreground mb-1">
             Savings Goal ($)
           </label>
           <input
+            id="savings-goal"
             type="number"
             min="0"
             value={goalAmount}
@@ -75,10 +76,11 @@ export default function SavingsGoalCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="current-savings" className="block text-sm font-medium text-foreground mb-1">
             Current Savings ($)
           </label>
           <input
+            id="current-savings"
             type="number"
             min="0"
             value={currentSavings}
@@ -87,10 +89,11 @@ export default function SavingsGoalCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="annual-interest-rate" className="block text-sm font-medium text-foreground mb-1">
             Annual Interest Rate (%)
           </label>
           <input
+            id="annual-interest-rate"
             type="number"
             min="0"
             step="0.1"
@@ -100,10 +103,11 @@ export default function SavingsGoalCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="timeline-months" className="block text-sm font-medium text-foreground mb-1">
             Timeline (months)
           </label>
           <input
+            id="timeline-months"
             type="number"
             min="1"
             max="600"

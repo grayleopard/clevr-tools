@@ -239,10 +239,11 @@ export default function GpaCalculator() {
           <div className="border-t border-border px-4 py-4 space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
+                <label htmlFor="previous-gpa" className="block text-sm font-medium text-foreground mb-1">
                   Previous GPA
                 </label>
                 <input
+                  id="previous-gpa"
                   type="number"
                   min="0"
                   max="4"
@@ -254,10 +255,11 @@ export default function GpaCalculator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
+                <label htmlFor="previous-credit-hours" className="block text-sm font-medium text-foreground mb-1">
                   Previous Credit Hours
                 </label>
                 <input
+                  id="previous-credit-hours"
                   type="number"
                   min="0"
                   value={prevCredits}

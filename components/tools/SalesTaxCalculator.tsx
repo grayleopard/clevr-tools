@@ -120,10 +120,11 @@ export default function SalesTaxCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="sales-tax-price" className="block text-sm font-medium text-foreground mb-1">
             {mode === "forward" ? "Price Before Tax ($)" : "Total Amount ($)"}
           </label>
           <input
+            id="sales-tax-price"
             type="number"
             min="0"
             step="0.01"
@@ -133,10 +134,11 @@ export default function SalesTaxCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="sales-tax-rate" className="block text-sm font-medium text-foreground mb-1">
             Tax Rate (%)
           </label>
           <input
+            id="sales-tax-rate"
             type="number"
             min="0"
             step="0.01"
@@ -149,14 +151,16 @@ export default function SalesTaxCalculator() {
 
       {/* State presets */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="sales-tax-state-preset" className="block text-sm font-medium text-foreground mb-1">
           State Tax Rate Presets
         </label>
         <select
+          id="sales-tax-state-preset"
           value=""
           onChange={(e) => {
             if (e.target.value) setTaxRate(e.target.value);
           }}
+          aria-describedby="sales-tax-state-preset-hint"
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 max-w-sm"
         >
           <option value="">Select a state...</option>
@@ -166,7 +170,7 @@ export default function SalesTaxCalculator() {
             </option>
           ))}
         </select>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p id="sales-tax-state-preset-hint" className="text-xs text-muted-foreground mt-1">
           State rates only. Local taxes may apply.
         </p>
       </div>

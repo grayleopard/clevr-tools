@@ -82,10 +82,11 @@ export default function SalaryCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="salary-amount" className="block text-sm font-medium text-foreground mb-1">
             {payType === "hourly" ? "Hourly Rate ($)" : "Annual Salary ($)"}
           </label>
           <input
+            id="salary-amount"
             type="number"
             min="0"
             step="0.01"
@@ -95,10 +96,11 @@ export default function SalaryCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="salary-hours-per-week" className="block text-sm font-medium text-foreground mb-1">
             Hours per Week
           </label>
           <input
+            id="salary-hours-per-week"
             type="number"
             min="1"
             max="168"
@@ -108,10 +110,11 @@ export default function SalaryCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="salary-weeks-per-year" className="block text-sm font-medium text-foreground mb-1">
             Weeks per Year
           </label>
           <input
+            id="salary-weeks-per-year"
             type="number"
             min="1"
             max="52"

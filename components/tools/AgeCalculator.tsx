@@ -211,10 +211,11 @@ export default function AgeCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="date-of-birth" className="block text-sm font-medium text-foreground mb-1">
             Date of Birth
           </label>
           <input
+            id="date-of-birth"
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
@@ -223,10 +224,11 @@ export default function AgeCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="as-of" className="block text-sm font-medium text-foreground mb-1">
             As of
           </label>
           <input
+            id="as-of"
             type="date"
             value={asOf}
             onChange={(e) => setAsOf(e.target.value)}

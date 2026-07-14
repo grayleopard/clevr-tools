@@ -87,8 +87,9 @@ export default function CaloriesBurnedCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Weight ({unit === "imperial" ? "lbs" : "kg"})</label>
+          <label htmlFor="weight" className="block text-sm font-medium text-foreground mb-1">Weight ({unit === "imperial" ? "lbs" : "kg"})</label>
           <input
+            id="weight"
             type="number"
             min="0"
             value={weightVal}
@@ -97,8 +98,9 @@ export default function CaloriesBurnedCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Activity</label>
+          <label htmlFor="activity" className="block text-sm font-medium text-foreground mb-1">Activity</label>
           <select
+            id="activity"
             value={activityIdx}
             onChange={(e) => setActivityIdx(parseInt(e.target.value))}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -109,8 +111,9 @@ export default function CaloriesBurnedCalculator() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Duration (minutes)</label>
+          <label htmlFor="duration" className="block text-sm font-medium text-foreground mb-1">Duration (minutes)</label>
           <input
+            id="duration"
             type="number"
             min="1"
             value={duration}

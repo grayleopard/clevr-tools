@@ -884,8 +884,9 @@ export default function PdfToFillablePdf() {
                   </button>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Name</label>
+                  <label htmlFor="pdf-fillable-field-name" className="text-xs font-medium text-muted-foreground">Name</label>
                   <input
+                    id="pdf-fillable-field-name"
                     type="text"
                     value={selectedField.name}
                     onChange={(event) => updateSelectedField({ name: event.target.value })}
@@ -893,8 +894,9 @@ export default function PdfToFillablePdf() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground">Label</label>
+                  <label htmlFor="pdf-fillable-field-label" className="text-xs font-medium text-muted-foreground">Label</label>
                   <input
+                    id="pdf-fillable-field-label"
                     type="text"
                     value={selectedField.label ?? ""}
                     onChange={(event) => updateSelectedField({ label: event.target.value })}
@@ -903,8 +905,9 @@ export default function PdfToFillablePdf() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Width (pt)</label>
+                    <label htmlFor="pdf-fillable-field-width" className="text-xs font-medium text-muted-foreground">Width (pt)</label>
                     <input
+                      id="pdf-fillable-field-width"
                       type="number"
                       min={8}
                       value={Math.round(selectedField.widthPt)}
@@ -913,8 +916,9 @@ export default function PdfToFillablePdf() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">Height (pt)</label>
+                    <label htmlFor="pdf-fillable-field-height" className="text-xs font-medium text-muted-foreground">Height (pt)</label>
                     <input
+                      id="pdf-fillable-field-height"
                       type="number"
                       min={8}
                       value={Math.round(selectedField.heightPt)}

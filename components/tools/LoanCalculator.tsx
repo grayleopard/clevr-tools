@@ -78,10 +78,11 @@ export default function LoanCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="loan-amount" className="block text-sm font-medium text-foreground mb-1">
             Loan Amount ($)
           </label>
           <input
+            id="loan-amount"
             type="number"
             min="0"
             value={loanAmount}
@@ -90,10 +91,11 @@ export default function LoanCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="loan-interest-rate" className="block text-sm font-medium text-foreground mb-1">
             Interest Rate (%)
           </label>
           <input
+            id="loan-interest-rate"
             type="number"
             min="0"
             step="0.1"
@@ -103,10 +105,11 @@ export default function LoanCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="loan-term-years" className="block text-sm font-medium text-foreground mb-1">
             Loan Term (years)
           </label>
           <input
+            id="loan-term-years"
             type="number"
             min="1"
             max="50"

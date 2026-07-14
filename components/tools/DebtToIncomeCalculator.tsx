@@ -67,10 +67,11 @@ export default function DebtToIncomeCalculator() {
     <div className="space-y-6">
       {/* Income */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="gross-monthly-income" className="block text-sm font-medium text-foreground mb-1">
           Gross Monthly Income ($)
         </label>
         <input
+          id="gross-monthly-income"
           type="number"
           min="0"
           value={grossMonthlyIncome}

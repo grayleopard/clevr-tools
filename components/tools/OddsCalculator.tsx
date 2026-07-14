@@ -108,11 +108,13 @@ function ProbabilityBar({ probability }: { probability: number }) {
 }
 
 function FieldCard({
+  id,
   label,
   driver,
   isDriver,
   children,
 }: {
+  id?: string;
   label: string;
   driver?: string;
   isDriver?: boolean;
@@ -126,7 +128,7 @@ function FieldCard({
       )}
     >
       <div className="mb-3 flex items-center justify-between gap-3">
-        <label className={cn("text-sm font-semibold", isDriver ? "text-primary" : "text-foreground")}>
+        <label htmlFor={id} className={cn("text-sm font-semibold", isDriver ? "text-primary" : "text-foreground")}>
           {label}
         </label>
         {driver && isDriver ? (
@@ -378,8 +380,9 @@ export default function OddsCalculator() {
 
           <TabsContent value="converter" className="space-y-6">
             <div className="grid gap-4 lg:grid-cols-3">
-              <FieldCard label="American Odds" driver="Driving" isDriver={converterDriver === "american"}>
+              <FieldCard id="converter-american" label="American Odds" driver="Driving" isDriver={converterDriver === "american"}>
                 <input
+                  id="converter-american"
                   type="text"
                   inputMode="numeric"
                   value={converterAmerican}
@@ -391,8 +394,9 @@ export default function OddsCalculator() {
                   className="w-full bg-transparent text-lg font-semibold text-foreground outline-none placeholder:text-muted-foreground"
                 />
               </FieldCard>
-              <FieldCard label="Decimal Odds" driver="Driving" isDriver={converterDriver === "decimal"}>
+              <FieldCard id="converter-decimal" label="Decimal Odds" driver="Driving" isDriver={converterDriver === "decimal"}>
                 <input
+                  id="converter-decimal"
                   type="text"
                   inputMode="decimal"
                   value={converterDecimal}
@@ -404,8 +408,9 @@ export default function OddsCalculator() {
                   className="w-full bg-transparent text-lg font-semibold text-foreground outline-none placeholder:text-muted-foreground"
                 />
               </FieldCard>
-              <FieldCard label="Fractional Odds" driver="Driving" isDriver={converterDriver === "fractional"}>
+              <FieldCard id="converter-fractional" label="Fractional Odds" driver="Driving" isDriver={converterDriver === "fractional"}>
                 <input
+                  id="converter-fractional"
                   type="text"
                   inputMode="text"
                   value={converterFractional}
@@ -566,8 +571,9 @@ export default function OddsCalculator() {
                 </button>
 
                 <div className="flex items-center gap-3">
-                  <label className="text-sm font-semibold text-foreground">Your bet amount</label>
+                  <label htmlFor="parlay-stake" className="text-sm font-semibold text-foreground">Your bet amount</label>
                   <input
+                    id="parlay-stake"
                     type="text"
                     inputMode="decimal"
                     value={parlayStake}
@@ -631,8 +637,9 @@ export default function OddsCalculator() {
 
           <TabsContent value="payout" className="space-y-6">
             <div className="grid gap-4 lg:grid-cols-[12rem_minmax(0,1fr)_12rem]">
-              <FieldCard label="Stake">
+              <FieldCard id="payout-stake" label="Stake">
                 <input
+                  id="payout-stake"
                   type="text"
                   inputMode="decimal"
                   value={payoutStake}
@@ -641,8 +648,9 @@ export default function OddsCalculator() {
                   className="w-full bg-transparent text-lg font-semibold text-foreground outline-none placeholder:text-muted-foreground"
                 />
               </FieldCard>
-              <FieldCard label="Odds">
+              <FieldCard id="payout-odds" label="Odds">
                 <input
+                  id="payout-odds"
                   type="text"
                   inputMode="text"
                   value={payoutOdds}
@@ -651,8 +659,9 @@ export default function OddsCalculator() {
                   className="w-full bg-transparent text-lg font-semibold text-foreground outline-none placeholder:text-muted-foreground"
                 />
               </FieldCard>
-              <FieldCard label="Format">
+              <FieldCard id="payout-format" label="Format">
                 <select
+                  id="payout-format"
                   value={payoutFormat}
                   onChange={(event) => setPayoutFormat(event.target.value as OddsFormat)}
                   className="w-full bg-transparent text-lg font-semibold text-foreground outline-none"
@@ -720,8 +729,9 @@ export default function OddsCalculator() {
 
             {impliedMode === "odds" ? (
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_12rem]">
-                <FieldCard label="Odds">
+                <FieldCard id="implied-odds" label="Odds">
                   <input
+                    id="implied-odds"
                     type="text"
                     value={impliedOdds}
                     onChange={(event) => setImpliedOdds(event.target.value)}
@@ -729,8 +739,9 @@ export default function OddsCalculator() {
                     className="w-full bg-transparent text-lg font-semibold text-foreground outline-none placeholder:text-muted-foreground"
                   />
                 </FieldCard>
-                <FieldCard label="Format">
+                <FieldCard id="implied-format" label="Format">
                   <select
+                    id="implied-format"
                     value={impliedFormat}
                     onChange={(event) => setImpliedFormat(event.target.value as OddsFormat)}
                     className="w-full bg-transparent text-lg font-semibold text-foreground outline-none"
@@ -744,8 +755,9 @@ export default function OddsCalculator() {
                 </FieldCard>
               </div>
             ) : (
-              <FieldCard label="Probability %">
+              <FieldCard id="implied-probability" label="Probability %">
                 <input
+                  id="implied-probability"
                   type="text"
                   inputMode="decimal"
                   value={probabilityInput}
@@ -795,8 +807,9 @@ export default function OddsCalculator() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <FieldCard label="Team A">
+                <FieldCard id="market-a" label="Team A">
                   <input
+                    id="market-a"
                     type="text"
                     value={marketA}
                     onChange={(event) => setMarketA(event.target.value)}
@@ -804,8 +817,9 @@ export default function OddsCalculator() {
                     className="w-full bg-transparent text-lg font-semibold text-foreground outline-none placeholder:text-muted-foreground"
                   />
                 </FieldCard>
-                <FieldCard label="Team B">
+                <FieldCard id="market-b" label="Team B">
                   <input
+                    id="market-b"
                     type="text"
                     value={marketB}
                     onChange={(event) => setMarketB(event.target.value)}

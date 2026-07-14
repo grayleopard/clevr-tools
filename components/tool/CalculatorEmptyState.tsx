@@ -16,7 +16,11 @@ import type { ReactNode } from "react";
  */
 export function CalculatorEmptyState({ message }: { message: ReactNode }) {
   return (
-    <div className="rounded-xl border border-dashed border-border bg-muted/20 px-6 py-8 text-center text-sm text-muted-foreground">
+    <div
+      role="status"
+      aria-live="polite"
+      className="rounded-xl border border-dashed border-border bg-muted/20 px-6 py-8 text-center text-sm text-muted-foreground"
+    >
       {message}
     </div>
   );

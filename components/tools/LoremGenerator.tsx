@@ -91,8 +91,9 @@ export default function LoremGenerator() {
       {/* Config row */}
       <div className="flex flex-wrap items-end gap-3">
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Count</label>
+          <label htmlFor="lorem-count" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Count</label>
           <input
+            id="lorem-count"
             type="number"
             min={1}
             max={100}
@@ -106,8 +107,9 @@ export default function LoremGenerator() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Type</label>
+          <label htmlFor="lorem-type" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Type</label>
           <select
+            id="lorem-type"
             value={type}
             onChange={(e) => setType(e.target.value as "paragraphs" | "sentences" | "words")}
             className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors cursor-pointer"

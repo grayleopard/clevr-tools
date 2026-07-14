@@ -114,8 +114,9 @@ export default function AmortizationCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Loan Amount ($)</label>
+          <label htmlFor="loan-amount" className="block text-sm font-medium text-foreground mb-1">Loan Amount ($)</label>
           <input
+            id="loan-amount"
             type="number"
             min="0"
             value={loanAmount}
@@ -124,8 +125,9 @@ export default function AmortizationCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Interest Rate (%)</label>
+          <label htmlFor="interest-rate" className="block text-sm font-medium text-foreground mb-1">Interest Rate (%)</label>
           <input
+            id="interest-rate"
             type="number"
             min="0"
             step="0.1"
@@ -135,8 +137,9 @@ export default function AmortizationCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Loan Term (years)</label>
+          <label htmlFor="loan-term-years" className="block text-sm font-medium text-foreground mb-1">Loan Term (years)</label>
           <input
+            id="loan-term-years"
             type="number"
             min="1"
             max="50"
@@ -146,8 +149,9 @@ export default function AmortizationCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Extra Monthly Payment ($)</label>
+          <label htmlFor="extra-monthly-payment" className="block text-sm font-medium text-foreground mb-1">Extra Monthly Payment ($)</label>
           <input
+            id="extra-monthly-payment"
             type="number"
             min="0"
             value={extraPayment}

@@ -40,10 +40,11 @@ export default function TipCalculator() {
     <div className="space-y-6">
       {/* Bill amount */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="bill-amount" className="block text-sm font-medium text-foreground mb-1">
           Bill Amount ($)
         </label>
         <input
+          id="bill-amount"
           type="number"
           min="0"
           step="0.01"
@@ -56,7 +57,7 @@ export default function TipCalculator() {
 
       {/* Tip preset buttons */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-2">
+        <label htmlFor="tip-percentage" className="block text-sm font-medium text-foreground mb-2">
           Tip Percentage
         </label>
         <div className="flex flex-wrap gap-2 mb-3" role="group" aria-label="Tip percentage presets">
@@ -76,6 +77,7 @@ export default function TipCalculator() {
           ))}
         </div>
         <input
+          id="tip-percentage"
           type="number"
           min="0"
           max="100"
@@ -88,18 +90,20 @@ export default function TipCalculator() {
 
       {/* Split */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="split-between" className="block text-sm font-medium text-foreground mb-1">
           Split Between
         </label>
         <input
+          id="split-between"
           type="number"
           min="1"
           max="100"
           value={split}
           onChange={(e) => setSplit(e.target.value)}
+          aria-describedby="split-between-unit"
           className="w-32 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
-        <span className="text-sm text-muted-foreground ml-2">
+        <span id="split-between-unit" className="text-sm text-muted-foreground ml-2">
           {parseInt(split) === 1 ? "person" : "people"}
         </span>
       </div>

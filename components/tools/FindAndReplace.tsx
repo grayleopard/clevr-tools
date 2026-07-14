@@ -110,10 +110,11 @@ export default function FindAndReplace() {
       {/* Find and Replace inputs */}
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">
+          <label htmlFor="find-text" className="mb-1 block text-xs font-medium text-muted-foreground">
             Find
           </label>
           <input
+            id="find-text"
             type="text"
             value={findText}
             onChange={(e) => setFindText(e.target.value)}
@@ -122,10 +123,11 @@ export default function FindAndReplace() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">
+          <label htmlFor="replace-text" className="mb-1 block text-xs font-medium text-muted-foreground">
             Replace with
           </label>
           <input
+            id="replace-text"
             type="text"
             value={replaceText}
             onChange={(e) => setReplaceText(e.target.value)}

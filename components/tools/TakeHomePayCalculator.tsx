@@ -190,10 +190,11 @@ export default function TakeHomePayCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="annual-gross-salary" className="block text-sm font-medium text-foreground mb-1">
             Annual Gross Salary ($)
           </label>
           <input
+            id="annual-gross-salary"
             type="number"
             min="0"
             value={grossSalary}
@@ -203,10 +204,11 @@ export default function TakeHomePayCalculator() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="pay-frequency" className="block text-sm font-medium text-foreground mb-1">
             Pay Frequency
           </label>
           <select
+            id="pay-frequency"
             value={payFrequency}
             onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -219,10 +221,11 @@ export default function TakeHomePayCalculator() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="filing-status" className="block text-sm font-medium text-foreground mb-1">
             Filing Status
           </label>
           <select
+            id="filing-status"
             value={filingStatus}
             onChange={(e) => setFilingStatus(e.target.value as FilingStatus)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -234,10 +237,11 @@ export default function TakeHomePayCalculator() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="state" className="block text-sm font-medium text-foreground mb-1">
             State
           </label>
           <select
+            id="state"
             value={stateCode}
             onChange={(e) => setStateCode(e.target.value)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -251,11 +255,12 @@ export default function TakeHomePayCalculator() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="pre-tax-deductions" className="block text-sm font-medium text-foreground mb-1">
             Pre-Tax Deductions ($/yr)
             <span className="ml-1 text-xs text-muted-foreground">(401k, etc.)</span>
           </label>
           <input
+            id="pre-tax-deductions"
             type="number"
             min="0"
             value={preTaxDeductions}

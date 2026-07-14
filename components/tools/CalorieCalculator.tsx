@@ -115,8 +115,9 @@ export default function CalorieCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Age</label>
+          <label htmlFor="age" className="block text-sm font-medium text-foreground mb-1">Age</label>
           <input
+            id="age"
             type="number"
             min="1"
             max="120"
@@ -127,38 +128,39 @@ export default function CalorieCalculator() {
         </div>
         {unit === "imperial" ? (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Height</label>
+            <label htmlFor="height-ft" className="block text-sm font-medium text-foreground mb-1">Height</label>
             <div className="flex gap-2">
               <div className="flex-1">
-                <input type="number" min="0" value={heightFt} onChange={(e) => setHeightFt(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-                <span className="text-xs text-muted-foreground">ft</span>
+                <input id="height-ft" type="number" min="0" value={heightFt} onChange={(e) => setHeightFt(e.target.value)} aria-describedby="height-ft-unit" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                <span id="height-ft-unit" className="text-xs text-muted-foreground">ft</span>
               </div>
               <div className="flex-1">
-                <input type="number" min="0" max="11" value={heightIn} onChange={(e) => setHeightIn(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
-                <span className="text-xs text-muted-foreground">in</span>
+                <input id="height-in" type="number" min="0" max="11" value={heightIn} onChange={(e) => setHeightIn(e.target.value)} aria-describedby="height-in-unit" className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+                <span id="height-in-unit" className="text-xs text-muted-foreground">in</span>
               </div>
             </div>
           </div>
         ) : (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
-            <input type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="height-cm" className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
+            <input id="height-cm" type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
         )}
         {unit === "imperial" ? (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Weight (lbs)</label>
-            <input type="number" min="0" value={weightLbs} onChange={(e) => setWeightLbs(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="weight-lbs" className="block text-sm font-medium text-foreground mb-1">Weight (lbs)</label>
+            <input id="weight-lbs" type="number" min="0" value={weightLbs} onChange={(e) => setWeightLbs(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
         ) : (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Weight (kg)</label>
-            <input type="number" min="0" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="weight-kg" className="block text-sm font-medium text-foreground mb-1">Weight (kg)</label>
+            <input id="weight-kg" type="number" min="0" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
         )}
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Activity Level</label>
+          <label htmlFor="activity-level" className="block text-sm font-medium text-foreground mb-1">Activity Level</label>
           <select
+            id="activity-level"
             value={activityIdx}
             onChange={(e) => setActivityIdx(parseInt(e.target.value))}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"

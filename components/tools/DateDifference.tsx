@@ -129,10 +129,11 @@ export default function DateDifference() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="start-date" className="block text-sm font-medium text-foreground mb-1">
             Start Date
           </label>
           <input
+            id="start-date"
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
@@ -140,10 +141,11 @@ export default function DateDifference() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="end-date" className="block text-sm font-medium text-foreground mb-1">
             End Date
           </label>
           <input
+            id="end-date"
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}

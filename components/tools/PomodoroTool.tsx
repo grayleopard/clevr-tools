@@ -352,10 +352,11 @@ export default function PomodoroTool() {
           <div className="border-t border-border px-4 py-4 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">
+                <label htmlFor="pomodoro-focus-minutes" className="block text-xs text-muted-foreground mb-1">
                   Focus (min)
                 </label>
                 <input
+                  id="pomodoro-focus-minutes"
                   type="number"
                   min="1"
                   max="120"
@@ -370,10 +371,11 @@ export default function PomodoroTool() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">
+                <label htmlFor="pomodoro-short-break-minutes" className="block text-xs text-muted-foreground mb-1">
                   Short Break (min)
                 </label>
                 <input
+                  id="pomodoro-short-break-minutes"
                   type="number"
                   min="1"
                   max="60"
@@ -388,10 +390,11 @@ export default function PomodoroTool() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">
+                <label htmlFor="pomodoro-long-break-minutes" className="block text-xs text-muted-foreground mb-1">
                   Long Break (min)
                 </label>
                 <input
+                  id="pomodoro-long-break-minutes"
                   type="number"
                   min="1"
                   max="60"
@@ -406,10 +409,11 @@ export default function PomodoroTool() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-muted-foreground mb-1">
+                <label htmlFor="pomodoro-long-break-after" className="block text-xs text-muted-foreground mb-1">
                   Long Break After
                 </label>
                 <input
+                  id="pomodoro-long-break-after"
                   type="number"
                   min="2"
                   max="10"

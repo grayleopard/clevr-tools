@@ -128,8 +128,9 @@ export default function RandomNumberGenerator() {
       <div className="rounded-xl border border-border bg-card p-5 space-y-4">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">Min</label>
+            <label htmlFor="rng-min" className="text-xs font-medium text-muted-foreground">Min</label>
             <input
+              id="rng-min"
               type="number"
               value={min}
               onChange={(e) => setMin(e.target.value)}
@@ -137,8 +138,9 @@ export default function RandomNumberGenerator() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">Max</label>
+            <label htmlFor="rng-max" className="text-xs font-medium text-muted-foreground">Max</label>
             <input
+              id="rng-max"
               type="number"
               value={max}
               onChange={(e) => setMax(e.target.value)}
@@ -146,8 +148,9 @@ export default function RandomNumberGenerator() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-muted-foreground">Count</label>
+            <label htmlFor="rng-count" className="text-xs font-medium text-muted-foreground">Count</label>
             <input
+              id="rng-count"
               type="number"
               value={count}
               min={1}

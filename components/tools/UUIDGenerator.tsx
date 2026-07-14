@@ -189,10 +189,11 @@ export default function UUIDGenerator() {
       <div className="rounded-xl border border-border bg-card p-4 space-y-4">
         <div className="flex items-end gap-3">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
+            <label htmlFor="bulk-generate-count" className="block text-sm font-medium text-foreground mb-1">
               Bulk Generate
             </label>
             <input
+              id="bulk-generate-count"
               type="number"
               min="1"
               max="100"

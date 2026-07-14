@@ -392,8 +392,9 @@ export default function PokerCalculator() {
         </div>
         {selectedDraw === "custom" && (
           <div className="flex items-center gap-3">
-            <label className="text-sm text-muted-foreground">Outs (1–20):</label>
+            <label htmlFor="poker-custom-outs" className="text-sm text-muted-foreground">Outs (1–20):</label>
             <input
+              id="poker-custom-outs"
               type="number"
               min={1}
               max={20}
@@ -454,8 +455,9 @@ export default function PokerCalculator() {
         <h3 className="text-sm font-semibold text-foreground">Pot Odds</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-xs font-semibold text-muted-foreground">Pot size ($)</label>
+            <label htmlFor="poker-pot-size" className="text-xs font-semibold text-muted-foreground">Pot size ($)</label>
             <input
+              id="poker-pot-size"
               type="number"
               min={0}
               value={potSize}
@@ -464,8 +466,9 @@ export default function PokerCalculator() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-muted-foreground">Bet to call ($)</label>
+            <label htmlFor="poker-bet-to-call" className="text-xs font-semibold text-muted-foreground">Bet to call ($)</label>
             <input
+              id="poker-bet-to-call"
               type="number"
               min={0}
               value={betToCall}

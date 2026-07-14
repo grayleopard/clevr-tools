@@ -189,8 +189,9 @@ export default function PaycheckCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Gross Pay per Period ($)</label>
+          <label htmlFor="gross-pay-per-period" className="block text-sm font-medium text-foreground mb-1">Gross Pay per Period ($)</label>
           <input
+            id="gross-pay-per-period"
             type="number"
             min="0"
             value={grossPayPerPeriod}
@@ -199,8 +200,9 @@ export default function PaycheckCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Pay Frequency</label>
+          <label htmlFor="pay-frequency" className="block text-sm font-medium text-foreground mb-1">Pay Frequency</label>
           <select
+            id="pay-frequency"
             value={payFrequency}
             onChange={(e) => setPayFrequency(e.target.value as PayFrequency)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -212,8 +214,9 @@ export default function PaycheckCalculator() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Filing Status</label>
+          <label htmlFor="filing-status" className="block text-sm font-medium text-foreground mb-1">Filing Status</label>
           <select
+            id="filing-status"
             value={filingStatus}
             onChange={(e) => setFilingStatus(e.target.value as FilingStatus)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -224,8 +227,9 @@ export default function PaycheckCalculator() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">State</label>
+          <label htmlFor="paycheck-state" className="block text-sm font-medium text-foreground mb-1">State</label>
           <select
+            id="paycheck-state"
             value={stateCode}
             onChange={(e) => setStateCode(e.target.value)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -236,10 +240,11 @@ export default function PaycheckCalculator() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="pre-tax-deductions" className="block text-sm font-medium text-foreground mb-1">
             Pre-Tax Deductions ($/period)
           </label>
           <input
+            id="pre-tax-deductions"
             type="number"
             min="0"
             value={preTaxDeductions}

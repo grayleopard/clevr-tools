@@ -82,11 +82,12 @@ export default function SleepCalculator() {
 
       {/* Time input */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-1">
+        <label htmlFor="sleep-time-hour" className="block text-sm font-medium text-foreground mb-1">
           {mode === "wake" ? "Wake-up time" : "Bedtime"}
         </label>
         <div className="flex gap-2 items-center">
           <input
+            id="sleep-time-hour"
             type="number"
             min="1"
             max="12"

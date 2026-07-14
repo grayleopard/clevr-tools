@@ -62,8 +62,9 @@ export default function DownPaymentCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Home Price ($)</label>
+          <label htmlFor="home-price" className="block text-sm font-medium text-foreground mb-1">Home Price ($)</label>
           <input
+            id="home-price"
             type="number"
             min="0"
             value={homePrice}
@@ -90,8 +91,9 @@ export default function DownPaymentCalculator() {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Current Savings ($)</label>
+          <label htmlFor="current-savings" className="block text-sm font-medium text-foreground mb-1">Current Savings ($)</label>
           <input
+            id="current-savings"
             type="number"
             min="0"
             value={currentSavings}
@@ -100,8 +102,9 @@ export default function DownPaymentCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Monthly Savings ($)</label>
+          <label htmlFor="monthly-savings" className="block text-sm font-medium text-foreground mb-1">Monthly Savings ($)</label>
           <input
+            id="monthly-savings"
             type="number"
             min="0"
             value={monthlySavings}

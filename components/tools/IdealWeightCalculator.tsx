@@ -107,22 +107,22 @@ export default function IdealWeightCalculator() {
       {/* Height input */}
       {unit === "imperial" ? (
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Height</label>
+          <label htmlFor="height-ft" className="block text-sm font-medium text-foreground mb-1">Height</label>
           <div className="flex gap-2">
             <div className="flex-1">
-              <input type="number" min="0" value={heightFt} onChange={(e) => setHeightFt(e.target.value)} className={inputClass} />
-              <span className="text-xs text-muted-foreground">ft</span>
+              <input id="height-ft" type="number" min="0" value={heightFt} onChange={(e) => setHeightFt(e.target.value)} aria-describedby="height-ft-unit" className={inputClass} />
+              <span id="height-ft-unit" className="text-xs text-muted-foreground">ft</span>
             </div>
             <div className="flex-1">
-              <input type="number" min="0" max="11" value={heightIn} onChange={(e) => setHeightIn(e.target.value)} className={inputClass} />
-              <span className="text-xs text-muted-foreground">in</span>
+              <input id="height-in" type="number" min="0" max="11" value={heightIn} onChange={(e) => setHeightIn(e.target.value)} aria-describedby="height-in-unit" className={inputClass} />
+              <span id="height-in-unit" className="text-xs text-muted-foreground">in</span>
             </div>
           </div>
         </div>
       ) : (
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
-          <input type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className={inputClass} />
+          <label htmlFor="height-cm" className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
+          <input id="height-cm" type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className={inputClass} />
         </div>
       )}
 

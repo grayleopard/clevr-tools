@@ -504,7 +504,7 @@ export default function InvoiceGenerator() {
               onChange={(v) => updateField("phone", v)}
             />
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="invoice-logo" className="text-xs font-medium text-muted-foreground">
                 Logo
               </label>
               <div className="flex items-center gap-3">
@@ -532,6 +532,7 @@ export default function InvoiceGenerator() {
                   </button>
                 )}
                 <input
+                  id="invoice-logo"
                   ref={logoInputRef}
                   type="file"
                   accept="image/*"
@@ -578,10 +579,11 @@ export default function InvoiceGenerator() {
               onChange={(v) => updateField("invoiceNumber", v)}
             />
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="invoice-currency" className="text-xs font-medium text-muted-foreground">
                 Currency
               </label>
               <select
+                id="invoice-currency"
                 value={data.currency}
                 onChange={(e) => updateField("currency", e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
@@ -687,11 +689,12 @@ export default function InvoiceGenerator() {
               onChange={(v) => updateField("taxRate", Number(v))}
             />
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="invoice-discount" className="text-xs font-medium text-muted-foreground">
                 Discount
               </label>
               <div className="flex gap-1">
                 <input
+                  id="invoice-discount"
                   type="number"
                   min={0}
                   step={0.01}
@@ -722,10 +725,11 @@ export default function InvoiceGenerator() {
           <legend className="text-sm font-semibold px-1">Additional</legend>
           <div className="space-y-3">
             <div className="space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="invoice-notes" className="text-xs font-medium text-muted-foreground">
                 Notes
               </label>
               <textarea
+                id="invoice-notes"
                 value={data.notes}
                 onChange={(e) => updateField("notes", e.target.value)}
                 rows={3}
@@ -925,6 +929,13 @@ export default function InvoiceGenerator() {
 
 // ─── Reusable Input ─────────────────────────────────────────────────────────
 
+function slugify(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
 function Input({
   label,
   value,
@@ -938,12 +949,14 @@ function Input({
   type?: string;
   placeholder?: string;
 }) {
+  const id = `invoice-${slugify(label)}`;
   return (
     <div className="space-y-1">
-      <label className="text-xs font-medium text-muted-foreground">
+      <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
         {label}
       </label>
       <input
+        id={id}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}

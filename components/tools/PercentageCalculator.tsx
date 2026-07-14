@@ -122,10 +122,11 @@ export default function PercentageCalculator() {
         {mode === "percent-of" && (
           <div className="flex items-center gap-3">
             <div className="flex-1 space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="percentage-pct" className="text-xs font-medium text-muted-foreground">
                 Percentage (%)
               </label>
               <input
+                id="percentage-pct"
                 type="number"
                 value={xPct}
                 onChange={(e) => setXPct(e.target.value)}
@@ -137,10 +138,11 @@ export default function PercentageCalculator() {
               % of
             </span>
             <div className="flex-1 space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="percentage-number" className="text-xs font-medium text-muted-foreground">
                 Number
               </label>
               <input
+                id="percentage-number"
                 type="number"
                 value={yNum}
                 onChange={(e) => setYNum(e.target.value)}
@@ -154,10 +156,11 @@ export default function PercentageCalculator() {
         {mode === "is-what-percent" && (
           <div className="flex items-center gap-3">
             <div className="flex-1 space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="percent-part" className="text-xs font-medium text-muted-foreground">
                 Part
               </label>
               <input
+                id="percent-part"
                 type="number"
                 value={xPart}
                 onChange={(e) => setXPart(e.target.value)}
@@ -169,10 +172,11 @@ export default function PercentageCalculator() {
               is what % of
             </span>
             <div className="flex-1 space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="percent-whole" className="text-xs font-medium text-muted-foreground">
                 Whole
               </label>
               <input
+                id="percent-whole"
                 type="number"
                 value={yWhole}
                 onChange={(e) => setYWhole(e.target.value)}
@@ -186,10 +190,11 @@ export default function PercentageCalculator() {
         {mode === "percent-change" && (
           <div className="flex items-center gap-3">
             <div className="flex-1 space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="percent-original-value" className="text-xs font-medium text-muted-foreground">
                 Original Value
               </label>
               <input
+                id="percent-original-value"
                 type="number"
                 value={xOriginal}
                 onChange={(e) => setXOriginal(e.target.value)}
@@ -199,10 +204,11 @@ export default function PercentageCalculator() {
             </div>
             <span className="mt-5 text-lg text-muted-foreground">&rarr;</span>
             <div className="flex-1 space-y-1">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label htmlFor="percent-new-value" className="text-xs font-medium text-muted-foreground">
                 New Value
               </label>
               <input
+                id="percent-new-value"
                 type="number"
                 value={yNew}
                 onChange={(e) => setYNew(e.target.value)}

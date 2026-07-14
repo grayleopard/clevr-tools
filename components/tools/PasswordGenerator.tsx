@@ -324,18 +324,20 @@ export default function PasswordGenerator() {
         {/* Length slider */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium">Length</label>
+            <label htmlFor="password-length" className="text-sm font-medium">Length</label>
             <span className="text-sm font-semibold tabular-nums">{length}</span>
           </div>
           <input
+            id="password-length"
             type="range"
             min={4}
             max={128}
             value={length}
             onChange={(e) => setLength(Number(e.target.value))}
+            aria-describedby="password-length-range"
             className="w-full accent-primary"
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
+          <div id="password-length-range" className="flex justify-between text-xs text-muted-foreground">
             <span>4</span>
             <span>128</span>
           </div>

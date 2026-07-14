@@ -126,10 +126,11 @@ export default function DueDateCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">
+          <label htmlFor="reference-date" className="block text-sm font-medium text-foreground mb-1">
             {method === "lmp" ? "First Day of Last Period" : method === "conception" ? "Conception Date" : "Transfer Date"}
           </label>
           <input
+            id="reference-date"
             type="date"
             value={dateStr}
             onChange={(e) => setDateStr(e.target.value)}
@@ -138,8 +139,9 @@ export default function DueDateCalculator() {
         </div>
         {method === "lmp" && (
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Cycle Length (days)</label>
+            <label htmlFor="cycle-length" className="block text-sm font-medium text-foreground mb-1">Cycle Length (days)</label>
             <input
+              id="cycle-length"
               type="number"
               min="21"
               max="35"

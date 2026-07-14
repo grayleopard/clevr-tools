@@ -178,9 +178,10 @@ export default function QrCodeGenerator() {
 
           <div className="flex gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Foreground</label>
+              <label htmlFor="qr-fg-color" className="text-xs font-medium text-muted-foreground">Foreground</label>
               <div className="flex items-center gap-2">
                 <input
+                  id="qr-fg-color"
                   type="color"
                   value={fgColor}
                   onChange={(e) => setFgColor(e.target.value)}
@@ -190,9 +191,10 @@ export default function QrCodeGenerator() {
               </div>
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Background</label>
+              <label htmlFor="qr-bg-color" className="text-xs font-medium text-muted-foreground">Background</label>
               <div className="flex items-center gap-2">
                 <input
+                  id="qr-bg-color"
                   type="color"
                   value={bgColor}
                   onChange={(e) => setBgColor(e.target.value)}

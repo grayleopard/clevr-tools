@@ -199,60 +199,60 @@ export default function BodyFatCalculator() {
           {unit === "imperial" ? (
             <>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Height</label>
+                <label htmlFor="navy-height-ft" className="block text-sm font-medium text-foreground mb-1">Height</label>
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <input type="number" min="0" value={heightFt} onChange={(e) => setHeightFt(e.target.value)} className={inputClass} />
-                    <span className="text-xs text-muted-foreground">ft</span>
+                    <input id="navy-height-ft" type="number" min="0" value={heightFt} onChange={(e) => setHeightFt(e.target.value)} aria-describedby="navy-height-ft-unit" className={inputClass} />
+                    <span id="navy-height-ft-unit" className="text-xs text-muted-foreground">ft</span>
                   </div>
                   <div className="flex-1">
-                    <input type="number" min="0" max="11" value={heightIn} onChange={(e) => setHeightIn(e.target.value)} className={inputClass} />
-                    <span className="text-xs text-muted-foreground">in</span>
+                    <input id="navy-height-in" type="number" min="0" max="11" value={heightIn} onChange={(e) => setHeightIn(e.target.value)} aria-describedby="navy-height-in-unit" className={inputClass} />
+                    <span id="navy-height-in-unit" className="text-xs text-muted-foreground">in</span>
                   </div>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Neck (inches)</label>
-                <input type="number" min="0" step="0.1" value={neckIn} onChange={(e) => setNeckIn(e.target.value)} className={inputClass} />
+                <label htmlFor="navy-neck-in" className="block text-sm font-medium text-foreground mb-1">Neck (inches)</label>
+                <input id="navy-neck-in" type="number" min="0" step="0.1" value={neckIn} onChange={(e) => setNeckIn(e.target.value)} className={inputClass} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Waist (inches)</label>
-                <input type="number" min="0" step="0.1" value={waistIn} onChange={(e) => setWaistIn(e.target.value)} className={inputClass} />
+                <label htmlFor="navy-waist-in" className="block text-sm font-medium text-foreground mb-1">Waist (inches)</label>
+                <input id="navy-waist-in" type="number" min="0" step="0.1" value={waistIn} onChange={(e) => setWaistIn(e.target.value)} className={inputClass} />
               </div>
               {gender === "female" && (
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Hip (inches)</label>
-                  <input type="number" min="0" step="0.1" value={hipIn} onChange={(e) => setHipIn(e.target.value)} className={inputClass} />
+                  <label htmlFor="navy-hip-in" className="block text-sm font-medium text-foreground mb-1">Hip (inches)</label>
+                  <input id="navy-hip-in" type="number" min="0" step="0.1" value={hipIn} onChange={(e) => setHipIn(e.target.value)} className={inputClass} />
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Weight (lbs, optional)</label>
-                <input type="number" min="0" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} className={inputClass} />
+                <label htmlFor="navy-weight-lbs" className="block text-sm font-medium text-foreground mb-1">Weight (lbs, optional)</label>
+                <input id="navy-weight-lbs" type="number" min="0" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} className={inputClass} />
               </div>
             </>
           ) : (
             <>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
-                <input type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className={inputClass} />
+                <label htmlFor="navy-height-cm" className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
+                <input id="navy-height-cm" type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className={inputClass} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Neck (cm)</label>
-                <input type="number" min="0" step="0.1" value={neckCm} onChange={(e) => setNeckCm(e.target.value)} className={inputClass} />
+                <label htmlFor="navy-neck-cm" className="block text-sm font-medium text-foreground mb-1">Neck (cm)</label>
+                <input id="navy-neck-cm" type="number" min="0" step="0.1" value={neckCm} onChange={(e) => setNeckCm(e.target.value)} className={inputClass} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Waist (cm)</label>
-                <input type="number" min="0" step="0.1" value={waistCm} onChange={(e) => setWaistCm(e.target.value)} className={inputClass} />
+                <label htmlFor="navy-waist-cm" className="block text-sm font-medium text-foreground mb-1">Waist (cm)</label>
+                <input id="navy-waist-cm" type="number" min="0" step="0.1" value={waistCm} onChange={(e) => setWaistCm(e.target.value)} className={inputClass} />
               </div>
               {gender === "female" && (
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Hip (cm)</label>
-                  <input type="number" min="0" step="0.1" value={hipCm} onChange={(e) => setHipCm(e.target.value)} className={inputClass} />
+                  <label htmlFor="navy-hip-cm" className="block text-sm font-medium text-foreground mb-1">Hip (cm)</label>
+                  <input id="navy-hip-cm" type="number" min="0" step="0.1" value={hipCm} onChange={(e) => setHipCm(e.target.value)} className={inputClass} />
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Weight (kg, optional)</label>
-                <input type="number" min="0" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} className={inputClass} />
+                <label htmlFor="navy-weight-kg" className="block text-sm font-medium text-foreground mb-1">Weight (kg, optional)</label>
+                <input id="navy-weight-kg" type="number" min="0" value={weightVal} onChange={(e) => setWeightVal(e.target.value)} className={inputClass} />
               </div>
             </>
           )}
@@ -260,38 +260,38 @@ export default function BodyFatCalculator() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Age</label>
-            <input type="number" min="1" max="120" value={age} onChange={(e) => setAge(e.target.value)} className={inputClass} />
+            <label htmlFor="bmi-age" className="block text-sm font-medium text-foreground mb-1">Age</label>
+            <input id="bmi-age" type="number" min="1" max="120" value={age} onChange={(e) => setAge(e.target.value)} className={inputClass} />
           </div>
           {unit === "imperial" ? (
             <>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Height</label>
+                <label htmlFor="bmi-height-ft" className="block text-sm font-medium text-foreground mb-1">Height</label>
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <input type="number" min="0" value={bmiHeightFt} onChange={(e) => setBmiHeightFt(e.target.value)} className={inputClass} />
-                    <span className="text-xs text-muted-foreground">ft</span>
+                    <input id="bmi-height-ft" type="number" min="0" value={bmiHeightFt} onChange={(e) => setBmiHeightFt(e.target.value)} aria-describedby="bmi-height-ft-unit" className={inputClass} />
+                    <span id="bmi-height-ft-unit" className="text-xs text-muted-foreground">ft</span>
                   </div>
                   <div className="flex-1">
-                    <input type="number" min="0" max="11" value={bmiHeightIn} onChange={(e) => setBmiHeightIn(e.target.value)} className={inputClass} />
-                    <span className="text-xs text-muted-foreground">in</span>
+                    <input id="bmi-height-in" type="number" min="0" max="11" value={bmiHeightIn} onChange={(e) => setBmiHeightIn(e.target.value)} aria-describedby="bmi-height-in-unit" className={inputClass} />
+                    <span id="bmi-height-in-unit" className="text-xs text-muted-foreground">in</span>
                   </div>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Weight (lbs)</label>
-                <input type="number" min="0" value={bmiWeightVal} onChange={(e) => setBmiWeightVal(e.target.value)} className={inputClass} />
+                <label htmlFor="bmi-weight-lbs" className="block text-sm font-medium text-foreground mb-1">Weight (lbs)</label>
+                <input id="bmi-weight-lbs" type="number" min="0" value={bmiWeightVal} onChange={(e) => setBmiWeightVal(e.target.value)} className={inputClass} />
               </div>
             </>
           ) : (
             <>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
-                <input type="number" min="0" value={bmiHeightCm} onChange={(e) => setBmiHeightCm(e.target.value)} className={inputClass} />
+                <label htmlFor="bmi-height-cm" className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
+                <input id="bmi-height-cm" type="number" min="0" value={bmiHeightCm} onChange={(e) => setBmiHeightCm(e.target.value)} className={inputClass} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">Weight (kg)</label>
-                <input type="number" min="0" value={bmiWeightVal} onChange={(e) => setBmiWeightVal(e.target.value)} className={inputClass} />
+                <label htmlFor="bmi-weight-kg" className="block text-sm font-medium text-foreground mb-1">Weight (kg)</label>
+                <input id="bmi-weight-kg" type="number" min="0" value={bmiWeightVal} onChange={(e) => setBmiWeightVal(e.target.value)} className={inputClass} />
               </div>
             </>
           )}

@@ -119,8 +119,9 @@ export default function MacroCalculator() {
       {/* Calorie inputs */}
       {inputMode === "manual" ? (
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Daily Calorie Target</label>
+          <label htmlFor="daily-calorie-target" className="block text-sm font-medium text-foreground mb-1">Daily Calorie Target</label>
           <input
+            id="daily-calorie-target"
             type="number"
             min="0"
             value={calories}
@@ -141,20 +142,20 @@ export default function MacroCalculator() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Age</label>
-            <input type="number" min="1" max="120" value={age} onChange={(e) => setAge(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="macro-age" className="block text-sm font-medium text-foreground mb-1">Age</label>
+            <input id="macro-age" type="number" min="1" max="120" value={age} onChange={(e) => setAge(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
-            <input type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="height-cm" className="block text-sm font-medium text-foreground mb-1">Height (cm)</label>
+            <input id="height-cm" type="number" min="0" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Weight (kg)</label>
-            <input type="number" min="0" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="weight-kg" className="block text-sm font-medium text-foreground mb-1">Weight (kg)</label>
+            <input id="weight-kg" type="number" min="0" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-foreground mb-1">Activity Level</label>
-            <select value={activityIdx} onChange={(e) => setActivityIdx(parseInt(e.target.value))} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <label htmlFor="activity-level" className="block text-sm font-medium text-foreground mb-1">Activity Level</label>
+            <select id="activity-level" value={activityIdx} onChange={(e) => setActivityIdx(parseInt(e.target.value))} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50">
               {ACTIVITIES.map((a, i) => (<option key={i} value={i}>{a.label}</option>))}
             </select>
           </div>
@@ -201,16 +202,16 @@ export default function MacroCalculator() {
       {customMode && (
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">Carbs %</label>
-            <input type="number" min="0" max="100" value={customCarb} onChange={(e) => setCustomCarb(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="custom-carb" className="block text-xs font-medium text-muted-foreground mb-1">Carbs %</label>
+            <input id="custom-carb" type="number" min="0" max="100" value={customCarb} onChange={(e) => setCustomCarb(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">Protein %</label>
-            <input type="number" min="0" max="100" value={customProtein} onChange={(e) => setCustomProtein(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="custom-protein" className="block text-xs font-medium text-muted-foreground mb-1">Protein %</label>
+            <input id="custom-protein" type="number" min="0" max="100" value={customProtein} onChange={(e) => setCustomProtein(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">Fat %</label>
-            <input type="number" min="0" max="100" value={customFat} onChange={(e) => setCustomFat(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            <label htmlFor="custom-fat" className="block text-xs font-medium text-muted-foreground mb-1">Fat %</label>
+            <input id="custom-fat" type="number" min="0" max="100" value={customFat} onChange={(e) => setCustomFat(e.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50" />
           </div>
         </div>
       )}

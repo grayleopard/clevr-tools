@@ -70,8 +70,9 @@ export default function InvestmentReturnCalculator() {
       {/* Inputs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Initial Investment ($)</label>
+          <label htmlFor="initial-investment" className="block text-sm font-medium text-foreground mb-1">Initial Investment ($)</label>
           <input
+            id="initial-investment"
             type="number"
             min="0"
             value={initialInvestment}
@@ -80,8 +81,9 @@ export default function InvestmentReturnCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Monthly Contribution ($)</label>
+          <label htmlFor="monthly-contribution" className="block text-sm font-medium text-foreground mb-1">Monthly Contribution ($)</label>
           <input
+            id="monthly-contribution"
             type="number"
             min="0"
             value={monthlyContribution}
@@ -90,8 +92,9 @@ export default function InvestmentReturnCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Annual Return (%)</label>
+          <label htmlFor="annual-return" className="block text-sm font-medium text-foreground mb-1">Annual Return (%)</label>
           <input
+            id="annual-return"
             type="number"
             min="0"
             step="0.1"
@@ -101,8 +104,9 @@ export default function InvestmentReturnCalculator() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-foreground mb-1">Years</label>
+          <label htmlFor="investment-years" className="block text-sm font-medium text-foreground mb-1">Years</label>
           <input
+            id="investment-years"
             type="number"
             min="1"
             max="50"
