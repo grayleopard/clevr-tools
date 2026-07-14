@@ -61,8 +61,12 @@ export default function UnitConverterPage({
 
   const handleToChange = (val: string) => {
     setActiveField("to");
-    const v = parseFloat(val);
-    if (isNaN(v) || val === "") {
+    // toValue is comma-grouped by formatResult() for readability — strip
+    // grouping before parsing, since a user editing the field mid-value
+    // (rather than clearing it first) will pass the commas straight through.
+    const cleaned = val.replace(/,/g, "");
+    const v = parseFloat(cleaned);
+    if (isNaN(v) || cleaned === "") {
       setFromValue("");
       return;
     }
@@ -149,7 +153,14 @@ export default function UnitConverterPage({
               ))}
             </select>
             <input
-              type="number"
+              // formatResult() comma-groups values >= 1000 for readability
+              // (e.g. "43,560.06") — a native type="number" input silently
+              // renders blank for any value it can't parse as a numeric
+              // literal, so the comma-grouped result never showed at all.
+              // text + inputMode="decimal" keeps the numeric keyboard on
+              // mobile while allowing the grouped display to actually render.
+              type="text"
+              inputMode="decimal"
               value={toValue}
               onChange={(e) => handleToChange(e.target.value)}
               onFocus={() => setActiveField("to")}
