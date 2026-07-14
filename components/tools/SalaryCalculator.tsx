@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -23,7 +24,9 @@ export default function SalaryCalculator() {
     const amt = parseFloat(amount) || 0;
     const hpw = parseFloat(hoursPerWeek) || 0;
     const wpy = parseFloat(weeksPerYear) || 0;
-    if (amt <= 0 || hpw <= 0 || wpy <= 0) return null;
+    if (amt <= 0 || hpw <= 0 || wpy <= 0) {
+      return { ok: false as const, emptyMessage: "Enter a pay rate, hours per week, and weeks per year to see your salary breakdown." };
+    }
 
     let hourly: number;
     let annual: number;
@@ -42,10 +45,10 @@ export default function SalaryCalculator() {
     const semiMonthly = annual / 24;
     const monthly = annual / 12;
 
-    return { hourly, daily, weekly, biweekly, semiMonthly, monthly, annual };
+    return { ok: true as const, hourly, daily, weekly, biweekly, semiMonthly, monthly, annual };
   }, [amount, payType, hoursPerWeek, weeksPerYear]);
 
-  const rows = result
+  const rows = result?.ok
     ? [
         { label: "Hourly", value: result.hourly },
         { label: "Daily", value: result.daily },
@@ -120,7 +123,9 @@ export default function SalaryCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
             <p className="text-sm text-muted-foreground mb-1">

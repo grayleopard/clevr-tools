@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -34,7 +35,9 @@ export default function AmortizationCalculator() {
     const annualRate = parseFloat(interestRate) || 0;
     const years = parseFloat(loanTermYears) || 0;
     const extra = parseFloat(extraPayment) || 0;
-    if (P <= 0 || years <= 0) return null;
+    if (P <= 0 || years <= 0) {
+      return { ok: false as const, emptyMessage: "Enter a loan amount and term to see your amortization schedule." };
+    }
 
     const r = annualRate / 100 / 12;
     const n = Math.round(years * 12);
@@ -86,6 +89,7 @@ export default function AmortizationCalculator() {
     const monthsSaved = n - month;
 
     return {
+      ok: true as const,
       basePayment,
       totalWithout,
       interestWithout,
@@ -99,7 +103,7 @@ export default function AmortizationCalculator() {
     };
   }, [loanAmount, interestRate, loanTermYears, extraPayment]);
 
-  const visibleRows = result
+  const visibleRows = result?.ok
     ? showAllRows
       ? result.schedule
       : result.schedule.slice(0, 12)
@@ -153,7 +157,9 @@ export default function AmortizationCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Monthly payment */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

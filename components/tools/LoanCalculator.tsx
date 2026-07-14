@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -31,7 +32,9 @@ export default function LoanCalculator() {
     const P = parseFloat(loanAmount) || 0;
     const annualRate = parseFloat(interestRate) || 0;
     const years = parseFloat(loanTermYears) || 0;
-    if (P <= 0 || years <= 0) return null;
+    if (P <= 0 || years <= 0) {
+      return { ok: false as const, emptyMessage: "Enter a loan amount and term to see your monthly payment." };
+    }
 
     const r = annualRate / 100 / 12;
     const n = Math.round(years * 12);
@@ -61,10 +64,10 @@ export default function LoanCalculator() {
     const totalPaid = monthlyPayment * n;
     const totalInterest = totalPaid - P;
 
-    return { monthlyPayment, totalPaid, totalInterest, schedule, n };
+    return { ok: true as const, monthlyPayment, totalPaid, totalInterest, schedule, n };
   }, [loanAmount, interestRate, loanTermYears]);
 
-  const visibleRows = result
+  const visibleRows = result?.ok
     ? showAllRows
       ? result.schedule
       : result.schedule.slice(0, 12)
@@ -114,7 +117,9 @@ export default function LoanCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Monthly payment */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

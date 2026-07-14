@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -51,13 +52,15 @@ export default function DebtToIncomeCalculator() {
 
   const result = useMemo(() => {
     const income = parseFloat(grossMonthlyIncome) || 0;
-    if (income <= 0) return null;
+    if (income <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your gross monthly income to see your debt-to-income ratio." };
+    }
 
     const totalDebt = debts.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
     const dti = (totalDebt / income) * 100;
     const rating = getRating(dti);
 
-    return { totalDebt, dti, rating, income };
+    return { ok: true as const, totalDebt, dti, rating, income };
   }, [grossMonthlyIncome, debts]);
 
   return (
@@ -116,7 +119,9 @@ export default function DebtToIncomeCalculator() {
         </button>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* DTI result */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -24,7 +25,9 @@ export default function SavingsGoalCalculator() {
     const PV = parseFloat(currentSavings) || 0;
     const rate = parseFloat(annualRate) || 0;
     const n = parseInt(timelineMonths) || 0;
-    if (FV <= 0 || n <= 0) return null;
+    if (FV <= 0 || n <= 0) {
+      return { ok: false as const, emptyMessage: "Enter a savings goal and timeline to see how much to save each month." };
+    }
 
     const r = rate / 100 / 12;
 
@@ -46,6 +49,7 @@ export default function SavingsGoalCalculator() {
     const interestEarned = FV - PV - totalContributions;
 
     return {
+      ok: true as const,
       monthlyNeeded: Math.max(0, monthlyNeeded),
       totalContributions,
       interestEarned: Math.max(0, interestEarned),
@@ -110,7 +114,9 @@ export default function SavingsGoalCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Monthly needed */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

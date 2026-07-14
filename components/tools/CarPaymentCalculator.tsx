@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -24,10 +25,14 @@ export default function CarPaymentCalculator() {
     const down = parseFloat(downPayment) || 0;
     const rate = parseFloat(interestRate) || 0;
     const months = parseInt(loanTermMonths) || 0;
-    if (price <= 0 || months <= 0) return null;
+    if (price <= 0 || months <= 0) {
+      return { ok: false as const, emptyMessage: "Enter a car price and loan term to see your monthly payment." };
+    }
 
     const principal = Math.max(0, price - down);
-    if (principal <= 0) return null;
+    if (principal <= 0) {
+      return { ok: false as const, emptyMessage: "Your down payment covers the full car price — you won't need a loan." };
+    }
 
     const r = rate / 100 / 12;
     let monthlyPayment: number;
@@ -41,7 +46,7 @@ export default function CarPaymentCalculator() {
     const totalInterest = totalPaid - principal;
     const totalCost = totalPaid + down;
 
-    return { principal, monthlyPayment, totalPaid, totalInterest, totalCost };
+    return { ok: true as const, principal, monthlyPayment, totalPaid, totalInterest, totalCost };
   }, [carPrice, downPayment, interestRate, loanTermMonths]);
 
   return (
@@ -95,7 +100,9 @@ export default function CarPaymentCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Monthly payment */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

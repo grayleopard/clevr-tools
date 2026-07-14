@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -76,16 +77,21 @@ export default function SalesTaxCalculator() {
   const result = useMemo(() => {
     const p = parseFloat(price) || 0;
     const r = parseFloat(taxRate) || 0;
-    if (p <= 0) return null;
+    if (p <= 0) {
+      return {
+        ok: false as const,
+        emptyMessage: mode === "forward" ? "Enter a price to calculate sales tax." : "Enter a total amount to find the pre-tax price.",
+      };
+    }
 
     if (mode === "forward") {
       const tax = p * r / 100;
       const total = p + tax;
-      return { preTax: p, tax, total };
+      return { ok: true as const, preTax: p, tax, total };
     } else {
       const preTax = p / (1 + r / 100);
       const tax = p - preTax;
-      return { preTax, tax, total: p };
+      return { ok: true as const, preTax, tax, total: p };
     }
   }, [price, taxRate, mode]);
 
@@ -165,7 +171,9 @@ export default function SalesTaxCalculator() {
         </p>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Results */}
           <div className="grid grid-cols-3 gap-2">

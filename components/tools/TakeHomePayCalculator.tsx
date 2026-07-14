@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -143,7 +144,9 @@ export default function TakeHomePayCalculator() {
 
   const result = useMemo(() => {
     const gross = parseFloat(grossSalary) || 0;
-    if (gross <= 0) return null;
+    if (gross <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your annual gross salary to see your take-home pay per paycheck." };
+    }
 
     const preTax = parseFloat(preTaxDeductions) || 0;
     const stdDeduction = STANDARD_DEDUCTIONS[filingStatus];
@@ -162,6 +165,7 @@ export default function TakeHomePayCalculator() {
     const periods = PAY_PERIODS[payFrequency];
 
     return {
+      ok: true as const,
       gross,
       federalTax,
       socialSecurity,
@@ -261,7 +265,9 @@ export default function TakeHomePayCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Hero result */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -36,7 +37,7 @@ export default function MortgageCalculator() {
 
   const result = useMemo(() => {
     const hp = parseFloat(homePrice) || 0;
-    if (hp <= 0) return null;
+    if (hp <= 0) return { ok: false as const, emptyMessage: "Enter a home price to see your estimated monthly payment." };
 
     const downAmt =
       downPaymentMode === "percent"
@@ -45,7 +46,9 @@ export default function MortgageCalculator() {
 
     const downPct = (downAmt / hp) * 100;
     const principal = hp - downAmt;
-    if (principal <= 0) return null;
+    if (principal <= 0) {
+      return { ok: false as const, emptyMessage: "Your down payment covers the full home price — you won't need a loan." };
+    }
 
     const annualRate = parseFloat(interestRate) || 0;
     const monthlyRate = annualRate / 100 / 12;
@@ -86,6 +89,7 @@ export default function MortgageCalculator() {
     }
 
     return {
+      ok: true as const,
       principal,
       downAmt,
       downPct,
@@ -219,7 +223,7 @@ export default function MortgageCalculator() {
           />
         </div>
 
-        {result && result.downPct < 20 && (
+        {result?.ok && result.downPct < 20 && (
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
               PMI Rate (%)
@@ -236,7 +240,9 @@ export default function MortgageCalculator() {
         )}
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Monthly payment */}
           <div className="text-center rounded-xl border border-border bg-card p-6">

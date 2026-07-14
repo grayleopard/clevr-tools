@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 const TIP_PRESETS = [10, 15, 18, 20, 25];
 
@@ -24,13 +25,15 @@ export default function TipCalculator() {
     const tipPct = parseFloat(tipPercent) || 0;
     const splitNum = Math.max(1, parseInt(split) || 1);
 
-    if (billAmt <= 0) return null;
+    if (billAmt <= 0) {
+      return { ok: false as const, emptyMessage: "Enter a bill amount to calculate the tip and split." };
+    }
 
     const tipAmount = billAmt * (tipPct / 100);
     const total = billAmt + tipAmount;
     const perPerson = splitNum > 1 ? total / splitNum : null;
 
-    return { tipAmount, total, perPerson, splitNum };
+    return { ok: true as const, tipAmount, total, perPerson, splitNum };
   }, [bill, tipPercent, split]);
 
   return (
@@ -102,7 +105,9 @@ export default function TipCalculator() {
       </div>
 
       {/* Results */}
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <div className="rounded-xl border border-border bg-card p-6 space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Tip</span>

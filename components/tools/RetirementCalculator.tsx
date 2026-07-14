@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -31,7 +32,9 @@ export default function RetirementCalculator() {
     const inflation = parseFloat(inflationRate) || 0;
 
     const yearsToRetirement = retAge - age;
-    if (yearsToRetirement <= 0) return null;
+    if (yearsToRetirement <= 0) {
+      return { ok: false as const, emptyMessage: "Retirement age needs to be after your current age — try raising it." };
+    }
 
     const r = rate / 100 / 12;
     const n = yearsToRetirement * 12;
@@ -66,6 +69,7 @@ export default function RetirementCalculator() {
     const totalEarnings = nominalValue - totalContributionsCalc;
 
     return {
+      ok: true as const,
       nominalValue,
       realValue,
       monthlyIncome4Percent,
@@ -147,7 +151,9 @@ export default function RetirementCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Hero */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

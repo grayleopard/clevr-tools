@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -142,7 +143,9 @@ export default function PaycheckCalculator() {
 
   const result = useMemo(() => {
     const grossPer = parseFloat(grossPayPerPeriod) || 0;
-    if (grossPer <= 0) return null;
+    if (grossPer <= 0) {
+      return { ok: false as const, emptyMessage: "Enter your gross pay per period to see your net paycheck." };
+    }
 
     const periods = PAY_PERIODS[payFrequency];
     const grossAnnual = grossPer * periods;
@@ -167,6 +170,7 @@ export default function PaycheckCalculator() {
     const netPay = grossPer - totalDeductions;
 
     return {
+      ok: true as const,
       grossPer,
       perFederal,
       perSS,
@@ -245,7 +249,9 @@ export default function PaycheckCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Net pay */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">

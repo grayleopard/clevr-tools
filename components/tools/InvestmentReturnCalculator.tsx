@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -33,7 +34,9 @@ export default function InvestmentReturnCalculator() {
     const PMT = parseFloat(monthlyContribution) || 0;
     const rate = parseFloat(annualReturn) || 0;
     const yrs = parseInt(years) || 0;
-    if (yrs <= 0) return null;
+    if (yrs <= 0) {
+      return { ok: false as const, emptyMessage: "Enter the number of years to project your investment growth." };
+    }
 
     const r = rate / 100 / 12;
     let balance = P;
@@ -59,7 +62,7 @@ export default function InvestmentReturnCalculator() {
     const totalContributions = P + PMT * yrs * 12;
     const totalEarnings = balance - totalContributions;
 
-    return { finalBalance: balance, totalContributions, totalEarnings, yearData };
+    return { ok: true as const, finalBalance: balance, totalContributions, totalEarnings, yearData };
   }, [initialInvestment, monthlyContribution, annualReturn, years]);
 
   return (
@@ -110,7 +113,9 @@ export default function InvestmentReturnCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Results */}
           <div className="grid grid-cols-3 gap-2">

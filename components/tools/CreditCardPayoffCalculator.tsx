@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -13,11 +14,25 @@ function fmt(n: number): string {
   });
 }
 
-function calcPayoff(balance: number, apr: number, monthlyPayment: number) {
-  if (balance <= 0 || monthlyPayment <= 0) return null;
+type PayoffResult =
+  | { ok: true; months: number; totalInterest: number; totalPaid: number }
+  | { ok: false; emptyMessage: string };
+
+function calcPayoff(balance: number, apr: number, monthlyPayment: number): PayoffResult {
+  if (balance <= 0 || monthlyPayment <= 0) {
+    return { ok: false, emptyMessage: "Enter your balance and monthly payment to see your payoff timeline." };
+  }
   const monthlyRate = apr / 100 / 12;
   const minInterest = balance * monthlyRate;
-  if (monthlyPayment <= minInterest) return null; // will never pay off
+  if (monthlyPayment <= minInterest) {
+    // Genuinely helpful, not just a complaint: tell them the payment that
+    // would actually start reducing the balance.
+    const minToProgress = Math.ceil(minInterest + 1);
+    return {
+      ok: false,
+      emptyMessage: `At ${fmt(monthlyPayment)}/month you're only covering interest — the balance will never go down. Pay at least ${fmt(minToProgress)}/month to start making progress.`,
+    };
+  }
 
   let remaining = balance;
   let totalInterest = 0;
@@ -33,6 +48,7 @@ function calcPayoff(balance: number, apr: number, monthlyPayment: number) {
   }
 
   return {
+    ok: true,
     months,
     totalInterest,
     totalPaid: balance + totalInterest,
@@ -55,15 +71,15 @@ export default function CreditCardPayoffCalculator() {
     const bal = parseFloat(balance) || 0;
     const rate = parseFloat(apr) || 0;
     const pmt = parseFloat(monthlyPayment) || 0;
-    if (!result) return [];
+    if (!result.ok) return [];
 
     return [25, 50, 100].map((extra) => {
       const res = calcPayoff(bal, rate, pmt + extra);
       return {
         extra,
         result: res,
-        monthsSaved: res ? result.months - res.months : 0,
-        interestSaved: res ? result.totalInterest - res.totalInterest : 0,
+        monthsSaved: res.ok ? result.months - res.months : 0,
+        interestSaved: res.ok ? result.totalInterest - res.totalInterest : 0,
       };
     });
   }, [balance, apr, monthlyPayment, result]);
@@ -119,7 +135,9 @@ export default function CreditCardPayoffCalculator() {
         </div>
       </div>
 
-      {result ? (
+      {!result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result.ok && (
         <>
           {/* Payoff time */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
@@ -146,7 +164,7 @@ export default function CreditCardPayoffCalculator() {
           </div>
 
           {/* What if you paid more */}
-          {extras.length > 0 && extras[0].result && (
+          {extras.length > 0 && extras[0].result.ok && (
             <div className="rounded-xl border border-border bg-card overflow-hidden">
               <div className="px-4 py-2.5 border-b border-border bg-primary/10">
                 <span className="text-xs font-medium text-foreground">
@@ -164,7 +182,7 @@ export default function CreditCardPayoffCalculator() {
                 </thead>
                 <tbody>
                   {extras.map((e) =>
-                    e.result ? (
+                    e.result.ok ? (
                       <tr key={e.extra} className="border-b border-border last:border-0 even:bg-muted/30">
                         <td className="px-3 py-2 text-foreground">+{fmt(e.extra)}</td>
                         <td className="px-3 py-2 text-right tabular-nums text-foreground">
@@ -182,15 +200,6 @@ export default function CreditCardPayoffCalculator() {
             </div>
           )}
         </>
-      ) : (
-        (parseFloat(balance) || 0) > 0 &&
-        (parseFloat(monthlyPayment) || 0) > 0 && (
-          <div className="text-center rounded-xl border border-border bg-card p-6">
-            <p className="text-sm text-red-500">
-              Monthly payment is too low to cover the interest. Increase your payment to make progress on the balance.
-            </p>
-          </div>
-        )
       )}
 
       <TipJar />

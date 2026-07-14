@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -61,14 +62,16 @@ export default function CompoundInterestCalculator() {
     const rate = parseFloat(annualRate) || 0;
     const yrs = parseInt(years) || 0;
 
-    if (yrs <= 0) return null;
+    if (yrs <= 0) {
+      return { ok: false as const, emptyMessage: "Enter the number of years to project your investment growth." };
+    }
 
     const yearData = simulate(p, pmt, rate, yrs);
     const finalBalance = yearData[yearData.length - 1]?.balance ?? p;
     const totalContributions = p + pmt * yrs * 12;
     const totalInterest = finalBalance - totalContributions;
 
-    return { yearData, finalBalance, totalContributions, totalInterest };
+    return { ok: true as const, yearData, finalBalance, totalContributions, totalInterest };
   }, [principal, monthlyContribution, annualRate, years]);
 
   // SVG chart
@@ -76,7 +79,7 @@ export default function CompoundInterestCalculator() {
   const chartWidth = 600;
 
   const chartData = useMemo(() => {
-    if (!result || result.yearData.length === 0) return null;
+    if (!result || !result.ok || result.yearData.length === 0) return null;
 
     const p = parseFloat(principal) || 0;
     const pmt = parseFloat(monthlyContribution) || 0;
@@ -154,7 +157,9 @@ export default function CompoundInterestCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Results */}
           <div className="grid grid-cols-3 gap-2">

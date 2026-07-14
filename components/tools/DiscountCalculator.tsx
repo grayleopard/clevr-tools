@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 const DISCOUNT_PRESETS = [10, 15, 20, 25, 30, 50, 75];
 
@@ -25,7 +26,9 @@ export default function DiscountCalculator() {
   const normalResult = useMemo(() => {
     const orig = parseFloat(original) || 0;
     const disc = parseFloat(discount) || 0;
-    if (orig <= 0 || disc <= 0) return null;
+    if (orig <= 0 || disc <= 0) {
+      return { ok: false as const, emptyMessage: "Enter an original price and discount to see the sale price." };
+    }
 
     const saleAmt = orig * (1 - disc / 100);
     const savings = orig - saleAmt;
@@ -46,6 +49,7 @@ export default function DiscountCalculator() {
     }
 
     return {
+      ok: true as const,
       salePrice: saleAmt,
       savings,
       doubleResult,
@@ -56,10 +60,16 @@ export default function DiscountCalculator() {
     if (!reverseMode) return null;
     const orig = parseFloat(original) || 0;
     const sale = parseFloat(salePrice) || 0;
-    if (orig <= 0 || sale <= 0 || sale >= orig) return null;
+    if (orig <= 0 || sale <= 0) {
+      return { ok: false as const, emptyMessage: "Enter the original and sale price to find the discount percentage." };
+    }
+    if (sale >= orig) {
+      return { ok: false as const, emptyMessage: "The sale price isn't lower than the original price, so there's no discount to calculate." };
+    }
 
     const discountPct = ((orig - sale) / orig) * 100;
     return {
+      ok: true as const,
       discountPercent: Math.round(discountPct * 100) / 100,
       savings: orig - sale,
     };
@@ -169,7 +179,9 @@ export default function DiscountCalculator() {
           )}
 
           {/* Normal results */}
-          {normalResult && (
+          {normalResult && !normalResult.ok && <CalculatorEmptyState message={normalResult.emptyMessage} />}
+
+          {normalResult?.ok && (
             <div className="rounded-xl border border-border bg-card p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">You save</span>
@@ -238,7 +250,9 @@ export default function DiscountCalculator() {
             />
           </div>
 
-          {reverseResult && (
+          {reverseResult && !reverseResult.ok && <CalculatorEmptyState message={reverseResult.emptyMessage} />}
+
+          {reverseResult?.ok && (
             <div className="rounded-xl border border-border bg-card p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">

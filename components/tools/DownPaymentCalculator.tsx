@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
+import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -25,7 +26,9 @@ export default function DownPaymentCalculator() {
     const price = parseFloat(homePrice) || 0;
     const current = parseFloat(currentSavings) || 0;
     const monthly = parseFloat(monthlySavings) || 0;
-    if (price <= 0) return null;
+    if (price <= 0) {
+      return { ok: false as const, emptyMessage: "Enter a home price to see your down payment goal." };
+    }
 
     const goal = price * downPaymentPercent / 100;
     const remaining = Math.max(0, goal - current);
@@ -41,7 +44,7 @@ export default function DownPaymentCalculator() {
       return { percent: pct, amount: dpAmount, remaining: rem, months, loanAmount, needsPMI };
     });
 
-    return { goal, remaining, monthsNeeded, comparison, loanAmount: price - goal };
+    return { ok: true as const, goal, remaining, monthsNeeded, comparison, loanAmount: price - goal };
   }, [homePrice, downPaymentPercent, currentSavings, monthlySavings]);
 
   const formatMonths = (m: number) => {
@@ -108,7 +111,9 @@ export default function DownPaymentCalculator() {
         </div>
       </div>
 
-      {result && (
+      {result && !result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {result?.ok && (
         <>
           {/* Goal */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
