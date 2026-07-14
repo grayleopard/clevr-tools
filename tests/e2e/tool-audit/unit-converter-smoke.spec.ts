@@ -1,0 +1,54 @@
+import { expect, test } from "@playwright/test";
+import { ALL_TOOLS } from "./registry";
+import { UNIT_CONVERTER_SLUGS } from "./fixtures";
+import { locatorNearLabel } from "./helpers";
+
+// All 32 unit-converter tools (the 17 generic /calc/convert/* pages, the 14
+// single-pair shortcuts like cm-to-inches, and the standalone /calc/unit-
+// converter) render one of two components (UnitConverterPage or
+// UnitConverter) that both share the same From/To numeric-input shape. One
+// generic driver covers the whole family instead of 32 near-identical
+// fixture entries.
+
+const UNIT_CONVERTER_TOOLS = ALL_TOOLS.filter((t) => UNIT_CONVERTER_SLUGS.has(t.slug));
+
+test.describe("unit converter family — generic From/To smoke", () => {
+  test.describe.configure({ mode: "parallel" });
+
+  test("registry has all 32 expected unit-converter slugs", () => {
+    const found = new Set(UNIT_CONVERTER_TOOLS.map((t) => t.slug));
+    const missing = [...UNIT_CONVERTER_SLUGS].filter((s) => !found.has(s));
+    expect(missing, `expected unit-converter slugs missing from lib/tools.ts: ${missing.join(", ")}`).toEqual([]);
+  });
+
+  for (const tool of UNIT_CONVERTER_TOOLS) {
+    test(`${tool.route} converts a value`, async ({ page }) => {
+      await page.goto(tool.route, { waitUntil: "networkidle" });
+
+      // "From"/"To" labels in this app aren't programmatically associated with
+      // their inputs (no htmlFor/id) — see the accessibility finding in the
+      // audit report. locatorNearLabel walks the DOM instead of the a11y tree,
+      // and must be told to skip the unit <select> that sits between the
+      // label and the actual number input.
+      const fromInput = locatorNearLabel(page, "From", { tag: "input" });
+      const toInput = locatorNearLabel(page, "To", { tag: "input" });
+      await expect(fromInput, `no "From" input on ${tool.route}`).toBeVisible();
+      await expect(toInput, `no "To" input on ${tool.route}`).toBeVisible();
+
+      // Baseline: default value (usually "1") should already produce a
+      // non-empty, finite "To" value — proves the tool isn't dead on load.
+      const initialTo = await toInput.inputValue();
+      expect(initialTo.trim().length, `"To" field empty on load at ${tool.route}`).toBeGreaterThan(0);
+      expect(Number.isFinite(Number(initialTo.replace(/,/g, ""))), `"To" field not numeric on load at ${tool.route}: "${initialTo}"`).toBe(true);
+
+      // Change "From" and confirm "To" updates to a different, still-finite value.
+      await fromInput.fill("10");
+      await expect
+        .poll(async () => toInput.inputValue(), { timeout: 5000 })
+        .not.toBe(initialTo);
+
+      const updatedTo = await toInput.inputValue();
+      expect(Number.isFinite(Number(updatedTo.replace(/,/g, ""))), `"To" field not numeric after edit at ${tool.route}: "${updatedTo}"`).toBe(true);
+    });
+  }
+});
