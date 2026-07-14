@@ -84,7 +84,23 @@ export default function ImageCropper() {
     reader.onload = () => {
       setImgSrc(reader.result as string);
     };
+    reader.onerror = () => {
+      console.error(`Failed to read file: ${file.name}`);
+      setFileName("");
+      setFileType("");
+      setFileSize(0);
+      addToast("Couldn't read that file — it may be corrupt or an unsupported format. Try a different file.", "error");
+    };
     reader.readAsDataURL(file);
+  }, []);
+
+  const handleImageError = useCallback(() => {
+    console.error("Failed to decode image data");
+    setImgSrc("");
+    setFileName("");
+    setFileType("");
+    setFileSize(0);
+    addToast("Couldn't read that file — it may be corrupt or an unsupported format. Try a different file.", "error");
   }, []);
 
   useAutoLoadFile(handleFiles);
@@ -268,6 +284,7 @@ export default function ImageCropper() {
                 src={imgSrc}
                 alt="Crop source"
                 onLoad={onImageLoad}
+                onError={handleImageError}
                 className="max-h-[500px] w-auto"
               />
             </ReactCrop>

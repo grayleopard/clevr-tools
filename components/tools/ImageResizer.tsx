@@ -88,6 +88,27 @@ export default function ImageResizer() {
   const handleFiles = useCallback((files: File[]) => {
     const loaded: UploadedImage[] = [];
     let remaining = files.length;
+    let failed = 0;
+
+    const finalize = () => {
+      if (remaining > 0) return;
+      if (failed > 0) {
+        addToast(
+          loaded.length === 0
+            ? "Couldn't read that file — it may be corrupt or an unsupported format. Try a different file."
+            : `Couldn't read ${failed} of ${files.length} files — they may be corrupt or an unsupported format.`,
+          "error"
+        );
+      }
+      if (loaded.length === 0) return;
+
+      setImages(loaded);
+      setResults([]);
+      const first = loaded[0];
+      setTargetWidth(first.width);
+      setTargetHeight(first.height);
+      aspectRatioRef.current = first.width / first.height;
+    };
 
     files.forEach((file) => {
       const url = URL.createObjectURL(file);
@@ -95,15 +116,14 @@ export default function ImageResizer() {
       image.onload = () => {
         loaded.push({ file, url, width: image.naturalWidth, height: image.naturalHeight });
         remaining--;
-
-        if (remaining === 0) {
-          setImages(loaded);
-          setResults([]);
-          const first = loaded[0];
-          setTargetWidth(first.width);
-          setTargetHeight(first.height);
-          aspectRatioRef.current = first.width / first.height;
-        }
+        finalize();
+      };
+      image.onerror = () => {
+        console.error(`Failed to load image: ${file.name}`);
+        URL.revokeObjectURL(url);
+        failed++;
+        remaining--;
+        finalize();
       };
       image.src = url;
     });
