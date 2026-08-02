@@ -295,17 +295,17 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "Can I compress JPG and PNG files?",
       answer:
-        "Yes. Common image formats are supported in this free online tool that runs in your browser and keeps files private.",
+        "Yes. The compressor accepts JPG, JPEG, PNG, and WebP images and processes them in your browser.",
     },
     {
       question: "Will compression reduce image quality?",
       answer:
-        "You can choose settings to balance size and quality, and this free online process in your browser remains private.",
+        "Lossy compression can remove image detail. Adjust the quality setting, compare the preview with the original, and keep your source file.",
     },
     {
       question: "Can I compress multiple images in one session?",
       answer:
-        "Yes. Batch workflows are supported, and the free online compression runs in your browser with private handling.",
+        "Yes. You can select multiple supported images, adjust their settings, and download the processed results.",
     },
     {
       question: "Do I need to install an app for image compression?",
@@ -2845,5 +2845,14 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
 };
 
 export function getToolFaqs(slug: string): FaqItem[] {
-  return toolFaqsBySlug[slug] ?? [];
+  if (slug !== "image-compressor") return [];
+
+  const verifiedQuestions = new Set([
+    "Can I compress JPG and PNG files?",
+    "Will compression reduce image quality?",
+    "Can I compress multiple images in one session?",
+  ]);
+  return (toolFaqsBySlug[slug] ?? []).filter((item) =>
+    verifiedQuestions.has(item.question)
+  );
 }

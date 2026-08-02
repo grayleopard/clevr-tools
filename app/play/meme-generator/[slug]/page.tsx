@@ -169,93 +169,89 @@ export default async function MemeTemplatePage({
   const showDebugRegions = resolvedSearchParams.memeDebug === "1";
 
   return (
-    <>
-      <FaqSchema items={faqItems} />
-      <div className="flex min-h-screen flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <div className="bg-muted/20">
-            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-              <header className="mb-8 max-w-3xl">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
-                  <Zap className="h-[14px] w-[14px]" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
-                    PLAY
-                  </span>
-                </div>
-                <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-4xl">
-                  {template.name} Meme Maker
-                </h1>
-                {description ? (
-                  <p className="text-base text-muted-foreground">
-                    {description}
-                  </p>
-                ) : null}
-              </header>
-
-              <ToolPageLayout
-                categoryName="Play"
-                categoryHref="/play"
-                relatedTools={[
-                  { name: "All meme templates", href: "/play/meme-generator" },
-                  { name: "Numble", href: "/play/numble" },
-                  ...related.slice(0, 3).map((item) => ({
-                    name: item.name,
-                    href: `/play/meme-generator/${item.id}`,
-                  })),
-                ]}
-                settingsTitle="Export"
-                settingsPanel={
-                  <div className="text-sm leading-7 text-muted-foreground">
-                    <p>Templates export as PNG files at the current meme resolution.</p>
-                  </div>
-                }
-                privacyContext="quiet"
-              >
-                <MemeEditor
-                  initialTemplate={template}
-                  showDebugRegions={showDebugRegions}
-                />
-              </ToolPageLayout>
-            </div>
-          </div>
-
-          {related.length > 0 && (
-            <section className="border-t border-border bg-muted/20">
-              <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-                <h2 className="mb-6 text-xl font-semibold tracking-tight text-foreground">
-                  More meme templates
-                </h2>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  {related.map((t) => (
-                    <Link
-                      key={t.id}
-                      href={`/play/meme-generator/${t.id}`}
-                      className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                        <Image
-                          src={t.src}
-                          alt={t.name}
-                          fill
-                          sizes="(max-width: 640px) 50vw, 33vw"
-                          className="object-cover transition duration-300 group-hover:scale-[1.02]"
-                        />
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-3 pb-3 pt-8 text-white">
-                          <p className="text-sm font-semibold leading-tight">
-                            {t.name}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex-1">
+        <div className="bg-muted/20">
+          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+            <header className="mb-8 max-w-3xl">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
+                <Zap className="h-[14px] w-[14px]" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                  PLAY
+                </span>
               </div>
-            </section>
-          )}
-        </main>
-        <Footer />
-      </div>
-    </>
+              <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-4xl">
+                {template.name} Meme Maker
+              </h1>
+              {description ? (
+                <p className="text-base text-muted-foreground">{description}</p>
+              ) : null}
+            </header>
+
+            <ToolPageLayout
+              categoryName="Play"
+              categoryHref="/play"
+              relatedTools={[
+                { name: "All meme templates", href: "/play/meme-generator" },
+                { name: "Numble", href: "/play/numble" },
+                ...related.slice(0, 3).map((item) => ({
+                  name: item.name,
+                  href: `/play/meme-generator/${item.id}`,
+                })),
+              ]}
+              settingsTitle="Export"
+              settingsPanel={
+                <div className="text-sm leading-7 text-muted-foreground">
+                  <p>Templates export as PNG files at the current meme resolution.</p>
+                </div>
+              }
+              privacyContext="quiet"
+            >
+              <MemeEditor
+                initialTemplate={template}
+                showDebugRegions={showDebugRegions}
+              />
+            </ToolPageLayout>
+            <FaqSchema items={faqItems} />
+          </div>
+        </div>
+
+        {related.length > 0 && (
+          <section className="border-t border-border bg-muted/20">
+            <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+              <h2 className="mb-6 text-xl font-semibold tracking-tight text-foreground">
+                More meme templates
+              </h2>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {related.map((t) => (
+                  <Link
+                    key={t.id}
+                    href={`/play/meme-generator/${t.id}`}
+                    className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                      <Image
+                        src={t.src}
+                        alt={t.name}
+                        fill
+                        sizes="(max-width: 640px) 50vw, 33vw"
+                        className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-3 pb-3 pt-8 text-white">
+                        <p className="text-sm font-semibold leading-tight">
+                          {t.name}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+      <Footer />
+    </div>
   );
 }

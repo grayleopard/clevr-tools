@@ -1,7 +1,6 @@
-export interface FaqItem {
-  question: string;
-  answer: string;
-}
+import FaqSection, { type FaqItem } from "@/components/seo/FaqSection";
+
+export type { FaqItem } from "@/components/seo/FaqSection";
 
 interface FaqSchemaProps {
   items: FaqItem[];
@@ -24,11 +23,14 @@ export default function FaqSchema({ items }: FaqSchemaProps) {
   };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
-      }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <FaqSection items={items} />
+    </>
   );
 }

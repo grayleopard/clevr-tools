@@ -5,10 +5,28 @@ import { generateDailyPuzzle, getUTCDateString } from "@/lib/numble";
 import CategoryPageScaffold from "@/components/category/CategoryPageScaffold";
 import DailyChallengeBanner from "@/components/numble/DailyChallengeBanner";
 
+const title = "Daily Games & Puzzles | clevr.tools";
+const description =
+  "Free daily games, brain puzzles, and creative tools. Play Numble, create a meme, and explore more browser-based activities.";
+const canonicalUrl = "https://www.clevr.tools/play";
+
 export const metadata: Metadata = {
-  title: "Daily Games & Puzzles | clevr.tools",
-  description:
-    "Free daily games, brain puzzles, and creative tools. Numble daily number puzzle, Meme Generator, and more.",
+  title,
+  description,
+  alternates: { canonical: canonicalUrl },
+  openGraph: {
+    title,
+    description,
+    url: canonicalUrl,
+    siteName: "clevr.tools",
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function PlayPage() {

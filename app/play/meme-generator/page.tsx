@@ -58,51 +58,49 @@ export default async function MemeGeneratorPage({
   const showDebugRegions = resolvedSearchParams.memeDebug === "1";
 
   return (
-    <>
-      <FaqSchema items={faqItems} />
-      <div className="flex min-h-screen flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <div className="bg-muted/20">
-            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
-              <header className="mb-8 max-w-3xl">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
-                  <Zap className="h-[14px] w-[14px]" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
-                    PLAY
-                  </span>
-                </div>
-                <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-4xl">
-                  Meme Generator
-                </h1>
-                <p className="text-base text-muted-foreground">
-                  Create memes instantly with built-in templates or your own image. Edit text
-                  live on a canvas preview and download a PNG without leaving the browser.
-                </p>
-              </header>
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex-1">
+        <div className="bg-muted/20">
+          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+            <header className="mb-8 max-w-3xl">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
+                <Zap className="h-[14px] w-[14px]" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
+                  PLAY
+                </span>
+              </div>
+              <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-4xl">
+                Meme Generator
+              </h1>
+              <p className="text-base text-muted-foreground">
+                Create memes instantly with built-in templates or your own image. Edit text live
+                on a canvas preview and download a PNG without leaving the browser.
+              </p>
+            </header>
 
-              <ToolPageLayout
-                categoryName="Play"
-                categoryHref="/play"
-                relatedTools={[
-                  { name: "Numble", href: "/play/numble" },
-                  { name: "Browse templates", href: "/play/meme-generator" },
-                ]}
-                settingsTitle="Export"
-                settingsPanel={
-                  <div className="text-sm leading-7 text-muted-foreground">
-                    <p>Memes download as PNG files directly from the browser.</p>
-                  </div>
-                }
-                privacyContext="quiet"
-              >
-                <MemeEditor showDebugRegions={showDebugRegions} />
-              </ToolPageLayout>
-            </div>
+            <ToolPageLayout
+              categoryName="Play"
+              categoryHref="/play"
+              relatedTools={[
+                { name: "Numble", href: "/play/numble" },
+                { name: "Browse templates", href: "/play/meme-generator" },
+              ]}
+              settingsTitle="Export"
+              settingsPanel={
+                <div className="text-sm leading-7 text-muted-foreground">
+                  <p>Memes download as PNG files directly from the browser.</p>
+                </div>
+              }
+              privacyContext="quiet"
+            >
+              <MemeEditor showDebugRegions={showDebugRegions} />
+            </ToolPageLayout>
+            <FaqSchema items={faqItems} />
           </div>
-        </main>
-        <Footer />
-      </div>
-    </>
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 }

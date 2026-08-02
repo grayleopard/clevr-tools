@@ -7,6 +7,17 @@ import Navbar from "@/components/layout/Navbar";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { tools } from "@/lib/tools";
 
+const SITE_URL = "https://www.clevr.tools";
+const SITE_ORGANIZATION = {
+  "@type": "Organization",
+  name: "clevr.tools",
+  url: SITE_URL,
+} as const;
+
+function getCanonicalUrl(slug: string): string {
+  return `${SITE_URL}/blog/${slug}`;
+}
+
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
 }
@@ -21,11 +32,12 @@ export async function generateMetadata({
   if (!post) return {};
 
   const title = `${post.title} | clevr.tools`;
-  const url = `https://www.clevr.tools/blog/${slug}`;
+  const url = getCanonicalUrl(slug);
 
   return {
     title,
     description: post.description,
+    authors: [{ name: "clevr.tools", url: SITE_URL }],
     alternates: { canonical: url },
     openGraph: {
       title,
@@ -44,11 +56,15 @@ export async function generateMetadata({
 }
 
 function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", {
+  const timestamp = Date.parse(`${dateString}T00:00:00Z`);
+  if (!Number.isFinite(timestamp)) return dateString;
+
+  return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  });
+    timeZone: "UTC",
+  }).format(timestamp);
 }
 
 function getRelatedToolData(routes: string[]) {
@@ -70,9 +86,30 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const relatedTools = getRelatedToolData(post.relatedTools);
+  const canonicalUrl = getCanonicalUrl(post.slug);
+  const blogPostingJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    url: canonicalUrl,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonicalUrl,
+    },
+    author: SITE_ORGANIZATION,
+    publisher: SITE_ORGANIZATION,
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogPostingJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Navbar />
       <main className="flex-1">
         <section className="bg-muted/20">
@@ -90,7 +127,12 @@ export default async function BlogPostPage({
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               {post.title}
             </h1>
+            <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
+              {post.description}
+            </p>
             <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <span>By clevr.tools</span>
+              <span aria-hidden="true">&middot;</span>
               <time dateTime={post.date}>{formatDate(post.date)}</time>
               <span aria-hidden="true">&middot;</span>
               <span>{post.readTime} min read</span>
@@ -114,7 +156,7 @@ export default async function BlogPostPage({
         </section>
 
         <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
-          <div className="prose prose-zinc dark:prose-invert max-w-none prose-headings:tracking-tight prose-p:leading-[1.7] prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-pre:rounded-lg prose-pre:bg-muted prose-pre:p-4">
+          <div className="prose prose-zinc max-w-none overflow-x-auto overscroll-x-contain prose-headings:max-w-3xl prose-headings:break-words prose-headings:tracking-tight prose-p:max-w-3xl prose-p:break-words prose-p:leading-[1.7] prose-ul:max-w-3xl prose-ol:max-w-3xl prose-blockquote:max-w-3xl prose-a:break-words prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-pre:max-w-3xl prose-pre:rounded-lg prose-pre:bg-muted prose-pre:p-4 prose-table:min-w-[36rem] prose-table:max-w-4xl dark:prose-invert">
             <MDXRemote source={post.content} />
           </div>
         </article>
