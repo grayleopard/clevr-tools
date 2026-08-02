@@ -134,26 +134,10 @@ test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => 
   await expect(overlay).toBeVisible({ timeout: 20_000 });
   await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
 
-  const uprightToggle = page.getByRole("checkbox", { name: /View upright/i });
-  await expect(uprightToggle).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: /View upright/i })).toHaveCount(0);
   await expect(page.getByText(/page\.rotate 90°/i)).toBeVisible();
-  await expect(page.getByText(/sourceRotation 90°/i)).toBeVisible();
-  await expect(page.getByText(/viewUpright true/i)).toBeVisible();
-  await expect(page.getByText(/viewportRotation 0°/i)).toBeVisible();
-
-  await uprightToggle.uncheck();
-  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
-  await expect(page.getByText(/viewUpright false/i)).toBeVisible();
-  await expect(page.getByText(/viewportRotation 90°/i)).toBeVisible();
-
-  await uprightToggle.check();
-  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
-  await uprightToggle.uncheck();
-  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
-  await uprightToggle.check();
-  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
-  await expect(page.getByText(/viewUpright true/i)).toBeVisible();
-  await expect(page.getByText(/viewportRotation 0°/i)).toBeVisible();
+  await expect(page.getByText(/totalRotation 270°/i)).toBeVisible();
+  await expect(page.getByText(/userRotation 0°/i)).toBeVisible();
   await expect
     .poll(async () => {
       const box = await overlay.boundingBox();
