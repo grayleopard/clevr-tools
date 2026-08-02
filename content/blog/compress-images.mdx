@@ -1,34 +1,36 @@
 ---
-title: "How to Compress Images Without Losing Quality (Free, No Signup)"
+title: "How to Compress Images and Check the Result"
 slug: "compress-images"
-description: "Compress JPG, PNG, and WebP images up to 90% smaller without visible quality loss — free, browser-based, no signup required."
+description: "A practical workflow for compressing JPG, PNG, and WebP images, comparing output quality, and choosing settings for the destination."
 date: "2026-03-21"
 author: "clevr.tools"
 tags: ["compression", "images", "tutorial"]
-relatedTools: ["/compress/image", "/convert/png-to-pdf", "/convert/jpg-to-pdf"]
+relatedTools: ["/compress/image", "/tools/resize-image", "/convert/png-to-pdf", "/convert/jpg-to-pdf"]
 ---
 
-You need to email a batch of photos, upload product images to a website, or attach screenshots to a support ticket — but the files are too large. Here's how to shrink them down without making them look worse.
+You need to email a batch of photos, upload product images to a website, or attach screenshots to a support ticket—but the files are too large. Compression can help, but the useful setting depends on the image and where it will be used.
 
 ## How to compress images
 
 1. Open the [Image Compressor](/compress/image)
 2. Drop your images into the upload area (or click to browse). Accepts JPG, PNG, and WebP.
-3. Adjust the quality slider — 80% is the sweet spot for most images
+3. Start with a high-quality setting, then lower it in small steps
 4. Preview the compressed result and compare file sizes
 5. Download your compressed images
 
 Everything runs in your browser. Your images never leave your device.
 
-## How much can you save?
+If the image is much wider or taller than you need, use the [Image Resizer](/tools/resize-image) first. Reducing pixel dimensions before compression avoids spending bytes on detail that will never be displayed.
 
-A typical 4 MB smartphone photo compresses to under 500 KB at 80% quality with no visible difference to the human eye. Screenshots with flat colors compress even more aggressively — a 2 MB PNG can drop to 200 KB.
+## How much will the file shrink?
 
-The savings depend on the image type:
+There is no trustworthy fixed percentage. Results vary with dimensions, format, existing compression, transparency, and image detail. A file that is already optimized may change very little; an oversized camera photo may have much more room to shrink.
 
-- **Photos** (complex scenes, gradients): expect 60-80% reduction at quality 80
-- **Screenshots** (flat UI, text, solid colors): expect 80-90% reduction
-- **Graphics with transparency** (logos, icons as PNG): expect 40-60% reduction
+Use the before-and-after size shown by the compressor, then inspect the output at the size people will actually view it. Pay particular attention to gradients, small text, faces, and sharp edges.
+
+- **Photos** can tolerate some lossy compression, but fine texture may disappear first.
+- **Screenshots and text** expose ringing or blur around sharp edges.
+- **Transparent graphics** need an output format that preserves transparency.
 
 ## JPG vs PNG: which to compress?
 
@@ -36,11 +38,11 @@ JPG is already a lossy format — it was designed for photos and handles compres
 
 PNG is lossless by design. The compressor reduces PNG file size by optimizing the encoding without discarding data. You can be more aggressive with PNG compression without worrying about visual artifacts.
 
-WebP handles both lossy and lossless compression and generally produces smaller files than either JPG or PNG at equivalent quality. If your target platform supports WebP, it's the best format for web images.
+WebP supports both lossy and lossless compression. If your destination accepts it, compare a WebP output with JPG or PNG rather than assuming one format will always be smaller.
 
 ## When does quality loss become visible?
 
-Below 60% quality, you'll start to see artifacts in JPG images — blocky patterns in gradients, smearing around sharp edges, and halos around text. Stay above 70% for anything a human will look at closely. Drop to 50-60% for thumbnails or images that will be displayed small.
+Lower JPG quality settings can introduce block patterns in gradients, smearing around sharp edges, and halos around text. The point where those artifacts become objectionable varies by image, so compare the preview instead of relying on one universal threshold.
 
 For PNG, quality loss isn't a factor — the compression is lossless. File size reduction comes from smarter encoding, not discarding pixels.
 
@@ -54,8 +56,10 @@ Yes. Drop a batch of images into the compressor and they'll all be processed. Do
 
 ### Is 80% quality good enough for a website?
 
-For most web images, 80% is ideal. Google recommends keeping images under 200 KB for page speed. At 80% quality, most photos are well under that threshold with no visible quality loss.
+There is no single ideal percentage or file-size target for every website. Start high, lower the setting gradually, and stop when the image still looks right at its rendered dimensions and meets the destination's actual upload or performance requirement.
 
 ### Should I compress images before converting to PDF?
 
-Yes. If you're assembling images into a PDF using the [PNG to PDF converter](/convert/png-to-pdf) or [JPG to PDF converter](/convert/jpg-to-pdf), compressing first will produce a much smaller PDF that's easier to email and faster to open.
+It can help. If you're assembling images into a PDF using the [PNG to PDF converter](/convert/png-to-pdf) or [JPG to PDF converter](/convert/jpg-to-pdf), test compressed copies first and compare the finished PDF with the destination's size requirement.
+
+For the full resize, format, and compression sequence, see [how to reduce an image file size](/blog/reduce-image-file-size).

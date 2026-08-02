@@ -5,7 +5,7 @@ description: "Remove unwanted line breaks from text copied from PDFs, emails, or
 date: "2026-03-21"
 author: "clevr.tools"
 tags: ["text", "formatting", "tutorial"]
-relatedTools: ["/text/remove-line-breaks", "/text/word-counter", "/text/case-converter", "/text/find-and-replace"]
+relatedTools: ["/text/remove-line-breaks", "/text/word-counter", "/text/case-converter", "/text/find-and-replace", "/dev/json-formatter"]
 ---
 
 You've copied text from a PDF, an email, or a website, and it's full of hard line breaks in the middle of sentences. Every line ends prematurely. Pasting it into a document or form looks terrible. Here's how to fix it instantly.
@@ -45,13 +45,15 @@ After removing line breaks, you might want to:
 
 All of these run in the browser — paste, transform, copy, move on.
 
+If the copied content is JSON, do not remove its line breaks blindly. JSON allows whitespace, and a missing comma or quote is a different problem. Use the [JSON Formatter](/dev/json-formatter) to validate and reformat structured data instead.
+
 ### Will this remove my paragraph breaks too?
 
 Only if you choose "Remove all." If you choose "Remove extra," paragraph breaks are preserved — only the unwanted mid-sentence breaks are removed.
 
 ### Can I remove line breaks from a whole document?
 
-Yes. Paste the entire document text into the tool. There's no character limit. The processing happens instantly in your browser regardless of text length.
+You can paste a document into the tool, but the practical amount of text depends on your browser and available device memory. For very large documents, work in sections and verify the result before replacing the source.
 
 ### Why does text copied from PDFs have so many line breaks?
 

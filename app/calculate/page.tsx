@@ -20,6 +20,10 @@ export const metadata: Metadata = {
 };
 
 export default function CalculatePage() {
+  const featuredTools = category.featuredSlugs
+    .map((slug) => getToolBySlug(slug))
+    .filter((tool): tool is Tool => tool !== undefined && tool.live !== false);
+
   return (
     <CategoryPageScaffold
       categoryName={category.label}
@@ -28,6 +32,9 @@ export default function CalculatePage() {
       titleLineTwo="Calculators"
       description="Financial calculators, health tools, and everyday math. Precise results, no signup."
       Icon={Calculator}
+      featuredTools={featuredTools}
+      featuredTitle="Featured calculators"
+      showSectionNavigation
       sections={category.subcategories.map((sub) => ({
         title: sub.label,
         columnsClassName: "sm:grid-cols-2 xl:grid-cols-3",

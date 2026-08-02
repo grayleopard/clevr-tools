@@ -32,37 +32,34 @@ export const tools: Tool[] = [
   {
     slug: 'image-compressor',
     name: 'Image Compressor',
-    shortDescription: 'Compress JPG, PNG & WebP images without losing quality.',
+    shortDescription: 'Compress JPG, PNG & WebP images and compare the result.',
     category: 'compress',
     route: '/compress/image',
     acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp'],
     icon: 'ImageDown',
     metaTitle: 'Compress Images Online Free — No Signup | clevr.tools',
     metaDescription:
-      'Compress JPG, PNG, and WebP images online free. Reduce file size up to 90% while keeping quality. No upload to servers — 100% browser-based, instant results.',
+      'Compress JPG, PNG, and WebP images in your browser. Compare output size and appearance, adjust quality, and download the result.',
     seoContent: `
       <h2>When to use this</h2>
       <p>You're about to upload a hero image to your site and it's 4.7 MB straight from the camera. Your email newsletter platform caps images at 1 MB. Shopify is warning you that your product photos are slowing down your store. These are compression moments — you need the same image, just smaller.</p>
-      <p>The other common trigger is platform-specific size limits. WordPress media uploads, Squarespace backgrounds, Etsy listings, LinkedIn posts — they all have ceilings. Rather than guessing, compress to 200–500 KB and you'll clear virtually every platform's requirements without visible quality loss.</p>
-      <p>One important rule: always resize first, compress second. Compressing a 4000×3000 photo and then displaying it at 800×600 wastes most of the work. Resize to the display dimensions, then compress. You'll get dramatically smaller files with better visual results.</p>
+      <p>The other common trigger is a platform-specific upload limit. Check the current requirement at the destination, then compare the compressed file with that limit rather than relying on a generic target.</p>
+      <p>If the source is much larger than its displayed dimensions, resize a copy before the final compression pass. This avoids encoding pixels the destination will not show.</p>
 
       <h2>Good to know</h2>
-      <p><strong>85% quality is the sweet spot.</strong> Below 85%, you start seeing artifacts — banding in gradients, fuzz around text. Above 90%, files barely shrink but you're burning bytes on imperceptible detail. For most web images, 80–85% is where quality and size meet.</p>
-      <p><strong>Diminishing returns above 90%.</strong> Going from 90% to 100% quality roughly doubles file size while producing differences only a pixel-peeping comparison tool would catch. Save the 95–100% range for print-quality originals you'll never serve on the web.</p>
-      <p><strong>WebP output beats JPG.</strong> If your platform supports it (and in 2026, nearly all do), choose WebP output. It produces files 25–35% smaller than JPEG at the same perceived quality. It's the single biggest free win in image optimization.</p>
+      <p><strong>Quality values are encoder-specific.</strong> Start with a high setting, lower it in small steps, and inspect gradients, text, faces, and sharp edges at the intended display size.</p>
+      <p><strong>Results vary by source.</strong> Dimensions, existing compression, detail, transparency, and output format all affect the final size. An already optimized image may change very little.</p>
+      <p><strong>Compare accepted formats.</strong> If the destination supports both WebP and JPG or PNG, export copies and choose the smallest result that preserves the detail you need.</p>
       <p><strong>Compression is lossy and one-way.</strong> Once you compress, the discarded data is gone. Always keep your original files. Compress copies, not sources.</p>
       <p><strong>Everything stays on your device.</strong> No server upload, no account, no tracking. Your images never leave your browser tab.</p>
 
       <h2>Quick Reference</h2>
       <table>
-        <thead><tr><th>Platform</th><th>Recommended Max Size</th><th>Suggested Quality</th></tr></thead>
+        <thead><tr><th>Image type</th><th>Inspect closely</th><th>Possible output</th></tr></thead>
         <tbody>
-          <tr><td>WordPress (media library)</td><td>500 KB</td><td>80–85%</td></tr>
-          <tr><td>Shopify (product images)</td><td>500 KB</td><td>80–85%</td></tr>
-          <tr><td>Email newsletters</td><td>200 KB per image</td><td>75–80%</td></tr>
-          <tr><td>Social media posts</td><td>1 MB</td><td>85%</td></tr>
-          <tr><td>Google Ads display</td><td>150 KB</td><td>70–75%</td></tr>
-          <tr><td>Web hero images</td><td>300–500 KB</td><td>80–85%</td></tr>
+          <tr><td>Photo</td><td>Faces, texture, gradients</td><td>Compare JPG and WebP</td></tr>
+          <tr><td>Screenshot</td><td>Small text and hard edges</td><td>Compare PNG and WebP</td></tr>
+          <tr><td>Transparent graphic</td><td>Edges and alpha blending</td><td>Use a format that preserves transparency</td></tr>
         </tbody>
       </table>
     `,
