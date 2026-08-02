@@ -4,10 +4,12 @@ export interface TocHeading {
 }
 
 export function slugify(text: string): string {
-  return text
+  const slug = text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+
+  return slug || "section";
 }
 
 /** Extracts h2 headings from a seoContent HTML string, server-side, no DOM needed. */
@@ -20,7 +22,7 @@ export function extractHeadings(html: string): TocHeading[] {
     const text = match[1].replace(/<[^>]+>/g, "").trim();
     if (!text) continue;
 
-    let id = slugify(text);
+    const id = slugify(text);
     let unique = id;
     let suffix = 2;
     while (seen.has(unique)) {

@@ -50,8 +50,8 @@ type DropState = "idle" | "hover" | "loaded" | "error";
 
 const stateStyles: Record<DropState, string> = {
   idle: "border-[color:var(--ghost-border)] bg-muted/[0.28] hover:border-primary/40 hover:bg-primary/[0.03]",
-  hover: "border-primary/45 bg-primary/[0.05] scale-[1.005]",
-  loaded: "border-primary/50 bg-primary/[0.05] animate-success-pulse",
+  hover: "border-primary/45 bg-primary/[0.05] scale-[1.005] motion-reduce:transform-none",
+  loaded: "border-primary/50 bg-primary/[0.05] animate-success-pulse motion-reduce:animate-none",
   error: "border-destructive bg-destructive/5",
 };
 
@@ -74,7 +74,11 @@ export default function FileDropZone({
   const [errorMsg, setErrorMsg] = useState("");
   const xrayCtx = usePdfXRayContext();
   const dragCounter = useRef(0);
-  const gridPatternId = useId().replace(/:/g, "");
+  const idStem = useId().replace(/:/g, "");
+  const inputId = `file-input-${idStem}`;
+  const descriptionId = `file-description-${idStem}`;
+  const errorId = `file-error-${idStem}`;
+  const gridPatternId = `file-grid-${idStem}`;
   const hasSelection = loadedFiles.length > 0;
   const showCompact = compact || hasSelection;
 
@@ -165,50 +169,74 @@ export default function FileDropZone({
   const totalSize = loadedFiles.reduce((sum, file) => sum + file.size, 0);
   const compactLabel = multiple ? "Add more files" : "Choose another file";
   const supportsClipboard = typeof onPasteClipboard === "function";
+  const inputDescription = `${subline} Accepted formats: ${formatLabels.join(", ")}.${
+    maxSizeMB ? ` Maximum file size: ${maxSizeMB} MB.` : ""
+  } ${privacyNote}.`;
+  const describedBy = state === "error" && errorMsg
+    ? `${descriptionId} ${errorId}`
+    : descriptionId;
+  const selectionStatus = hasSelection
+    ? multiple && loadedFiles.length > 1
+      ? `${loadedFiles.length} files selected, ${formatBytes(totalSize)} total.`
+      : `${loadedFiles[0]?.name ?? "File"} selected, ${formatBytes(totalSize)}.`
+    : "";
 
   return (
     <div className={`relative ${className}`}>
+      <label htmlFor={inputId} className="sr-only">
+        {multiple ? "Choose files" : "Choose a file"}
+      </label>
       <input
+        id={inputId}
         ref={inputRef}
         type="file"
         accept={accept}
         multiple={multiple}
         className="sr-only"
+        tabIndex={-1}
+        aria-describedby={describedBy}
+        aria-invalid={state === "error" || undefined}
         onChange={handleChange}
       />
+      <p id={descriptionId} className="sr-only">
+        {inputDescription}
+      </p>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {selectionStatus}
+      </p>
 
       {showCompact ? (
         <div className="space-y-2">
-          <div
-            className="flex min-h-14 items-center justify-center gap-3 rounded-[1.15rem] border border-dashed border-[color:var(--ghost-border)] bg-muted/50 px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary cursor-pointer"
+          <button
+            type="button"
+            className="flex min-h-14 w-full min-w-0 items-center justify-center gap-2 rounded-[1.15rem] border border-dashed border-[color:var(--ghost-border)] bg-muted/50 px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             onClick={openPicker}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openPicker())}
             aria-label={compactLabel}
+            aria-describedby={describedBy}
           >
-            <Plus className="h-4 w-4 shrink-0" />
-            <span className="font-medium">{compactLabel}</span>
+            <Plus className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className="shrink-0 font-medium">{compactLabel}</span>
             {hasSelection && (
-              <span className="truncate text-xs text-muted-foreground">
+              <span className="min-w-0 truncate text-left text-xs text-muted-foreground">
                 {multiple && loadedFiles.length > 1
                   ? `${loadedFiles.length} selected · ${formatBytes(totalSize)}`
                   : `${loadedFiles[0]?.name ?? ""} · ${formatBytes(totalSize)}`}
               </span>
             )}
-          </div>
+          </button>
           {state === "error" && errorMsg ? (
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-xs text-destructive">
-              <span className="min-w-0 truncate">{errorMsg}</span>
+            <div
+              id={errorId}
+              role="alert"
+              className="flex items-center justify-between gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-xs text-destructive"
+            >
+              <span className="min-w-0 flex-1 break-words">{errorMsg}</span>
               <button
                 type="button"
-                className="shrink-0 underline"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  clear();
-                }}
+                className="min-h-11 shrink-0 rounded-md px-2 underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
+                onClick={clear}
               >
                 Clear
               </button>
@@ -217,7 +245,7 @@ export default function FileDropZone({
         </div>
       ) : (
         <div
-          className={`group relative min-h-[260px] overflow-hidden rounded-[2rem] border-2 border-dashed p-5 sm:p-8 text-center transition-[border-color,background-color,transform] duration-200 cursor-pointer ${stateStyles[state]}`}
+          className={`group relative min-h-[260px] overflow-hidden rounded-[2rem] border-2 border-dashed p-5 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:p-8 motion-reduce:transition-none ${stateStyles[state]}`}
           onDragEnter={(e) => {
             e.preventDefault();
             if (!e.dataTransfer.types.includes("Files")) return;
@@ -233,14 +261,16 @@ export default function FileDropZone({
             dragCounter.current = 0;
             handleDrop(e);
           }}
-          onClick={openPicker}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openPicker())}
-          aria-label={headline}
         >
+          <button
+            type="button"
+            onClick={openPicker}
+            tabIndex={-1}
+            aria-hidden="true"
+            className="absolute inset-0 z-10 cursor-pointer rounded-[inherit] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+          />
           <div className="pointer-events-none absolute inset-0 opacity-[0.03] text-foreground">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <defs>
                 <pattern id={gridPatternId} width="40" height="40" patternUnits="userSpaceOnUse">
                   <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
@@ -252,46 +282,51 @@ export default function FileDropZone({
           <div className="pointer-events-none absolute inset-x-[18%] top-8 h-20 rounded-full bg-primary/10 blur-3xl" />
 
           {state === "error" ? (
-            <div className="relative z-10 flex flex-col items-center gap-2">
-              <AlertCircle className="h-10 w-10 text-destructive" />
-              <p className="text-sm font-medium text-destructive">{errorMsg}</p>
+            <div
+              id={errorId}
+              role="alert"
+              className="pointer-events-none relative z-20 flex min-h-[218px] flex-col items-center justify-center gap-2"
+            >
+              <AlertCircle className="h-10 w-10 text-destructive" aria-hidden="true" />
+              <p className="max-w-full break-words text-sm font-medium text-destructive">{errorMsg}</p>
               <button
                 type="button"
-                className="text-xs text-muted-foreground underline"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  clear();
-                }}
+                className="pointer-events-auto min-h-11 rounded-md px-3 text-xs text-muted-foreground underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
+                onClick={clear}
               >
                 Try again
               </button>
             </div>
           ) : (
-            <div className="relative z-10 flex flex-col items-center gap-5">
-              <div className={`rounded-full bg-card p-4 shadow-[var(--shadow-sm)] transition-[transform,box-shadow] duration-300 group-hover:scale-110 ${state === "hover" ? "scale-115 shadow-[0_0_24px_var(--primary)/0.15]" : ""}`}>
+            <div className="pointer-events-none relative z-20 flex flex-col items-center gap-5">
+              <div className={`rounded-full bg-card p-4 shadow-[var(--shadow-sm)] transition-[transform,box-shadow] duration-300 group-hover:scale-110 motion-reduce:transform-none motion-reduce:transition-none ${state === "hover" ? "scale-115 shadow-[0_0_24px_var(--primary)/0.15]" : ""}`}>
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                  <Upload className={`h-5 w-5 text-primary transition-transform duration-300 ${state === "hover" ? "-translate-y-0.5" : ""}`} />
+                  <Upload
+                    className={`h-5 w-5 text-primary transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none ${state === "hover" ? "-translate-y-0.5" : ""}`}
+                    aria-hidden="true"
+                  />
                 </span>
               </div>
-              <div className="space-y-2">
-                <p className="text-lg font-semibold tracking-[-0.02em] text-foreground">
+              <div className="min-w-0 max-w-full space-y-2">
+                <p className="break-words text-lg font-semibold tracking-[-0.02em] text-foreground">
                   {state === "hover" ? "Drop it here" : headline}
                 </p>
-                <p className="text-sm leading-7 text-muted-foreground">
+                <p className="break-words text-sm leading-7 text-muted-foreground">
                   {subline}
                 </p>
               </div>
 
-              <div className="flex flex-wrap justify-center gap-3">
+              <div className="pointer-events-auto flex w-full flex-wrap justify-center gap-3 sm:w-auto">
                 <button
                   type="button"
+                  aria-describedby={describedBy}
                   onClick={(event) => {
                     event.stopPropagation();
                     openPicker();
                   }}
-                  className="inline-flex items-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-5 py-3 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98]"
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-5 py-3 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
                 >
-                  <Upload className="h-4 w-4" />
+                  <Upload className="h-4 w-4" aria-hidden="true" />
                   Browse Files
                 </button>
                 {supportsClipboard ? (
@@ -301,9 +336,9 @@ export default function FileDropZone({
                       event.stopPropagation();
                       onPasteClipboard?.();
                     }}
-                    className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-muted/80"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transition-none"
                   >
-                    <ClipboardPaste className="h-4 w-4" />
+                    <ClipboardPaste className="h-4 w-4" aria-hidden="true" />
                     Paste Clipboard
                   </button>
                 ) : null}
@@ -325,9 +360,9 @@ export default function FileDropZone({
                 )}
               </div>
 
-              <p className="flex items-center gap-1.5 text-xs text-muted-foreground/80">
-                <Lock className="h-3 w-3 shrink-0" />
-                {privacyNote}
+              <p className="flex max-w-full items-start justify-center gap-1.5 break-words text-xs leading-5 text-muted-foreground/80">
+                <Lock className="mt-1 h-3 w-3 shrink-0" aria-hidden="true" />
+                <span>{privacyNote}</span>
               </p>
             </div>
           )}

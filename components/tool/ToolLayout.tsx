@@ -66,10 +66,13 @@ function RelatedToolLinkList({
         <Link
           key={relatedTool.slug}
           href={relatedTool.route}
-          className="flex items-center justify-between rounded-[1rem] bg-card/80 px-4 py-3 text-sm text-foreground transition-colors hover:text-primary"
+          className="flex min-h-11 min-w-0 items-center justify-between gap-3 rounded-[1rem] bg-card/80 px-4 py-3 text-sm text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          <span>{relatedTool.name}</span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <span className="min-w-0 break-words">{relatedTool.name}</span>
+          <ChevronRight
+            className="h-4 w-4 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
         </Link>
       ))}
     </div>
@@ -254,30 +257,41 @@ export default function ToolLayout({
         <main className="flex-1">
           <div className="bg-muted/20">
             <div className={`mx-auto ${contentWidth} px-4 py-10 sm:px-6 sm:py-14`}>
-              <nav className="mb-6 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                <Link href="/" className="transition-colors hover:text-primary">
+              <nav
+                aria-label="Breadcrumb"
+                className="mb-6 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-muted-foreground"
+              >
+                <Link
+                  href="/"
+                  className="rounded-sm py-1 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
                   Home
                 </Link>
-                <span>/</span>
-                <Link href={siteCategory.route} className="transition-colors hover:text-primary">
+                <span aria-hidden="true">/</span>
+                <Link
+                  href={siteCategory.route}
+                  className="rounded-sm py-1 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
                   {siteCategory.label}
                 </Link>
-                <span>/</span>
-                <span>{tool.name}</span>
+                <span aria-hidden="true">/</span>
+                <span className="min-w-0 break-words text-foreground" aria-current="page">
+                  {tool.name}
+                </span>
               </nav>
 
               <header className="mb-8 max-w-3xl">
                 <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
-                  <Zap className="h-[14px] w-[14px]" />
+                  <Zap className="h-[14px] w-[14px]" aria-hidden="true" />
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
                     {badgeLabel}
                   </span>
                 </div>
 
-                <h1 className="mb-2 text-3xl font-bold tracking-tight md:text-4xl">
+                <h1 className="mb-2 break-words text-3xl font-bold tracking-tight md:text-4xl">
                   {tool.name}
                 </h1>
-                <p className="text-base text-muted-foreground">
+                <p className="break-words text-base leading-7 text-muted-foreground">
                   {tool.shortDescription}
                 </p>
               </header>
@@ -306,11 +320,13 @@ export default function ToolLayout({
 
           {tool.seoContent ? (
             <div className="border-t border-border bg-muted/10">
-              <div
-                data-toc-scope
-                className={`mx-auto ${contentWidth} max-w-none px-4 py-10 prose prose-zinc prose-sm dark:prose-invert sm:px-6`}
-                dangerouslySetInnerHTML={{ __html: seoContentWithIds }}
-              />
+              <div className={`mx-auto ${contentWidth} px-4 py-10 sm:px-6`}>
+                <div
+                  data-toc-scope
+                  className="prose prose-zinc prose-sm max-w-none overflow-x-auto overscroll-x-contain prose-headings:max-w-3xl prose-headings:break-words prose-p:max-w-3xl prose-p:break-words prose-ul:max-w-3xl prose-ol:max-w-3xl prose-blockquote:max-w-3xl prose-pre:max-w-3xl prose-a:break-words prose-table:min-w-[36rem] prose-table:max-w-5xl dark:prose-invert [&_h2]:scroll-mt-24"
+                  dangerouslySetInnerHTML={{ __html: seoContentWithIds }}
+                />
+              </div>
             </div>
           ) : null}
 
