@@ -1,7 +1,9 @@
 # P2 implementation and flagship-readiness report
 
-Date: 2026-08-02  
-Branch: `codex/p2-flagship-readiness`  
+Date: 2026-08-02
+
+Branch: `codex/p2-flagship-readiness`
+
 Accepted foundation: `aa5d1b617825faade573e3cf11d06ca3b98e30e8`
 
 ## Release verdict

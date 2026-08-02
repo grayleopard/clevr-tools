@@ -1,6 +1,7 @@
 # P2 independent adversarial review
 
-Date: 2026-08-02  
+Date: 2026-08-02
+
 Candidate: `codex/p2-flagship-readiness` (working tree based on `aa5d1b617825faade573e3cf11d06ca3b98e30e8`)
 
 ## Verdict
