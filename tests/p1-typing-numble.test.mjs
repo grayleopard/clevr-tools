@@ -213,6 +213,7 @@ test("typing results no longer expose synthetic consistency", () => {
 test("typing test preserves Tab focus navigation and uses a non-trapping restart shortcut", () => {
   const source = readSource("components/tools/TypingTest.tsx");
   assert.doesNotMatch(source, /if \(e\.key === "Tab"\)[\s\S]{0,120}preventDefault/u);
+  assert.match(source, /if \(e\.key === "Tab"\) return/u);
   assert.match(source, /e\.key === "Enter" && \(e\.ctrlKey \|\| e\.metaKey\)/u);
 });
 

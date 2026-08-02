@@ -468,6 +468,10 @@ export default function TypingTest() {
   // ── Single keydown handler (NO keypress/keyup/input listeners) ──
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
+      // Tab and Shift+Tab are navigation only: do not prevent them and do not
+      // let them start or mutate the typing test.
+      if (e.key === "Tab") return;
+
       // Ctrl/Command+Enter restarts without taking over Tab focus navigation.
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && !e.altKey) {
         e.preventDefault();

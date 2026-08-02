@@ -89,9 +89,17 @@ test.describe("P1 typing, play, and title-case remediations", () => {
   test("typing test preserves Tab navigation outside the typing surface", async ({ page }) => {
     await openTool(page, "/type/typing-test");
     const settings = page.getByRole("button", { name: "Settings", exact: true });
+    const idleHint = page.getByText(/Click to focus · start typing to begin/);
+    await expect(idleHint).toBeVisible();
     await settings.focus();
     await page.keyboard.press("Tab");
     await expect(settings).not.toBeFocused();
+    await expect(idleHint).toBeVisible();
+
+    await settings.focus();
+    await page.keyboard.press("Shift+Tab");
+    await expect(settings).not.toBeFocused();
+    await expect(idleHint).toBeVisible();
   });
 
   test("typing race completes rapid input, restarts cleanly, and unmounts safely", async ({ page }) => {
