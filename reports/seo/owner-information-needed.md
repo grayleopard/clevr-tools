@@ -1,6 +1,6 @@
 # Owner information needed before adding trust claims
 
-Status: blocked on owner answers. This is a collection checklist, not public copy. Do not fill gaps with assumptions, biographies, stock identities, inferred credentials, or generic “our team” language.
+Status: blocked on owner answers. This is a collection checklist, not public copy. Do not fill gaps with assumptions, biographies, stock identities, inferred credentials, or generic “our team” language. The exact response and GSC/link-evidence package request is in [search-authority-evidence-intake.md](./search-authority-evidence-intake.md).
 
 ## P0: identity and accountability
 
@@ -119,6 +119,10 @@ The owner can unblock a first trust pass by answering this exact set:
 8. Which claims may be published now with evidence, and which should remain internal?
 9. Who signs off on the image benchmark corpus, methodology, and release?
 10. Who owns the 90-day re-verification of platform-limit references?
+
+## Answer and approval protocol
+
+For each answer, record the responder's role, answer date, evidence or system-of-record location, approved public wording (if any), and the next review date. Use `UNKNOWN` or `NOT_AVAILABLE` instead of leaving a blank or extrapolating from repository code. A response establishes a publishable claim only after the evidence-register status reaches `OWNER_APPROVED`.
 
 ## Evidence register template
 
