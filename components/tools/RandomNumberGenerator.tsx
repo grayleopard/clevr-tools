@@ -4,42 +4,11 @@ import { useState, useCallback } from "react";
 import { Copy } from "lucide-react";
 import { addToast } from "@/lib/toast";
 import { TipJar } from "@/components/tool/TipJar";
-
-// ─── Random helpers ─────────────────────────────────────────────────────────
-
-function randomInt(min: number, max: number): number {
-  const range = max - min + 1;
-  const arr = new Uint32Array(1);
-  crypto.getRandomValues(arr);
-  return min + (arr[0] % range);
-}
-
-function generateNumbers(
-  min: number,
-  max: number,
-  count: number,
-  allowDuplicates: boolean
-): number[] {
-  const range = max - min + 1;
-
-  if (!allowDuplicates && count > range) {
-    return []; // impossible
-  }
-
-  if (!allowDuplicates) {
-    const set = new Set<number>();
-    while (set.size < count) {
-      set.add(randomInt(min, max));
-    }
-    return Array.from(set);
-  }
-
-  const results: number[] = [];
-  for (let i = 0; i < count; i++) {
-    results.push(randomInt(min, max));
-  }
-  return results;
-}
+import {
+  MAX_INCLUSIVE_INTEGER_WIDTH,
+  randomIntegerInclusive,
+  randomIntegerList,
+} from "@/lib/p1-remediation/secure-random";
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -63,35 +32,29 @@ export default function RandomNumberGenerator() {
     setCoinResult(null);
     setDiceResults(null);
 
-    const minVal = parseInt(min, 10);
-    const maxVal = parseInt(max, 10);
-    const countVal = parseInt(count, 10);
-
-    if (isNaN(minVal) || isNaN(maxVal) || isNaN(countVal)) {
-      setError("Please enter valid numbers.");
-      return;
-    }
-    if (minVal > maxVal) {
-      setError("Minimum must be less than or equal to maximum.");
-      return;
-    }
-    if (countVal < 1 || countVal > 1000) {
-      setError("Count must be between 1 and 1000.");
+    if ([min, max, count].some((value) => value.trim() === "")) {
+      setError("Enter minimum, maximum, and count as integers.");
       return;
     }
 
-    const range = maxVal - minVal + 1;
-    if (!allowDuplicates && countVal > range) {
-      setError(
-        `Cannot generate ${countVal} unique numbers in a range of ${range}. Increase range or enable duplicates.`
-      );
+    const minVal = Number(min);
+    const maxVal = Number(max);
+    const countVal = Number(count);
+
+    if (![minVal, maxVal, countVal].every(Number.isSafeInteger)) {
+      setError("Minimum, maximum, and count must be safe integers (no decimals).");
       return;
     }
 
-    let nums = generateNumbers(minVal, maxVal, countVal, allowDuplicates);
-    if (sortResults) nums = nums.sort((a, b) => a - b);
-    setResults(nums);
-    setGenKey((k) => k + 1);
+    try {
+      let nums = randomIntegerList({ min: minVal, max: maxVal, count: countVal, allowDuplicates });
+      if (sortResults) nums = nums.sort((a, b) => a - b);
+      setResults(nums);
+      setGenKey((k) => k + 1);
+    } catch (generationError) {
+      setResults([]);
+      setError(generationError instanceof Error ? generationError.message : "Unable to generate integers.");
+    }
   }, [min, max, count, allowDuplicates, sortResults]);
 
   const handleCopyAll = useCallback(async () => {
@@ -107,7 +70,7 @@ export default function RandomNumberGenerator() {
     setError("");
     setResults([]);
     setDiceResults(null);
-    setCoinResult(randomInt(0, 1) === 0 ? "Heads" : "Tails");
+    setCoinResult(randomIntegerInclusive(0, 1) === 0 ? "Heads" : "Tails");
     setGenKey((k) => k + 1);
   }, []);
 
@@ -116,7 +79,7 @@ export default function RandomNumberGenerator() {
     setResults([]);
     setCoinResult(null);
     const dice: number[] = [];
-    for (let i = 0; i < n; i++) dice.push(randomInt(1, 6));
+    for (let i = 0; i < n; i++) dice.push(randomIntegerInclusive(1, 6));
     setDiceResults(dice);
     setDiceCount(n);
     setGenKey((k) => k + 1);
@@ -180,6 +143,11 @@ export default function RandomNumberGenerator() {
             </label>
           </div>
         </div>
+
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          Minimum and maximum are inclusive. Negative and equal bounds are supported. Inputs must be safe integers,
+          and the inclusive range may contain at most {MAX_INCLUSIVE_INTEGER_WIDTH.toLocaleString("en-US")} values.
+        </p>
 
         <button
           onClick={handleGenerate}
