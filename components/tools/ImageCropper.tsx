@@ -6,12 +6,21 @@ import ReactCrop, {
   type Crop,
   type PixelCrop,
   centerCrop,
+  convertToPixelCrop,
   makeAspectCrop,
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import FileDropZone from "@/components/tool/FileDropZone";
 import { addToast } from "@/lib/toast";
 import { normalizeCanvasQuality } from "@/lib/image-quality";
+import {
+  detectRasterBlobFormat,
+  isGifFile,
+  isStaticRasterFormat,
+  rasterExtension,
+  rasterMimeType,
+  type StaticRasterFormat,
+} from "@/lib/image-remediation/raster-formats";
 import { formatBytes } from "@/lib/utils";
 import { Download, X } from "lucide-react";
 import { TipJar } from "@/components/tool/TipJar";
@@ -60,7 +69,7 @@ function centerAspectCrop(
 export default function ImageCropper() {
   const [imgSrc, setImgSrc] = useState("");
   const [fileName, setFileName] = useState("");
-  const [fileType, setFileType] = useState("image/png");
+  const [fileFormat, setFileFormat] = useState<StaticRasterFormat>("png");
   const [fileSize, setFileSize] = useState(0);
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
@@ -72,13 +81,37 @@ export default function ImageCropper() {
   const imgRef = useRef<HTMLImageElement>(null);
   const [resetKey, setResetKey] = useState(0);
 
-  const handleFiles = useCallback((files: File[]) => {
+  const handleFiles = useCallback(async (files: File[]) => {
     if (files.length === 0) return;
     const file = files[0];
+    const detectedFormat = await detectRasterBlobFormat(file);
+
+    if (isGifFile(file, detectedFormat)) {
+      addToast(
+        "Animated GIF cropping isn't supported because it would remove animation. Convert a still frame to PNG or JPG first.",
+        "error"
+      );
+      return;
+    }
+    if (!isStaticRasterFormat(detectedFormat)) {
+      addToast(
+        "Couldn't read that file — choose a valid JPG, PNG, or WebP image.",
+        "error"
+      );
+      return;
+    }
+
     setFileName(file.name);
-    setFileType(file.type);
+    setFileFormat(detectedFormat);
     setFileSize(file.size);
-    setResult(null);
+    setCrop(undefined);
+    setCompletedCrop(undefined);
+    setAspect(undefined);
+    setIsCircle(false);
+    setResult((previous) => {
+      if (previous) URL.revokeObjectURL(previous.url);
+      return null;
+    });
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -87,19 +120,19 @@ export default function ImageCropper() {
     reader.onerror = () => {
       console.error(`Failed to read file: ${file.name}`);
       setFileName("");
-      setFileType("");
       setFileSize(0);
       addToast("Couldn't read that file — it may be corrupt or an unsupported format. Try a different file.", "error");
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file.slice(0, file.size, rasterMimeType(detectedFormat)));
   }, []);
 
   const handleImageError = useCallback(() => {
     console.error("Failed to decode image data");
     setImgSrc("");
     setFileName("");
-    setFileType("");
     setFileSize(0);
+    setCrop(undefined);
+    setCompletedCrop(undefined);
     addToast("Couldn't read that file — it may be corrupt or an unsupported format. Try a different file.", "error");
   }, []);
 
@@ -110,7 +143,11 @@ export default function ImageCropper() {
       const { width, height } = e.currentTarget;
       const initialAspect = aspect ?? 1;
       const initialCrop = centerAspectCrop(width, height, initialAspect);
-      setCrop(aspect ? initialCrop : { unit: "%", width: 80, height: 80, x: 10, y: 10 });
+      const nextCrop = aspect
+        ? initialCrop
+        : { unit: "%" as const, width: 80, height: 80, x: 10, y: 10 };
+      setCrop(nextCrop);
+      setCompletedCrop(convertToPixelCrop(nextCrop, width, height));
     },
     [aspect]
   );
@@ -119,14 +156,20 @@ export default function ImageCropper() {
     (option: AspectOption) => {
       setIsCircle(!!option.isCircle);
       setAspect(option.value);
-      setResult(null);
+      setResult((previous) => {
+        if (previous) URL.revokeObjectURL(previous.url);
+        return null;
+      });
 
-      if (imgRef.current && option.value) {
+      if (imgRef.current) {
         const { width, height } = imgRef.current;
-        const newCrop = centerAspectCrop(width, height, option.value);
+        const newCrop = option.value
+          ? centerAspectCrop(width, height, option.value)
+          : { unit: "%" as const, width: 80, height: 80, x: 10, y: 10 };
         setCrop(newCrop);
-      } else if (imgRef.current && !option.value) {
-        setCrop({ unit: "%", width: 80, height: 80, x: 10, y: 10 });
+        setCompletedCrop(convertToPixelCrop(newCrop, width, height));
+      } else {
+        setCompletedCrop(undefined);
       }
     },
     []
@@ -141,42 +184,76 @@ export default function ImageCropper() {
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
 
-      const cropW = Math.round(completedCrop.width * scaleX);
-      const cropH = Math.round(completedCrop.height * scaleY);
-      const cropX = Math.round(completedCrop.x * scaleX);
-      const cropY = Math.round(completedCrop.y * scaleY);
+      const scaledWidth = Math.max(1, completedCrop.width * scaleX);
+      const scaledHeight = Math.max(1, completedCrop.height * scaleY);
+      let sourceWidth = scaledWidth;
+      let sourceHeight = scaledHeight;
+      let sourceX = completedCrop.x * scaleX;
+      let sourceY = completedCrop.y * scaleY;
+
+      if (isCircle) {
+        const sourceSize = Math.min(scaledWidth, scaledHeight);
+        sourceX += (scaledWidth - sourceSize) / 2;
+        sourceY += (scaledHeight - sourceSize) / 2;
+        sourceWidth = sourceSize;
+        sourceHeight = sourceSize;
+      }
+
+      const outputWidth = Math.max(1, Math.round(sourceWidth));
+      const outputHeight = isCircle
+        ? outputWidth
+        : Math.max(1, Math.round(sourceHeight));
 
       const canvas = document.createElement("canvas");
-      canvas.width = cropW;
-      canvas.height = cropH;
-      const ctx = canvas.getContext("2d")!;
+      canvas.width = outputWidth;
+      canvas.height = outputHeight;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas is unavailable");
 
       if (isCircle) {
         ctx.beginPath();
         ctx.arc(
-          cropW / 2,
-          cropH / 2,
-          Math.min(cropW, cropH) / 2,
+          outputWidth / 2,
+          outputHeight / 2,
+          outputWidth / 2,
           0,
           Math.PI * 2
         );
         ctx.clip();
       }
 
-      ctx.drawImage(image, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-
-      const outputType = isCircle ? "image/png" : fileType || "image/png";
-      const outputExt = isCircle
-        ? "png"
-        : outputType === "image/jpeg"
-          ? "jpg"
-          : outputType === "image/webp"
-            ? "webp"
-            : "png";
-
-      const blob = await new Promise<Blob>((resolve) =>
-        canvas.toBlob((b) => resolve(b!), outputType, normalizeCanvasQuality(0.92))
+      ctx.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        0,
+        0,
+        outputWidth,
+        outputHeight
       );
+
+      const outputFormat: StaticRasterFormat = isCircle ? "png" : fileFormat;
+      const outputType = rasterMimeType(outputFormat);
+      const outputExt = rasterExtension(outputFormat);
+
+      const blob = await new Promise<Blob>((resolve, reject) =>
+        canvas.toBlob(
+          (nextBlob) =>
+            nextBlob
+              ? resolve(nextBlob)
+              : reject(new Error(`This browser could not export ${outputFormat.toUpperCase()}`)),
+          outputType,
+          normalizeCanvasQuality(0.92)
+        )
+      );
+      const actualFormat = await detectRasterBlobFormat(blob);
+      if (actualFormat !== outputFormat) {
+        throw new Error(
+          `This browser returned ${actualFormat.toUpperCase()} instead of ${outputFormat.toUpperCase()}`
+        );
+      }
 
       const baseName = fileName.replace(/\.[^.]+$/, "");
       const croppedFilename = `${baseName}-cropped.${outputExt}`;
@@ -186,8 +263,8 @@ export default function ImageCropper() {
       setResult({
         blob,
         url: URL.createObjectURL(blob),
-        width: cropW,
-        height: cropH,
+        width: outputWidth,
+        height: outputHeight,
         filename: croppedFilename,
       });
 
@@ -197,12 +274,14 @@ export default function ImageCropper() {
     } finally {
       setIsProcessing(false);
     }
-  }, [completedCrop, isCircle, fileType, fileName, result]);
+  }, [completedCrop, isCircle, fileFormat, fileName, result]);
 
   const reset = useCallback(() => {
     if (result) URL.revokeObjectURL(result.url);
     setImgSrc("");
     setFileName("");
+    setFileFormat("png");
+    setFileSize(0);
     setCrop(undefined);
     setCompletedCrop(undefined);
     setResult(null);
@@ -216,12 +295,18 @@ export default function ImageCropper() {
       {/* Drop zone */}
       {!imgSrc && (
         <FileDropZone
-          accept=".jpg,.jpeg,.png,.webp,.gif"
+          accept=".jpg,.jpeg,.png,.webp"
           multiple={false}
           maxSizeMB={50}
           onFiles={handleFiles}
           resetKey={resetKey}
         />
+      )}
+      {!imgSrc && (
+        <p className="text-xs leading-5 text-muted-foreground">
+          Animated GIFs are not supported because cropping would remove animation.
+          Convert a still frame to JPG or PNG first.
+        </p>
       )}
 
       {imgSrc && (

@@ -5,6 +5,13 @@
  */
 
 import { normalizeCanvasQuality, qualityToPercent } from "@/lib/image-quality";
+import {
+  assertHeicInput,
+  HeicConversionError,
+  normalizeHeicConversionError,
+  normalizeValidatedJpeg,
+  withHeicTimeout,
+} from "@/lib/image-remediation/heic-validation";
 
 export type ImageOutputFormat = "original" | "jpeg" | "webp";
 interface CanvasExportOptions {
@@ -121,15 +128,37 @@ export async function toWebp(file: File, quality = 85): Promise<Blob> {
   return blob;
 }
 
-/** Convert HEIC/HEIF to JPG using heic2any (dynamic import for SSR safety) */
+/**
+ * Convert HEIC/HEIF to JPG with the local browser decoder.
+ *
+ * `heic2any` performs decoding in a browser Worker. Its promise is not
+ * cancellable, so the timeout bounds the user-visible operation and prevents
+ * a decoder stall from leaving the UI in an indefinite processing state.
+ */
 export async function heicToJpg(file: File, quality = 90): Promise<Blob> {
-  const heic2any = (await import("heic2any")).default;
-  const result = await heic2any({
-    blob: file,
-    toType: "image/jpeg",
-    quality: normalizeCanvasQuality(quality),
-  });
-  return Array.isArray(result) ? result[0] : result;
+  await assertHeicInput(file);
+
+  if (typeof window === "undefined" || typeof Worker === "undefined") {
+    throw new HeicConversionError("unsupported-browser");
+  }
+
+  try {
+    const result = await withHeicTimeout(
+      (async () => {
+        const heic2any = (await import("heic2any")).default;
+        return heic2any({
+          blob: file,
+          toType: "image/jpeg",
+          quality: normalizeCanvasQuality(quality),
+        });
+      })()
+    );
+    const blob = Array.isArray(result) ? result[0] : result;
+    if (!(blob instanceof Blob)) throw new HeicConversionError("invalid-output");
+    return await normalizeValidatedJpeg(blob);
+  } catch (error) {
+    throw normalizeHeicConversionError(error);
+  }
 }
 
 /** Compress a PDF by stripping metadata and enabling object streams */

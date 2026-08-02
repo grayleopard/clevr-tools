@@ -120,7 +120,7 @@ function SmartConverterSkeleton({
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
-          {["PNG", "JPG", "WebP", "HEIC", "PDF", "DOCX"].map((format) => (
+          {["PNG", "JPG", "GIF", "WebP", "PDF", "DOCX"].map((format) => (
             <span
               key={format}
               className="rounded-full bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
@@ -238,7 +238,7 @@ export default function SmartConverterDeferred() {
         id={inputId}
         ref={inputRef}
         type="file"
-        accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.pdf,.docx,.doc"
+        accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.docx"
         className="sr-only"
         tabIndex={-1}
         aria-describedby={descriptionId}
@@ -249,7 +249,7 @@ export default function SmartConverterDeferred() {
         }}
       />
       <p id={descriptionId} className="sr-only">
-        Choose one PNG, JPG, WebP, HEIC, PDF, DOCX, or DOC file. You can also drag a file here or
+        Choose one PNG, JPG, GIF, WebP, PDF, or DOCX file. You can also drag a file here or
         paste an image from your clipboard. Processing happens in your browser.
       </p>
     </>

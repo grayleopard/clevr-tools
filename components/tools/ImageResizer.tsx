@@ -6,6 +6,14 @@ import FileDropZone from "@/components/tool/FileDropZone";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import ToolPageLayout from "@/components/layout/ToolPageLayout";
 import { normalizeCanvasQuality } from "@/lib/image-quality";
+import {
+  detectRasterBlobFormat,
+  isGifFile,
+  isStaticRasterFormat,
+  rasterExtension,
+  rasterMimeType,
+  type StaticRasterFormat,
+} from "@/lib/image-remediation/raster-formats";
 import { addToast } from "@/lib/toast";
 import { formatBytes } from "@/lib/utils";
 import { usePasteImage } from "@/lib/usePasteImage";
@@ -18,6 +26,7 @@ interface UploadedImage {
   url: string;
   width: number;
   height: number;
+  format: StaticRasterFormat;
 }
 
 interface ResizedResult {
@@ -67,6 +76,17 @@ function formatOutputFormat(fmt: OutputFormat): string {
   return fmt === "original" ? "Keep original" : fmt.toUpperCase();
 }
 
+function loadImageDimensions(url: string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    };
+    image.onerror = () => reject(new Error("The browser could not decode this image"));
+    image.src = url;
+  });
+}
+
 export default function ImageResizer() {
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [targetWidth, setTargetWidth] = useState(0);
@@ -85,48 +105,68 @@ export default function ImageResizer() {
   const aspectRatioRef = useRef(1);
   const [resetKey, setResetKey] = useState(0);
 
-  const handleFiles = useCallback((files: File[]) => {
-    const loaded: UploadedImage[] = [];
-    let remaining = files.length;
+  const handleFiles = useCallback(async (files: File[]) => {
     let failed = 0;
+    let rejectedGifs = 0;
 
-    const finalize = () => {
-      if (remaining > 0) return;
-      if (failed > 0) {
-        addToast(
-          loaded.length === 0
-            ? "Couldn't read that file — it may be corrupt or an unsupported format. Try a different file."
-            : `Couldn't read ${failed} of ${files.length} files — they may be corrupt or an unsupported format.`,
-          "error"
+    const candidates = await Promise.all(
+      files.map(async (file): Promise<UploadedImage | null> => {
+        const detectedFormat = await detectRasterBlobFormat(file);
+        if (isGifFile(file, detectedFormat)) {
+          rejectedGifs += 1;
+          return null;
+        }
+        if (!isStaticRasterFormat(detectedFormat)) {
+          failed += 1;
+          return null;
+        }
+
+        const url = URL.createObjectURL(
+          file.slice(0, file.size, rasterMimeType(detectedFormat))
         );
-      }
-      if (loaded.length === 0) return;
+        try {
+          const dimensions = await loadImageDimensions(url);
+          return { file, url, ...dimensions, format: detectedFormat };
+        } catch (error) {
+          console.error(`Failed to load image: ${file.name}`, error);
+          URL.revokeObjectURL(url);
+          failed += 1;
+          return null;
+        }
+      })
+    );
+    const loaded = candidates.filter((image): image is UploadedImage => image !== null);
 
-      setImages(loaded);
-      setResults([]);
-      const first = loaded[0];
-      setTargetWidth(first.width);
-      setTargetHeight(first.height);
-      aspectRatioRef.current = first.width / first.height;
-    };
+    if (rejectedGifs > 0) {
+      addToast(
+        rejectedGifs === 1
+          ? "Animated GIF resizing isn't supported because it would remove animation. Choose a JPG, PNG, or WebP file."
+          : `Skipped ${rejectedGifs} GIF files because resizing them here would remove animation.`,
+        "error"
+      );
+    }
+    if (failed > 0) {
+      addToast(
+        loaded.length === 0
+          ? "Couldn't read that file — it may be corrupt or an unsupported format. Try a JPG, PNG, or WebP file."
+          : `Couldn't read ${failed} of ${files.length} files — they may be corrupt or unsupported.`,
+        "error"
+      );
+    }
+    if (loaded.length === 0) return;
 
-    files.forEach((file) => {
-      const url = URL.createObjectURL(file);
-      const image = new Image();
-      image.onload = () => {
-        loaded.push({ file, url, width: image.naturalWidth, height: image.naturalHeight });
-        remaining--;
-        finalize();
-      };
-      image.onerror = () => {
-        console.error(`Failed to load image: ${file.name}`);
-        URL.revokeObjectURL(url);
-        failed++;
-        remaining--;
-        finalize();
-      };
-      image.src = url;
+    setImages((previous) => {
+      previous.forEach((image) => URL.revokeObjectURL(image.url));
+      return loaded;
     });
+    setResults((previous) => {
+      previous.forEach((result) => URL.revokeObjectURL(result.url));
+      return [];
+    });
+    const first = loaded[0];
+    setTargetWidth(first.width);
+    setTargetHeight(first.height);
+    aspectRatioRef.current = first.width / first.height;
   }, []);
 
   useAutoLoadFile(handleFiles);
@@ -210,16 +250,20 @@ export default function ImageResizer() {
   const resizeImages = useCallback(async () => {
     if (images.length === 0 || targetWidth <= 0 || targetHeight <= 0) return;
     setIsProcessing(true);
-    setResults([]);
+    setResults((previous) => {
+      previous.forEach((result) => URL.revokeObjectURL(result.url));
+      return [];
+    });
 
     try {
       const resized: ResizedResult[] = [];
 
       for (const image of images) {
         const img = new Image();
-        img.src = image.url;
-        await new Promise<void>((resolve) => {
+        await new Promise<void>((resolve, reject) => {
           img.onload = () => resolve();
+          img.onerror = () => reject(new Error(`Could not decode ${image.file.name}`));
+          img.src = image.url;
         });
 
         const canvas = document.createElement("canvas");
@@ -232,22 +276,29 @@ export default function ImageResizer() {
         context.imageSmoothingQuality = "high";
         context.drawImage(img, 0, 0, targetWidth, targetHeight);
 
-        const mimeType =
-          outputFormat === "original" ? image.file.type : `image/${outputFormat}`;
-        const showQuality = mimeType === "image/jpeg" || mimeType === "image/webp";
+        const expectedFormat: StaticRasterFormat =
+          outputFormat === "original" ? image.format : outputFormat;
+        const mimeType = rasterMimeType(expectedFormat);
+        const showQuality = expectedFormat === "jpeg" || expectedFormat === "webp";
 
-        const blob = await new Promise<Blob>((resolve) =>
+        const blob = await new Promise<Blob>((resolve, reject) =>
           canvas.toBlob(
-            (nextBlob) => resolve(nextBlob!),
+            (nextBlob) =>
+              nextBlob
+                ? resolve(nextBlob)
+                : reject(new Error(`This browser could not export ${expectedFormat.toUpperCase()}`)),
             mimeType,
             showQuality ? normalizeCanvasQuality(quality) : undefined
           )
         );
+        const actualFormat = await detectRasterBlobFormat(blob);
+        if (actualFormat !== expectedFormat) {
+          throw new Error(
+            `This browser returned ${actualFormat.toUpperCase()} instead of ${expectedFormat.toUpperCase()}`
+          );
+        }
 
-        const ext =
-          outputFormat === "original"
-            ? image.file.name.split(".").pop() || "jpg"
-            : outputFormat;
+        const ext = rasterExtension(expectedFormat);
         const baseName = image.file.name.replace(/\.[^.]+$/, "");
         const filename = `${baseName}-${targetWidth}x${targetHeight}.${ext}`;
 
@@ -328,7 +379,7 @@ export default function ImageResizer() {
     outputFormat === "webp" ||
     (outputFormat === "original" &&
       images.length > 0 &&
-      (images[0].file.type === "image/jpeg" || images[0].file.type === "image/webp"));
+      (images[0].format === "jpeg" || images[0].format === "webp"));
   const showPresetPreview =
     activeTab === "presets" && selectedPreset !== null && images.length > 0;
   const presetPreviewWidth =
@@ -570,7 +621,7 @@ export default function ImageResizer() {
     >
       <div className="space-y-6">
         <FileDropZone
-          accept=".jpg,.jpeg,.png,.webp,.gif"
+          accept=".jpg,.jpeg,.png,.webp"
           multiple
           maxSizeMB={50}
           onFiles={handleFiles}
@@ -580,6 +631,10 @@ export default function ImageResizer() {
             void handleClipboardPaste();
           }}
         />
+        <p className="text-xs leading-5 text-muted-foreground">
+          Animated GIFs are not supported here because Canvas resizing would remove
+          animation. Use a JPG, PNG, or WebP source.
+        </p>
 
         {images.length > 0 ? (
           <>

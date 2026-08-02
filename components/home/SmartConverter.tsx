@@ -24,27 +24,20 @@ import type { LucideIcon } from "lucide-react";
 import AdSlot from "@/components/tool/AdSlot";
 import { usePasteImage } from "@/lib/usePasteImage";
 import { setPendingFile } from "@/lib/file-handoff";
+import {
+  detectSmartConverterFileType,
+  getSmartConverterActions,
+  getSmartConverterRoute,
+  type SmartConverterActionId,
+  type SmartConverterFileType,
+} from "@/lib/image-remediation/smart-converter-contracts";
 import { addToast } from "@/lib/toast";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type FileType = "png" | "jpg" | "gif" | "webp" | "heic" | "pdf" | "docx" | "unknown";
-type ActionId =
-  | "compress-gif"
-  | "compress-image"
-  | "to-jpg"
-  | "to-png"
-  | "to-webp"
-  | "to-pdf"
-  | "resize-image"
-  | "crop-image"
-  | "compress-pdf"
-  | "pdf-to-jpg"
-  | "merge-pdf"
-  | "split-pdf"
-  | "rotate-pdf"
-  | "word-to-pdf";
+type FileType = SmartConverterFileType;
+type ActionId = SmartConverterActionId;
 type Stage = "idle" | "detected";
 
 interface DetectedFile {
@@ -55,17 +48,6 @@ interface DetectedFile {
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-
-const TYPE_ACTIONS: Record<FileType, ActionId[]> = {
-  png: ["compress-image", "to-jpg", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  jpg: ["compress-image", "to-png", "to-webp", "to-pdf", "resize-image", "crop-image"],
-  gif: ["compress-gif"],
-  webp: ["to-png", "to-jpg", "resize-image"],
-  heic: ["to-jpg", "to-png"],
-  pdf: ["compress-pdf", "pdf-to-jpg", "merge-pdf", "split-pdf", "rotate-pdf"],
-  docx: ["word-to-pdf"],
-  unknown: [],
-};
 
 interface ActionDef {
   icon: LucideIcon;
@@ -161,46 +143,7 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
   },
 };
 
-// ─── Route mapping ────────────────────────────────────────────────────────────
-
-function getRoute(fileType: FileType, actionId: ActionId): string {
-  switch (actionId) {
-    case "compress-gif":   return "/tools/gif-compressor";
-    case "compress-image": return "/compress/image";
-    case "to-jpg":         return fileType === "heic" ? "/convert/heic-to-jpg" : "/convert/png-to-jpg";
-    case "to-png":         return fileType === "webp" ? "/convert/webp-to-png" : "/convert/jpg-to-png";
-    case "to-webp":        return "/convert/png-to-webp";
-    case "to-pdf":         return fileType === "jpg" ? "/convert/jpg-to-pdf" : "/convert/png-to-pdf";
-    case "resize-image":   return "/tools/resize-image";
-    case "crop-image":     return "/files/image-cropper";
-    case "compress-pdf":   return "/compress/pdf";
-    case "pdf-to-jpg":     return "/convert/pdf-to-jpg";
-    case "merge-pdf":      return "/tools/merge-pdf";
-    case "split-pdf":      return "/tools/split-pdf";
-    case "rotate-pdf":     return "/tools/rotate-pdf";
-    case "word-to-pdf":    return "/convert/word-to-pdf";
-  }
-}
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function detectFileType(file: File): FileType {
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-  const mime = file.type.toLowerCase();
-  if (mime === "image/png" || ext === "png") return "png";
-  if (mime === "image/jpeg" || ext === "jpg" || ext === "jpeg") return "jpg";
-  if (mime === "image/gif" || ext === "gif") return "gif";
-  if (mime === "image/webp" || ext === "webp") return "webp";
-  if (mime === "image/heic" || mime === "image/heif" || ext === "heic" || ext === "heif")
-    return "heic";
-  if (mime === "application/pdf" || ext === "pdf") return "pdf";
-  if (
-    ext === "docx" || ext === "doc" ||
-    mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-    mime === "application/msword"
-  ) return "docx";
-  return "unknown";
-}
 
 function FileTypeIcon({ type, className }: { type: FileType; className?: string }) {
   switch (type) {
@@ -308,7 +251,7 @@ function IdleView({
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
-          {["PNG", "JPG", "GIF", "WebP", "HEIC", "PDF", "DOCX"].map((fmt) => (
+          {["PNG", "JPG", "GIF", "WebP", "PDF", "DOCX"].map((fmt) => (
             <span
               key={fmt}
               className="rounded-full bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
@@ -338,7 +281,7 @@ function DetectedView({
   onAction: (id: ActionId) => void;
   onReset: () => void;
 }) {
-  const actions = TYPE_ACTIONS[detected.type];
+  const actions = getSmartConverterActions(detected.type);
   const typeLabel = detected.type === "unknown" ? "File" : detected.type.toUpperCase();
   const isPreviewable = detected.previewUrl !== null;
 
@@ -580,7 +523,7 @@ export default function SmartConverter({
     setError(null);
     setNavigatingAction(null);
 
-    const type = detectFileType(file);
+    const type = detectSmartConverterFileType(file);
     const isPreviewable = (["png", "jpg", "gif", "webp"] as FileType[]).includes(type);
     let previewUrl: string | null = null;
     let dimensions: { width: number; height: number } | null = null;
@@ -632,12 +575,17 @@ export default function SmartConverter({
   const handleAction = useCallback(
     (actionId: ActionId) => {
       if (!detected || navigatingAction) return;
+      const route = getSmartConverterRoute(detected.type, actionId);
+      if (!route) {
+        setError("That action is not supported for this file type.");
+        return;
+      }
       setNavigatingAction(actionId);
 
       // Brief feedback delay (spinner visible) before navigating
       setTimeout(() => {
         setPendingFile(detected.file);
-        router.push(getRoute(detected.type, actionId));
+        router.push(route);
         if (detected.previewUrl) URL.revokeObjectURL(detected.previewUrl);
         setDetected(null);
         setNavigatingAction(null);
@@ -801,7 +749,7 @@ export default function SmartConverter({
         id={fileInputId}
         ref={fileInputRef}
         type="file"
-        accept=".png,.jpg,.jpeg,.gif,.webp,.heic,.heif,.pdf,.docx,.doc"
+        accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.docx"
         className="sr-only"
         tabIndex={-1}
         aria-describedby={inputDescribedBy}
@@ -809,7 +757,7 @@ export default function SmartConverter({
         onChange={handleFileInput}
       />
       <p id={fileDescriptionId} className="sr-only">
-        Choose one PNG, JPG, GIF, WebP, HEIC, PDF, DOCX, or DOC file. You can also drag a file
+        Choose one PNG, JPG, GIF, WebP, PDF, or DOCX file. You can also drag a file
         onto this page or paste an image from your clipboard. Processing happens in your browser.
       </p>
     </>

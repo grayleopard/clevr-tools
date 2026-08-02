@@ -11,10 +11,10 @@ import { usePasteImage } from "@/lib/usePasteImage";
 import PageDragOverlay from "@/components/tool/PageDragOverlay";
 import { Slider } from "@/components/ui/slider";
 import { heicToJpg } from "@/lib/processors";
-import { ConversionErrorNotice } from "@/components/tool/ConversionErrorNotice";
+import { getHeicConversionErrorMessage } from "@/lib/image-remediation/heic-validation";
 import { addToast } from "@/lib/toast";
 
-import { Package } from "lucide-react";
+import { AlertCircle, Package } from "lucide-react";
 import { truncateFilename } from "@/lib/utils";
 import { TipJar } from "@/components/tool/TipJar";
 
@@ -27,20 +27,27 @@ interface Result {
   originalUrl: string;
 }
 
+interface ConversionFailure {
+  filename: string;
+  message: string;
+}
+
 export default function HeicToJpg() {
   const [quality, setQuality] = useState(90);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
-  const [failedFilenames, setFailedFilenames] = useState<string[]>([]);
+  const [failures, setFailures] = useState<ConversionFailure[]>([]);
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
   const sourceFilesRef = useRef<File[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const conversionRunRef = useRef(0);
 
   const convert = useCallback(
     async (files: File[], q: number) => {
       if (files.length === 0) return;
+      const runId = ++conversionRunRef.current;
       setIsProcessing(true);
       setResults((prev) => {
         prev.forEach((r) => {
@@ -49,10 +56,10 @@ export default function HeicToJpg() {
         });
         return [];
       });
-      setFailedFilenames([]);
+      setFailures([]);
 
       const converted: Result[] = [];
-      const failed: string[] = [];
+      const failed: ConversionFailure[] = [];
       for (const file of files) {
         try {
           const blob = await heicToJpg(file, q);
@@ -67,13 +74,24 @@ export default function HeicToJpg() {
           });
         } catch (err) {
           console.error(`Failed to convert ${file.name}:`, err);
-          failed.push(file.name);
-          addToast(`Couldn't convert ${file.name} — it may be corrupt or an unsupported format. Try a different file.`, "error");
+          const message = getHeicConversionErrorMessage(err);
+          failed.push({ filename: file.name, message });
+          if (conversionRunRef.current === runId) {
+            addToast(`Couldn't convert ${file.name}. ${message}`, "error");
+          }
         }
       }
 
+      if (conversionRunRef.current !== runId) {
+        converted.forEach((result) => {
+          URL.revokeObjectURL(result.url);
+          URL.revokeObjectURL(result.originalUrl);
+        });
+        return;
+      }
+
       setResults(converted);
-      setFailedFilenames(failed);
+      setFailures(failed);
       setIsProcessing(false);
     },
     []
@@ -126,7 +144,9 @@ export default function HeicToJpg() {
       URL.revokeObjectURL(r.originalUrl);
     });
     setResults([]);
-    setFailedFilenames([]);
+    setFailures([]);
+    conversionRunRef.current += 1;
+    setIsProcessing(false);
     setDownloaded(false);
     sourceFilesRef.current = [];
     setResetKey((k) => k + 1);
@@ -163,7 +183,22 @@ export default function HeicToJpg() {
       {isProcessing && <ProcessingIndicator label="Converting HEIC to JPG…" />}
 
       {/* 3b. Failures */}
-      {!isProcessing && <ConversionErrorNotice failedFilenames={failedFilenames} />}
+      {!isProcessing && failures.length > 0 && (
+        <div
+          role="alert"
+          className="space-y-3 rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
+          {failures.map((failure) => (
+            <div key={failure.filename} className="flex items-start gap-3">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <div>
+                <p className="font-medium">Couldn&apos;t convert {failure.filename}</p>
+                <p className="mt-0.5 text-destructive/80">{failure.message}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* 4. Results (pre-download) */}
       {results.length > 0 && !isProcessing && !downloaded && (

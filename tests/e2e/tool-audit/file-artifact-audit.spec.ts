@@ -4,7 +4,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import sharp from "sharp";
 import { PDFDocument, StandardFonts, degrees, rgb } from "pdf-lib";
 
-const AUDIT_DIR = "/tmp/clevr-tool-audit/files";
+const AUDIT_DIR = "/tmp/clevr-p1-remediation/file-artifact-audit";
 
 // This audit file creates and consumes one shared deterministic fixture set.
 // Keep its artifact-heavy browser work serial even when the repository enables
@@ -208,23 +208,37 @@ test.describe("file and image artifact integrity", () => {
     expect([metadata.width, metadata.height]).toEqual([400, 300]);
   });
 
-  test("Image Resizer exposes its current GIF MIME/extension mismatch", async ({ page }) => {
-    test.fail(true, "Canvas cannot encode GIF; the current UI accepts GIF and names PNG bytes with a .gif extension.");
-    await upload(page, "/tools/resize-image", fixture("animated.gif"));
-    await expect(page.locator("#target-width")).toHaveValue("40", { timeout: 20_000 });
-    await page.locator("#target-width").fill("20");
-    await page.getByRole("button", { name: /Resize to 20 × 20/ }).click();
-    const output = await firstBlobDownload(page);
-    const metadata = await sharp(output.bytes, { animated: true }).metadata();
+  test("Image Resizer keeps PNG and WebP magic, MIME, extension, and dimensions aligned", async ({ page }) => {
+    for (const entry of [
+      { input: "transparent.png", extension: "png", mimeType: "image/png", format: "png" },
+      { input: "transparent.webp", extension: "webp", mimeType: "image/webp", format: "webp" },
+      { input: "renamed-image.jpg", extension: "png", mimeType: "image/png", format: "png" },
+    ]) {
+      await upload(page, "/tools/resize-image", fixture(entry.input));
+      await expect(page.locator("#target-width")).toHaveValue("160", { timeout: 20_000 });
+      await page.locator("#target-width").fill("80");
+      await page.getByRole("button", { name: /Resize to 80 × 60/ }).click();
+      const output = await firstBlobDownload(page);
+      const metadata = await sharp(output.bytes).metadata();
+      const baseName = entry.input.replace(/\.[^.]+$/, "");
 
-    expect(output.filename).toMatch(/\.gif$/);
-    expect(output.mimeType).toBe("image/gif");
-    expect(metadata.format).toBe("gif");
-    expect(metadata.pages).toBeGreaterThan(1);
+      expect(output.filename).toBe(`${baseName}-80x60.${entry.extension}`);
+      expect(output.mimeType).toBe(entry.mimeType);
+      expect(metadata.format).toBe(entry.format);
+      expect([metadata.width, metadata.height]).toEqual([80, 60]);
+    }
+  });
+
+  test("Image Resizer rejects GIF before processing", async ({ page }) => {
+    await upload(page, "/tools/resize-image", fixture("animated.gif"));
+    await expect(page.getByText(/Animated GIFs are not supported here/i)).toBeVisible();
+    await expect(page.getByText(/not a supported format/i)).toBeVisible();
+    await expect(page.locator("#target-width")).toHaveValue("");
+    await expect(page.getByRole("button", { name: /^Resize to/ })).toHaveCount(0);
+    await expect(page.locator('main a[download][href^="blob:"]')).toHaveCount(0);
   });
 
   test("Image Cropper circle output is a square PNG with alpha", async ({ page }) => {
-    test.fail(true, "The Circle option currently exports the stale rectangular crop instead of a square canvas.");
     await upload(page, "/files/image-cropper", fixture("transparent.png"));
     await page.getByRole("button", { name: "Circle", exact: true }).click();
     await expect(page.getByRole("button", { name: "Crop Image", exact: true })).toBeEnabled({ timeout: 20_000 });
@@ -237,6 +251,23 @@ test.describe("file and image artifact integrity", () => {
     expect(metadata.format).toBe("png");
     expect(metadata.width).toBe(metadata.height);
     expect(metadata.hasAlpha).toBe(true);
+
+    const decoded = await sharp(output.bytes).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const alphaAt = (x: number, y: number) =>
+      decoded.data[(y * decoded.info.width + x) * decoded.info.channels + 3];
+    expect(alphaAt(0, 0)).toBe(0);
+    expect(alphaAt(decoded.info.width - 1, 0)).toBe(0);
+    expect(alphaAt(0, decoded.info.height - 1)).toBe(0);
+    expect(alphaAt(decoded.info.width - 1, decoded.info.height - 1)).toBe(0);
+    expect(alphaAt(Math.floor(decoded.info.width / 2), Math.floor(decoded.info.height / 2))).toBeGreaterThan(0);
+  });
+
+  test("Image Cropper rejects GIF before reducing it to a still frame", async ({ page }) => {
+    await upload(page, "/files/image-cropper", fixture("animated.gif"));
+    await expect(page.getByText(/Animated GIFs are not supported because cropping would remove animation/i)).toBeVisible();
+    await expect(page.getByText(/not a supported format/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Crop Image", exact: true })).toHaveCount(0);
+    await expect(page.locator('main a[download][href^="blob:"]')).toHaveCount(0);
   });
 
   test("corrupt and renamed inputs fail without offering an output", async ({ page }) => {

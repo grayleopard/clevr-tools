@@ -35,7 +35,7 @@ async function expectDownloadUi(page: import("@playwright/test").Page) {
 test.describe("file tool happy paths", () => {
   test("/convert/pdf-to-jpg converts a small PDF", async ({ page }) => {
     await upload("/convert/pdf-to-jpg", fixture("sample.pdf"), page);
-    await page.getByRole("button", { name: /Convert to JPG/i }).click();
+    await page.getByRole("button", { name: /Convert \d+ pages? to JPG/i }).click();
 
     await expect(page.getByText(/converted to JPG successfully/i)).toBeVisible({ timeout: 45_000 });
     await expectDownloadUi(page);
@@ -43,7 +43,7 @@ test.describe("file tool happy paths", () => {
 
   test("/convert/jpg-to-pdf creates a PDF", async ({ page }) => {
     await upload("/convert/jpg-to-pdf", fixture("sample.jpg"), page);
-    await page.getByRole("button", { name: /Create PDF/i }).click();
+    await page.getByRole("button", { name: /Download$/i }).click();
 
     await expectDownloadUi(page);
   });
