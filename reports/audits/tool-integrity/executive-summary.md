@@ -152,3 +152,7 @@ Luna Max was unavailable in the runtime. Every worker was explicitly assigned th
 ## Final regression gate
 
 The final audit-only worktree passed build (174 generated pages/assets), TypeScript, bundle-budget checks, matrix/discovery checks (6/6), the focused artifact and text/play suite (31/31 accounted for), and the representative mobile/dark/runtime suite (9/9 accounted for, including the two expected product failures recorded above). Lint finished with zero errors and the same three pre-existing warnings. The Node suite finished with 18 passes and the same four baseline environment failures. The deterministic one-worker Playwright run finished with **316 passed, 8 skipped, and the same three baseline failures**: two stale conversion-button labels and the removed PDF-to-Fillable `View upright` control. No new regression was introduced.
+
+## 2026-08-01 P0/P1 remediation addendum
+
+The first remediation wave implemented the audit decisions without rewriting this historical baseline. The one P0 and twenty P1 route/capability findings now resolve to **16 `FIXED` and 5 `CONTAINED`**, with no `REMOVED` or `BLOCKED` item. Background Remover, HEIC to JPG, Poker, Take-Home Pay, and Paycheck are non-live, noindexed, operationally disabled, and excluded from discovery; the remaining findings have deterministic regressions. Exact implementation evidence, independent review findings, final gates, and remaining boundaries are recorded in `p1-remediation-report.md` and the appended matrix columns.

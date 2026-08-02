@@ -48,6 +48,13 @@ const requiredColumns = [
   "evidence",
   "recommended_seo_action",
   "recommended_product_action",
+  "original_defect",
+  "resolution_status",
+  "remediation_files",
+  "remediation_tests",
+  "remediation_evidence",
+  "post_remediation_recommendation",
+  "remaining_risks",
 ];
 
 function parseCsv(source) {
@@ -146,11 +153,20 @@ test("tool integrity matrix is complete, unique, and enum-safe", () => {
     "NOT_APPLICABLE",
   ]);
   const severities = new Set(["", "P0", "P1", "P2", "P3"]);
+  const resolutionStatuses = new Set([
+    "FIXED",
+    "CONTAINED",
+    "REMOVED",
+    "BLOCKED",
+    "NOT_IN_P0_P1_SCOPE",
+  ]);
 
   for (const record of records) {
     assert.ok(recommendations.has(record.recommendation), record.route);
     assert.ok(verificationStatuses.has(record.verification_status), record.route);
     assert.ok(severities.has(record.highest_defect_severity), record.route);
+    assert.ok(resolutionStatuses.has(record.resolution_status), record.route);
+    assert.equal(record.original_defect, record.defect_summary, record.route);
     assert.equal(record.demand_status, "UNKNOWN", record.route);
     assert.equal(record.demand_score, "UNKNOWN", record.route);
     assert.equal(record.total_score, "UNKNOWN", record.route);
@@ -173,6 +189,20 @@ test("tool integrity matrix is complete, unique, and enum-safe", () => {
         !["KEEP", "FLAGSHIP"].includes(record.recommendation),
         `hard-gated tool retained without repair classification: ${record.route}`
       );
+    }
+
+    if (["P0", "P1"].includes(record.highest_defect_severity)) {
+      assert.notEqual(record.resolution_status, "NOT_IN_P0_P1_SCOPE", record.route);
+      assert.ok(record.remediation_files.length > 5, `missing remediation files: ${record.route}`);
+      assert.ok(record.remediation_tests.length > 5, `missing remediation tests: ${record.route}`);
+      assert.ok(record.remediation_evidence.length > 40, `missing remediation evidence: ${record.route}`);
+      assert.ok(
+        record.post_remediation_recommendation.length > 3,
+        `missing post-remediation recommendation: ${record.route}`
+      );
+      assert.ok(record.remaining_risks.length > 5, `missing remaining risks: ${record.route}`);
+    } else {
+      assert.equal(record.resolution_status, "NOT_IN_P0_P1_SCOPE", record.route);
     }
   }
 });

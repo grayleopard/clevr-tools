@@ -101,3 +101,7 @@ Add mandatory regression tests before any production repair for Background Remov
 ## Completion rule for the next phase
 
 A repair may be called complete only when the defect has an independently computed or parsed-output regression, the user-visible promise matches the implementation, and the relevant mobile/accessibility/privacy/sensitive-domain boundary is explicitly tested or still marked unverified. A route load or success message alone is not proof.
+
+## 2026-08-01 remediation coverage addendum
+
+The P0/P1 regression gap named above is now substantially closed: containment/discovery, parsed image outputs, calendar/DST/month-end arithmetic, payoff and pace rounding, body-fat unit/formula parity, unbiased password/RNG sampling, title-case copy, typing partial/accuracy metrics, Tab/native key activation, race/CPS monotonic timing, Numble hydration, and Smart Converter contracts have focused Node and/or Chromium coverage. The final Node run is 72/74 with only the installed Sharp/libvips HEIF/HEVC codec failures; both former Node `DOMMatrix` failures pass. The full deterministic Playwright run is 339 passed, 6 skipped, and the same hidden rotated PDF-to-Fillable placement failure from baseline. Non-Chromium/assistive-technology/device breadth, representative HEIC compatibility, complex PDFs, and the other domain-wide gaps above remain open.

@@ -68,3 +68,7 @@ The current permanent redirect to `/files` is not intent-equivalent. Check GSC/b
 4. Update sitemap, registry, navigation, category data, related links, command-palette index, Smart Converter/File X-Ray capabilities, and tests atomically.
 5. Preserve user intent, bookmarks, input defaults, and expected output semantics.
 6. Monitor crawl, redirect, error, and destination behavior; delete code/backend infrastructure only after the transition is proven.
+
+## 2026-08-01 containment addendum
+
+This remediation wave executed safe containment, not deletion or consolidation, for five verified P0/P1 tools: Background Remover, HEIC to JPG, Poker, Take-Home Pay, and Paycheck. Their code remains for future repair, but public discovery, sitemap inclusion, indexation, operational forms, structured application data, and inbound public links are disabled. Relaunch still requires the evidence listed in `p1-remediation-report.md`. Car Payment consolidation, Meme Generator disposition, PDF-to-Fillable graduation, alias handling, and irreversible route decisions remain future evidence-gated work; this wave did not merge or redirect them.

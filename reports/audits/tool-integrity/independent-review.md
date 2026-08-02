@@ -130,3 +130,7 @@ One earlier combined browser rerun was discarded: another concurrent process sto
 ## Final reviewer conclusion
 
 The reports now tell the same conservative story as the executable evidence. Passes are scoped, hard gates are not hidden by scores, unknown demand stays unknown, removal decisions remain reversible pending traffic/backlink evidence, and the newly discovered mobile/runtime defects are included rather than optimized away. Subject to the orchestrator’s final no-new-failures gate, the audit package is ready to commit and push on `codex/tool-integrity-audit` without merging.
+
+## 2026-08-01 remediation review addendum
+
+A fresh adversarial reviewer audited the integrated remediation branch rather than relying on the original audit verdict. It identified and drove fixes for payroll and HEIC discovery leaks, stale typing/password/RNG/body-fat/age/title-case public claims, CPS visible-value rounding, Typing Test Tab capture, and Keyboard Tester suppression of native Enter/Space activation. Regression coverage now scans rendered public registries/FAQs and public Markdown as well as components. The remediation review disposition and exact final gate counts are preserved in `p1-remediation-report.md`; the historical audit findings above remain unchanged.
