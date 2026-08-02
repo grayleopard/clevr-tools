@@ -8,6 +8,47 @@ function fixture(name: string): string {
   return path.join(process.cwd(), "tests", "fixtures", name);
 }
 
+function pdfRectToNormalizedViewport(
+  rect: { x: number; y: number; width: number; height: number },
+  pageWidth: number,
+  pageHeight: number,
+  rotation: number
+): { left: number; top: number; width: number; height: number } {
+  const normalizedRotation = ((rotation % 360) + 360) % 360;
+  switch (normalizedRotation) {
+    case 0:
+      return {
+        left: rect.x / pageWidth,
+        top: (pageHeight - rect.y - rect.height) / pageHeight,
+        width: rect.width / pageWidth,
+        height: rect.height / pageHeight,
+      };
+    case 90:
+      return {
+        left: rect.y / pageHeight,
+        top: rect.x / pageWidth,
+        width: rect.height / pageHeight,
+        height: rect.width / pageWidth,
+      };
+    case 180:
+      return {
+        left: (pageWidth - rect.x - rect.width) / pageWidth,
+        top: rect.y / pageHeight,
+        width: rect.width / pageWidth,
+        height: rect.height / pageHeight,
+      };
+    case 270:
+      return {
+        left: (pageHeight - rect.y - rect.height) / pageHeight,
+        top: (pageWidth - rect.x - rect.width) / pageWidth,
+        width: rect.height / pageHeight,
+        height: rect.width / pageWidth,
+      };
+    default:
+      throw new Error(`Unsupported page rotation: ${rotation}`);
+  }
+}
+
 async function createRotatedFixture(): Promise<string> {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "pdf-fillable-"));
   const outputPath = path.join(tempDir, "sample-rotated-90.pdf");
@@ -99,6 +140,21 @@ async function placeAndExport(
   expect(firstFieldRect.y).toBeGreaterThanOrEqual(0);
   expect(firstFieldRect.x + firstFieldRect.width).toBeLessThanOrEqual(pageWidth + 1);
   expect(firstFieldRect.y + firstFieldRect.height).toBeLessThanOrEqual(pageHeight + 1);
+
+  // Tie the independently parsed widget back to the same visual target that
+  // was clicked. The editor counter-rotates an inherently rotated source page,
+  // so use that exact rendered rotation when projecting the raw PDF rectangle.
+  const renderedRotation = (360 - firstPage.getRotation().angle) % 360;
+  const parsedViewportRect = pdfRectToNormalizedViewport(
+    firstFieldRect,
+    pageWidth,
+    pageHeight,
+    renderedRotation
+  );
+  expect(Math.abs(parsedViewportRect.left - xRatio)).toBeLessThan(0.14);
+  expect(Math.abs(parsedViewportRect.top - yRatio)).toBeLessThan(0.14);
+  expect(Math.max(parsedViewportRect.width, parsedViewportRect.height)).toBeGreaterThan(0.02);
+  expect(Math.max(parsedViewportRect.width, parsedViewportRect.height)).toBeLessThan(0.85);
 }
 
 test("/tools/pdf-to-fillable places a field and exports", async ({ page }) => {

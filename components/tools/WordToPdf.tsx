@@ -115,7 +115,7 @@ export default function WordToPdf() {
       setProgress("Extracting document content…");
       const mammoth = await import("mammoth/mammoth.browser");
 
-      const { value: html, messages } = await mammoth.convertToHtml(
+      const { value: html } = await mammoth.convertToHtml(
         { arrayBuffer: buffer },
         {
           styleMap: [
@@ -277,7 +277,7 @@ export default function WordToPdf() {
       </div>
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".docx,.doc" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} compact={hasFile} />
+      <FileDropZone accept=".docx" multiple={false} maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} compact={hasFile} />
 
       {/* 2. File info bar */}
       {sourceFile && hasFile && !isProcessing && !downloaded && (

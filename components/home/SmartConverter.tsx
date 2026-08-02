@@ -23,14 +23,21 @@ import {
 import type { LucideIcon } from "lucide-react";
 import AdSlot from "@/components/tool/AdSlot";
 import { usePasteImage } from "@/lib/usePasteImage";
-import { setPendingFile } from "@/lib/file-handoff";
 import {
-  detectSmartConverterFileType,
+  clearPendingFile,
+  createCancelableTransition,
+  createHandoffOperationId,
+  getHandoffCapability,
+  setPendingFile,
+  type HandoffFileKind,
+} from "@/lib/file-handoff";
+import {
   getSmartConverterActions,
   getSmartConverterRoute,
   type SmartConverterActionId,
   type SmartConverterFileType,
 } from "@/lib/image-remediation/smart-converter-contracts";
+import { detectRasterFormatFromBytes } from "@/lib/image-remediation/raster-formats";
 import { addToast } from "@/lib/toast";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
@@ -142,6 +149,141 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
     accent: "text-blue-600 dark:text-blue-400",
   },
 };
+
+const MEBIBYTE = 1024 * 1024;
+const SMART_CONVERTER_BYTE_LIMITS: Record<HandoffFileKind, number> = {
+  png: 50 * MEBIBYTE,
+  jpg: 50 * MEBIBYTE,
+  gif: 50 * MEBIBYTE,
+  webp: 50 * MEBIBYTE,
+  pdf: 100 * MEBIBYTE,
+  docx: 50 * MEBIBYTE,
+};
+
+type DeclaredFileKind = HandoffFileKind | "heic" | null;
+
+function declaredKindFromName(name: string): DeclaredFileKind {
+  const extension = name.split(".").pop()?.toLowerCase();
+  switch (extension) {
+    case "png":
+    case "gif":
+    case "webp":
+    case "pdf":
+    case "docx":
+      return extension;
+    case "jpg":
+    case "jpeg":
+      return "jpg";
+    case "heic":
+    case "heif":
+      return "heic";
+    default:
+      return null;
+  }
+}
+
+function declaredKindFromMime(type: string): DeclaredFileKind {
+  switch (type.toLowerCase()) {
+    case "image/png":
+      return "png";
+    case "image/jpeg":
+      return "jpg";
+    case "image/gif":
+      return "gif";
+    case "image/webp":
+      return "webp";
+    case "application/pdf":
+      return "pdf";
+    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+      return "docx";
+    case "image/heic":
+    case "image/heif":
+      return "heic";
+    default:
+      return null;
+  }
+}
+
+function hasPdfSignature(bytes: Uint8Array): boolean {
+  const header = String.fromCharCode(...bytes);
+  return header.indexOf("%PDF-") >= 0;
+}
+
+function hasDocxContainerSignature(bytes: Uint8Array): boolean {
+  return (
+    bytes.length >= 4 &&
+    bytes[0] === 0x50 &&
+    bytes[1] === 0x4b &&
+    bytes[2] === 0x03 &&
+    bytes[3] === 0x04
+  );
+}
+
+function kindFromContentHeader(bytes: Uint8Array): HandoffFileKind | null {
+  const raster = detectRasterFormatFromBytes(bytes);
+  if (raster === "jpeg") return "jpg";
+  if (raster === "png" || raster === "gif" || raster === "webp") return raster;
+  if (hasPdfSignature(bytes)) return "pdf";
+  if (hasDocxContainerSignature(bytes)) return "docx";
+  return null;
+}
+
+function isHandoffFileKind(type: FileType): type is HandoffFileKind {
+  return type === "png" || type === "jpg" || type === "gif" || type === "webp" || type === "pdf" || type === "docx";
+}
+
+export async function verifySmartConverterFile(
+  file: File
+): Promise<{ type: FileType; error?: string }> {
+  if (file.size === 0) {
+    return { type: "unknown", error: "That file is empty. Choose a non-empty file to continue." };
+  }
+
+  const [nameKind, mimeKind] = [
+    declaredKindFromName(file.name),
+    declaredKindFromMime(file.type),
+  ];
+  if (nameKind && mimeKind && nameKind !== mimeKind) {
+    return {
+      type: "unknown",
+      error: "The file name and reported type disagree. Choose the original file instead.",
+    };
+  }
+
+  const declaredKind = nameKind ?? mimeKind;
+  // The contained iOS image format has no homepage action. Do not route it
+  // through an unverified decoder from this homepage surface.
+  if (declaredKind === "heic") return { type: "heic" };
+
+  const header = new Uint8Array(await file.slice(0, 1024).arrayBuffer());
+  const contentKind = kindFromContentHeader(header);
+
+  if (declaredKind && declaredKind !== contentKind) {
+    return {
+      type: "unknown",
+      error: "The file contents do not match its name or reported type. Choose the original file instead.",
+    };
+  }
+
+  if (!contentKind) {
+    return declaredKind
+      ? {
+          type: "unknown",
+          error: "This file does not contain a supported PNG, JPG, GIF, WebP, PDF, or DOCX header.",
+        }
+      : { type: "unknown" };
+  }
+
+  if (file.size > SMART_CONVERTER_BYTE_LIMITS[contentKind]) {
+    const limit = SMART_CONVERTER_BYTE_LIMITS[contentKind] / MEBIBYTE;
+    return {
+      type: "unknown",
+      error: `${contentKind.toUpperCase()} files are limited to ${limit} MB here.`,
+    };
+  }
+
+  return { type: contentKind };
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -332,8 +474,7 @@ function DetectedView({
           <button
             type="button"
             onClick={onReset}
-            disabled={navigatingAction !== null}
-            className="flex min-h-11 items-center gap-1.5 self-start rounded-full bg-muted/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
+            className="flex min-h-11 items-center gap-1.5 self-start rounded-full bg-muted/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
           >
             <X className="h-3.5 w-3.5" aria-hidden="true" />
             Change file
@@ -456,6 +597,114 @@ export default function SmartConverter({
   const errorId = `smart-converter-error-${idStem}`;
   // stageRef lets processFile read current stage without adding it as a dep
   const stageRef = useRef<Stage>("idle");
+  const detectedRef = useRef<DetectedFile | null>(null);
+  const processGenerationRef = useRef(0);
+  const handoffOperationIdRef = useRef<string | null>(null);
+  const handoffCommittedRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const transitionRef = useRef(createCancelableTransition());
+
+  const clearDetected = useCallback(() => {
+    const previous = detectedRef.current;
+    if (previous?.previewUrl) URL.revokeObjectURL(previous.previewUrl);
+    detectedRef.current = null;
+    setDetected(null);
+  }, []);
+
+  const cancelPendingAction = useCallback((clearCommittedHandoff = true) => {
+    transitionRef.current?.cancel();
+    const operationId = handoffOperationIdRef.current;
+    if (operationId && (clearCommittedHandoff || !handoffCommittedRef.current)) {
+      clearPendingFile(operationId);
+    }
+    handoffOperationIdRef.current = null;
+    handoffCommittedRef.current = false;
+    setNavigatingAction(null);
+  }, []);
+
+  const reset = useCallback(() => {
+    processGenerationRef.current += 1;
+    cancelPendingAction(true);
+    clearDetected();
+    setError(null);
+    stageRef.current = "idle";
+    setStage("idle");
+  }, [cancelPendingAction, clearDetected]);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    const transition = transitionRef.current;
+    return () => {
+      isMountedRef.current = false;
+      processGenerationRef.current += 1;
+      transition.cancel();
+      const operationId = handoffOperationIdRef.current;
+      if (operationId && !handoffCommittedRef.current) clearPendingFile(operationId);
+      const previous = detectedRef.current;
+      if (previous?.previewUrl) URL.revokeObjectURL(previous.previewUrl);
+      detectedRef.current = null;
+    };
+  }, []);
+
+  // ── Logo-click reset (same-page nav) ─────────────────────────────────────
+
+  useEffect(() => {
+    const handleReset = () => reset();
+    window.addEventListener("clevr:reset-home", handleReset);
+    return () => window.removeEventListener("clevr:reset-home", handleReset);
+  }, [reset]);
+
+  // ── Core logic ────────────────────────────────────────────────────────────
+
+  const processFile = useCallback(async (file: File) => {
+    const processGeneration = ++processGenerationRef.current;
+    cancelPendingAction(true);
+    clearDetected();
+    setError(null);
+
+    try {
+      const verification = await verifySmartConverterFile(file);
+      if (!isMountedRef.current || processGeneration !== processGenerationRef.current) return;
+      if (verification.error) {
+        setError(verification.error);
+        stageRef.current = "idle";
+        setStage("idle");
+        return;
+      }
+
+      const type = verification.type;
+      const isPreviewable = (["png", "jpg", "gif", "webp"] as FileType[]).includes(type);
+      let previewUrl: string | null = null;
+      let dimensions: { width: number; height: number } | null = null;
+
+      if (isPreviewable) {
+        previewUrl = URL.createObjectURL(file);
+        try {
+          const bitmap = await createImageBitmap(file);
+          dimensions = { width: bitmap.width, height: bitmap.height };
+          bitmap.close();
+        } catch {
+          // Dimensions are supplemental; verified file headers remain enough to continue.
+        }
+      }
+
+      if (!isMountedRef.current || processGeneration !== processGenerationRef.current) {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        return;
+      }
+
+      const nextDetected = { file, type, previewUrl, dimensions };
+      detectedRef.current = nextDetected;
+      setDetected(nextDetected);
+      stageRef.current = "detected";
+      setStage("detected");
+    } catch {
+      if (!isMountedRef.current || processGeneration !== processGenerationRef.current) return;
+      setError("We couldn't read that file. Choose the original file and try again.");
+      stageRef.current = "idle";
+      setStage("idle");
+    }
+  }, [cancelPendingAction, clearDetected]);
 
   // ── Full-page drag-and-drop ───────────────────────────────────────────────
 
@@ -476,7 +725,7 @@ export default function SmartConverter({
       setIsPageDragging(false);
       setDropZoneDragging(false);
       const file = e.dataTransfer?.files[0];
-      if (file) processFileRef.current(file);
+      if (file) void processFile(file);
     };
 
     document.addEventListener("dragenter", handleDragEnter);
@@ -489,69 +738,7 @@ export default function SmartConverter({
       document.removeEventListener("dragover", handleDragOver);
       document.removeEventListener("drop", handleDrop);
     };
-  }, []);
-
-  // ── URL cleanup on unmount ────────────────────────────────────────────────
-
-  useEffect(() => {
-    return () => {
-      if (detected?.previewUrl) URL.revokeObjectURL(detected.previewUrl);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ── Logo-click reset (same-page nav) ─────────────────────────────────────
-
-  useEffect(() => {
-    const handleReset = () => {
-      setDetected((prev) => {
-        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-        return null;
-      });
-      setError(null);
-      setNavigatingAction(null);
-      stageRef.current = "idle";
-      setStage("idle");
-    };
-    window.addEventListener("clevr:reset-home", handleReset);
-    return () => window.removeEventListener("clevr:reset-home", handleReset);
-  }, []);
-
-  // ── Core logic ────────────────────────────────────────────────────────────
-
-  const processFile = useCallback(async (file: File) => {
-    setError(null);
-    setNavigatingAction(null);
-
-    const type = detectSmartConverterFileType(file);
-    const isPreviewable = (["png", "jpg", "gif", "webp"] as FileType[]).includes(type);
-    let previewUrl: string | null = null;
-    let dimensions: { width: number; height: number } | null = null;
-
-    if (isPreviewable) {
-      previewUrl = URL.createObjectURL(file);
-      try {
-        const bitmap = await createImageBitmap(file);
-        dimensions = { width: bitmap.width, height: bitmap.height };
-        bitmap.close();
-      } catch {
-        // dimensions unavailable — no-op
-      }
-    }
-
-    // Clean up previous preview URL
-    setDetected((prev) => {
-      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return { file, type, previewUrl, dimensions };
-    });
-
-    stageRef.current = "detected";
-    setStage("detected");
-  }, []);
-
-  // Keep a stable ref so the drag event closure always calls the latest processFile
-  const processFileRef = useRef(processFile);
-  processFileRef.current = processFile;
+  }, [processFile]);
 
   usePasteImage(processFile);
 
@@ -568,45 +755,70 @@ export default function SmartConverter({
     if (!deferredFile || !deferredFileToken) return;
     if (handledDeferredFileTokenRef.current === deferredFileToken) return;
     handledDeferredFileTokenRef.current = deferredFileToken;
-    processFile(deferredFile);
+    queueMicrotask(() => {
+      void processFile(deferredFile);
+    });
     onDeferredFileHandled?.();
   }, [deferredFile, deferredFileToken, onDeferredFileHandled, processFile]);
 
   const handleAction = useCallback(
     (actionId: ActionId) => {
       if (!detected || navigatingAction) return;
-      const route = getSmartConverterRoute(detected.type, actionId);
-      if (!route) {
+      const verifiedKind = detected.type;
+      const route = getSmartConverterRoute(verifiedKind, actionId);
+      if (!route || !isHandoffFileKind(verifiedKind)) {
         setError("That action is not supported for this file type.");
         return;
       }
+      const capability = getHandoffCapability(route);
+      if (!capability || !capability.acceptedKinds.includes(verifiedKind)) {
+        setError("That destination cannot accept this verified file.");
+        return;
+      }
+
+      const operationId = createHandoffOperationId();
+      handoffOperationIdRef.current = operationId;
+      handoffCommittedRef.current = false;
       setNavigatingAction(actionId);
 
       // Brief feedback delay (spinner visible) before navigating
-      setTimeout(() => {
-        setPendingFile(detected.file);
-        router.push(route);
-        if (detected.previewUrl) URL.revokeObjectURL(detected.previewUrl);
-        setDetected(null);
+      transitionRef.current?.schedule(160, () => {
+        if (
+          !isMountedRef.current ||
+          handoffOperationIdRef.current !== operationId ||
+          detectedRef.current !== detected
+        ) {
+          return;
+        }
+
+        setPendingFile(detected.file, {
+          verifiedKind,
+          targetRoute: route,
+          byteLimit: capability.byteLimit,
+          operationId,
+        });
+        handoffCommittedRef.current = true;
+
+        try {
+          router.push(route);
+        } catch {
+          clearPendingFile(operationId);
+          handoffOperationIdRef.current = null;
+          handoffCommittedRef.current = false;
+          setNavigatingAction(null);
+          setError("We couldn't open that tool. Please try again.");
+          return;
+        }
+
+        clearDetected();
         setNavigatingAction(null);
         stageRef.current = "idle";
         setStage("idle");
         setError(null);
-      }, 160);
+      });
     },
-    [detected, router, navigatingAction]
+    [clearDetected, detected, navigatingAction, router]
   );
-
-  const reset = useCallback(() => {
-    if (navigatingAction) return; // don't reset while navigating
-    setDetected((prev) => {
-      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return null;
-    });
-    setError(null);
-    stageRef.current = "idle";
-    setStage("idle");
-  }, [navigatingAction]);
 
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
