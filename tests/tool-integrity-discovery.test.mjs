@@ -151,7 +151,7 @@ test("P0/P1 contained tools are disabled and absent from every discovery project
   );
   assert.match(
     privacySource,
-    /Background Remover is\s+currently disabled because its processor, retention, and deletion contract has\s+not been verified/i
+    /File X-Ray and the experimental Background\s+Remover are currently disabled because their processor, retention, training, and\s+deletion terms have not been fully verified/i
   );
 });
 
