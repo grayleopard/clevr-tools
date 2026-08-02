@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Industrial Precision — clevr.tools flagship direction</title>
+  <style>
+    :root {
+      --ink: oklch(22% .025 151);
+      --muted: oklch(43% .02 151);
+      --quiet: oklch(58% .018 151);
+      --paper: oklch(97% .014 89);
+      --paper-2: oklch(93% .02 89);
+      --paper-3: oklch(89% .026 89);
+      --line: oklch(72% .025 125);
+      --emerald: oklch(62% .16 151);
+      --emerald-deep: oklch(35% .09 151);
+      --emerald-pale: oklch(91% .07 151);
+      --rust: oklch(54% .12 43);
+      --focus: oklch(47% .16 151);
+      --lift: 0 18px 44px oklch(33% .028 151 / .09);
+      --page: min(1180px, calc(100vw - 48px));
+      --font-ui: "Avenir Next", "Segoe UI", "Trebuchet MS", sans-serif;
+      --font-display: "Arial Narrow", "Avenir Next Condensed", "Franklin Gothic Medium", sans-serif;
+    }
+    [data-theme="dark"] {
+      --ink: oklch(92% .022 151);
+      --muted: oklch(75% .024 151);
+      --quiet: oklch(62% .021 151);
+      --paper: oklch(16% .021 245);
+      --paper-2: oklch(20% .024 245);
+      --paper-3: oklch(26% .025 245);
+      --line: oklch(41% .03 214);
+      --emerald: oklch(80% .12 151);
+      --emerald-deep: oklch(87% .07 151);
+      --emerald-pale: oklch(25% .06 151);
+      --rust: oklch(74% .11 48);
+      --focus: oklch(83% .14 151);
+      --lift: none;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--paper); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      line-height: 1.5;
+      text-rendering: optimizeLegibility;
+    }
+    button, a, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { color: inherit; }
+    a { color: inherit; text-decoration: none; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .skip { position: fixed; top: 10px; left: 10px; z-index: 99; transform: translateY(-150%); background: var(--ink); color: var(--paper); padding: 10px 14px; }
+    .skip:focus { transform: translateY(0); }
+    .page-frame { min-height: 100vh; overflow: clip; }
+    .prototype-strip {
+      display: flex; justify-content: space-between; gap: 16px; align-items: center;
+      min-height: 32px; padding: 6px max(24px, calc((100vw - 1180px) / 2));
+      background: var(--emerald-deep); color: var(--paper); font-size: .72rem; letter-spacing: .09em; text-transform: uppercase;
+    }
+    .prototype-strip strong { font-weight: 800; }
+    .masthead { width: var(--page); margin: 0 auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 86px; border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; gap: 8px; align-items: center; width: max-content; font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: -.075em; text-transform: lowercase; }
+    .brand-mark { display: grid; width: 23px; height: 23px; place-items: center; border: 2px solid var(--emerald); border-radius: 2px; transform: rotate(45deg); }
+    .brand-mark span { display: block; width: 7px; height: 7px; background: var(--emerald); }
+    .brand em { color: var(--emerald); font-style: normal; }
+    .desktop-nav { display: flex; gap: 3px; align-items: stretch; }
+    .desktop-nav button, .desktop-nav a { border: 0; background: none; padding: 10px 12px; color: var(--muted); font-size: .82rem; font-weight: 700; cursor: pointer; }
+    .desktop-nav button:hover, .desktop-nav a:hover, .desktop-nav .is-current { color: var(--emerald-deep); background: var(--emerald-pale); }
+    .mast-actions { justify-self: end; display: flex; align-items: center; gap: 9px; }
+    .icon-button { display: inline-grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 0; background: transparent; color: var(--ink); cursor: pointer; }
+    .icon-button:hover { border-color: var(--emerald); color: var(--emerald-deep); }
+    .menu-toggle { display: none; }
+    .mobile-panel { display: none; }
+    .main { width: var(--page); margin: 0 auto; }
+    .view { display: none; animation: rise .34s cubic-bezier(.22, 1, .36, 1) both; }
+    .view.is-active { display: block; }
+    .eyebrow { margin: 0 0 12px; color: var(--emerald-deep); font-size: .72rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.28fr) minmax(280px, .72fr); gap: clamp(32px, 7vw, 96px); padding: clamp(64px, 11vw, 136px) 0 clamp(60px, 8vw, 100px); border-bottom: 1px solid var(--line); }
+    .hero::before { content: "01"; position: absolute; right: 0; top: 30px; color: color-mix(in oklch, var(--line) 62%, transparent); font-family: var(--font-display); font-size: clamp(8rem, 18vw, 14rem); font-weight: 900; letter-spacing: -.1em; line-height: .7; pointer-events: none; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { position: relative; max-width: 690px; margin: 0; font-family: var(--font-display); font-size: clamp(3.3rem, 8vw, 7.4rem); font-weight: 900; letter-spacing: -.085em; line-height: .85; text-transform: uppercase; }
+    h1 .accent { color: var(--emerald); }
+    .hero-copy { position: relative; max-width: 52ch; margin: 24px 0 0; color: var(--muted); font-size: clamp(1rem, 1.5vw, 1.22rem); line-height: 1.65; }
+    .hero-docket { align-self: end; position: relative; border-left: 4px solid var(--emerald); background: var(--paper-2); padding: 24px; box-shadow: var(--lift); }
+    .docket-kicker { margin-bottom: 26px; color: var(--quiet); font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .docket-list { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .docket-list button { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; border: 0; border-bottom: 1px solid var(--line); background: none; padding: 14px 0; text-align: left; cursor: pointer; }
+    .docket-list button:hover span:first-child { color: var(--emerald-deep); }
+    .docket-list span:first-child { font-weight: 800; }
+    .docket-list span:last-child { color: var(--quiet); font-size: .78rem; }
+    .trust-note { display: flex; gap: 10px; align-items: flex-start; margin-top: 22px; color: var(--muted); font-size: .82rem; line-height: 1.45; }
+    .trust-note svg { flex: 0 0 auto; margin-top: 2px; color: var(--emerald); }
+    .index-section { padding: clamp(54px, 7vw, 96px) 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+    h2 { margin: 0; font-family: var(--font-display); font-size: clamp(2.1rem, 4vw, 4rem); font-weight: 900; letter-spacing: -.07em; line-height: .9; text-transform: uppercase; }
+    .section-head p { max-width: 38ch; margin: 0; color: var(--muted); font-size: .9rem; }
+    .tool-ledger { border-top: 2px solid var(--ink); }
+    .tool-row { display: grid; grid-template-columns: 54px minmax(0, 1fr) minmax(130px, .55fr) 35px; gap: 18px; align-items: center; min-height: 83px; border-bottom: 1px solid var(--line); }
+    .tool-row .number { color: var(--quiet); font-family: var(--font-display); font-size: 1.25rem; font-weight: 900; }
+    .tool-row button { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border: 0; background: none; padding: 12px 0; text-align: left; cursor: pointer; }
+    .tool-row strong { font-size: 1rem; }
+    .tool-row button:hover strong { color: var(--emerald-deep); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+    .tool-row .descript { color: var(--muted); font-size: .84rem; }
+    .tool-row .local { color: var(--emerald-deep); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .arrow { color: var(--emerald); font-size: 1.5rem; text-align: right; }
+    .category-rail { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 60px; border: 1px solid var(--line); }
+    .category-rail button { min-height: 140px; border: 0; border-right: 1px solid var(--line); background: transparent; padding: 19px; text-align: left; cursor: pointer; }
+    .category-rail button:last-child { border-right: 0; }
+    .category-rail button:hover { background: var(--emerald-pale); color: var(--emerald-deep); }
+    .category-rail span { display: block; color: var(--quiet); font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .category-rail strong { display: block; margin-top: 30px; font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; letter-spacing: -.05em; line-height: .9; text-transform: uppercase; }
+    .category-rail em { display: block; margin-top: 12px; color: var(--muted); font-size: .75rem; font-style: normal; }
+    .page-intro { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 28px; padding: clamp(55px, 9vw, 104px) 0 50px; border-bottom: 2px solid var(--ink); }
+    .page-intro .route-mark { color: var(--emerald); font-family: var(--font-display); font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 900; letter-spacing: -.11em; line-height: .75; }
+    .page-intro h1 { font-size: clamp(3rem, 7vw, 6.5rem); }
+    .page-intro p { max-width: 62ch; margin: 22px 0 0; color: var(--muted); font-size: 1.04rem; line-height: 1.65; }
+    .category-block { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 30px; padding: 42px 0; border-bottom: 1px solid var(--line); }
+    .category-title { margin: 0; color: var(--emerald-deep); font-size: .78rem; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    .tool-cluster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 30px; }
+    .tool-cluster a { display: grid; grid-template-columns: 21px 1fr; gap: 12px; padding: 14px 0 16px; border-bottom: 1px solid var(--line); }
+    .tool-cluster a:hover { color: var(--emerald-deep); }
+    .tool-cluster svg { margin-top: 3px; color: var(--emerald); }
+    .tool-cluster strong { display: block; font-size: .93rem; }
+    .tool-cluster span { display: block; margin-top: 3px; color: var(--muted); font-size: .78rem; line-height: 1.45; }
+    .breadcrumbs { display: flex; flex-wrap: wrap; gap: 8px; padding: 28px 0 0; color: var(--muted); font-size: .77rem; }
+    .breadcrumbs button { border: 0; background: none; padding: 0; color: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .breadcrumbs span:last-child { color: var(--ink); }
+    .tool-top { display: flex; justify-content: space-between; align-items: end; gap: 25px; padding: 30px 0 32px; border-bottom: 2px solid var(--ink); }
+    .tool-top h1 { max-width: 800px; font-size: clamp(2.8rem, 6.8vw, 6.2rem); }
+    .tool-top .sub { max-width: 48ch; margin: 15px 0 0; color: var(--muted); }
+    .state-stamp { flex: 0 0 auto; align-self: start; border: 1px solid var(--emerald); padding: 7px 9px; color: var(--emerald-deep); font-size: .67rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+    .compress-grid { display: grid; grid-template-columns: minmax(0, 1fr) 305px; gap: 0; margin: 42px 0 65px; border: 1px solid var(--line); background: var(--paper-2); }
+    .compress-main { min-width: 0; padding: clamp(24px, 5vw, 54px); }
+    .settings-rail { border-left: 1px solid var(--line); background: color-mix(in oklch, var(--paper) 82%, var(--emerald-pale)); padding: 25px; }
+    .rail-title { display: flex; align-items: center; justify-content: space-between; margin: 0 0 23px; font-size: .75rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+    .rail-title span { color: var(--quiet); font-size: .67rem; }
+    .drop-surface { display: grid; min-height: 400px; place-items: center; border: 2px dashed var(--line); background-color: var(--paper); background-image: linear-gradient(var(--paper-2) 1px, transparent 1px), linear-gradient(90deg, var(--paper-2) 1px, transparent 1px); background-size: 24px 24px; padding: 32px; text-align: center; }
+    .drop-inner { max-width: 380px; }
+    .file-square { display: grid; width: 72px; height: 82px; place-items: center; margin: 0 auto 23px; border: 2px solid var(--emerald); background: var(--emerald-pale); color: var(--emerald-deep); }
+    .drop-surface h2 { font-family: var(--font-ui); font-size: clamp(1.7rem, 3vw, 2.3rem); letter-spacing: -.045em; line-height: 1; text-transform: none; }
+    .drop-surface p { max-width: 34ch; margin: 13px auto 0; color: var(--muted); font-size: .9rem; }
+    .action-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 23px; }
+    .button-primary, .button-secondary { min-height: 46px; border: 1px solid var(--emerald); padding: 11px 16px; font-size: .85rem; font-weight: 850; cursor: pointer; }
+    .button-primary { background: var(--emerald); color: oklch(18% .025 151); }
+    .button-primary:hover { background: var(--emerald-deep); color: var(--paper); }
+    .button-secondary { background: transparent; color: var(--emerald-deep); }
+    .button-secondary:hover { background: var(--emerald-pale); }
+    .format-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-top: 22px; color: var(--quiet); font-size: .69rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .format-line span { border-bottom: 1px solid var(--line); padding: 2px 0; }
+    .privacy-contract { display: flex; gap: 10px; align-items: flex-start; max-width: 540px; margin: 24px auto 0; color: var(--emerald-deep); font-size: .78rem; text-align: left; }
+    .privacy-contract svg { flex: 0 0 auto; }
+    .rail-copy { margin: 0; color: var(--muted); font-size: .84rem; line-height: 1.65; }
+    .rail-rule { border: 0; border-top: 1px solid var(--line); margin: 22px 0; }
+    .rail-list { display: grid; gap: 1px; margin: 0; padding: 0; list-style: none; }
+    .rail-list li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .78rem; }
+    .rail-list strong { color: var(--ink); font-weight: 800; }
+    .selected-file { display: flex; gap: 15px; align-items: center; margin-bottom: 28px; border-bottom: 1px solid var(--line); padding-bottom: 22px; }
+    .file-chip { display: grid; width: 44px; height: 52px; place-items: center; border: 1px solid var(--emerald); background: var(--emerald-pale); color: var(--emerald-deep); }
+    .selected-file strong { display: block; font-size: .95rem; }
+    .selected-file span { display: block; margin-top: 2px; color: var(--muted); font-size: .78rem; }
+    .setting-group { margin-top: 25px; }
+    .setting-group > label, .setting-group > div:first-child { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .82rem; font-weight: 850; }
+    .setting-group output { color: var(--emerald-deep); font-family: var(--font-display); font-size: 1.25rem; font-weight: 900; }
+    input[type="range"] { width: 100%; accent-color: var(--emerald); margin: 13px 0 5px; }
+    .range-copy { display: flex; justify-content: space-between; color: var(--muted); font-size: .67rem; }
+    .format-options { display: grid; gap: 7px; margin-top: 9px; }
+    .format-options button { display: flex; justify-content: space-between; align-items: center; width: 100%; border: 1px solid var(--line); background: var(--paper); padding: 11px; color: var(--muted); font-size: .8rem; font-weight: 750; text-align: left; cursor: pointer; }
+    .format-options button.is-selected { border-color: var(--emerald); background: var(--emerald-pale); color: var(--emerald-deep); }
+    .format-options button:hover { border-color: var(--emerald); }
+    .format-options small { color: var(--quiet); font-weight: 600; }
+    .result-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); }
+    .result-plate { min-width: 0; background: var(--paper); padding: 16px; }
+    .result-plate header { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 14px; color: var(--muted); font-size: .73rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .result-plate.optimized header { color: var(--emerald-deep); }
+    .image-stage { display: grid; min-height: 280px; place-items: center; overflow: hidden; background: var(--paper-2); background-image: linear-gradient(45deg, color-mix(in oklch, var(--paper-3) 80%, transparent) 25%, transparent 25%), linear-gradient(-45deg, color-mix(in oklch, var(--paper-3) 80%, transparent) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, color-mix(in oklch, var(--paper-3) 80%, transparent) 75%), linear-gradient(-45deg, transparent 75%, color-mix(in oklch, var(--paper-3) 80%, transparent) 75%); background-size: 22px 22px; background-position: 0 0, 0 11px, 11px -11px, -11px 0; }
+    .image-placeholder { position: relative; width: min(75%, 290px); aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--line); background: linear-gradient(135deg, oklch(69% .105 135), oklch(88% .08 90)); }
+    .image-placeholder::before { content: ""; position: absolute; width: 55%; height: 60%; bottom: -15%; left: -7%; background: oklch(43% .09 158); clip-path: polygon(0 100%, 64% 5%, 100% 100%); }
+    .image-placeholder::after { content: ""; position: absolute; width: 65%; height: 72%; bottom: -20%; right: -14%; background: oklch(57% .13 129); clip-path: polygon(0 100%, 70% 0, 100% 100%); }
+    .image-placeholder i { position: absolute; top: 18%; left: 18%; width: 20%; aspect-ratio: 1; border: 2px solid oklch(94% .02 89); border-radius: 50%; }
+    .result-caption { display: block; margin-top: 12px; color: var(--muted); font-size: .75rem; }
+    .outcome { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 26px; align-items: center; margin-top: 28px; border-top: 2px solid var(--ink); padding-top: 23px; }
+    .outcome h2 { font-size: clamp(1.8rem, 3vw, 2.7rem); text-transform: none; }
+    .outcome p { margin: 8px 0 0; color: var(--muted); font-size: .85rem; }
+    .outcome .action-line { justify-content: flex-end; margin: 0; }
+    .status-dot { display: inline-block; width: 10px; height: 10px; margin-right: 7px; background: var(--emerald); }
+    .footer { width: var(--page); margin: 0 auto; border-top: 2px solid var(--ink); padding: 33px 0 max(33px, env(safe-area-inset-bottom)); }
+    .footer-grid { display: grid; grid-template-columns: 1fr auto; gap: 30px; }
+    .footer p { max-width: 55ch; margin: 12px 0 0; color: var(--muted); font-size: .8rem; }
+    .footer nav { display: flex; flex-wrap: wrap; gap: 16px; align-content: start; font-size: .82rem; font-weight: 750; }
+    .footer a:hover { color: var(--emerald-deep); text-decoration: underline; text-underline-offset: 4px; }
+    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 40; max-width: 330px; transform: translateY(140%); border-left: 4px solid var(--emerald); background: var(--ink); padding: 13px 16px; color: var(--paper); font-size: .82rem; box-shadow: var(--lift); transition: transform .25s cubic-bezier(.22, 1, .36, 1); }
+    .toast.is-visible { transform: translateY(0); }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 840px) {
+      :root { --page: min(100% - 32px, 720px); }
+      .prototype-strip { padding-inline: 16px; }
+      .prototype-strip span:last-child { display: none; }
+      .masthead { grid-template-columns: 1fr auto; min-height: 70px; }
+      .desktop-nav { display: none; }
+      .menu-toggle { display: inline-grid; }
+      .mobile-panel { position: fixed; inset: 102px 16px auto; z-index: 30; max-height: calc(100dvh - 122px); overflow: auto; border: 1px solid var(--line); background: var(--paper); box-shadow: var(--lift); padding: 12px; }
+      .mobile-panel.is-open { display: block; }
+      .mobile-panel button, .mobile-panel a { display: block; width: 100%; border: 0; background: none; padding: 14px; color: var(--ink); font-size: .95rem; font-weight: 800; text-align: left; cursor: pointer; }
+      .mobile-panel button:hover, .mobile-panel a:hover { background: var(--emerald-pale); color: var(--emerald-deep); }
+      .hero { grid-template-columns: 1fr; gap: 42px; padding-top: 68px; }
+      .hero::before { top: 25px; font-size: 9rem; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 15px; }
+      .tool-row { grid-template-columns: 36px minmax(0, 1fr) 28px; gap: 12px; min-height: 70px; }
+      .tool-row .descript, .tool-row .local { display: none; }
+      .category-rail { grid-template-columns: repeat(2, 1fr); margin-top: 40px; }
+      .category-rail button:nth-child(2) { border-right: 0; }
+      .category-rail button:nth-child(n + 3) { border-top: 1px solid var(--line); }
+      .category-rail button:last-child { grid-column: span 2; border-right: 0; }
+      .page-intro { grid-template-columns: 1fr; gap: 20px; padding-top: 62px; }
+      .page-intro .route-mark { font-size: 4rem; }
+      .category-block { grid-template-columns: 1fr; gap: 15px; padding: 31px 0; }
+      .tool-cluster { grid-template-columns: 1fr; }
+      .tool-top { display: block; padding-top: 25px; }
+      .state-stamp { display: inline-block; margin-top: 20px; }
+      .compress-grid { grid-template-columns: 1fr; margin-top: 30px; }
+      .settings-rail { border-top: 1px solid var(--line); border-left: 0; }
+      .drop-surface { min-height: 360px; padding: 22px; }
+      .result-comparison { grid-template-columns: 1fr; }
+      .image-stage { min-height: 220px; }
+      .outcome { grid-template-columns: 1fr; }
+      .outcome .action-line { justify-content: flex-start; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: clamp(3.05rem, 15vw, 4.5rem); }
+      .hero { padding-bottom: 50px; }
+      .docket-list button { padding-block: 12px; }
+      .category-rail { grid-template-columns: 1fr; }
+      .category-rail button, .category-rail button:nth-child(2), .category-rail button:last-child { grid-column: auto; border-right: 0; border-top: 1px solid var(--line); min-height: auto; }
+      .category-rail button:first-child { border-top: 0; }
+      .compress-main { padding: 18px; }
+      .drop-surface { min-height: 330px; }
+      .action-line > * { width: 100%; }
+      .tool-row { grid-template-columns: 30px minmax(0, 1fr) 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <svg aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="9" r="1.7" fill="currentColor"/><path d="m5 18 5-5 3 3 3-4 3 6" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 15.4A8.5 8.5 0 0 1 8.6 4.5 8.5 8.5 0 1 0 19.5 15.4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
+  </svg>
+  <div class="page-frame">
+    <div class="prototype-strip"><strong>Prototype — Industrial Precision</strong><span>Visual state controls only · no files are uploaded or processed here</span></div>
+    <header class="masthead">
+      <a class="brand" href="#home" data-go="home" aria-label="clevr.tools home"><span class="brand-mark"><span></span></span><span><em>clevr</em>.tools</span></a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <button type="button" data-go="files">Files</button>
+        <a href="#home">Text &amp; Code</a><a href="#home">Calculate</a><a href="#home">Time</a><a href="#home">Type</a><a href="#home">Play</a><a href="#home">Blog</a>
+      </nav>
+      <div class="mast-actions">
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Switch to dark theme" title="Toggle theme"><svg width="18" height="18"><use href="#i-moon"></use></svg></button>
+        <button class="icon-button menu-toggle" type="button" data-menu aria-expanded="false" aria-controls="mobile-panel" aria-label="Open menu"><svg width="20" height="20"><use href="#i-menu"></use></svg></button>
+      </div>
+    </header>
+    <aside class="mobile-panel" id="mobile-panel" aria-label="Mobile navigation">
+      <button type="button" data-go="home">Home</button><button type="button" data-go="files">Files</button><a href="#home">Text &amp; Code</a><a href="#home">Calculate</a><a href="#home">Time</a><a href="#home">Type</a><a href="#home">Play</a><a href="#home">Blog</a>
+    </aside>
+    <main id="main" class="main">
+      <section class="view is-active" data-view="home" aria-labelledby="home-title">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Browser-native utility / 100+ tools</p>
+            <h1 id="home-title">Files in.<br><span class="accent">Finished</span><br>out.</h1>
+            <p class="hero-copy">Private, direct tools for the moment you need a file changed. Compress images, convert documents, merge PDFs, and move on with your day.</p>
+          </div>
+          <aside class="hero-docket" aria-label="Quick start tools">
+            <p class="docket-kicker">Choose a starting point</p>
+            <ul class="docket-list">
+              <li><button type="button" data-go="compress-empty"><span>Compress an image</span><span>JPG · PNG · WebP →</span></button></li>
+              <li><button type="button" data-go="files"><span>Convert a file</span><span>Formats &amp; PDFs →</span></button></li>
+              <li><button type="button" data-go="files"><span>Combine PDFs</span><span>Drag to reorder →</span></button></li>
+            </ul>
+            <p class="trust-note"><svg width="17" height="17"><use href="#i-lock"></use></svg><span>The featured Image Compressor processes its images locally in your browser.</span></p>
+          </aside>
+        </div>
+        <section class="index-section" aria-labelledby="fast-title">
+          <div class="section-head"><div><p class="eyebrow">File workflow / common work</p><h2 id="fast-title">Start where<br>it counts.</h2></div><p>Clear tools for specific jobs. Each route tells you what it accepts, what changes, and how to get the result.</p></div>
+          <div class="tool-ledger" role="list">
+            <div class="tool-row" role="listitem"><span class="number">01</span><button type="button" data-go="compress-empty"><strong>Image Compressor</strong><span class="descript">Compress JPG, PNG &amp; WebP images and compare the result.</span></button><span class="local">On device</span><span class="arrow">↗</span></div>
+            <div class="tool-row" role="listitem"><span class="number">02</span><button type="button" data-go="files"><strong>PDF to JPG Converter</strong><span class="descript">Convert PDF pages to high-quality JPG images — batch supported.</span></button><span class="local">On device</span><span class="arrow">↗</span></div>
+            <div class="tool-row" role="listitem"><span class="number">03</span><button type="button" data-go="files"><strong>Merge PDF</strong><span class="descript">Combine multiple PDF files into one — drag to reorder.</span></button><span class="local">On device</span><span class="arrow">↗</span></div>
+            <div class="tool-row" role="listitem"><span class="number">04</span><button type="button" data-go="files"><strong>Image Resizer</strong><span class="descript">Resize images by dimensions, presets, or target file size.</span></button><span class="local">On device</span><span class="arrow">↗</span></div>
+          </div>
+          <div class="category-rail" aria-label="All tool categories">
+            <button type="button" data-go="files"><span>01</span><strong>Files</strong><em>Compress &amp; convert</em></button>
+            <a href="#home"><span>02</span><strong>Text<br>&amp; code</strong><em>Write &amp; transform</em></a>
+            <a href="#home"><span>03</span><strong>Calculate</strong><em>Money &amp; life</em></a>
+            <a href="#home"><span>04</span><strong>Time</strong><em>Focus &amp; time</em></a>
+            <a href="#home"><span>05</span><strong>Type</strong><em>Speed &amp; rhythm</em></a>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" data-view="files" aria-labelledby="files-title">
+        <div class="page-intro">
+          <div class="route-mark">F/</div>
+          <div><p class="eyebrow">Files / Core workflow</p><h1 id="files-title">Make files<br><span class="accent">behave.</span></h1><p>Compress, convert, and transform files directly in your browser. The work happens on your device, with no account or upload queue in the way.</p></div>
+        </div>
+        <section class="category-block" aria-labelledby="compress-title"><h2 class="category-title" id="compress-title">Compress</h2><div class="tool-cluster"><a href="#compress-empty" data-go="compress-empty"><svg width="20" height="20"><use href="#i-image"></use></svg><span><strong>Image Compressor</strong><span>Compress JPG, PNG &amp; WebP images and compare the result.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>GIF Compressor</strong><span>Compress animated GIFs in your browser while preserving motion.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>PDF Compressor</strong><span>Strip metadata and reduce PDF file size in your browser.</span></span></a></div></section>
+        <section class="category-block" aria-labelledby="images-title"><h2 class="category-title" id="images-title">Convert images</h2><div class="tool-cluster"><a href="#files"><svg width="20" height="20"><use href="#i-image"></use></svg><span><strong>JPG to PNG Converter</strong><span>Convert JPG images to PNG format.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-image"></use></svg><span><strong>PNG to JPG Converter</strong><span>Convert PNG images to JPG with a white background fill.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-image"></use></svg><span><strong>PNG to WebP Converter</strong><span>Convert PNG images to the modern WebP format.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-image"></use></svg><span><strong>WebP to PNG Converter</strong><span>Convert WebP images to lossless PNG format.</span></span></a></div></section>
+        <section class="category-block" aria-labelledby="pdf-title"><h2 class="category-title" id="pdf-title">PDF tools</h2><div class="tool-cluster"><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>PDF to JPG Converter</strong><span>Convert PDF pages to high-quality JPG images — batch supported.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>JPG to PDF Converter</strong><span>Combine JPG, PNG &amp; WebP images into a single PDF document.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>Merge PDF</strong><span>Combine multiple PDF files into one — drag to reorder.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>Split PDF</strong><span>Extract pages or split a PDF into separate files.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>Rotate PDF</strong><span>Rotate pages individually or all at once.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>Word to PDF Converter</strong><span>Export Word documents as PDF files.</span></span></a></div></section>
+        <section class="category-block" aria-labelledby="edit-title"><h2 class="category-title" id="edit-title">Create &amp; edit</h2><div class="tool-cluster"><a href="#files"><svg width="20" height="20"><use href="#i-image"></use></svg><span><strong>Image Resizer</strong><span>Resize images by dimensions, presets, or target file size.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-image"></use></svg><span><strong>Image Cropper</strong><span>Crop images to an exact area in your browser.</span></span></a><a href="#files"><svg width="20" height="20"><use href="#i-file"></use></svg><span><strong>Invoice Generator</strong><span>Create a professional invoice and download it as a PDF.</span></span></a></div></section>
+      </section>
+
+      <section class="view" data-view="compress-empty" aria-labelledby="compress-empty-title">
+        <div class="breadcrumbs"><button type="button" data-go="home">Home</button><span>/</span><button type="button" data-go="files">Files</button><span>/</span><span>Image Compressor</span></div>
+        <header class="tool-top"><div><p class="eyebrow">Files / Image operation</p><h1 id="compress-empty-title">Image<br><span class="accent">Compressor.</span></h1><p class="sub">Compress JPG, PNG &amp; WebP images and compare the result.</p></div><span class="state-stamp">State 01 / empty</span></header>
+        <div class="compress-grid">
+          <section class="compress-main" aria-label="Choose image files">
+            <div class="drop-surface"><div class="drop-inner"><div class="file-square"><svg width="37" height="37"><use href="#i-image"></use></svg></div><h2>Place images here.</h2><p>Drag in images, browse from your device, or paste one from your clipboard.</p><div class="action-line"><button class="button-primary" type="button" data-go="compress-settings">Browse images</button><button class="button-secondary" type="button" data-go="compress-settings">Paste clipboard</button></div><div class="format-line"><span>JPG</span><span>PNG</span><span>WebP</span><span>Max 50 MB</span></div><p class="privacy-contract"><svg width="17" height="17"><use href="#i-lock"></use></svg><span>Privacy contract: compression runs in your browser. Your images never leave this device.</span></p></div></div>
+          </section>
+          <aside class="settings-rail"><p class="rail-title">Before you start <span>Readout</span></p><p class="rail-copy">You choose the quality and output format after selecting an image. Keep an original copy if you may need to export again later.</p><hr class="rail-rule"><ul class="rail-list"><li><strong>Input</strong><span>JPG, PNG, WebP</span></li><li><strong>Limit</strong><span>50 MB per image</span></li><li><strong>Output</strong><span>Original, JPG, WebP</span></li><li><strong>Compare</strong><span>Before / after</span></li></ul></aside>
+        </div>
+      </section>
+
+      <section class="view" data-view="compress-settings" aria-labelledby="compress-settings-title">
+        <div class="breadcrumbs"><button type="button" data-go="home">Home</button><span>/</span><button type="button" data-go="files">Files</button><span>/</span><span>Image Compressor</span></div>
+        <header class="tool-top"><div><p class="eyebrow">Files / Image operation</p><h1 id="compress-settings-title">Set the<br><span class="accent">tolerance.</span></h1><p class="sub">Tune the compression settings. The full tool automatically recompresses after a short pause when you change these choices.</p></div><span class="state-stamp">State 02 / settings</span></header>
+        <div class="compress-grid">
+          <section class="compress-main" aria-label="Selected image" style="display:flex;flex-direction:column;justify-content:center">
+            <div class="selected-file"><span class="file-chip"><svg width="25" height="25"><use href="#i-image"></use></svg></span><span><strong>Selected image</strong><span>The actual filename and dimensions appear here after a local file is chosen.</span></span></div>
+            <div class="drop-surface" style="min-height:300px"><div class="drop-inner"><div class="file-square"><svg width="37" height="37"><use href="#i-image"></use></svg></div><h2>Ready to compress.</h2><p>Quality and output format are the two controls that matter. You can compare the result before you download.</p><div class="action-line"><button type="button" class="button-primary" data-go="compress-results">Review output</button><button type="button" class="button-secondary" data-go="compress-empty">Choose another image</button></div><p class="privacy-contract"><svg width="17" height="17"><use href="#i-lock"></use></svg><span>Prototype state only. The production tool retains the selected file only in this browser tab.</span></p></div></div>
+          </section>
+          <aside class="settings-rail"><p class="rail-title">Compression settings <span>Editable</span></p><div class="setting-group"><label for="quality"><span>Quality</span><output id="quality-output" for="quality">80%</output></label><input id="quality" type="range" min="1" max="100" value="80" aria-describedby="quality-copy"><div class="range-copy" id="quality-copy"><span>Smaller file</span><span>Better quality</span></div></div><div class="setting-group"><div><span>Output format</span><span style="color:var(--quiet);font-size:.67rem;text-transform:uppercase;letter-spacing:.1em">Choose one</span></div><div class="format-options" role="radiogroup" aria-label="Output format"><button type="button" class="is-selected" data-format="original" role="radio" aria-checked="true"><span>Keep original</span><small>Safest compatibility</small></button><button type="button" data-format="jpeg" role="radio" aria-checked="false"><span>JPG</span><small>Good for photos</small></button><button type="button" data-format="webp" role="radio" aria-checked="false"><span>WebP</span><small>Good for web</small></button></div></div><div class="setting-group"><div><span>Quick presets</span></div><div class="format-options"><button type="button" data-quality="80"><span>Web (80)</span><small>Balanced</small></button><button type="button" data-quality="95"><span>Ultra (95)</span><small>Higher fidelity</small></button></div></div></aside>
+        </div>
+      </section>
+
+      <section class="view" data-view="compress-results" aria-labelledby="compress-results-title">
+        <div class="breadcrumbs"><button type="button" data-go="home">Home</button><span>/</span><button type="button" data-go="files">Files</button><span>/</span><span>Image Compressor</span></div>
+        <header class="tool-top"><div><p class="eyebrow">Files / Image operation</p><h1 id="compress-results-title">Inspect the<br><span class="accent">difference.</span></h1><p class="sub">Review the visual result before you download. In the real tool, actual file size, savings, and output details appear here after local processing.</p></div><span class="state-stamp">State 03 / result</span></header>
+        <div class="compress-grid"><section class="compress-main"><div class="result-comparison"><article class="result-plate"><header><span>Original</span><span>Preview</span></header><div class="image-stage"><div class="image-placeholder"><i></i></div></div><span class="result-caption">Your original image preview — actual filename and size are shown after processing.</span></article><article class="result-plate optimized"><header><span>Optimized</span><span>Preview</span></header><div class="image-stage"><div class="image-placeholder"><i></i></div></div><span class="result-caption">Optimized preview — compare texture, edges, and gradients at the intended display size.</span></article></div><div class="outcome"><div><h2><span class="status-dot"></span>Result ready.</h2><p>This is a layout-only prototype. The live tool will show its actual storage savings, process time, export format, and download filename here.</p></div><div class="action-line"><button type="button" class="button-secondary" data-go="compress-empty">Process another</button><button type="button" class="button-primary" data-toast="Prototype only — the live tool generates the optimized file in your browser.">Download optimized</button></div></div></section><aside class="settings-rail"><p class="rail-title">Output details <span>Live result</span></p><ul class="rail-list"><li><strong>Format</strong><span>Appears after processing</span></li><li><strong>Dimensions</strong><span>Appears after processing</span></li><li><strong>Files</strong><span>Appears after processing</span></li></ul><hr class="rail-rule"><p class="rail-copy">Compression is lossy and one-way. Keep the original if you might need to adjust the image later.</p></aside></div>
+      </section>
+    </main>
+    <footer class="footer"><div class="footer-grid"><div><a class="brand" href="#home" data-go="home"><span class="brand-mark"><span></span></span><span><em>clevr</em>.tools</span></a><p>Prototype scope: the featured Image Compressor is a browser-local file workflow. Confirm privacy handling on each production tool.</p></div><nav aria-label="Footer"><a href="#home">About</a><a href="#home">Privacy</a><a href="#home">Blog</a></nav></div></footer>
+  </div>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const views = [...document.querySelectorAll('[data-view]')];
+      const navButtons = [...document.querySelectorAll('[data-go]')];
+      const menu = document.querySelector('[data-menu]');
+      const panel = document.getElementById('mobile-panel');
+      const theme = document.querySelector('[data-theme-toggle]');
+      const toast = document.querySelector('.toast');
+      let toastTimer;
+      const names = new Set(views.map(view => view.dataset.view));
+      function openView(name, push = true) {
+        const target = names.has(name) ? name : 'home';
+        views.forEach(view => view.classList.toggle('is-active', view.dataset.view === target));
+        navButtons.forEach(button => button.classList.toggle('is-current', button.dataset.go === target));
+        if (push) location.hash = target;
+        panel.classList.remove('is-open');
+        menu?.setAttribute('aria-expanded', 'false');
+        document.getElementById('main').focus?.({preventScroll:true});
+        window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      }
+      navButtons.forEach(button => button.addEventListener('click', event => { const target = button.dataset.go; if (target) { event.preventDefault(); openView(target); } }));
+      window.addEventListener('hashchange', () => openView(location.hash.slice(1), false));
+      openView(location.hash.slice(1) || 'home', false);
+      menu?.addEventListener('click', () => { const open = panel.classList.toggle('is-open'); menu.setAttribute('aria-expanded', String(open)); });
+      theme?.addEventListener('click', () => { const dark = root.dataset.theme === 'dark'; root.dataset.theme = dark ? 'light' : 'dark'; theme.setAttribute('aria-label', dark ? 'Switch to dark theme' : 'Switch to light theme'); theme.innerHTML = `<svg width="18" height="18"><use href="#i-${dark ? 'moon' : 'sun'}"></use></svg>`; });
+      const quality = document.getElementById('quality'); const qualityOutput = document.getElementById('quality-output');
+      quality?.addEventListener('input', () => qualityOutput.value = `${quality.value}%`);
+      document.querySelectorAll('[data-quality]').forEach(button => button.addEventListener('click', () => { quality.value = button.dataset.quality; quality.dispatchEvent(new Event('input')); }));
+      document.querySelectorAll('[data-format]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-format]').forEach(other => { const on = other === button; other.classList.toggle('is-selected', on); other.setAttribute('aria-checked', String(on)); }); }));
+      document.querySelectorAll('[data-toast]').forEach(button => button.addEventListener('click', () => { toast.textContent = button.dataset.toast; toast.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 3600); }));
+    })();
+  </script>
+  <script>
+    (() => {
+      const title = [...document.querySelectorAll('.tool-cluster strong')].find((node) => node.textContent === 'PDF Compressor');
+      if (title?.nextElementSibling) title.nextElementSibling.textContent = 'Rewrite a PDF locally; file size can vary by source.';
+    })();
+  </script>
+</body>
+</html>
