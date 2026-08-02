@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About | clevr.tools",
   description:
-    "clevr.tools is a free collection of online file and text utilities. Nearly every tool runs in your browser, so your files stay on your device.",
+    "clevr.tools is a free collection of online file and text utilities. Local tools are clearly labeled and process files in your browser.",
   alternates: {
     canonical: "https://www.clevr.tools/about",
   },
@@ -26,11 +26,13 @@ export default function AboutPage() {
             </p>
 
             <p>
-              Nearly every tool runs entirely in your browser — your files and
-              text never leave your device, are never uploaded to a server, and
-              are never stored anywhere. The rare exception is clearly labeled
-              before you use it. There&apos;s no signup, no account, no tracking
-              beyond basic anonymous analytics.
+              Most tools run entirely in your browser. Tools labeled as local
+              process your files or text in browser memory without sending that
+              content to our servers. Any tool that requires external processing
+              is labeled before submission and is unavailable until its data-handling
+              terms have been verified. There&apos;s no signup or account; we use only
+              basic usage analytics configured to exclude file contents, filenames,
+              and text inputs.
             </p>
 
             <p>

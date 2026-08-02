@@ -66,13 +66,14 @@ export default function PrivacyPage() {
               <h2 className="text-lg font-semibold tracking-tight">Usage Analytics</h2>
               <p className="text-muted-foreground">
                 We use Google Analytics to understand how people use the site — which tools get
-                used, which pages are visited, and how traffic flows. This data is anonymous and
-                aggregated. We can see that &ldquo;someone visited the image compressor&rdquo; but
-                not who you are.
+                used, which pages are visited, and how traffic flows. Our custom tool events are
+                limited to an allowlisted tool identifier and lifecycle details such as success,
+                failure category, or bounded duration. They do not include file contents,
+                filenames, clipboard data, text inputs, or exception messages. Google may process
+                standard visit and device data under its own privacy policy.
               </p>
               <p className="text-muted-foreground">
-                We don&apos;t collect names, email addresses, or any personally identifying
-                information. There are no accounts and no sign-ups.
+                We don&apos;t ask for names or email addresses. There are no accounts or sign-ups.
               </p>
             </section>
 
