@@ -16,7 +16,7 @@ function CategoryMenu({ category }: { category: NavigationCategory }) {
 
   return (
     <div
-      className={`rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-5 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl ${
+      className={`border border-[color:var(--ghost-border)] bg-card/98 p-5 shadow-[var(--ambient-shadow-strong)] ${
         useTwoColumns ? "w-[min(36rem,calc(100vw-2rem))]" : "w-72"
       }`}
     >
@@ -34,7 +34,7 @@ function CategoryMenu({ category }: { category: NavigationCategory }) {
           <li key={tool.route}>
             <Link
               href={tool.route}
-              className="block rounded-xl px-3 py-2.5 text-sm text-foreground transition-[background-color,color,transform] duration-150 hover:bg-muted/70 hover:text-primary"
+              className="block border-b border-[color:var(--ghost-border)] px-3 py-2.5 text-sm text-foreground transition-[background-color,color] duration-150 last:border-b-0 hover:bg-primary/10 hover:text-primary"
             >
               {tool.label}
             </Link>
@@ -42,7 +42,7 @@ function CategoryMenu({ category }: { category: NavigationCategory }) {
         ))}
       </ul>
 
-      <div className="mt-4 rounded-2xl bg-muted/60 px-4 py-3">
+      <div className="mt-4 border-t border-[color:var(--ghost-border)] px-3 pt-4">
         <Link
           href={category.route}
           className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
@@ -71,9 +71,8 @@ function PlayLinkIcon({
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 px-4 pt-4 sm:px-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex h-16 items-center justify-between rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/70 px-3 shadow-[var(--ambient-shadow)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[color:var(--ghost-border)] bg-background/95 backdrop-blur-xl">
+      <div className="mx-auto flex h-[5.25rem] max-w-7xl items-center justify-between px-4 sm:px-6">
           <NavbarLogo />
 
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
@@ -81,7 +80,7 @@ export default function Navbar() {
               <div key={category.id} className="group relative">
                 <Link
                   href={category.route}
-                  className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+                  className="flex items-center gap-1 px-3.5 py-3 text-sm font-semibold text-muted-foreground transition-[color,background-color] duration-150 hover:bg-primary/10 hover:text-primary"
                   aria-haspopup="true"
                 >
                   {category.label}
@@ -103,7 +102,7 @@ export default function Navbar() {
             <div className="group relative">
               <Link
                 href="/play"
-                className="flex items-center gap-1 rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+                className="flex items-center gap-1 px-3.5 py-3 text-sm font-semibold text-muted-foreground transition-[color,background-color] duration-150 hover:bg-primary/10 hover:text-primary"
                 aria-haspopup="true"
               >
                 Play
@@ -117,15 +116,15 @@ export default function Navbar() {
                 className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
                 aria-label="Play tools"
               >
-                <div className="min-w-[360px] rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-4 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
+                <div className="min-w-[360px] border border-[color:var(--ghost-border)] bg-card/98 p-4 shadow-[var(--ambient-shadow-strong)]">
                   <div className="space-y-1.5">
                     {playLinks.map((item) => (
                       <Link
                         key={item.route}
                         href={item.route}
-                        className="flex items-start gap-3 rounded-2xl px-3 py-3 transition-colors hover:bg-muted/70"
+                        className="flex items-start gap-3 border-b border-[color:var(--ghost-border)] px-3 py-3 transition-colors last:border-b-0 hover:bg-primary/10"
                       >
-                        <span className="rounded-xl bg-primary/10 p-2 text-primary">
+                        <span className="border border-primary/35 bg-primary/10 p-2 text-primary">
                           <PlayLinkIcon icon={item.icon} className="h-4 w-4" />
                         </span>
                         <span className="min-w-0">
@@ -140,7 +139,7 @@ export default function Navbar() {
                     ))}
                   </div>
 
-                  <div className="mt-4 rounded-2xl bg-muted/60 px-4 py-3">
+                  <div className="mt-4 border-t border-[color:var(--ghost-border)] px-3 pt-4">
                     <Link
                       href="/play"
                       className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
@@ -155,7 +154,7 @@ export default function Navbar() {
 
             <Link
               href="/blog"
-              className="rounded-xl px-3.5 py-2 text-sm font-medium text-muted-foreground transition-[color,background-color] duration-150 hover:bg-muted/70 hover:text-primary"
+              className="px-3.5 py-3 text-sm font-semibold text-muted-foreground transition-[color,background-color] duration-150 hover:bg-primary/10 hover:text-primary"
             >
               Blog
             </Link>
@@ -166,7 +165,6 @@ export default function Navbar() {
             <ThemeToggle />
             <MobileNavigation />
           </div>
-        </div>
       </div>
     </header>
   );

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ChevronRight, Zap } from "lucide-react";
+import { ChevronRight, ShieldCheck } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ToolCard from "@/components/tool/ToolCard";
@@ -263,11 +263,11 @@ export default function ToolLayout({
       <div className="flex min-h-screen flex-col">
         <Navbar />
         <main className="flex-1">
-          <div className="bg-muted/20">
-            <div className={`mx-auto ${contentWidth} px-4 py-10 sm:px-6 sm:py-14`}>
+          <div>
+            <div className={`mx-auto ${contentWidth} px-4 pb-12 sm:px-6 sm:pb-16`}>
               <nav
                 aria-label="Breadcrumb"
-                className="mb-6 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-muted-foreground"
+                className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-b border-[color:var(--ghost-border)] py-6 text-xs font-medium text-muted-foreground"
               >
                 <Link
                   href="/"
@@ -288,20 +288,27 @@ export default function ToolLayout({
                 </span>
               </nav>
 
-              <header className="mb-8 max-w-3xl">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1 text-primary">
-                  <Zap className="h-[14px] w-[14px]" aria-hidden="true" />
+              <header className="relative mb-10 flex flex-col justify-between gap-7 border-b-2 border-foreground py-8 sm:flex-row sm:items-end sm:py-10">
+                <div className="max-w-4xl">
+                <div className="mb-4 inline-flex items-center gap-2 text-primary">
+                  <ShieldCheck className="h-[14px] w-[14px]" aria-hidden="true" />
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
                     {badgeLabel}
                   </span>
                 </div>
 
-                <h1 className="mb-2 break-words text-3xl font-bold tracking-tight md:text-4xl">
+                <h1 className="break-words font-display text-[clamp(3rem,7vw,6.25rem)] font-black uppercase leading-[0.84] tracking-[-0.075em]">
                   {tool.name}
                 </h1>
-                <p className="break-words text-base leading-7 text-muted-foreground">
+                <p className="mt-5 max-w-2xl break-words text-base leading-7 text-muted-foreground">
                   {tool.shortDescription}
                 </p>
+                </div>
+                {!isContained ? (
+                  <span className="w-fit shrink-0 border border-primary px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-primary">
+                    Ready to use
+                  </span>
+                ) : null}
               </header>
 
               {embeddedShell ? (
@@ -327,7 +334,7 @@ export default function ToolLayout({
           </div>
 
           {seoContentWithIds ? (
-            <div className="border-t border-border bg-muted/10">
+            <div className="border-t border-border bg-background/70">
               <div className={`mx-auto ${contentWidth} px-4 py-10 sm:px-6`}>
                 <div
                   data-toc-scope

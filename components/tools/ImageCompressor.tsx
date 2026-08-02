@@ -361,7 +361,7 @@ export default function ImageCompressor() {
               type="button"
               onClick={() => setOutputFormat(fmt)}
               aria-pressed={outputFormat === fmt}
-              className={`rounded-[1rem] border px-3 py-2 text-left text-sm font-medium transition-colors ${
+              className={`border px-3 py-2 text-left text-sm font-medium transition-colors ${
                 outputFormat === fmt
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-[color:var(--ghost-border)] bg-card/75 text-muted-foreground hover:border-primary/35 hover:text-foreground"
@@ -382,14 +382,14 @@ export default function ImageCompressor() {
           <button
             type="button"
             onClick={() => setQuality(80)}
-            className="rounded-[1rem] border border-[color:var(--ghost-border)] bg-card/75 px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/35 hover:text-primary"
+            className="border border-[color:var(--ghost-border)] bg-card/75 px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
           >
             Web (80)
           </button>
           <button
             type="button"
             onClick={() => setQuality(95)}
-            className="rounded-[1rem] border border-[color:var(--ghost-border)] bg-card/75 px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/35 hover:text-primary"
+            className="border border-[color:var(--ghost-border)] bg-card/75 px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
           >
             Ultra (95)
           </button>
@@ -397,7 +397,7 @@ export default function ImageCompressor() {
       </div>
 
       {primaryResult ? (
-        <div className="rounded-[1rem] bg-card/80 p-4">
+        <div className="border-t border-[color:var(--ghost-border)] bg-card/80 p-4">
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             Output details
           </p>
@@ -432,7 +432,7 @@ export default function ImageCompressor() {
         Use WebP when the output is headed for the web. Stay with the original format when
         you need the safest compatibility with an existing workflow.
       </p>
-      <div className="rounded-[1rem] bg-card/80 p-4">
+      <div className="border-l-2 border-primary bg-card/80 p-4">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
           Local processing
         </p>
@@ -482,11 +482,11 @@ export default function ImageCompressor() {
             {results.length === 1 && primaryResult ? (
               <section className="space-y-6">
                 <div className="grid gap-4 xl:grid-cols-2">
-                  <div className="relative overflow-hidden rounded-[1.5rem] bg-muted/45 p-4">
-                    <span className="absolute left-7 top-7 z-10 rounded-full bg-foreground/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-background tabular-nums">
+                  <div className="relative overflow-hidden border border-[color:var(--ghost-border)] bg-muted/45 p-4">
+                    <span className="absolute left-7 top-7 z-10 border border-foreground bg-foreground/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-background tabular-nums">
                       Original ({formatBytes(primaryResult.originalFile.size)})
                     </span>
-                    <div className="flex h-[320px] items-center justify-center rounded-[1.2rem] bg-card/80">
+                    <div className="flex h-[320px] items-center justify-center border border-[color:var(--ghost-border)] bg-card/80">
                       {/* eslint-disable-next-line @next/next/no-img-element -- local object URL preview */}
                       <img
                         src={primaryResult.originalUrl}
@@ -499,11 +499,11 @@ export default function ImageCompressor() {
                     </p>
                   </div>
 
-                  <div className="relative overflow-hidden rounded-[1.5rem] bg-primary/8 p-4">
-                    <span className="absolute right-7 top-7 z-10 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--on-primary)] tabular-nums">
+                  <div className="relative overflow-hidden border border-primary/40 bg-primary/8 p-4">
+                    <span className="absolute right-7 top-7 z-10 border border-primary bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--on-primary)] tabular-nums">
                       Optimized ({formatBytes(primaryResult.file.size)})
                     </span>
-                    <div className="flex h-[320px] items-center justify-center rounded-[1.2rem] bg-card/85">
+                    <div className="flex h-[320px] items-center justify-center border border-primary/25 bg-card/85">
                       {/* eslint-disable-next-line @next/next/no-img-element -- local object URL preview */}
                       <img
                         src={primaryResult.url}
@@ -517,16 +517,16 @@ export default function ImageCompressor() {
                   </div>
                 </div>
 
-                <div className="space-y-8 rounded-[1.75rem] bg-muted/55 p-8">
+                <div className="space-y-8 border-l-4 border-primary bg-muted/55 p-6 sm:p-8">
                   <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
                     <div className="flex justify-center lg:justify-start">
-                      <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full bg-primary/12 text-primary">
+                      <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center border-2 border-primary bg-primary/12 text-primary">
                         <span className="text-[1.9rem] font-black leading-none tabular-nums">{savedPercent}%</span>
                       </div>
                     </div>
 
                     <div className="grid flex-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 xl:gap-8">
-                      <div className="min-w-[120px] rounded-[1rem] bg-card/80 px-5 py-4">
+                      <div className="min-w-[120px] border-t border-[color:var(--ghost-border)] bg-card/80 px-5 py-4">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Storage savings
                         </p>
@@ -534,7 +534,7 @@ export default function ImageCompressor() {
                           {bytesSaved > 0 ? `-${formatBytes(bytesSaved)}` : "No reduction"}
                         </p>
                       </div>
-                      <div className="min-w-[120px] rounded-[1rem] bg-card/80 px-5 py-4">
+                      <div className="min-w-[120px] border-t border-[color:var(--ghost-border)] bg-card/80 px-5 py-4">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Process time
                         </p>
@@ -542,7 +542,7 @@ export default function ImageCompressor() {
                           {lastProcessMs !== null ? `${lastProcessMs}ms` : "Pending"}
                         </p>
                       </div>
-                      <div className="min-w-[120px] rounded-[1rem] bg-card/80 px-5 py-4">
+                      <div className="min-w-[120px] border-t border-[color:var(--ghost-border)] bg-card/80 px-5 py-4">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Export
                         </p>
@@ -557,7 +557,7 @@ export default function ImageCompressor() {
                     <button
                       type="button"
                       onClick={reset}
-                      className="inline-flex min-h-14 items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-8 py-4 text-sm font-semibold text-primary transition-colors hover:bg-muted/80"
+                      className="inline-flex min-h-14 items-center gap-2 border border-primary bg-card/80 px-8 py-4 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
                     >
                       <RotateCcw className="h-4 w-4" />
                       Process Another
@@ -566,7 +566,7 @@ export default function ImageCompressor() {
                       href={primaryResult.url}
                       download={primaryResult.file.name}
                       onClick={markDownloaded}
-                      className="inline-flex min-h-14 items-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-8 py-4 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-opacity hover:opacity-95"
+                      className="inline-flex min-h-14 items-center gap-2 border border-primary bg-primary px-8 py-4 text-sm font-bold text-[var(--on-primary)] transition-colors hover:bg-primary-dim hover:text-background"
                     >
                       <Download className="h-4 w-4" />
                       Download Optimized
@@ -596,7 +596,7 @@ export default function ImageCompressor() {
                     onClick={() => {
                       void downloadAll();
                     }}
-                    className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/35 hover:text-primary"
+                    className="inline-flex items-center gap-2 border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
                   >
                     <Package className="h-4 w-4" />
                     Download all as ZIP

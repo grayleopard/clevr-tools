@@ -54,6 +54,8 @@ For every direction, the checks passed:
 
 30 representative screenshots were rendered under `/tmp/clevr-p2-readiness/design-renders`: desktop and mobile Home, Files, Image Compressor empty, settings, and dark results for all three directions. The four Editorial/Playful dark result captures were regenerated after fixing a theme-selector issue and were visually inspected; their sizes range from 139 KB to 224 KB with 5,002–7,006 colors, rather than blank one-color output.
 
-## Selection checkpoint
+## Selection decision
 
-**Do you want to select Industrial Precision as the production direction, or should the next design pass pursue Editorial Utility or Playful Instrument instead?**
+On 2026-08-02, the user authorized the team to do what was necessary to reach the stated North Star. **Industrial Precision** was selected as the production direction, with **Editorial Utility's prose restraint** applied to explanatory copy.
+
+The implementation preserves the existing product contract and functionality while replacing the generic rounded-card shell with a warm, ruled, square-edged inspection-bench grammar. See [IMPLEMENTATION.md](IMPLEMENTATION.md) for scope, evidence, and the remaining production-promotion gate.

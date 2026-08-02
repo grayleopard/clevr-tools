@@ -324,7 +324,7 @@ function IdleView({
       onDragLeave={onDragLeave}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className={`relative overflow-hidden rounded-[1.75rem] border border-dashed px-5 py-10 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:px-6 motion-reduce:transition-none ${
+      className={`relative overflow-hidden border-2 border-dashed px-5 py-9 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:px-8 motion-reduce:transition-none ${
         isDraggingOver
           ? "border-primary/55 bg-primary/[0.08] motion-reduce:transform-none"
           : "border-[color:var(--ghost-border)] bg-card/[0.88] hover:border-primary/40 hover:bg-card"
@@ -338,13 +338,12 @@ function IdleView({
         className="absolute inset-0 z-10 cursor-pointer rounded-[inherit] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
       />
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-[18%] top-8 h-20 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_1px_1px,var(--ghost-border)_1px,transparent_0)] [background-size:16px_16px]" />
+        <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(var(--ghost-border)_1px,transparent_1px),linear-gradient(90deg,var(--ghost-border)_1px,transparent_1px)] [background-size:24px_24px]" />
       </div>
 
       <div className="pointer-events-none relative z-20 flex min-h-[256px] min-w-0 flex-col items-center justify-center gap-5">
-        <div className="relative animate-bob motion-reduce:animate-none">
-          <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.4rem] bg-primary/10">
+        <div className="relative">
+          <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center border-2 border-primary bg-primary/10">
             <Upload className="h-7 w-7 text-primary" aria-hidden="true" />
           </div>
           <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary/[0.15]">
@@ -354,7 +353,7 @@ function IdleView({
 
         <div className="min-w-0 max-w-full space-y-3">
           <p
-            className="break-words text-2xl font-extrabold tracking-[-0.03em] text-foreground sm:text-[2rem]"
+            className="break-words font-display text-3xl font-black uppercase leading-none tracking-[-0.055em] text-foreground sm:text-4xl"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -374,7 +373,7 @@ function IdleView({
               event.stopPropagation();
               onBrowse();
             }}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,var(--primary-fixed),var(--primary))] px-5 py-3 text-sm font-semibold text-[var(--on-primary)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto dark:bg-[linear-gradient(135deg,var(--primary),var(--primary-dim))] motion-reduce:transform-none motion-reduce:transition-none"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-primary px-5 py-3 text-sm font-bold text-[var(--on-primary)] transition-[transform,background-color,color] duration-150 hover:bg-primary-dim hover:text-background active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
           >
             <Upload className="h-4 w-4" aria-hidden="true" />
             Browse Files
@@ -385,7 +384,7 @@ function IdleView({
               event.stopPropagation();
               onPasteClipboard();
             }}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/[0.85] px-5 py-3 text-sm font-semibold text-primary transition-[background-color,color,border-color,transform] duration-150 hover:bg-muted/80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-card/[0.88] px-5 py-3 text-sm font-bold text-primary transition-[background-color,color,border-color,transform] duration-150 hover:bg-primary/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
           >
             <ClipboardPaste className="h-4 w-4" aria-hidden="true" />
             Paste Clipboard
@@ -396,7 +395,7 @@ function IdleView({
           {["PNG", "JPG", "GIF", "WebP", "PDF", "DOCX"].map((fmt) => (
             <span
               key={fmt}
-              className="rounded-full bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+              className="border-b border-[color:var(--ghost-border)] bg-background/90 px-1 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground"
             >
               {fmt}
             </span>
@@ -432,9 +431,9 @@ function DetectedView({
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
 
         {/* File info card */}
-        <div className="flex flex-col gap-4 rounded-[1.5rem] bg-card/[0.92] p-5 shadow-[var(--shadow-sm)]">
+        <div className="flex flex-col gap-4 border border-[color:var(--ghost-border)] bg-card/[0.92] p-5">
           {/* Thumbnail or icon */}
-          <div className="flex h-40 items-center justify-center overflow-hidden rounded-[1.25rem] bg-muted/55">
+          <div className="flex h-40 items-center justify-center overflow-hidden border border-[color:var(--ghost-border)] bg-muted/55">
             {isPreviewable ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -456,7 +455,7 @@ function DetectedView({
               {truncateFilename(detected.file.name, 28)}
             </p>
             <div className="flex flex-wrap gap-1.5">
-              <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+              <span className="border border-primary/35 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
                 {detected.type === "unknown" ? "File" : detected.type}
               </span>
               <span className="self-center text-xs text-muted-foreground">
@@ -474,7 +473,7 @@ function DetectedView({
           <button
             type="button"
             onClick={onReset}
-            className="flex min-h-11 items-center gap-1.5 self-start rounded-full bg-muted/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
+            className="flex min-h-11 items-center gap-1.5 self-start border border-[color:var(--ghost-border)] bg-muted/70 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
           >
             <X className="h-3.5 w-3.5" aria-hidden="true" />
             Change file
@@ -482,7 +481,7 @@ function DetectedView({
         </div>
 
         {/* Action cards panel */}
-        <div className="flex flex-col gap-4 rounded-[1.5rem] bg-muted/[0.45] p-5">
+        <div className="flex flex-col gap-4 border border-[color:var(--ghost-border)] bg-muted/[0.45] p-5">
           <div className="space-y-2">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Detected file
@@ -492,7 +491,7 @@ function DetectedView({
             </p>
           </div>
           {actions.length === 0 ? (
-            <div className="flex flex-1 items-center justify-center rounded-[1.25rem] border border-dashed border-[color:var(--ghost-border)] bg-card/70 p-8 text-center text-sm text-muted-foreground">
+            <div className="flex flex-1 items-center justify-center border border-dashed border-[color:var(--ghost-border)] bg-card/70 p-8 text-center text-sm text-muted-foreground">
               No tools available for this file type yet.
               <br />
               Browse the tools below.
@@ -513,7 +512,7 @@ function DetectedView({
                     disabled={navigatingAction !== null}
                     aria-busy={isNavigating || undefined}
                     className={[
-                      "group flex min-h-11 min-w-0 items-start gap-3 rounded-[1.25rem] bg-card/[0.88] p-4 text-left shadow-[var(--shadow-sm)]",
+                      "group flex min-h-11 min-w-0 items-start gap-3 border border-[color:var(--ghost-border)] bg-card/[0.88] p-4 text-left",
                       "transition-[background-color,opacity,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transform-none motion-reduce:transition-none",
                       isNavigating
                         ? "bg-primary/10 scale-[0.98]"
@@ -524,7 +523,7 @@ function DetectedView({
                   >
                     <div
                       className={[
-                        "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
+                        "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center border border-[color:var(--ghost-border)] transition-colors",
                         isNavigating
                           ? "bg-primary/10"
                           : "bg-muted/80 group-hover:bg-primary/10",
@@ -871,7 +870,7 @@ export default function SmartConverter({
           className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-primary/[0.06] px-4 backdrop-blur-[2px]"
           aria-hidden="true"
         >
-          <div className="flex max-w-full flex-col items-center gap-3 rounded-[1.75rem] border border-dashed border-primary/55 bg-card/[0.88] px-8 py-8 shadow-[var(--ambient-shadow-strong)] sm:px-12">
+          <div className="flex max-w-full flex-col items-center gap-3 border-2 border-dashed border-primary/55 bg-card/[0.88] px-8 py-8 sm:px-12">
             <Upload className="h-8 w-8 animate-bob text-primary motion-reduce:animate-none" />
             <p className="text-base font-semibold text-primary">Drop anywhere</p>
           </div>
@@ -888,7 +887,7 @@ export default function SmartConverter({
           <div
             id={errorId}
             role="alert"
-            className="mb-3 flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            className="mb-3 flex items-center gap-2 border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
           >
             <span className="min-w-0 flex-1 break-words">{error}</span>
             <button

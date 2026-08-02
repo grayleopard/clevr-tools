@@ -23,10 +23,10 @@ export default function FilesPage() {
   return (
     <CategoryPageScaffold
       categoryName={category.label}
-      headerLabel="CORE WORKFLOW"
+      headerLabel="Route 02 · File workshop"
       titleLineOne="Compress, Convert, and Transform"
       titleLineTwo="Files & Assets"
-      description="A suite of browser-based tools for precision file manipulation, compression, and conversion. Zero-server persistence, 100% local processing."
+      description="Compress, combine, resize, and convert files without an account. Each tool states where processing happens and what it accepts before you begin."
       Icon={FolderOpen}
       sections={category.subcategories.map((sub) => ({
         title: sub.label,

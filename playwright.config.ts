@@ -2,6 +2,13 @@ import { defineConfig, devices } from "@playwright/test";
 
 const PORT = Number(process.env.PORT || 3101);
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${PORT}`;
+const requestedBrowser = process.env.PLAYWRIGHT_BROWSER;
+
+const browserProjects = requestedBrowser === "firefox"
+  ? [{ name: "firefox", use: { ...devices["Desktop Firefox"] } }]
+  : requestedBrowser === "webkit"
+    ? [{ name: "webkit", use: { ...devices["Desktop Safari"] } }]
+    : [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }];
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -25,10 +32,5 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
-  projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-  ],
+  projects: browserProjects,
 });

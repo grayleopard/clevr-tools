@@ -51,7 +51,7 @@ function SmartConverterSkeleton({
         const file = event.dataTransfer.files?.[0];
         if (file) onDropFile(file);
       }}
-      className={`relative overflow-hidden rounded-[1.75rem] border border-dashed px-5 py-10 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:px-6 motion-reduce:transition-none ${
+      className={`relative overflow-hidden border-2 border-dashed px-5 py-9 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:px-8 motion-reduce:transition-none ${
         isDraggingOver
           ? "border-primary/55 bg-primary/[0.08] motion-reduce:transform-none"
           : "border-[color:var(--ghost-border)] bg-card/[0.88] hover:border-primary/40 hover:bg-card"
@@ -65,13 +65,12 @@ function SmartConverterSkeleton({
         className="absolute inset-0 z-10 cursor-pointer rounded-[inherit] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
       />
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-[18%] top-8 h-20 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_1px_1px,var(--ghost-border)_1px,transparent_0)] [background-size:16px_16px]" />
+        <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(var(--ghost-border)_1px,transparent_1px),linear-gradient(90deg,var(--ghost-border)_1px,transparent_1px)] [background-size:24px_24px]" />
       </div>
 
       <div className="pointer-events-none relative z-20 flex min-h-[256px] min-w-0 flex-col items-center justify-center gap-5">
-        <div className="relative animate-bob motion-reduce:animate-none">
-          <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.4rem] bg-primary/10">
+        <div className="relative">
+          <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center border-2 border-primary bg-primary/10">
             <Upload className="h-7 w-7 text-primary" aria-hidden="true" />
           </div>
           <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary/[0.15]">
@@ -81,7 +80,7 @@ function SmartConverterSkeleton({
 
         <div className="min-w-0 max-w-full space-y-3">
           <p
-            className="break-words text-2xl font-extrabold tracking-[-0.03em] text-foreground sm:text-[2rem]"
+            className="break-words font-display text-3xl font-black uppercase leading-none tracking-[-0.055em] text-foreground sm:text-4xl"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -101,7 +100,7 @@ function SmartConverterSkeleton({
               event.stopPropagation();
               onActivateBrowse();
             }}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,var(--primary-fixed),var(--primary))] px-5 py-3 text-sm font-semibold text-[var(--on-primary)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto dark:bg-[linear-gradient(135deg,var(--primary),var(--primary-dim))] motion-reduce:transform-none motion-reduce:transition-none"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-primary px-5 py-3 text-sm font-bold text-[var(--on-primary)] transition-[transform,background-color,color] duration-150 hover:bg-primary-dim hover:text-background active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
           >
             <Upload className="h-4 w-4" aria-hidden="true" />
             Browse Files
@@ -112,7 +111,7 @@ function SmartConverterSkeleton({
               event.stopPropagation();
               onPasteClipboard();
             }}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/[0.85] px-5 py-3 text-sm font-semibold text-primary transition-[background-color,color,border-color,transform] duration-150 hover:bg-muted/80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-card/[0.88] px-5 py-3 text-sm font-bold text-primary transition-[background-color,color,border-color,transform] duration-150 hover:bg-primary/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
           >
             <ClipboardPaste className="h-4 w-4" aria-hidden="true" />
             Paste Clipboard
@@ -123,7 +122,7 @@ function SmartConverterSkeleton({
           {["PNG", "JPG", "GIF", "WebP", "PDF", "DOCX"].map((format) => (
             <span
               key={format}
-              className="rounded-full bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+              className="border-b border-[color:var(--ghost-border)] bg-background/90 px-1 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground"
             >
               {format}
             </span>

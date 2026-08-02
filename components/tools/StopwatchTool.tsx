@@ -62,9 +62,14 @@ export default function StopwatchTool() {
   const handleStop = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
-    elapsedAtPauseRef.current = elapsed;
+    // Capture the exact wall-clock delta at the interaction boundary. The
+    // previous implementation stored the last animation-frame sample, which
+    // could over- or under-report the stopped time when a frame was delayed.
+    const finalElapsed = Date.now() - startTimeRef.current + elapsedAtPauseRef.current;
+    elapsedAtPauseRef.current = finalElapsed;
+    setElapsed(finalElapsed);
     setStatus("stopped");
-  }, [elapsed]);
+  }, []);
 
   const handleResume = useCallback(() => {
     startTimeRef.current = Date.now();
