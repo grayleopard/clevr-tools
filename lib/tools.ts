@@ -11,8 +11,10 @@ export interface Tool {
   seoContent: string;
   relatedTools: string[];
   badge?: 'new' | 'popular';
-  /** false = page not built yet — hidden from homepage grid and sitemap */
+  /** false = excluded from public discovery and sitemap; the direct route may remain */
   live?: boolean;
+  /** true = capability is intentionally disabled on its direct route pending remediation */
+  contained?: boolean;
   /** Overrides the auto-derived sidebar privacy message. Defaults based on category. */
   privacyContext?: 'files' | 'input' | 'quiet' | 'server';
 }
@@ -179,40 +181,21 @@ export const tools: Tool[] = [
   {
     slug: 'heic-to-jpg',
     name: 'HEIC to JPG Converter',
-    shortDescription: 'Convert iPhone HEIC photos to JPG — batch supported.',
+    shortDescription: 'Temporarily unavailable while browser HEIC decoding reliability is being verified.',
     category: 'convert',
     route: '/convert/heic-to-jpg',
     acceptedFormats: ['.heic', '.heif'],
     icon: 'Smartphone',
-    metaTitle: 'Convert HEIC to JPG Online Free — No Signup | clevr.tools',
+    metaTitle: 'HEIC to JPG Converter — Currently Unavailable | clevr.tools',
     metaDescription:
-      'Convert iPhone HEIC and HEIF photos to JPG online free. Batch convert multiple files at once. No upload — processes entirely in your browser, instant results.',
+      'This converter is unavailable while bounded browser decoding and representative HEIC output compatibility are verified.',
     seoContent: `
-      <h2>When to use this</h2>
-      <p>You AirDropped photos to your Windows laptop and nothing can open them. Or you're trying to upload iPhone photos to a web form and it only accepts JPG. Or your printing service rejected HEIC files. Apple made HEIC the default camera format in 2017 (iOS 11), and the rest of the world still hasn't fully caught up.</p>
-      <p>The compatibility gap is the whole reason this tool exists. HEIC uses the HEVC codec and produces files 40–50% smaller than JPG at the same quality — technically superior. But JPG has 30 years of universal support baked into every operating system, browser, and application on earth. When you need something that just works everywhere, you convert to JPG.</p>
-      <p>You can change your iPhone to shoot JPG natively (Settings → Camera → Formats → Most Compatible), but that doubles your storage usage per photo. Most people prefer to shoot in HEIC and convert only when they need to share outside the Apple ecosystem.</p>
-
-      <h2>Good to know</h2>
-      <p><strong>HEIC is actually better than JPG.</strong> It's not a "bad" format — Apple chose it because it genuinely produces smaller, higher-quality files. You're converting for compatibility, not quality. The JPG output will be larger than the HEIC input, typically 1.5–2x the file size.</p>
-      <p><strong>Live Photos only export the still frame.</strong> HEIC files from Live Photos contain both a still image and a short video clip. This converter extracts the still image. The video component doesn't carry over to JPG.</p>
-      <p><strong>EXIF data transfers.</strong> Camera metadata — date, location, exposure settings — carries over from HEIC to JPG. If you're sharing photos and want to strip location data for privacy, that's a separate step.</p>
-      <p><strong>Batch is the way.</strong> You probably aren't converting one photo. Drop your entire folder of HEIC files and grab the ZIP. All processing happens in your browser — your photos never touch a server.</p>
-
-      <h2>Quick Reference</h2>
-      <table>
-        <thead><tr><th>Feature</th><th>HEIC</th><th>JPG</th></tr></thead>
-        <tbody>
-          <tr><td>Compression</td><td>Lossy (HEVC codec)</td><td>Lossy (DCT-based)</td></tr>
-          <tr><td>Transparency</td><td>Yes (alpha)</td><td>No</td></tr>
-          <tr><td>Typical photo size (12 MP)</td><td>1.5–2.5 MB</td><td>3–5 MB</td></tr>
-          <tr><td>Browser support</td><td>Safari only</td><td>Universal</td></tr>
-          <tr><td>Windows support</td><td>Requires HEVC extension</td><td>Native</td></tr>
-          <tr><td>Best for</td><td>iPhone storage efficiency</td><td>Sharing and compatibility</td></tr>
-        </tbody>
-      </table>
+      <h2>Current status</h2>
+      <p>This converter is unavailable while bounded browser decoding and representative HEIC output compatibility are verified. No conversion, metadata-transfer, batch, orientation, or Live Photo behavior is currently promised.</p>
     `,
     relatedTools: ['image-compressor', 'jpg-to-png', 'png-to-jpg'],
+    live: false,
+    contained: true,
     badge: 'new',
   },
   {
@@ -333,44 +316,24 @@ export const tools: Tool[] = [
   {
     slug: 'background-remover',
     name: 'AI Background Remover',
-    shortDescription: 'Remove backgrounds from images instantly with AI — no signup required.',
+    shortDescription: 'Experimental background-removal route; external processing is not currently available.',
     category: 'tools',
     privacyContext: 'server',
     route: '/tools/background-remover',
     acceptedFormats: ['.jpg', '.jpeg', '.png', '.webp'],
     icon: 'Bot',
-    metaTitle: 'AI Background Remover — Free, No Signup | clevr.tools',
+    metaTitle: 'Background Remover — Currently Unavailable | clevr.tools',
     metaDescription:
-      'Remove image backgrounds instantly with AI. Free, no signup, no watermark. Upload a photo and download a clean transparent PNG in seconds.',
+      'This experimental background-removal route is unavailable while its external processing and data-handling contract are reviewed.',
     seoContent: `
-      <h2>When to use this</h2>
-      <p>You have a product photo that needs a clean cutout for Shopify, Etsy, Amazon, or a pitch deck. You want a profile photo without the messy office wall behind it. You need to drop a person, pet, or object into a social graphic without opening Photoshop. These are the moments where AI background removal saves real time.</p>
-      <p>It is especially useful for ecommerce. Most marketplaces look better when product images sit on transparent or plain white backgrounds, but hand-masking every image is not a sensible use of time. Background removal lets you cut the subject once, then reuse the transparent PNG across storefronts, ads, and presentation slides.</p>
-      <p>It also replaces the frustrating part of tools like remove.bg: the free tier here gives you full-resolution output with no watermark. If the model gives you a clean cutout, you can keep it. No artificial downgrade after the work is done.</p>
-
-      <h2>Good to know</h2>
-      <p><strong>This is the one clevr.tools image tool that runs server-side.</strong> Your image is sent to our AI server, processed in memory, and immediately deleted. Nothing is stored. The reason is simple: the BiRefNet model is too large to run reliably in a browser tab or Vercel function.</p>
-      <p><strong>The output is always PNG.</strong> Transparency needs an alpha channel, and PNG is the safe universal format for that. Even if you upload JPG or WebP, the result comes back as a transparent PNG so you can layer it anywhere.</p>
-      <p><strong>Complex edges are where AI matters.</strong> Hair, fur, fabric, and semi-transparent edges are the hard cases. The model handles them well on strong source images, but not perfectly on every file. Clean lighting and clear subject separation still help a lot.</p>
-      <p><strong>Free tier is intentionally useful.</strong> You get 5 removals per day, full output resolution, and no watermark. That is enough for occasional product edits, profile images, and social graphics without gating the result behind a paywall.</p>
-      <p><strong>Use the cutout as a starting point.</strong> Once you have a transparent PNG, the next steps are usually resize, compress, or convert to WebP. The result here is designed to feed directly into those workflows.</p>
-
-      <h2>Quick Reference</h2>
-      <table>
-        <thead><tr><th>Item</th><th>Value</th></tr></thead>
-        <tbody>
-          <tr><td>Supported input</td><td>JPG, PNG, WebP</td></tr>
-          <tr><td>Maximum file size</td><td>10 MB</td></tr>
-          <tr><td>Maximum dimensions</td><td>4096 × 4096 px</td></tr>
-          <tr><td>Output format</td><td>Transparent PNG</td></tr>
-          <tr><td>Free limit</td><td>5 removals per day</td></tr>
-          <tr><td>Typical processing time</td><td>2–5 seconds</td></tr>
-        </tbody>
-      </table>
+      <h2>Current status</h2>
+      <p>This experimental route depends on a separately configured image-processing service and is not currently available. It remains outside navigation, search, category pages, related tools, and the sitemap while the service owner, processors, retention terms, deletion behavior, monitoring, abuse controls, and output quality are reviewed.</p>
+      <p>Do not submit sensitive or personal images to this route. No retention, deletion, training-data, security, or output-quality guarantee is made while the external processing contract remains unverified.</p>
     `,
     relatedTools: ['resize-image', 'image-compressor', 'png-to-webp'],
     badge: 'new',
     live: false,
+    contained: true,
   },
   {
     slug: 'pdf-compressor',
@@ -1155,37 +1118,22 @@ export const tools: Tool[] = [
   {
     slug: 'password-generator',
     name: 'Password Generator',
-    shortDescription: 'Generate strong, random passwords with custom length and character sets.',
+    shortDescription: 'Generate random passwords with custom length and character sets.',
     category: 'generate',
     route: '/generate/password',
     acceptedFormats: [],
     icon: 'KeyRound',
-    metaTitle: 'Password Generator — Strong & Random | clevr.tools',
-    metaDescription: 'Free secure password generator. Create strong random passwords with custom length and character sets. Uses crypto-grade randomness. Browser-based, no data sent.',
+    metaTitle: 'Password Generator — Custom Length & Characters | clevr.tools',
+    metaDescription: 'Generate random passwords with custom length and character sets using the browser Web Crypto API. Browser-based, with no generated password sent to the server.',
     seoContent: `
       <h2>When to use this</h2>
-      <p>You're signing up for a new service and you need a password that isn't "Summer2024!" — which, by the way, appears in every major breach database. You need something truly random, something no human would think of, something that can't be guessed from your birthday, pet's name, or favorite band. That's what this generator does.</p>
-      <p>It's also for the moments when you need a quick API key, a temporary shared secret for a staging environment, or a random token for a one-time link. Any time you need a string that's unpredictable and high-entropy, generating one here is faster than mashing your keyboard and hoping for the best.</p>
-      <p>Every password is generated using your browser's <code>crypto.getRandomValues()</code> API — the same cryptographic random number generator that underpins TLS, SSH keys, and encryption software. Nothing is sent to any server. The password exists only in your browser until you copy it.</p>
+      <p>Use this tool when you need a unique password with a chosen length and character classes. Generation runs in your browser with <code>crypto.getRandomValues()</code>; generated values are not submitted to the clevr.tools server.</p>
+      <p>Every result contains at least one character from each selected class. The generator samples uniformly from that complete valid set rather than forcing required characters into fixed positions.</p>
 
       <h2>Good to know</h2>
-      <p><strong>Length beats complexity, every time.</strong> A 20-character lowercase password (26^20 = ~95 bits of entropy) is harder to crack than a 10-character password using all character types (95^10 = ~66 bits). If a site lets you use long passwords, go long rather than short-and-complex. The math isn't close.</p>
-      <p><strong><code>Math.random()</code> is not suitable for passwords.</strong> Most programming tutorials generate passwords with <code>Math.random()</code>, which uses a pseudo-random algorithm seeded by a predictable value. An attacker who knows the implementation can reduce the search space dramatically. <code>crypto.getRandomValues()</code> draws from the OS entropy pool — CPU jitter, interrupt timing, hardware noise — and is the only acceptable source for security-sensitive randomness in the browser.</p>
+      <p><strong>Search-space size is not a crack-time promise.</strong> The displayed bit value is <code>log2</code> of the exact number of valid outputs under the current settings. Real resistance also depends on the service's storage, rate limits, breaches, and attacker assumptions.</p>
       <p><strong>The "exclude ambiguous characters" option exists for a reason.</strong> When you have to read a password aloud, type it on a TV remote, or enter it on a device without paste support, confusing <code>0</code> with <code>O</code> or <code>1</code> with <code>l</code> is infuriating. Excluding these look-alikes costs a tiny amount of entropy but saves real-world headaches.</p>
-      <p><strong>Power user tip: entropy is what actually matters.</strong> A password's strength is measured in bits of entropy: <code>log2(pool_size ^ length)</code>. A 16-character password from a 95-character pool has ~105 bits. At 10 billion guesses per second (a well-funded attacker with GPUs), that takes longer than the age of the universe to brute-force. Aim for 80+ bits minimum for anything important.</p>
-
-      <h2>Quick Reference</h2>
-      <table>
-        <thead><tr><th>Password Config</th><th>Pool Size</th><th>Entropy (16 chars)</th><th>Brute-force Time*</th></tr></thead>
-        <tbody>
-          <tr><td>Lowercase only</td><td>26</td><td>~75 bits</td><td>~1.2 million years</td></tr>
-          <tr><td>Lower + upper</td><td>52</td><td>~91 bits</td><td>~78 billion years</td></tr>
-          <tr><td>Lower + upper + digits</td><td>62</td><td>~95 bits</td><td>~1.4 trillion years</td></tr>
-          <tr><td>All printable ASCII</td><td>95</td><td>~105 bits</td><td>~128 quadrillion years</td></tr>
-          <tr><td>Lowercase only (8 chars)</td><td>26</td><td>~37 bits</td><td>~21 seconds</td></tr>
-        </tbody>
-      </table>
-      <p>* At 10 billion guesses/second (modern GPU cluster)</p>
+      <p><strong>Use a password manager.</strong> A unique password per account limits damage from password reuse. Follow the account provider's requirements and recovery guidance.</p>
     `,
     relatedTools: ['qr-code-generator', 'base64', 'random-number'],
   },
@@ -1198,31 +1146,16 @@ export const tools: Tool[] = [
     acceptedFormats: [],
     icon: 'Dices',
     metaTitle: 'Random Number Generator — Free Online RNG | clevr.tools',
-    metaDescription: 'Free random number generator. Pick numbers in any range, flip a coin, or roll dice. Uses cryptographic randomness for true fairness. No signup required.',
+    metaDescription: 'Free random number generator. Pick uniformly distributed integers in an inclusive range, flip a coin, or roll dice. Browser-based with no signup.',
     seoContent: `
       <h2>When to use this</h2>
-      <p>Your team is running a giveaway and you need to pick a winner from 500 entries. Or you're a teacher assigning students to groups and want the selection to be genuinely unbiased. Maybe you're settling a friendly argument about who pays for dinner. Any time you need a number that nobody can predict or accuse of being rigged, you need a random number generator backed by real entropy — not a coin flip, not "just pick one," and not a PRNG seeded by the clock.</p>
-      <p>Developers use this for generating test data, seeding sample databases, or simulating dice rolls in a board game prototype. Researchers use it for selecting random samples from a population. DMs use it for tabletop RPGs when their physical dice are across the room. The tool supports custom ranges, multiple results at once, and built-in dice and coin flip modes for the most common scenarios.</p>
-      <p>This generator uses your browser's <code>crypto.getRandomValues()</code> API, which draws from hardware entropy collected by your operating system — CPU timing jitter, interrupt timing, and other physically unpredictable signals. Unlike <code>Math.random()</code>, which uses a deterministic PRNG seeded by the clock, these results cannot be predicted or reproduced.</p>
+      <p>Use this tool for ordinary random selection, test data, dice rolls, or coin flips. It supports inclusive integer ranges, multiple results, optional sorting, and optional sampling without replacement.</p>
+      <p>The implementation reads unsigned values from your browser's <code>crypto.getRandomValues()</code> API and uses rejection sampling to map them into the requested range without modulo bias.</p>
 
       <h2>Good to know</h2>
-      <p><strong>Cryptographic randomness is overkill for most tasks — and that's fine.</strong> You don't strictly need hardware entropy to pick a restaurant. But using it means nobody can claim the result was biased, and it costs nothing extra. Better to over-deliver on fairness than to explain why <code>Math.random()</code> was "good enough."</p>
       <p><strong>Multiple results are independent.</strong> Generating 10 numbers between 1 and 100 can produce duplicates because each draw is independent. If you need unique numbers (like raffle picks), the tool removes duplicates from the result set automatically when you enable that option.</p>
-      <p><strong>Dice notation maps to ranges.</strong> A d20 is just a random integer from 1 to 20. 2d6 is two independent rolls of 1-6, summed. The built-in dice mode handles standard polyhedral dice (d4, d6, d8, d10, d12, d20, d100) so you don't need to set ranges manually.</p>
-      <p><strong>Coin flips are 50/50, not 51/49.</strong> Physical coins have a slight bias toward the side facing up at the start of the toss (about 51%). A cryptographic coin flip is exactly 50/50 — one bit of entropy, no physics involved.</p>
-
-      <h2>Quick Reference</h2>
-      <table>
-        <thead><tr><th>Use Case</th><th>Range / Mode</th><th>Fairness Level</th></tr></thead>
-        <tbody>
-          <tr><td>Giveaway winner (500 entries)</td><td>1 – 500</td><td>Cryptographic — auditable</td></tr>
-          <tr><td>Coin flip</td><td>Heads / Tails</td><td>Exactly 50/50</td></tr>
-          <tr><td>D&D attack roll</td><td>d20 (1 – 20)</td><td>Uniform distribution</td></tr>
-          <tr><td>Random group assignment</td><td>1 – N (multiple results)</td><td>Independent draws</td></tr>
-          <tr><td>Lottery-style pick (no repeats)</td><td>1 – 49, 6 unique results</td><td>Cryptographic, deduplicated</td></tr>
-          <tr><td>Test data seeding</td><td>Any range, bulk generation</td><td>CSPRNG-backed</td></tr>
-        </tbody>
-      </table>
+      <p><strong>Unique mode samples without replacement.</strong> A partial Fisher-Yates selection gives every eligible value equal inclusion probability without allocating the entire range.</p>
+      <p><strong>This is not a draw-audit system.</strong> The page does not produce an audit log, reproducible seed, or independent verification. Check applicable rules before using it for a consequential contest, raffle, or lottery.</p>
     `,
     relatedTools: ['password-generator', 'qr-code-generator'],
   },
@@ -1338,19 +1271,19 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['poker', 'percentage-calculator', 'salary', 'loan'],
+    relatedTools: ['percentage-calculator', 'salary', 'loan'],
     badge: 'new',
   },
   {
     slug: 'poker',
     name: 'Poker Calculator',
-    shortDescription: 'Hand rankings, odds calculator, Texas Hold\'em rules, and starting hand charts.',
+    shortDescription: 'Temporarily unavailable while the displayed equity model is replaced with verified data.',
     category: 'calc',
     route: '/calc/poker',
     acceptedFormats: [],
     icon: 'Spade',
-    metaTitle: 'Poker Calculator — Hand Rankings, Odds & Rules | clevr.tools',
-    metaDescription: 'Free poker reference tool. See hand rankings, calculate pot odds and drawing probabilities, learn Texas Hold\'em rules, and view starting hand charts. No signup.',
+    metaTitle: 'Poker Calculator — Currently Unavailable | clevr.tools',
+    metaDescription: 'This calculator is unavailable while its displayed starting-hand equity model is independently corrected and verified.',
     seoContent: `
       <h2>When to use this</h2>
       <p>You're at a home game and can't remember whether a flush beats a straight. Or you're watching poker on TV and want to understand why the commentator said "he has 9 outs." Maybe you're learning Texas Hold'em for the first time and need a clean, fast reference that isn't buried in a 5,000-word article. This tool covers the essentials: hand rankings, odds calculations, game rules, and starting hand strength.</p>
@@ -1383,6 +1316,8 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['odds-calculator', 'percentage-calculator'],
     badge: 'new',
+    live: false,
+    contained: true,
   },
   {
     slug: 'unit-converter',
@@ -1589,31 +1524,13 @@ export const tools: Tool[] = [
     metaDescription: 'Free age calculator. Enter your birth date to find exact age in years, months, days, and hours. Shows next birthday, zodiac sign, and generation. No signup.',
     seoContent: `
       <h2>When to use this</h2>
-      <p>You need your exact age for a visa application and the form wants years, months, and days — not just the year you were born. Or you're enrolling a child in school and the cutoff is "must be 5 by September 1st," and you need to verify down to the day. Maybe you're checking whether you qualify for Medicare (65), full Social Security benefits (66–67 depending on birth year), or a senior discount (varies by business). Legal and administrative thresholds are surprisingly precise.</p>
-      <p>Beyond paperwork, this calculator is useful for milestone tracking. How many days have you been alive? What day of the week were you born? How many days until your next birthday? It answers the questions that are simple to ask but surprisingly annoying to calculate by hand — especially when months have different lengths and leap years get involved.</p>
-      <p>Parents use it to track a child's exact age in months (pediatricians ask this constantly for the first few years). Genealogy researchers use it to calculate ancestors' ages from historical records. And sometimes you just want to settle a debate about whether you're technically still 34 or already 35.</p>
+      <p>Use the calculator to decompose the interval between a birth date and an As of date into completed calendar years, months, and days. It also reports elapsed calendar-day totals and the next birthday under the tool's stated anniversary rule.</p>
+      <p>Date-only inputs are treated as civil calendar dates, not as local midnight timestamps. That keeps elapsed-day totals stable across daylight-saving transitions.</p>
 
       <h2>Good to know</h2>
-      <p><strong>Age calculation isn't as simple as subtraction.</strong> If you were born on March 15 and today is February 10, you're not just "this year minus birth year." The calculator handles month and day boundaries correctly, which matters when precision counts.</p>
-      <p><strong>Leap year birthdays create an edge case.</strong> If you were born on February 29, your "birthday" technically only occurs every four years. Most legal systems treat March 1 as your birthday in non-leap years, but some jurisdictions use February 28. This calculator shows both your actual and legal age.</p>
-      <p><strong>Generational cutoffs are approximate.</strong> There's no official governing body that defines when Gen Z ends and Gen Alpha begins. The ranges used here follow the Pew Research Center definitions, which are the most widely cited: Boomers (1946–1964), Gen X (1965–1980), Millennials (1981–1996), Gen Z (1997–2012), Gen Alpha (2013+).</p>
-      <p><strong>Your zodiac sign depends on the year, not just the date range.</strong> The Western zodiac dates shift slightly year to year because the Earth's orbit isn't exactly 365.25 days. If you're born on a cusp date, the sign shown here uses the standard date ranges, which are accurate for the vast majority of people.</p>
-
-      <h2>Quick Reference</h2>
-      <table>
-        <thead><tr><th>Milestone</th><th>Age</th><th>Why It Matters</th></tr></thead>
-        <tbody>
-          <tr><td>Driving (US)</td><td>16</td><td>Learner's permit in most states</td></tr>
-          <tr><td>Voting / Legal adult</td><td>18</td><td>Federal voting age, sign contracts</td></tr>
-          <tr><td>Drinking (US)</td><td>21</td><td>Legal purchase of alcohol</td></tr>
-          <tr><td>Car rental (standard)</td><td>25</td><td>No young-driver surcharge</td></tr>
-          <tr><td>Run for US President</td><td>35</td><td>Constitutional minimum</td></tr>
-          <tr><td>Catch-up 401(k)</td><td>50</td><td>Extra $7,500/year contribution allowed</td></tr>
-          <tr><td>Early Social Security</td><td>62</td><td>Reduced benefits available</td></tr>
-          <tr><td>Medicare eligible</td><td>65</td><td>Federal health insurance</td></tr>
-          <tr><td>Full Social Security</td><td>66–67</td><td>Depends on birth year</td></tr>
-        </tbody>
-      </table>
+      <p><strong>Month-end anniversaries clamp to the last valid day.</strong> For example, a February 29 anniversary becomes February 28 in a non-leap year. This is a documented calculator convention, not a statement about legal age rules in any jurisdiction.</p>
+      <p><strong>Future birth dates are rejected.</strong> The birth date must be on or before the As of date, so the displayed decomposition cannot become negative or internally contradictory.</p>
+      <p><strong>Administrative rules vary.</strong> Do not use this general calendar calculator as a substitute for the rule specified by a government agency, school, insurer, or other decision maker.</p>
     `,
     relatedTools: ['date-difference', 'percentage-calculator'],
   },
@@ -1924,18 +1841,18 @@ export const tools: Tool[] = [
   {
     slug: 'typing-test',
     name: 'Typing Test',
-    shortDescription: 'Test your typing speed and accuracy. See WPM, accuracy, consistency, and a live performance chart.',
+    shortDescription: 'Test typing speed and character accuracy with measured WPM, raw WPM, and a live performance chart.',
     category: 'type',
     route: '/type/typing-test',
     acceptedFormats: [],
     icon: 'Keyboard',
     metaTitle: 'Free Typing Test — Check Your Typing Speed | clevr.tools',
-    metaDescription: 'Test your typing speed and accuracy with our free online typing test. See your WPM, accuracy, and consistency with detailed stats and a live performance chart.',
+    metaDescription: 'Test typing speed and character accuracy. See measured WPM, raw WPM, corrected/incorrect/extra/missed characters, and a live performance chart.',
     seoContent: `
       <h2>When to use this</h2>
       <p>You want to know where you actually stand. Maybe you are applying for a job that lists "60+ WPM" as a requirement. Maybe you have been practicing touch typing for a month and want to see if it is paying off. Or maybe you just got a new keyboard and want to see how it feels at speed. A typing test gives you a number you can track over time — and that number is more useful than you might think.</p>
       <p>Take the test at the start of a practice session to establish your baseline, then again at the end. Most people see a 10-15% improvement just from warming up, which tells you something important: your "true" speed is closer to your warmed-up score than your cold start. If you are preparing for a typing requirement, test yourself after a 5-minute warm-up to get the score that reflects your actual ability.</p>
-      <p>Consistency matters as much as peak speed. A typist who holds a steady 65 WPM is more productive than one who spikes to 85 and crashes to 40. The performance chart shows your speed over time within the test — flat lines are better than rollercoasters.</p>
+      <p>The performance chart shows measured WPM and raw WPM over the test. Final accuracy evaluates correct, substituted, extra, and missed characters in each reached word; current partial progress is included when time expires.</p>
 
       <h2>Good to know</h2>
       <p><strong>65 WPM puts you ahead of roughly 70% of typists.</strong> Most people overestimate the average. The true average for adults is around 40 WPM. If you hit 50, you are already above average. At 65, you are faster than most office workers. At 80+, you are in professional territory. Do not feel bad about a "low" score — the bar is lower than the internet makes it seem.</p>
@@ -2305,19 +2222,19 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['take-home-pay', 'paycheck', 'tip-calculator'],
+    relatedTools: ['tip-calculator', 'percentage-calculator'],
     badge: 'new',
   },
   {
     slug: 'take-home-pay',
     name: 'Take-Home Pay Calculator',
-    shortDescription: 'Estimate your paycheck after federal, state, and FICA taxes.',
+    shortDescription: 'Temporarily unavailable while tax-year and jurisdiction rules are rebuilt from authoritative sources.',
     category: 'calc',
     route: '/calc/take-home-pay',
     acceptedFormats: [],
     icon: 'Wallet',
-    metaTitle: 'Take-Home Pay Calculator — After-Tax Pay | clevr.tools',
-    metaDescription: 'Free take-home pay calculator. Estimate your paycheck after federal income tax, state tax, Social Security, and Medicare deductions. All 50 states supported.',
+    metaTitle: 'Take-Home Pay Calculator — Currently Unavailable | clevr.tools',
+    metaDescription: 'This calculator is unavailable while its federal, state, Social Security, and Medicare assumptions are updated and verified.',
     seoContent: `
       <h2>When to use this</h2>
       <p>You have just received a job offer for $85,000 a year and you want to know what that actually means in your bank account every two weeks. Or you are comparing offers in different states and need to understand how state income tax changes the picture. The gap between gross salary and net pay is significant — federal income tax, state tax, Social Security, and Medicare collectively take 25–40% of most paychecks, and the exact amount depends on your filing status, state of residence, and pre-tax deductions.</p>
@@ -2346,8 +2263,10 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['salary', 'paycheck', 'mortgage-calculator'],
+    relatedTools: ['salary', 'mortgage-calculator'],
     badge: 'new',
+    live: false,
+    contained: true,
   },
   {
     slug: 'loan',
@@ -2768,13 +2687,13 @@ export const tools: Tool[] = [
   {
     slug: 'paycheck',
     name: 'Paycheck Calculator',
-    shortDescription: 'Estimate your net paycheck after taxes and deductions per pay period.',
+    shortDescription: 'Temporarily unavailable while payroll tax-year and jurisdiction rules are rebuilt and verified.',
     category: 'calc',
     route: '/calc/paycheck',
     acceptedFormats: [],
     icon: 'Wallet',
-    metaTitle: 'Paycheck Calculator — Net Pay Estimator | clevr.tools',
-    metaDescription: 'Free paycheck calculator. Enter your gross pay per period to see estimated deductions for federal tax, state tax, Social Security, and Medicare. All 50 states supported.',
+    metaTitle: 'Paycheck Calculator — Currently Unavailable | clevr.tools',
+    metaDescription: 'This calculator is unavailable while its payroll-tax assumptions and jurisdiction coverage are updated and verified.',
     seoContent: `
       <h2>When to use this</h2>
       <p>You just got a job offer for $75,000 a year and need to know what your actual paycheck will look like every two weeks. The gross salary sounds great, but between federal taxes, state taxes, Social Security, and Medicare, the number that hits your bank account is meaningfully lower. This calculator shows you the real number so you can budget, negotiate, or plan accordingly.</p>
@@ -2799,8 +2718,10 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['salary', 'take-home-pay', 'tip-calculator'],
+    relatedTools: ['salary', 'tip-calculator'],
     badge: 'new',
+    live: false,
+    contained: true,
   },
   {
     slug: 'down-payment',
@@ -2922,21 +2843,21 @@ export const tools: Tool[] = [
   {
     slug: 'body-fat',
     name: 'Body Fat Calculator',
-    shortDescription: 'Estimate body fat percentage using the Navy method or BMI formula.',
+    shortDescription: 'Estimate body fat using a legacy circumference equation or a BMI-based screening formula.',
     category: 'calc',
     route: '/calc/body-fat',
     acceptedFormats: [],
     icon: 'Activity',
-    metaTitle: 'Body Fat Calculator — Navy Method & BMI | clevr.tools',
-    metaDescription: 'Free body fat percentage calculator. Use the Navy tape-measure method or BMI-based estimate. Shows category (athlete, fitness, average), fat mass, and lean mass.',
+    metaTitle: 'Body Fat Screening Estimate — Circumference & BMI | clevr.tools',
+    metaDescription: 'Compare a legacy Hodgdon-Beckett circumference estimate with a BMI-based screening estimate. Formula, units, and limitations are shown with the result.',
     seoContent: `
       <h2>When to use this</h2>
       <p>BMI told you a number, but you suspect it is not the whole story. Maybe you lift weights and your BMI says "overweight" even though you can see your abs. Or maybe your BMI is normal but you feel softer than you would like. Body fat percentage is the metric that fills in the gap — it tells you what fraction of your total weight is fat versus lean mass (muscle, bone, water, organs). Two people at the same height and weight can have dramatically different body fat percentages and, by extension, very different health profiles.</p>
-      <p>This calculator offers two estimation methods. The U.S. Navy tape-measure method uses neck, waist, and hip circumference along with height to estimate body fat. It was developed for military fitness assessments and remains one of the most accessible methods that does not require specialized equipment — just a flexible tape measure. The BMI-based method derives an estimate from your height, weight, age, and sex using a regression formula. It is less precise but requires no measurements beyond what a bathroom scale and a wall ruler provide.</p>
-      <p>Neither method replaces clinical tools like DEXA scans or hydrostatic weighing, which measure body composition directly. But for tracking trends over time — seeing whether your training and nutrition are moving the needle — a consistent tape-measure estimate taken under the same conditions each week is genuinely useful. The trend matters more than any single reading.</p>
+      <p>This calculator offers two screening estimates. The legacy Hodgdon-Beckett circumference equation uses neck, waist, and hip circumference along with height. The BMI-based equation derives an estimate from height, weight, age, and sex. The interface identifies the selected formula and required units.</p>
+      <p>Neither screening equation replaces an assessment performed and interpreted by a qualified healthcare professional. Laboratory and imaging methods use different protocols and can produce materially different estimates. Repeated tape measurements are also sensitive to landmark choice, tape tension, and hydration, so do not treat a single result as a diagnosis.</p>
 
       <h2>Good to know</h2>
-      <p><strong>The Navy method is surprisingly accurate for most people.</strong> Studies show it typically falls within 3–4 percentage points of DEXA scan results for individuals in the average body fat range. Accuracy decreases at the extremes — very lean athletes and individuals with obesity may see larger discrepancies.</p>
+      <p><strong>The circumference equation is a legacy screening estimate.</strong> It is not the Navy's current official Body Composition Assessment process and it is not a substitute for a clinical body-composition measurement.</p>
       <p><strong>Measure consistently for useful data.</strong> Take circumference measurements first thing in the morning, before eating, at the same anatomical landmarks each time. Waist at the navel, neck at the narrowest point below the Adam's apple, hips at the widest point. Small measurement inconsistencies can swing your result by several percentage points.</p>
       <p><strong>Healthy ranges differ by sex and age.</strong> Women naturally carry more essential fat than men — about 10–13% versus 2–5%. A body fat percentage of 20% means something very different for a 25-year-old male athlete than for a 50-year-old woman. The categories below reflect these differences.</p>
       <p><strong>Essential fat is not optional.</strong> Dropping below essential fat levels (roughly 5% for men, 12% for women) can disrupt hormone production, immune function, and organ protection. Competitive bodybuilders reach these levels temporarily for competition but do not sustain them year-round.</p>

@@ -32,7 +32,9 @@ test.describe("registry smoke — every tool loads clean", () => {
       await assertNoErrorBoundary(page);
 
       const main = page.locator("main");
-      if (isFileTool(tool)) {
+      if (tool.contained) {
+        await expect(main.getByRole("status")).toBeVisible();
+      } else if (isFileTool(tool)) {
         const fileInputs = await main.locator('input[type="file"]').count();
         const uploadButtons = await main
           .getByRole("button", { name: /upload|browse|choose|select|drag/i })

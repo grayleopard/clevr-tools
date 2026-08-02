@@ -127,11 +127,13 @@ export default function PrivacyPage() {
               <h2 className="text-lg font-semibold tracking-tight">AI-Powered Tools</h2>
               <p className="text-muted-foreground">
                 A small number of tools use AI models too large to run in a browser tab, so they
-                send your file to a server for processing. Every one of these is clearly labeled
-                &mdash; a server badge on the tool itself, plus a note wherever it&apos;s linked
-                &mdash; so you always know before you use it. Files are processed in memory and
-                deleted immediately after; nothing is stored. Every other tool on the site stays
-                fully local, with no exceptions.
+                may need to send a file to a server for processing. Those capabilities remain
+                unavailable unless the tool identifies the processor and presents verified data
+                handling terms before submission. The experimental Background Remover is
+                currently disabled because its processor, retention, and deletion contract has
+                not been verified. Do not submit sensitive files to an unavailable or
+                experimental route. Tools explicitly described as local continue to process files
+                in the browser.
               </p>
             </section>
 

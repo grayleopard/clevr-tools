@@ -313,7 +313,7 @@ export default function BmiCalculator() {
           <p>
             For a more comprehensive picture of your body composition, consider using our{" "}
             <Link href="/calc/body-fat" className="text-primary underline hover:no-underline">body fat calculator</Link>{" "}
-            which estimates body fat percentage using the Navy method or BMI-based formula. Our{" "}
+            which compares a legacy Hodgdon–Beckett circumference equation with a BMI-based screening formula. Our{" "}
             <Link href="/calc/ideal-weight" className="text-primary underline hover:no-underline">ideal weight calculator</Link>{" "}
             compares multiple medical formulas (Devine, Robinson, Miller, Hamwi) to give you a range of estimates.
           </p>

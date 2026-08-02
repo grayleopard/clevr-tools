@@ -214,8 +214,8 @@ export default function BackgroundRemover() {
         onFiles={handleFiles}
         resetKey={resetKey}
         compact={Boolean(source)}
-        subline="Drop a file, get the result. Your image is sent to our AI server for processing."
-        privacyNote="Sent to our AI server for processing, then deleted"
+        subline="Experimental external processing is currently unavailable. Do not submit sensitive images."
+        privacyNote="External retention and deletion terms have not been verified"
       />
 
       {source ? (
@@ -353,7 +353,7 @@ export default function BackgroundRemover() {
               </div>
 
               <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
-                ⚡ 5 free removals per day · Processed with AI — your image never leaves our servers
+                External processing route · Data-handling terms are not yet verified
               </div>
 
               <div className="space-y-3 rounded-2xl border border-border bg-card/60 p-4">

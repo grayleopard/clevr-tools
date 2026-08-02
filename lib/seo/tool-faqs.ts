@@ -3,29 +3,19 @@ import type { FaqItem } from "@/components/seo/FaqSchema";
 export const toolFaqsBySlug: Record<string, FaqItem[]> = {
   "background-remover": [
     {
-      question: "Is this background remover really free?",
+      question: "Is the background remover currently available?",
       answer:
-        "Yes. You get 5 free background removals per day with no signup, no watermark, and no quality cap on the output PNG.",
+        "No. This experimental route depends on an external processing service and remains unavailable and excluded from discovery while its operating and data-handling contract is reviewed.",
     },
     {
-      question: "What happens to my images after processing?",
+      question: "What happens to images submitted here?",
       answer:
-        "Your image is sent to our AI server, processed in memory, and immediately deleted. We do not store, log, or share your uploaded image.",
+        "The route is designed to send images to a separately configured processing service. Retention, deletion, subprocessors, training-data use, and security terms have not been verified, so you should not submit sensitive or personal images.",
     },
     {
-      question: "What image formats are supported?",
+      question: "What must be verified before this tool can return?",
       answer:
-        "You can upload JPG, PNG, and WebP images up to 10MB. The result is always returned as a transparent PNG.",
-    },
-    {
-      question: "How does the AI background removal work?",
-      answer:
-        "The tool uses the BiRefNet model through rembg to detect the foreground subject and separate it from the background. It works well for people, products, animals, and many common photo types.",
-    },
-    {
-      question: "Is there a watermark on the output?",
-      answer:
-        "No. The free tier returns a full-resolution PNG with no watermark.",
+        "A documented service owner and processor chain, retention and deletion terms, privacy disclosure, credentials, durable abuse controls, monitoring, operating economics, and independently parsed output-quality tests are required before relaunch.",
     },
   ],
   "merge-pdf": [
@@ -619,7 +609,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "How does title case work?",
       answer:
-        "Title case capitalizes the first letter of each word. It follows standard English capitalization conventions used in headlines, book titles, and headings. Small words like 'the', 'and', 'in' at the start are also capitalized.",
+        "The tool applies an editorial house style: it capitalizes major words, keeps common articles, conjunctions, and short prepositions lowercase inside a title, and capitalizes the first and last word plus words after subtitle punctuation.",
     },
     {
       question: "Can I convert variable names between coding conventions?",
@@ -852,7 +842,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "How secure are the generated passwords?",
       answer:
-        "Passwords are generated using your browser's crypto.getRandomValues() API, which provides cryptographically secure randomness from hardware entropy sources. A 16-character password using all character types has roughly 105 bits of entropy.",
+        "Passwords are generated in your browser with crypto.getRandomValues(). The tool samples uniformly from the valid passwords for your selected length and character classes. It reports that exact valid-set search-space size rather than predicting crack time.",
     },
     {
       question: "Is the password generator free?",
@@ -862,7 +852,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "What makes a strong password?",
       answer:
-        "Password strength depends on length and character diversity. A 16-character password using uppercase, lowercase, numbers, and symbols would take millions of years to brute-force. An 8-character lowercase-only password can be cracked in seconds.",
+        "Longer passwords generally increase the possible search space, but real resistance depends on the service, its password-storage design, rate limits, breaches, and attacker assumptions. Prefer a unique password for every account and store it in a reputable password manager.",
     },
     {
       question: "Are my generated passwords stored anywhere?",
@@ -877,9 +867,9 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
   ],
   "random-number": [
     {
-      question: "Are the random numbers truly random?",
+      question: "How are the random numbers generated?",
       answer:
-        "Yes. This generator uses crypto.getRandomValues(), which draws from hardware entropy collected by your operating system. The numbers are cryptographically random and cannot be predicted or reproduced.",
+        "The tool reads unsigned values from your browser's crypto.getRandomValues() API and uses rejection sampling to map them uniformly into the requested inclusive integer range without modulo bias.",
     },
     {
       question: "Is the random number generator free?",
@@ -894,7 +884,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "Is this fair enough for raffles and giveaways?",
       answer:
-        "Yes. The cryptographic randomness source provides true fairness suitable for giveaways, raffles, lottery picks, and any decision where genuine chance is required. Each number in the range has an equal probability of being selected.",
+        "The implementation gives each integer in the configured range equal selection probability, and unique mode samples without replacement. It does not provide an audit log, reproducible seed, or independent draw verification, so check the rules and oversight requirements for any consequential contest or lottery.",
     },
     {
       question: "Can I generate random numbers with decimals?",
@@ -1110,7 +1100,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "Can I calculate age between two specific dates?",
       answer:
-        "The age calculator works from your birth date to today. For calculating the difference between any two dates, use our Date Difference calculator which shows days, weeks, months, and business days between any dates.",
+        "Yes. Enter the earlier date and set the As of date to any later calendar date. For direction-neutral comparisons and business-day totals, use the Date Difference calculator.",
     },
     {
       question: "What generation am I based on birth year?",
@@ -1351,9 +1341,9 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
         "Average adults type 30-45 WPM. Office workers typically reach 60-75 WPM. Professional typists hit 80-100+ WPM. Competitive typists exceed 120-200 WPM. Most people can improve significantly with 15-20 minutes of daily practice over a few weeks.",
     },
     {
-      question: "What does the consistency score measure?",
+      question: "What metrics does the typing test report?",
       answer:
-        "Consistency measures the coefficient of variation in your per-word typing speed. A high consistency score (close to 100%) means you type at a steady, even rhythm. A typist with consistent 70 WPM is more productive than one who bursts at 90 and crashes.",
+        "The result reports elapsed-time WPM, raw WPM, and character accuracy. It includes current partial progress and penalizes skipped words; it does not calculate a consistency score.",
     },
     {
       question: "How can I improve my typing speed?",
@@ -1623,7 +1613,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "Does it account for taxes?",
       answer:
-        "The salary calculator shows gross pay across time periods. For after-tax estimates, use our Take-Home Pay Calculator which deducts federal tax, state tax, Social Security, and Medicare from your gross salary.",
+        "No. The salary calculator only converts gross pay across time periods. After-tax pay depends on current law, withholding elections, benefits, deductions, location, and individual circumstances; consult official tax guidance or a qualified professional.",
     },
     {
       question: "Is my salary data private?",
@@ -2067,7 +2057,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "How does the body fat calculator work?",
       answer:
-        "The Navy method uses tape measurements (waist, neck, and hips for women) with height to estimate body fat percentage using logarithmic formulas developed by the US Navy. A BMI-based estimate is also provided as a secondary reference.",
+        "The tool offers a legacy Hodgdon-Beckett tape-measure equation using height and body circumferences, plus a separate BMI-based screening estimate. The selected formula, required units, and limitations are shown with the result.",
     },
     {
       question: "Is the body fat calculator free?",
@@ -2080,9 +2070,9 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
         "For men: 6-13% (athletes), 14-17% (fitness), 18-24% (average), 25%+ (above average). For women: 14-20% (athletes), 21-24% (fitness), 25-31% (average), 32%+ (above average). Essential fat is 2-5% for men and 10-13% for women.",
     },
     {
-      question: "How accurate is the Navy method?",
+      question: "How accurate is the circumference estimate?",
       answer:
-        "The Navy method is reasonably accurate for most people (within 3-4% of DEXA scan results) and requires only a tape measure. It is less accurate for very muscular or very lean individuals. For clinical accuracy, DEXA scanning is the gold standard.",
+        "It is a legacy screening equation, not the Navy's current official Body Composition Assessment process and not a clinical measurement. Results are sensitive to measurement technique and may differ materially from laboratory methods; use a healthcare professional for medical interpretation.",
     },
     {
       question: "Is my health data private?",

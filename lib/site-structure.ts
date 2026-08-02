@@ -40,7 +40,6 @@ export const siteCategories: SiteCategory[] = [
       {
         label: "Convert Images",
         slugs: [
-          "heic-to-jpg",
           "jpg-to-png",
           "png-to-jpg",
           "png-to-webp",
@@ -116,7 +115,6 @@ export const siteCategories: SiteCategory[] = [
     featuredSlugs: [
       "salary",
       "calorie",
-      "take-home-pay",
       "sleep",
       "auto-loan",
       "credit-card-payoff",
@@ -125,7 +123,7 @@ export const siteCategories: SiteCategory[] = [
     subcategories: [
       {
         label: "Income",
-        slugs: ["salary", "take-home-pay", "paycheck"],
+        slugs: ["salary"],
       },
       {
         label: "Loans",
@@ -145,7 +143,7 @@ export const siteCategories: SiteCategory[] = [
       },
       {
         label: "Sports & Betting",
-        slugs: ["odds-calculator", "poker"],
+        slugs: ["odds-calculator"],
       },
       {
         label: "General",

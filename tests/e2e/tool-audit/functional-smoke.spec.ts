@@ -14,6 +14,7 @@ import { fixture, mainText, expectDownloadArtifact, toRegExp } from "./helpers";
 const TOOLS_NEEDING_FIXTURES = [...LIVE_TOOLS, ...HIDDEN_TOOLS].filter(
   (t) => !UNIT_CONVERTER_SLUGS.has(t.slug) && !TIME_TYPE_SLUGS.has(t.slug)
 );
+const EXECUTABLE_TOOLS = TOOLS_NEEDING_FIXTURES.filter((tool) => !tool.contained);
 
 test.describe("fixture coverage", () => {
   test("every non-converter, non-time/type tool has a fixture entry", () => {
@@ -131,7 +132,7 @@ async function runFileFixture(page: Page, tool: Tool, fx: FileFixture) {
 test.describe("functional smoke — known input, known-shape output", () => {
   test.describe.configure({ mode: "parallel" });
 
-  for (const tool of TOOLS_NEEDING_FIXTURES) {
+  for (const tool of EXECUTABLE_TOOLS) {
     const fx = FIXTURES[tool.slug];
     if (!fx) continue; // reported by the coverage check above, don't double-fail here
 

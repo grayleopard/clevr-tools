@@ -47,8 +47,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   if (!allowed) {
     return NextResponse.json(
       {
-        error:
-          "You've used all 5 free removals today. Come back tomorrow, or upgrade to Pro for unlimited removals.",
+        error: "The temporary request limit has been reached. Try again after the limit resets.",
       },
       {
         status: 429,

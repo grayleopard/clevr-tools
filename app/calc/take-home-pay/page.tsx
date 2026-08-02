@@ -1,16 +1,15 @@
 import ToolLayout from "@/components/tool/ToolLayout";
-import TakeHomePayCalculator from "@/components/tools/TakeHomePayCalculator";
-import { getToolFaqs } from "@/lib/seo/tool-faqs";
-import FaqSchema from "@/components/seo/FaqSchema";
+import ContainedToolNotice from "@/components/tool/ContainedToolNotice";
 import { tools } from "@/lib/tools";
+import { hiddenToolRobots } from "@/lib/seo/robots";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "take-home-pay")!;
-const faqItems = getToolFaqs("take-home-pay");
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
   description: tool.metaDescription,
+  ...hiddenToolRobots(tool),
   alternates: { canonical: `https://www.clevr.tools${tool.route}` },
   openGraph: {
     title: tool.metaTitle,
@@ -25,8 +24,14 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLayout tool={tool}>
-      <TakeHomePayCalculator />
-      <FaqSchema items={faqItems} />
+      <ContainedToolNotice title="Take-home pay estimates are being rebuilt">
+        <p>
+          The previous model used stale federal and Social Security thresholds
+          and did not fully implement Additional Medicare Tax or verified
+          state-level rules. Calculation is disabled until a versioned tax-year
+          model with authoritative jurisdiction sources is available.
+        </p>
+      </ContainedToolNotice>
     </ToolLayout>
   );
 }

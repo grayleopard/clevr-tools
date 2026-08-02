@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ToolLayout from "@/components/tool/ToolLayout";
-import BackgroundRemover from "@/components/tools/BackgroundRemover";
-import FaqSchema from "@/components/seo/FaqSchema";
-import { getToolFaqs } from "@/lib/seo/tool-faqs";
+import ContainedToolNotice from "@/components/tool/ContainedToolNotice";
 import { getToolBySlug } from "@/lib/tools";
 import { hiddenToolRobots } from "@/lib/seo/robots";
 
 const tool = getToolBySlug("background-remover")!;
-const faqItems = getToolFaqs("background-remover");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
@@ -40,8 +37,15 @@ export default function BackgroundRemoverPage() {
 
   return (
     <ToolLayout tool={tool}>
-      <BackgroundRemover />
-      <FaqSchema items={faqItems} />
+      <ContainedToolNotice title="Background removal is currently unavailable">
+        <p>
+          This experimental workflow requires an external image-processing
+          service whose retention, deletion, processor, and security terms have
+          not been verified. Image submission is disabled while that review is
+          incomplete.
+        </p>
+        <p>Please do not submit sensitive or personal images to this route.</p>
+      </ContainedToolNotice>
     </ToolLayout>
   );
 }

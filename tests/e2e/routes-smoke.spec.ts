@@ -1,6 +1,14 @@
 import { expect, test } from "@playwright/test";
 import { TOOL_ROUTES, FILE_TOOL_CATEGORIES, categoryForRoute } from "./tool-routes";
 
+const CONTAINED_ROUTES = new Set([
+  "/tools/background-remover",
+  "/convert/heic-to-jpg",
+  "/calc/poker",
+  "/calc/take-home-pay",
+  "/calc/paycheck",
+]);
+
 test.describe("tool route smoke", () => {
   test.describe.configure({ mode: "parallel" });
 
@@ -37,7 +45,10 @@ test.describe("tool route smoke", () => {
       const main = page.locator("main");
       const category = categoryForRoute(route);
 
-      if (FILE_TOOL_CATEGORIES.has(category)) {
+      if (CONTAINED_ROUTES.has(route)) {
+        await expect(main.getByRole("status")).toBeVisible();
+        await expect(main.locator('input, textarea, select, button')).toHaveCount(0);
+      } else if (FILE_TOOL_CATEGORIES.has(category)) {
         const fileInputs = await main.locator('input[type="file"]').count();
         const uploadButtons = await main
           .getByRole("button", { name: /upload|browse|choose|select|drag/i })

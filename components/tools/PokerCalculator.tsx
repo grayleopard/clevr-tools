@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { TrendingUp, ChevronDown } from "lucide-react";
 import ToolPageLayout from "@/components/layout/ToolPageLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,6 @@ import { getToolBySlug } from "@/lib/tools";
 type PokerTab = "rankings" | "odds" | "rules" | "hands";
 type Street = "flop" | "turn";
 type Suit = "♠" | "♥" | "♦" | "♣";
-type HandTier = "strong" | "good" | "marginal" | "weak";
 
 interface CardDef {
   rank: string;
@@ -30,13 +29,6 @@ interface HandRanking {
 interface DrawScenario {
   label: string;
   outs: number;
-}
-
-interface StartingHand {
-  label: string;
-  name: string;
-  tier: HandTier;
-  winRate: string;
 }
 
 /* ─── Constants ─────────────────────────────────────────────────────── */
@@ -70,8 +62,6 @@ const drawScenarios: DrawScenario[] = [
   { label: "Gutshot straight draw", outs: 4 },
 ];
 
-const RANKS = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"] as const;
-
 const glossaryTerms = [
   { term: "Pot", def: "Total chips bet in the current hand." },
   { term: "Outs", def: "Cards remaining in the deck that improve your hand." },
@@ -89,83 +79,6 @@ const relatedTools = [
   const tool = getToolBySlug(slug);
   return tool ? [{ name: tool.name, href: tool.route }] : [];
 });
-
-/* ─── Starting hands data ───────────────────────────────────────────── */
-
-function getHandTier(r: number, c: number): HandTier {
-  const rank1 = RANKS[r];
-  const rank2 = RANKS[c];
-  const isPair = r === c;
-  const isSuited = c > r; // above diagonal = suited
-
-  // Strong tier
-  if (isPair && r <= 3) return "strong"; // AA, KK, QQ, JJ
-  if ((rank1 === "A" && rank2 === "K") || (rank1 === "K" && rank2 === "A")) return "strong";
-  if (isSuited && rank1 === "A" && rank2 === "Q") return "strong";
-
-  // Good tier
-  if (isPair && r >= 4 && r <= 5) return "good"; // TT, 99
-  if (isSuited && rank1 === "A" && (rank2 === "J" || rank2 === "T")) return "good";
-  if (isSuited && rank1 === "K" && rank2 === "Q") return "good";
-  if (!isSuited && rank1 === "A" && rank2 === "Q") return "good";
-  if (!isSuited && rank1 === "A" && rank2 === "J") return "good";
-  if (!isSuited && rank1 === "K" && rank2 === "Q") return "good";
-
-  // Marginal tier
-  if (isPair && r >= 6 && r <= 7) return "marginal"; // 88, 77
-  if (isSuited && rank1 === "K" && (rank2 === "J" || rank2 === "T")) return "marginal";
-  if (isSuited && rank1 === "Q" && (rank2 === "J" || rank2 === "T")) return "marginal";
-  if (isSuited && rank1 === "J" && rank2 === "T") return "marginal";
-  // Suited connectors
-  if (isSuited && Math.abs(r - c) === 1 && r >= 4 && r <= 9) return "marginal";
-  // Suited aces (A5s–A2s)
-  if (isSuited && rank1 === "A" && c >= 9) return "marginal";
-  // ATo, KJo
-  if (!isSuited && rank1 === "A" && rank2 === "T") return "marginal";
-  if (!isSuited && rank1 === "K" && rank2 === "J") return "marginal";
-
-  return "weak";
-}
-
-function getWinRate(r: number, c: number): string {
-  const isPair = r === c;
-  const isSuited = c > r;
-  // Approximate heads-up win rates vs random hand
-  if (isPair) {
-    const pairRates: Record<string, string> = {
-      A: "85%", K: "82%", Q: "80%", J: "78%", T: "75%",
-      "9": "72%", "8": "69%", "7": "66%", "6": "63%",
-      "5": "60%", "4": "57%", "3": "54%", "2": "51%",
-    };
-    return pairRates[RANKS[r]] ?? "50%";
-  }
-  const high = Math.min(r, c);
-  const low = Math.max(r, c);
-  const gap = low - high;
-  // Base rate from high card strength
-  let base = 50 + (13 - high) * 2.5 - gap * 1.5;
-  if (isSuited) base += 3;
-  return `${Math.round(Math.min(80, Math.max(30, base)))}%`;
-}
-
-function getHandLabel(r: number, c: number): string {
-  if (r === c) return `${RANKS[r]}${RANKS[c]}`;
-  if (c > r) return `${RANKS[r]}${RANKS[c]}s`;
-  return `${RANKS[c]}${RANKS[r]}o`;
-}
-
-function getHandName(r: number, c: number): string {
-  const names: Record<string, string> = {
-    A: "Ace", K: "King", Q: "Queen", J: "Jack", T: "Ten",
-    "9": "Nine", "8": "Eight", "7": "Seven", "6": "Six",
-    "5": "Five", "4": "Four", "3": "Three", "2": "Two",
-  };
-  if (r === c) return `Pocket ${names[RANKS[r]]}s`;
-  const suited = c > r;
-  const hi = suited ? RANKS[r] : RANKS[c];
-  const lo = suited ? RANKS[c] : RANKS[r];
-  return `${names[hi]}-${names[lo]} ${suited ? "suited" : "offsuit"}`;
-}
 
 /* ─── Sub-components ────────────────────────────────────────────────── */
 
@@ -250,15 +163,6 @@ function calcRuleOfThumb(outs: number, street: Street): number {
   return street === "flop" ? outs * 4 : outs * 2;
 }
 
-/* ─── Tier styling ──────────────────────────────────────────────────── */
-
-const tierColors: Record<HandTier, { bg: string; text: string; label: string }> = {
-  strong: { bg: "bg-emerald-500/20 dark:bg-emerald-500/30", text: "text-emerald-700 dark:text-emerald-300", label: "Strong" },
-  good: { bg: "bg-emerald-500/10 dark:bg-emerald-500/15", text: "text-emerald-600 dark:text-emerald-400", label: "Good" },
-  marginal: { bg: "bg-amber-500/15 dark:bg-amber-400/15", text: "text-amber-700 dark:text-amber-300", label: "Marginal" },
-  weak: { bg: "bg-muted/40", text: "text-muted-foreground", label: "Weak" },
-};
-
 /* ─── Main Component ────────────────────────────────────────────────── */
 
 export default function PokerCalculator() {
@@ -270,9 +174,6 @@ export default function PokerCalculator() {
   const [street, setStreet] = useState<Street>("flop");
   const [potSize, setPotSize] = useState("100");
   const [betToCall, setBetToCall] = useState("25");
-
-  // Starting hands state
-  const [selectedCell, setSelectedCell] = useState<{ r: number; c: number } | null>(null);
 
   // Odds calculations
   const outs = selectedDraw === "custom" ? (Number.parseInt(customOuts) || 0) : drawScenarios[selectedDraw].outs;
@@ -297,7 +198,7 @@ export default function PokerCalculator() {
         </p>
         <div className="mt-3 space-y-2 text-sm leading-7 text-muted-foreground">
           <p>All calculations use standard 52-card deck probabilities.</p>
-          <p>Starting hand win rates are based on heads-up simulations against a random hand.</p>
+          <p>Starting-hand equity is withheld until a reproducible simulation model and assumptions are published.</p>
         </div>
       </div>
 
@@ -606,86 +507,16 @@ export default function PokerCalculator() {
   /* ─── Tab 4: Starting Hands ────────────────────────────────────────── */
 
   const handsContent = (
-    <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">
-        169 unique starting hands. Diagonal = pairs, above = suited, below = offsuit. Tap any cell for details.
+    <div className="rounded-[1.25rem] border border-amber-500/30 bg-amber-500/[0.07] p-5">
+      <p className="font-semibold text-foreground">Starting-hand estimates are temporarily unavailable</p>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        Equity and hand tiers depend on the game format, player count, position, opponent range, and simulation
+        assumptions. The previous values were not backed by a reproducible simulation, so they have been removed
+        until a versioned model and test fixtures can be published.
       </p>
-
-      {/* Legend */}
-      <div className="flex flex-wrap gap-3 text-xs">
-        {(["strong", "good", "marginal", "weak"] as const).map((tier) => (
-          <div key={tier} className="flex items-center gap-1.5">
-            <span className={cn("h-3 w-3 rounded", tierColors[tier].bg)} />
-            <span className={cn("font-semibold", tierColors[tier].text)}>{tierColors[tier].label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Grid */}
-      <div className="overflow-x-auto">
-        <div className="inline-grid grid-cols-[auto_repeat(13,1fr)] gap-px text-[10px] sm:text-xs">
-          {/* Header row */}
-          <div />
-          {RANKS.map((r) => (
-            <div key={r} className="flex items-center justify-center p-1 font-bold text-muted-foreground">
-              {r}
-            </div>
-          ))}
-          {/* Data rows */}
-          {RANKS.map((_, r) => (
-            <Fragment key={`row-${r}`}>
-              <div className="flex items-center justify-center p-1 font-bold text-muted-foreground">
-                {RANKS[r]}
-              </div>
-              {RANKS.map((_, c) => {
-                const tier = getHandTier(r, c);
-                const label = getHandLabel(r, c);
-                const isSelected = selectedCell?.r === r && selectedCell?.c === c;
-                return (
-                  <button
-                    key={`${r}-${c}`}
-                    type="button"
-                    onClick={() => setSelectedCell(isSelected ? null : { r, c })}
-                    className={cn(
-                      "flex items-center justify-center rounded-sm p-1 font-medium transition-all sm:rounded-md sm:p-1.5",
-                      tierColors[tier].bg,
-                      tierColors[tier].text,
-                      isSelected && "ring-2 ring-primary ring-offset-1 ring-offset-background",
-                      r === c && "font-bold"
-                    )}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </Fragment>
-          ))}
-        </div>
-      </div>
-
-      {/* Detail panel */}
-      {selectedCell && (
-        <div className="rounded-[1.25rem] border border-primary/30 bg-primary/[0.05] p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-semibold text-foreground">{getHandName(selectedCell.r, selectedCell.c)}</p>
-              <p className="text-sm text-muted-foreground">{getHandLabel(selectedCell.r, selectedCell.c)}</p>
-            </div>
-            <div className="text-right">
-              <span className={cn(
-                "rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em]",
-                tierColors[getHandTier(selectedCell.r, selectedCell.c)].bg,
-                tierColors[getHandTier(selectedCell.r, selectedCell.c)].text,
-              )}>
-                {tierColors[getHandTier(selectedCell.r, selectedCell.c)].label}
-              </span>
-              <p className="mt-1 text-sm font-bold text-foreground tabular-nums">
-                {getWinRate(selectedCell.r, selectedCell.c)} vs random
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <p className="mt-2 text-xs text-muted-foreground">
+        Hand rankings, exact outs probabilities, and pot-odds calculations remain available in the other tabs.
+      </p>
     </div>
   );
 

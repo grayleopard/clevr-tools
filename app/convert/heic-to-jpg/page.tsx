@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
 import { getToolBySlug } from "@/lib/tools";
-import { getToolFaqs } from "@/lib/seo/tool-faqs";
-import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
-import HeicToJpg from "@/components/tools/HeicToJpg";
+import ContainedToolNotice from "@/components/tool/ContainedToolNotice";
 import { notFound } from "next/navigation";
+import { hiddenToolRobots } from "@/lib/seo/robots";
 
 const tool = getToolBySlug("heic-to-jpg")!;
-const faqItems = getToolFaqs("heic-to-jpg");
 
 export async function generateMetadata(): Promise<Metadata> {
   if (!tool) return {};
   return {
     title: tool.metaTitle,
     description: tool.metaDescription,
+    ...hiddenToolRobots(tool),
     openGraph: {
       title: tool.metaTitle,
       description: tool.metaDescription,
@@ -36,8 +35,15 @@ export default function HeicToJpgPage() {
   if (!tool) notFound();
   return (
     <ToolLayout tool={tool}>
-      <HeicToJpg />
-      <FaqSchema items={faqItems} />
+      <ContainedToolNotice title="HEIC conversion is temporarily unavailable">
+        <p>
+          The current browser decoder can stall on supported HEIC files and
+          does not provide a dependable cancellation path. Conversion is
+          disabled until representative iPhone HEIC files complete within a
+          bounded time and their JPEG signatures, dimensions, orientation, and
+          decodability pass independent browser tests.
+        </p>
+      </ContainedToolNotice>
     </ToolLayout>
   );
 }

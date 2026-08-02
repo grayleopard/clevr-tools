@@ -78,7 +78,7 @@ export const navigationCategories: readonly NavigationCategory[] = [
       {
         "label": "Password Generator",
         "route": "/generate/password",
-        "description": "Generate strong, random passwords with custom length and character sets."
+        "description": "Generate random passwords with custom length and character sets."
       },
       {
         "label": "QR Code Generator",
@@ -112,11 +112,6 @@ export const navigationCategories: readonly NavigationCategory[] = [
         "label": "Calorie Calculator (TDEE)",
         "route": "/calc/calorie",
         "description": "Calculate daily calories needed to lose, maintain, or gain weight."
-      },
-      {
-        "label": "Take-Home Pay Calculator",
-        "route": "/calc/take-home-pay",
-        "description": "Estimate your paycheck after federal, state, and FICA taxes."
       },
       {
         "label": "Sleep Calculator",
@@ -172,7 +167,7 @@ export const navigationCategories: readonly NavigationCategory[] = [
       {
         "label": "Typing Test",
         "route": "/type/typing-test",
-        "description": "Test your typing speed and accuracy. See WPM, accuracy, consistency, and a live performance chart."
+        "description": "Test your typing speed and character accuracy. See measured WPM, raw WPM, and a live performance chart."
       },
       {
         "label": "WPM Test",

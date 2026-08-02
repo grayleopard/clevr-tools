@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
 import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
@@ -181,10 +180,9 @@ export default function SalaryCalculator() {
             annually. So $25/hour &times; 2,080 = $52,000/year.
           </p>
           <p className="mt-3">
-            Keep in mind this is your gross (pre-tax) salary. Your actual take-home pay will be lower
-            after federal income tax, state income tax, and FICA deductions. Use our{" "}
-            <Link href="/calc/take-home-pay" className="text-primary underline hover:no-underline">take-home pay calculator</Link>{" "}
-            to estimate your net paycheck.
+            Keep in mind this is gross (pre-tax) pay. Actual take-home pay depends on withholding,
+            benefits, deductions, location, and individual circumstances; consult current official
+            tax guidance or a qualified professional for an after-tax estimate.
           </p>
         </section>
         <section>

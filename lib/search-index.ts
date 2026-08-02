@@ -71,17 +71,6 @@ export const searchIndex: readonly SearchTool[] = [
     "icon": "QrCode"
   },
   {
-    "name": "HEIC to JPG Converter",
-    "route": "/convert/heic-to-jpg",
-    "category": "convert",
-    "shortDescription": "Convert iPhone HEIC photos to JPG — batch supported.",
-    "aliases": [
-      "iphone photos",
-      "convert heic"
-    ],
-    "icon": "Smartphone"
-  },
-  {
     "name": "WebP to PNG Converter",
     "route": "/convert/webp-to-png",
     "category": "convert",
@@ -313,7 +302,7 @@ export const searchIndex: readonly SearchTool[] = [
     "name": "Password Generator",
     "route": "/generate/password",
     "category": "generate",
-    "shortDescription": "Generate strong, random passwords with custom length and character sets.",
+    "shortDescription": "Generate random passwords with custom length and character sets.",
     "aliases": [
       "random password",
       "strong password"
@@ -360,17 +349,6 @@ export const searchIndex: readonly SearchTool[] = [
       "betting odds"
     ],
     "icon": "Percent"
-  },
-  {
-    "name": "Poker Calculator",
-    "route": "/calc/poker",
-    "category": "calc",
-    "shortDescription": "Hand rankings, odds calculator, Texas Hold'em rules, and starting hand charts.",
-    "aliases": [
-      "poker odds",
-      "hand rankings"
-    ],
-    "icon": "Spade"
   },
   {
     "name": "Unit Converter",
@@ -515,7 +493,7 @@ export const searchIndex: readonly SearchTool[] = [
     "name": "Typing Test",
     "route": "/type/typing-test",
     "category": "type",
-    "shortDescription": "Test your typing speed and accuracy. See WPM, accuracy, consistency, and a live performance chart.",
+    "shortDescription": "Test typing speed and character accuracy with measured WPM, raw WPM, and a live performance chart.",
     "aliases": [
       "wpm test",
       "typing speed test"
@@ -608,16 +586,6 @@ export const searchIndex: readonly SearchTool[] = [
       "wage calculator"
     ],
     "icon": "DollarSign"
-  },
-  {
-    "name": "Take-Home Pay Calculator",
-    "route": "/calc/take-home-pay",
-    "category": "calc",
-    "shortDescription": "Estimate your paycheck after federal, state, and FICA taxes.",
-    "aliases": [
-      "net pay calculator"
-    ],
-    "icon": "Wallet"
   },
   {
     "name": "Loan Calculator",
@@ -722,14 +690,6 @@ export const searchIndex: readonly SearchTool[] = [
     "icon": "Car"
   },
   {
-    "name": "Paycheck Calculator",
-    "route": "/calc/paycheck",
-    "category": "calc",
-    "shortDescription": "Estimate your net paycheck after taxes and deductions per pay period.",
-    "aliases": [],
-    "icon": "Wallet"
-  },
-  {
     "name": "Down Payment Calculator",
     "route": "/calc/down-payment",
     "category": "calc",
@@ -763,7 +723,7 @@ export const searchIndex: readonly SearchTool[] = [
     "name": "Body Fat Calculator",
     "route": "/calc/body-fat",
     "category": "calc",
-    "shortDescription": "Estimate body fat percentage using the Navy method or BMI formula.",
+    "shortDescription": "Estimate body fat using a legacy circumference equation or a BMI-based screening formula.",
     "aliases": [],
     "icon": "Activity"
   },

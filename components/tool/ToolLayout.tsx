@@ -184,6 +184,7 @@ export default function ToolLayout({
   fullWidth = false,
   embeddedShell = false,
 }: ToolLayoutProps) {
+  const isContained = tool.contained === true;
   const defaultStructuredData = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -235,19 +236,26 @@ export default function ToolLayout({
     ],
   };
   const contentWidth = fullWidth || !embeddedShell ? "max-w-7xl" : "max-w-7xl";
-  const seoHeadings = tool.seoContent ? extractHeadings(tool.seoContent) : [];
-  const seoContentWithIds = tool.seoContent
+  const seoHeadings = !isContained && tool.seoContent ? extractHeadings(tool.seoContent) : [];
+  const seoContentWithIds = !isContained && tool.seoContent
     ? injectHeadingIds(tool.seoContent, seoHeadings)
-    : tool.seoContent;
-  const sidebarContent = getSidebarContent(tool, relatedTools, seoHeadings);
-  const privacyContext = getPrivacyContext(tool);
+    : "";
+  // A contained route is a repair/status surface, not an operational tool.
+  // Do not show processing guidance or privacy badges that could be mistaken
+  // for a currently supported capability contract.
+  const sidebarContent = isContained
+    ? { settingsPanel: undefined, infoPanel: undefined, settingsTitle: undefined, infoTitle: undefined }
+    : getSidebarContent(tool, relatedTools, seoHeadings);
+  const privacyContext = isContained ? undefined : getPrivacyContext(tool);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {!isContained ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      ) : null}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
@@ -318,7 +326,7 @@ export default function ToolLayout({
             </div>
           </div>
 
-          {tool.seoContent ? (
+          {seoContentWithIds ? (
             <div className="border-t border-border bg-muted/10">
               <div className={`mx-auto ${contentWidth} px-4 py-10 sm:px-6`}>
                 <div
