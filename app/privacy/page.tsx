@@ -129,11 +129,11 @@ export default function PrivacyPage() {
                 A small number of tools use AI models too large to run in a browser tab, so they
                 may need to send a file to a server for processing. Those capabilities remain
                 unavailable unless the tool identifies the processor and presents verified data
-                handling terms before submission. The experimental Background Remover is
-                currently disabled because its processor, retention, and deletion contract has
-                not been verified. Do not submit sensitive files to an unavailable or
-                experimental route. Tools explicitly described as local continue to process files
-                in the browser.
+                handling terms before submission. File X-Ray and the experimental Background
+                Remover are currently disabled because their processor, retention, training, and
+                deletion terms have not been fully verified. Do not submit sensitive files to an
+                unavailable or experimental route. Tools explicitly described as local continue
+                to process files in the browser.
               </p>
             </section>
 
