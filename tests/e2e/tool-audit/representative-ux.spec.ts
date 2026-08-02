@@ -39,10 +39,6 @@ function contrast(foreground: string, background: string) {
 test.describe("representative mobile, dark-mode, and runtime integrity", () => {
   for (const [family, route] of representatives) {
     test(`${family}: 390px layout and actual theme toggle`, async ({ page }) => {
-      test.fail(
-        route === "/time/timer",
-        "Known P2: the custom-time row clips Start and creates 6px document overflow at 390px"
-      );
       const runtimeErrors: string[] = [];
       page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));
       page.on("console", (message) => {

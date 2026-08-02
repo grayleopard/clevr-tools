@@ -76,7 +76,7 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/70 px-3 shadow-[var(--ambient-shadow)] backdrop-blur-xl">
           <NavbarLogo />
 
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
             {navigationCategories.map((category) => (
               <div key={category.id} className="group relative">
                 <Link

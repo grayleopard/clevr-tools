@@ -276,7 +276,7 @@ export default function ImagesToPdf({
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = outputFilename;
+      a.download = `${files[0].file.name.replace(/\.[^.]+$/, "")}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -291,7 +291,7 @@ export default function ImagesToPdf({
     } finally {
       setIsDownloading(false);
     }
-  }, [files, pageSize, orientation, margins, resultUrl]);
+  }, [files, isDownloading, margins, orientation, pageSize, resultUrl]);
 
   const reset = useCallback(() => {
     files.forEach((f) => URL.revokeObjectURL(f.previewUrl));
