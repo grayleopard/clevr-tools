@@ -15,6 +15,11 @@ import { formatBytes, truncateFilename } from "@/lib/utils";
 import { TipJar } from "@/components/tool/TipJar";
 import ToolPageLayout from "@/components/layout/ToolPageLayout";
 import { getRelatedTools, getToolBySlug } from "@/lib/tools";
+import {
+  trackSafeToolDuration,
+  trackSafeToolEvent,
+  trackSafeToolFailure,
+} from "@/lib/analytics/safe-tool-events";
 import { Download, Package, RotateCcw } from "lucide-react";
 
 interface CompressedFile {
@@ -53,6 +58,37 @@ function formatOutputFormat(fmt: ImageOutputFormat): string {
   return fmt === "original" ? "Keep original" : fmt.toUpperCase();
 }
 
+function revokeCompressedFiles(files: CompressedFile[]): void {
+  files.forEach((result) => {
+    URL.revokeObjectURL(result.url);
+    URL.revokeObjectURL(result.originalUrl);
+  });
+}
+
+function getOutputStem(filename: string, fallback: string): string {
+  const withoutExtension = filename.replace(/\.[^.]+$/, "").trim();
+  return withoutExtension && withoutExtension !== "." ? withoutExtension : fallback;
+}
+
+function createCompressedFilename(
+  originalName: string,
+  extension: string,
+  usedNames: Set<string>
+): string {
+  const safeExtension = extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
+  const base = `${getOutputStem(originalName, "image")}-compressed`;
+  let suffix = 1;
+  let filename = `${base}.${safeExtension}`;
+
+  while (usedNames.has(filename.toLocaleLowerCase())) {
+    suffix += 1;
+    filename = `${base}-${suffix}.${safeExtension}`;
+  }
+
+  usedNames.add(filename.toLocaleLowerCase());
+  return filename;
+}
+
 export default function ImageCompressor() {
   const [quality, setQuality] = useState(80);
   const [outputFormat, setOutputFormat] = useState<ImageOutputFormat>("original");
@@ -65,57 +101,127 @@ export default function ImageCompressor() {
 
   const sourceFilesRef = useRef<File[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resultsRef = useRef<CompressedFile[]>([]);
+  const processRunRef = useRef(0);
+
+  const clearResults = useCallback(() => {
+    revokeCompressedFiles(resultsRef.current);
+    resultsRef.current = [];
+    setResults([]);
+  }, []);
+
+  useEffect(() => {
+    trackSafeToolEvent("image-compressor", "opened");
+  }, []);
 
   const compress = useCallback(
     async (files: File[], q: number, fmt: ImageOutputFormat) => {
       if (files.length === 0) return;
-      setIsProcessing(true);
-      setLastProcessMs(null);
-      setResults((prev) => {
-        prev.forEach((result) => {
-          URL.revokeObjectURL(result.url);
-          URL.revokeObjectURL(result.originalUrl);
-        });
-        return [];
-      });
-      await waitForNextPaint();
-
+      const runId = ++processRunRef.current;
       const startedAt = performance.now();
 
+      clearResults();
+      setIsProcessing(true);
+      setLastProcessMs(null);
+      setDownloaded(false);
+      trackSafeToolEvent("image-compressor", "started");
+
+      const compressed: CompressedFile[] = [];
+      const usedNames = new Set<string>();
+      let validInputRecorded = false;
+      let failedCount = 0;
+      let committed = false;
+
       try {
-        const compressed: CompressedFile[] = [];
+        await waitForNextPaint();
+        if (runId !== processRunRef.current) return;
 
         for (const originalFile of files) {
-          const originalUrl = URL.createObjectURL(originalFile);
-          const { width, height } = await readImageDimensions(originalUrl);
-          const { blob, ext, mimeType } = await compressImage(originalFile, q, fmt);
-          const baseName = originalFile.name.replace(/\.[^.]+$/, "");
-          const newFile = new File([blob], `${baseName}-compressed.${ext}`, { type: mimeType });
+          if (runId !== processRunRef.current) return;
 
-          compressed.push({
-            file: newFile,
-            originalFile,
-            originalUrl,
-            url: URL.createObjectURL(newFile),
-            width,
-            height,
-          });
+          let originalUrl: string | null = null;
+          let outputUrl: string | null = null;
+
+          try {
+            originalUrl = URL.createObjectURL(originalFile);
+            await readImageDimensions(originalUrl);
+            if (!validInputRecorded) {
+              trackSafeToolEvent("image-compressor", "valid_input");
+              validInputRecorded = true;
+            }
+
+            const { blob, ext, mimeType } = await compressImage(originalFile, q, fmt);
+            if (blob.size === 0) throw new Error("Empty compression output");
+
+            const filename = createCompressedFilename(originalFile.name, ext, usedNames);
+            const newFile = new File([blob], filename, { type: mimeType });
+            outputUrl = URL.createObjectURL(newFile);
+            const { width, height } = await readImageDimensions(outputUrl);
+
+            if (runId !== processRunRef.current) return;
+
+            compressed.push({
+              file: newFile,
+              originalFile,
+              originalUrl,
+              url: outputUrl,
+              width,
+              height,
+            });
+            originalUrl = null;
+            outputUrl = null;
+          } catch {
+            failedCount += 1;
+            if (runId !== processRunRef.current) return;
+          } finally {
+            // URLs are transferred to `compressed` only after both previews
+            // validate. A stale run can return before that handoff.
+            if (originalUrl) URL.revokeObjectURL(originalUrl);
+            if (outputUrl) URL.revokeObjectURL(outputUrl);
+          }
         }
 
+        if (runId !== processRunRef.current) return;
+
+        const duration = performance.now() - startedAt;
+        if (failedCount > 0) {
+          trackSafeToolFailure("image-compressor", "processing");
+        }
+
+        if (compressed.length === 0) {
+          addToast("We couldn't compress these images. Try a JPG, PNG, or WebP file.", "error");
+          return;
+        }
+
+        resultsRef.current = compressed;
         setResults(compressed);
-        setLastProcessMs(Math.round(performance.now() - startedAt));
-      } catch (err) {
-        console.error("Compression failed:", err);
-        addToast("Compression failed. Please try again.", "error");
+        setLastProcessMs(Math.round(duration));
+        trackSafeToolEvent("image-compressor", "succeeded");
+        trackSafeToolDuration("image-compressor", duration);
+        committed = true;
+
+        if (failedCount > 0) {
+          addToast(
+            `${failedCount} image${failedCount === 1 ? "" : "s"} couldn't be compressed. The remaining output is ready.`,
+            "info"
+          );
+        }
+      } catch {
+        if (runId === processRunRef.current) {
+          trackSafeToolFailure("image-compressor", "processing");
+          addToast("Compression couldn't finish. Try again with a supported image.", "error");
+        }
       } finally {
-        setIsProcessing(false);
+        if (!committed) revokeCompressedFiles(compressed);
+        if (runId === processRunRef.current) setIsProcessing(false);
       }
     },
-    []
+    [clearResults]
   );
 
   const handleFiles = useCallback(
     (files: File[]) => {
+      if (files.length === 0) return;
       sourceFilesRef.current = files;
       setHasSelection(files.length > 0);
       setDownloaded(false);
@@ -137,6 +243,15 @@ export default function ImageCompressor() {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, [quality, outputFormat, compress]);
+
+  useEffect(() => {
+    return () => {
+      processRunRef.current += 1;
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      revokeCompressedFiles(resultsRef.current);
+      resultsRef.current = [];
+    };
+  }, []);
 
   const handleClipboardPaste = useCallback(async () => {
     if (!navigator.clipboard?.read) {
@@ -169,30 +284,42 @@ export default function ImageCompressor() {
 
   const downloadAll = useCallback(async () => {
     if (results.length <= 1) return;
-    const JSZip = (await import("jszip")).default;
-    const zip = new JSZip();
-    for (const { file } of results) zip.file(file.name, file);
-    const blob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "compressed-images.zip";
-    anchor.click();
-    URL.revokeObjectURL(url);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      for (const { file } of results) zip.file(file.name, file);
+      const blob = await zip.generateAsync({ type: "blob" });
+      if (blob.size === 0) throw new Error("Empty ZIP output");
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "compressed-images.zip";
+      anchor.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      setDownloaded(true);
+      trackSafeToolEvent("image-compressor", "download");
+    } catch {
+      trackSafeToolFailure("image-compressor", "download");
+      addToast("Couldn't create the ZIP. Download the images individually instead.", "error");
+    }
   }, [results]);
 
+  const markDownloaded = useCallback(() => {
+    setDownloaded(true);
+    trackSafeToolEvent("image-compressor", "download");
+  }, []);
+
   const reset = useCallback(() => {
-    results.forEach((result) => {
-      URL.revokeObjectURL(result.url);
-      URL.revokeObjectURL(result.originalUrl);
-    });
-    setResults([]);
+    const hadOutput = resultsRef.current.length > 0 || downloaded;
+    processRunRef.current += 1;
+    clearResults();
     setDownloaded(false);
     setHasSelection(false);
     setLastProcessMs(null);
     sourceFilesRef.current = [];
     setResetKey((key) => key + 1);
-  }, [results]);
+    if (hadOutput) trackSafeToolEvent("image-compressor", "process_another");
+  }, [clearResults, downloaded]);
 
   const totalOriginalSize = results.reduce((sum, result) => sum + result.originalFile.size, 0);
   const totalCompressedSize = results.reduce((sum, result) => sum + result.file.size, 0);
@@ -216,6 +343,7 @@ export default function ImageCompressor() {
           step={1}
           value={[quality]}
           onValueChange={([value]) => setQuality(value)}
+          aria-label="Compression quality"
           className="w-full"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
@@ -232,6 +360,7 @@ export default function ImageCompressor() {
               key={fmt}
               type="button"
               onClick={() => setOutputFormat(fmt)}
+              aria-pressed={outputFormat === fmt}
               className={`rounded-[1rem] border px-3 py-2 text-left text-sm font-medium transition-colors ${
                 outputFormat === fmt
                   ? "border-primary bg-primary/10 text-primary"
@@ -308,8 +437,7 @@ export default function ImageCompressor() {
           Local processing
         </p>
         <p className="mt-3">
-          Compression runs in your browser and keeps the current clevr.tools privacy model
-          intact.
+          Compression runs in this browser. Your images are not uploaded for this tool.
         </p>
       </div>
     </div>
@@ -326,6 +454,14 @@ export default function ImageCompressor() {
     >
       <div className="space-y-6">
         <PageDragOverlay onFiles={handleFiles} />
+
+        <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+          {isProcessing
+            ? "Compressing images"
+            : results.length > 0
+              ? `${results.length} image${results.length === 1 ? "" : "s"} ready to download`
+              : ""}
+        </p>
 
         <FileDropZone
           accept=".jpg,.jpeg,.png,.webp"
@@ -403,7 +539,7 @@ export default function ImageCompressor() {
                           Process time
                         </p>
                         <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
-                          {lastProcessMs ? `${lastProcessMs}ms` : "Pending"}
+                          {lastProcessMs !== null ? `${lastProcessMs}ms` : "Pending"}
                         </p>
                       </div>
                       <div className="min-w-[120px] rounded-[1rem] bg-card/80 px-5 py-4">
@@ -429,7 +565,7 @@ export default function ImageCompressor() {
                     <a
                       href={primaryResult.url}
                       download={primaryResult.file.name}
-                      onClick={() => setDownloaded(true)}
+                      onClick={markDownloaded}
                       className="inline-flex min-h-14 items-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-8 py-4 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-opacity hover:opacity-95"
                     >
                       <Download className="h-4 w-4" />
@@ -451,7 +587,7 @@ export default function ImageCompressor() {
                     fileSize={result.file.size}
                     originalSize={result.originalFile.size}
                     thumbnailUrl={result.url}
-                    onDownload={() => setDownloaded(true)}
+                    onDownload={markDownloaded}
                   />
                 ))}
                 {results.length > 1 ? (
@@ -459,7 +595,6 @@ export default function ImageCompressor() {
                     type="button"
                     onClick={() => {
                       void downloadAll();
-                      setDownloaded(true);
                     }}
                     className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/35 hover:text-primary"
                   >
@@ -480,6 +615,7 @@ export default function ImageCompressor() {
                     <a
                       href={primaryResult.url}
                       download={primaryResult.file.name}
+                      onClick={markDownloaded}
                       className="underline transition-colors hover:text-foreground"
                     >
                       Re-download {truncateFilename(primaryResult.file.name, 28)}
