@@ -16,7 +16,7 @@ function CategoryMenu({ category }: { category: NavigationCategory }) {
 
   return (
     <div
-      className={`rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-5 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl ${
+      className={`border border-[color:var(--ghost-border)] bg-card/95 p-5 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl ${
         useTwoColumns ? "w-[min(36rem,calc(100vw-2rem))]" : "w-72"
       }`}
     >
@@ -71,9 +71,9 @@ function PlayLinkIcon({
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 px-4 pt-4 sm:px-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex h-16 items-center justify-between rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/70 px-3 shadow-[var(--ambient-shadow)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[color:var(--ghost-border)] bg-background/90 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex h-16 items-center justify-between">
           <NavbarLogo />
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
@@ -117,7 +117,7 @@ export default function Navbar() {
                 className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
                 aria-label="Play tools"
               >
-                <div className="min-w-[360px] rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-4 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
+                <div className="min-w-[360px] border border-[color:var(--ghost-border)] bg-card/95 p-4 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
                   <div className="space-y-1.5">
                     {playLinks.map((item) => (
                       <Link

@@ -83,7 +83,7 @@ export default function MobileNavigation() {
       {open && (
         <div
           id={menuId}
-          className="absolute right-0 top-14 z-50 max-h-[70dvh] w-[calc(100vw-2rem)] overflow-y-auto rounded-[1.35rem] border border-[color:var(--ghost-border)] bg-card/95 p-3 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl"
+          className="absolute right-0 top-14 z-50 max-h-[70dvh] w-[calc(100vw-2rem)] overflow-y-auto border border-[color:var(--ghost-border)] bg-card/95 p-3 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl"
         >
           <nav className="space-y-2" aria-label="Mobile navigation">
             <MobileSearchTrigger
