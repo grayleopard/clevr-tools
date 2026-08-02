@@ -60,26 +60,28 @@ export default function DailyChallengeBanner({
   }, []);
 
   return (
-    <div className="mb-8 overflow-hidden rounded-[1.75rem] bg-zone p-6 shadow-[var(--shadow-sm)] sm:p-7">
+    <div className="border border-zone-border bg-zone p-6 sm:p-7">
       <div className="flex flex-wrap items-center justify-between gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <span className="rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+            <span className="border border-primary/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
               Today&apos;s Numble
             </span>
             {initialRef.streak >= 2 ? (
-              <span className="rounded-full bg-zone-raised px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zone-muted">
+              <span className="border border-zone-border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zone-muted">
                 {initialRef.streak}-day streak
               </span>
             ) : null}
           </div>
-          <h2 className="text-3xl font-black tracking-[-0.03em] text-zone-text">Numble #{puzzleNumber}</h2>
-          <div className="flex flex-wrap items-center gap-2.5 text-sm text-zone-muted font-mono">
-            <span className="rounded-full bg-zone-raised px-3 py-1.5">
+          <h2 className="font-display text-3xl font-bold uppercase tracking-[-0.02em] text-zone-text">Numble #{puzzleNumber}</h2>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-zone-muted font-mono">
+            <span>
               Target <span className="font-semibold text-zone-text">{target}</span>
             </span>
-            <span className="rounded-full bg-zone-raised px-3 py-1.5">{difficulty}</span>
-            <span className="rounded-full bg-zone-raised px-3 py-1.5">
+            <span aria-hidden="true">·</span>
+            <span>{difficulty}</span>
+            <span aria-hidden="true">·</span>
+            <span>
               Next puzzle in{" "}
               {mounted ? (
                 countdown
@@ -87,7 +89,7 @@ export default function DailyChallengeBanner({
                 <>
                   <span
                     aria-hidden="true"
-                    className="inline-block h-[1em] w-[8ch] animate-pulse rounded bg-zone-dim/40 align-middle"
+                    className="inline-block h-[1em] w-[8ch] animate-pulse bg-zone-dim/40 align-middle"
                   />
                   <span className="sr-only">loading</span>
                 </>
@@ -108,13 +110,13 @@ export default function DailyChallengeBanner({
         <div className="flex flex-wrap gap-3">
           <Link
             href="/play/numble"
-            className="inline-flex items-center rounded-xl bg-[linear-gradient(135deg,var(--primary-fixed),var(--primary))] px-5 py-3 text-sm font-semibold text-[var(--on-primary)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98] dark:bg-[linear-gradient(135deg,var(--primary),var(--primary-dim))]"
+            className="inline-flex items-center border border-primary bg-primary px-5 py-3 text-sm font-semibold text-[var(--on-primary)] transition-opacity duration-150 hover:opacity-90 active:scale-[0.98]"
           >
             {initialRef.state === "completed" ? "View today’s result" : "Play today’s puzzle"}
           </Link>
           <Link
             href="/play/numble"
-            className="inline-flex items-center rounded-xl border border-zone-border bg-zone-raised px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-zone-raised/70"
+            className="inline-flex items-center border border-zone-border px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-zone-raised/70"
           >
             Practice mode
           </Link>

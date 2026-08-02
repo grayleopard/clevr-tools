@@ -240,7 +240,7 @@ export default function CommandPalette() {
             aria-label="Search tools"
             tabIndex={-1}
             onKeyDown={containDialogFocus}
-            className="relative w-full max-w-xl overflow-hidden rounded-[1.5rem] border border-[color:var(--ghost-border)] bg-card shadow-[var(--ambient-shadow-strong)]"
+            className="relative w-full max-w-xl overflow-hidden border border-[color:var(--ghost-border)] bg-card shadow-[var(--ambient-shadow-strong)]"
           >
             <div className="flex items-center gap-3 border-b border-border px-5 py-4">
               <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
