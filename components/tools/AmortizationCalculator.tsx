@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
 import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
+import { calculateFixedRateAmortization } from "@/lib/p1-remediation/finance";
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US", {
@@ -12,15 +13,6 @@ function fmt(n: number): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-}
-
-interface AmortRow {
-  month: number;
-  payment: number;
-  principal: number;
-  interest: number;
-  extraPmt: number;
-  balance: number;
 }
 
 export default function AmortizationCalculator() {
@@ -35,71 +27,27 @@ export default function AmortizationCalculator() {
     const annualRate = parseFloat(interestRate) || 0;
     const years = parseFloat(loanTermYears) || 0;
     const extra = parseFloat(extraPayment) || 0;
-    if (P <= 0 || years <= 0) {
+    const n = Math.round(years * 12);
+    const calculation = calculateFixedRateAmortization(
+      P,
+      annualRate,
+      n,
+      extra
+    );
+    if (!calculation) {
       return { ok: false as const, emptyMessage: "Enter a loan amount and term to see your amortization schedule." };
     }
 
-    const r = annualRate / 100 / 12;
-    const n = Math.round(years * 12);
-
-    let basePayment: number;
-    if (r === 0) {
-      basePayment = P / n;
-    } else {
-      basePayment = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-    }
-
-    // Without extra payments
-    const totalWithout = basePayment * n;
-    const interestWithout = totalWithout - P;
-
-    // With extra payments
-    const schedule: AmortRow[] = [];
-    let balance = P;
-    let totalInterestWith = 0;
-    let totalPaidWith = 0;
-    let month = 0;
-
-    while (balance > 0 && month < n + 120) {
-      month++;
-      const interestPayment = balance * r;
-      let principalPayment = basePayment - interestPayment;
-      let actualExtra = Math.min(extra, balance - principalPayment);
-      if (principalPayment > balance) {
-        principalPayment = balance;
-        actualExtra = 0;
-      }
-      balance = Math.max(0, balance - principalPayment - actualExtra);
-      totalInterestWith += interestPayment;
-      totalPaidWith += basePayment + actualExtra;
-
-      schedule.push({
-        month,
-        payment: basePayment + actualExtra,
-        principal: principalPayment + actualExtra,
-        interest: interestPayment,
-        extraPmt: actualExtra,
-        balance,
-      });
-
-      if (balance <= 0) break;
-    }
-
-    const interestSaved = interestWithout - totalInterestWith;
-    const monthsSaved = n - month;
-
     return {
       ok: true as const,
-      basePayment,
-      totalWithout,
-      interestWithout,
-      totalPaidWith,
-      totalInterestWith,
-      interestSaved,
-      monthsSaved,
-      schedule,
-      originalMonths: n,
-      actualMonths: month,
+      basePayment: calculation.basePayment,
+      totalPaidWith: calculation.totalWithExtra,
+      totalInterestWith: calculation.interestWithExtra,
+      interestSaved: calculation.interestSaved,
+      monthsSaved: calculation.monthsSaved,
+      schedule: calculation.schedule,
+      originalMonths: calculation.originalMonths,
+      actualMonths: calculation.actualMonths,
     };
   }, [loanAmount, interestRate, loanTermYears, extraPayment]);
 
@@ -167,7 +115,7 @@ export default function AmortizationCalculator() {
         <>
           {/* Monthly payment */}
           <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
-            <p className="text-sm text-muted-foreground mb-1">Monthly Payment</p>
+            <p className="text-sm text-muted-foreground mb-1">Scheduled Monthly Payment</p>
             <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {fmt(result.basePayment + (parseFloat(extraPayment) || 0))}
             </p>

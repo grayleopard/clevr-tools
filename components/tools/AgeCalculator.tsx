@@ -3,6 +3,15 @@
 import { useState, useMemo } from "react";
 import { TipJar } from "@/components/tool/TipJar";
 import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
+import {
+  compareCalendarDates,
+  dayOfWeek,
+  differenceDateOnly,
+  formatCalendarDateLong,
+  localDateInputValue,
+  nextBirthdayAfter,
+  parseDateOnly,
+} from "@/lib/p1-remediation/calendar";
 
 const ZODIAC = [
   { sign: "Capricorn", emoji: "\u2651", end: [1, 19] },
@@ -70,10 +79,6 @@ function getGeneration(year: number): string {
   return "Gen Alpha";
 }
 
-function daysInMonth(year: number, month: number): number {
-  return new Date(year, month + 1, 0).getDate();
-}
-
 function getZodiac(month: number, day: number) {
   for (const z of ZODIAC) {
     if (month < z.end[0] || (month === z.end[0] && day <= z.end[1])) {
@@ -116,72 +121,37 @@ function DetailBox({
 }
 
 export default function AgeCalculator() {
-  const today = new Date().toISOString().slice(0, 10);
   const [dob, setDob] = useState("");
-  const [asOf, setAsOf] = useState(today);
+  const [asOf, setAsOf] = useState(localDateInputValue);
 
   const result = useMemo(() => {
     if (!dob || !asOf) {
       return { ok: false as const, emptyMessage: "Enter a date of birth to see a full age breakdown." };
     }
-    const dobDate = new Date(dob + "T00:00:00");
-    const asOfDate = new Date(asOf + "T00:00:00");
-    if (isNaN(dobDate.getTime()) || isNaN(asOfDate.getTime())) {
+    const dobDate = parseDateOnly(dob);
+    const asOfDate = parseDateOnly(asOf);
+    if (!dobDate || !asOfDate) {
       return { ok: false as const, emptyMessage: "Enter a date of birth to see a full age breakdown." };
     }
-    if (asOfDate < dobDate) {
+    if (compareCalendarDates(asOfDate, dobDate) < 0) {
       return { ok: false as const, emptyMessage: "The \"as of\" date needs to be on or after the date of birth." };
     }
 
-    let years = asOfDate.getFullYear() - dobDate.getFullYear();
-    let months = asOfDate.getMonth() - dobDate.getMonth();
-    let days = asOfDate.getDate() - dobDate.getDate();
-
-    if (days < 0) {
-      months--;
-      days += daysInMonth(
-        asOfDate.getFullYear(),
-        asOfDate.getMonth() - 1
-      );
-    }
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-
-    const totalDays = Math.floor(
-      (asOfDate.getTime() - dobDate.getTime()) / 86400000
-    );
+    const difference = differenceDateOnly(dobDate, asOfDate);
+    const { years, months, days, absoluteDays: totalDays } = difference;
     const totalHours = totalDays * 24;
     const totalMinutes = totalHours * 60;
     const totalWeeks = Math.floor(totalDays / 7);
     const totalMonths = years * 12 + months;
 
-    // Next birthday
-    let nextBdayYear = asOfDate.getFullYear();
-    let nextBday = new Date(
-      nextBdayYear,
-      dobDate.getMonth(),
-      dobDate.getDate()
-    );
-    if (nextBday <= asOfDate) {
-      nextBdayYear++;
-      nextBday = new Date(
-        nextBdayYear,
-        dobDate.getMonth(),
-        dobDate.getDate()
-      );
-    }
-    const daysUntilBday = Math.ceil(
-      (nextBday.getTime() - asOfDate.getTime()) / 86400000
-    );
+    const nextBday = nextBirthdayAfter(dobDate, asOfDate);
+    const daysUntilBday = differenceDateOnly(asOfDate, nextBday).absoluteDays;
 
-    const dayOfBirth = DAYS[dobDate.getDay()];
-    const zodiac = getZodiac(dobDate.getMonth() + 1, dobDate.getDate());
-    const chineseIdx =
-      ((dobDate.getFullYear() - 2000) % 12 + 12) % 12;
+    const dayOfBirth = DAYS[dayOfWeek(dobDate)];
+    const zodiac = getZodiac(dobDate.month, dobDate.day);
+    const chineseIdx = ((dobDate.year - 2000) % 12 + 12) % 12;
     const chineseAnimal = CHINESE_ANIMALS[chineseIdx];
-    const generation = getGeneration(dobDate.getFullYear());
+    const generation = getGeneration(dobDate.year);
 
     return {
       ok: true as const,
@@ -193,11 +163,7 @@ export default function AgeCalculator() {
       totalDays,
       totalHours,
       totalMinutes,
-      nextBirthday: nextBday.toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      }),
+      nextBirthday: formatCalendarDateLong(nextBday),
       daysUntilBday,
       dayOfBirth,
       zodiacSign: `${zodiac.emoji} ${zodiac.sign}`,
@@ -230,6 +196,7 @@ export default function AgeCalculator() {
           <input
             id="as-of"
             type="date"
+            suppressHydrationWarning
             value={asOf}
             onChange={(e) => setAsOf(e.target.value)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -246,13 +213,16 @@ export default function AgeCalculator() {
             <p className="text-2xl sm:text-3xl font-bold text-foreground dark:text-emerald-500 tabular-nums">
               {result.years} years, {result.months} months, {result.days} days
             </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Calendar months use end-of-month clamping; elapsed totals count completed days.
+            </p>
           </div>
 
           {/* Stats grid */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             <StatBox label="Total Months" value={result.totalMonths} />
             <StatBox label="Total Weeks" value={result.totalWeeks} />
-            <StatBox label="Total Days" value={result.totalDays} />
+            <StatBox label="Elapsed Days" value={result.totalDays} />
             <StatBox label="Hours" value={result.totalHours} />
             <StatBox label="Minutes" value={result.totalMinutes} />
           </div>

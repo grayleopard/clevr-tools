@@ -4,6 +4,10 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
 import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
+import {
+  formatRoundedDuration,
+  formatRoundedPace,
+} from "@/lib/p1-remediation/pace";
 
 type Mode = "pace" | "time" | "distance";
 type DistUnit = "miles" | "km";
@@ -14,21 +18,6 @@ const RACE_PRESETS = [
   { label: "Half Marathon", miles: 13.1094, km: 21.0975 },
   { label: "Marathon", miles: 26.2188, km: 42.195 },
 ];
-
-function formatPace(totalSeconds: number): string {
-  if (!isFinite(totalSeconds) || totalSeconds <= 0) return "--:--";
-  const m = Math.floor(totalSeconds / 60);
-  const s = Math.round(totalSeconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-function formatTime(totalSeconds: number): string {
-  if (!isFinite(totalSeconds) || totalSeconds <= 0) return "0:00:00";
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = Math.round(totalSeconds % 60);
-  return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-}
 
 export default function PaceCalculator() {
   const [mode, setMode] = useState<Mode>("pace");
@@ -116,7 +105,7 @@ export default function PaceCalculator() {
     const maxSplits = Math.min(Math.ceil(dist), 50);
     const arr = [];
     for (let i = 1; i <= maxSplits; i++) {
-      arr.push({ mile: i, time: formatTime(i * pace) });
+      arr.push({ mile: i, time: formatRoundedDuration(i * pace) });
     }
     return arr;
   }, [result]);
@@ -168,9 +157,9 @@ export default function PaceCalculator() {
             <div className="flex gap-1 items-center">
               <input id="pace-time-hours" type="number" min="0" value={timeH} onChange={(e) => setTimeH(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="H" />
               <span className="text-foreground font-bold">:</span>
-              <input type="number" min="0" max="59" value={timeM} onChange={(e) => setTimeM(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="M" />
+              <input aria-label="Time minutes" type="number" min="0" max="59" value={timeM} onChange={(e) => setTimeM(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="M" />
               <span className="text-foreground font-bold">:</span>
-              <input type="number" min="0" max="59" value={timeS} onChange={(e) => setTimeS(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="S" />
+              <input aria-label="Time seconds" type="number" min="0" max="59" value={timeS} onChange={(e) => setTimeS(e.target.value)} className="w-16 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="S" />
             </div>
           </div>
         )}
@@ -180,7 +169,7 @@ export default function PaceCalculator() {
             <div className="flex gap-1 items-center">
               <input id="pace-minutes" type="number" min="0" value={paceM} onChange={(e) => setPaceM(e.target.value)} className="w-20 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="min" />
               <span className="text-foreground font-bold">:</span>
-              <input type="number" min="0" max="59" value={paceS} onChange={(e) => setPaceS(e.target.value)} className="w-20 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="sec" />
+              <input aria-label="Pace seconds" type="number" min="0" max="59" value={paceS} onChange={(e) => setPaceS(e.target.value)} className="w-20 rounded-lg border border-border bg-background px-2 py-2 text-sm text-foreground text-center focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="sec" />
             </div>
           </div>
         )}
@@ -195,14 +184,14 @@ export default function PaceCalculator() {
             {result.type === "pace" && (
               <>
                 <p className="text-sm text-muted-foreground mb-1">Pace per {distUnit === "miles" ? "mile" : "km"}</p>
-                <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{formatPace(result.pace)}</p>
+                <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{formatRoundedPace(result.pace)}</p>
                 <p className="text-sm text-muted-foreground mt-2 tabular-nums">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
               </>
             )}
             {result.type === "time" && (
               <>
                 <p className="text-sm text-muted-foreground mb-1">Finish Time</p>
-                <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{formatTime(result.totalTimeSec)}</p>
+                <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">{formatRoundedDuration(result.totalTimeSec)}</p>
                 <p className="text-sm text-muted-foreground mt-2 tabular-nums">{result.speed.toFixed(1)} {distUnit === "miles" ? "mph" : "km/h"}</p>
               </>
             )}

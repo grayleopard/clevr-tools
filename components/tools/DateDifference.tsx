@@ -3,20 +3,17 @@
 import { useState, useMemo, useCallback } from "react";
 import { TipJar } from "@/components/tool/TipJar";
 import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
-
-function countBusinessDays(start: Date, end: Date): number {
-  let count = 0;
-  const direction = start <= end ? 1 : -1;
-  const actualStart = direction === 1 ? start : end;
-  const actualEnd = direction === 1 ? end : start;
-  const dd = new Date(actualStart);
-  while (dd.getTime() <= actualEnd.getTime()) {
-    const day = dd.getDay();
-    if (day !== 0 && day !== 6) count++;
-    dd.setDate(dd.getDate() + 1);
-  }
-  return count;
-}
+import {
+  addCalendarDays,
+  compareCalendarDates,
+  countBusinessDaysInclusive,
+  differenceDateOnly,
+  formatDateOnly,
+  localDateInputValue,
+  localDateOnly,
+  parseDateOnly,
+  type CalendarDate,
+} from "@/lib/p1-remediation/calendar";
 
 function StatBox({
   label,
@@ -36,77 +33,59 @@ function StatBox({
 }
 
 export default function DateDifference() {
-  const today = new Date().toISOString().slice(0, 10);
-  const [startDate, setStartDate] = useState(today);
+  const [startDate, setStartDate] = useState(localDateInputValue);
   const [endDate, setEndDate] = useState("");
 
-  const setShortcut = useCallback(
-    (label: string) => {
-      const now = new Date();
-      setStartDate(today);
-      let target: Date;
-      switch (label) {
-        case "new-year":
-          target = new Date(now.getFullYear() + 1, 0, 1);
-          break;
-        case "christmas": {
-          target = new Date(now.getFullYear(), 11, 25);
-          if (target <= now)
-            target = new Date(now.getFullYear() + 1, 11, 25);
-          break;
+  const setShortcut = useCallback((label: string) => {
+    const current = localDateOnly();
+    setStartDate(formatDateOnly(current));
+    let target: CalendarDate;
+    switch (label) {
+      case "new-year":
+        target = { year: current.year + 1, month: 1, day: 1 };
+        break;
+      case "christmas": {
+        target = { year: current.year, month: 12, day: 25 };
+        if (compareCalendarDates(target, current) <= 0) {
+          target = { year: current.year + 1, month: 12, day: 25 };
         }
-        case "90-days":
-          target = new Date(now.getTime() + 90 * 86400000);
-          break;
-        case "180-days":
-          target = new Date(now.getTime() + 180 * 86400000);
-          break;
-        default:
-          return;
+        break;
       }
-      setEndDate(target.toISOString().slice(0, 10));
-    },
-    [today]
-  );
+      case "90-days":
+        target = addCalendarDays(current, 90);
+        break;
+      case "180-days":
+        target = addCalendarDays(current, 180);
+        break;
+      default:
+        return;
+    }
+    setEndDate(formatDateOnly(target));
+  }, []);
 
   const result = useMemo(() => {
     if (!startDate || !endDate) {
       return { ok: false as const, emptyMessage: "Enter a start and end date to see the difference." };
     }
-    const start = new Date(startDate + "T00:00:00");
-    const end = new Date(endDate + "T00:00:00");
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    const start = parseDateOnly(startDate);
+    const end = parseDateOnly(endDate);
+    if (!start || !end) {
       return { ok: false as const, emptyMessage: "Enter a start and end date to see the difference." };
     }
 
-    const diffMs = end.getTime() - start.getTime();
-    const daysDiff = Math.round(diffMs / 86400000);
-    const absDays = Math.abs(daysDiff);
-    const direction = daysDiff >= 0 ? "in the future" : "in the past";
+    const difference = differenceDateOnly(start, end);
+    const daysDiff = difference.signedDays;
+    const absDays = difference.absoluteDays;
+    const direction =
+      difference.direction > 0
+        ? "in the future"
+        : difference.direction < 0
+          ? "in the past"
+          : "on the same day";
 
     const weeks = Math.floor(absDays / 7);
     const remainingDays = absDays % 7;
-
-    // Year/month calc
-    const earlier = daysDiff >= 0 ? start : end;
-    const later = daysDiff >= 0 ? end : start;
-    let years = later.getFullYear() - earlier.getFullYear();
-    let months = later.getMonth() - earlier.getMonth();
-    let days = later.getDate() - earlier.getDate();
-    if (days < 0) {
-      months--;
-      days += new Date(
-        later.getFullYear(),
-        later.getMonth(),
-        0
-      ).getDate();
-    }
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-
-    const businessDays = countBusinessDays(start, end);
+    const businessDays = countBusinessDaysInclusive(start, end);
     const weekendDays = absDays + 1 - businessDays;
 
     return {
@@ -116,9 +95,9 @@ export default function DateDifference() {
       direction,
       weeks,
       remainingDays,
-      years,
-      months,
-      days,
+      years: difference.years,
+      months: difference.months,
+      days: difference.days,
       businessDays,
       weekendDays,
     };
@@ -135,6 +114,7 @@ export default function DateDifference() {
           <input
             id="start-date"
             type="date"
+            suppressHydrationWarning
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -199,6 +179,12 @@ export default function DateDifference() {
             <p className="text-sm text-muted-foreground mt-1">
               {result.direction}
             </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Elapsed days (end date minus start date)
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Calendar months use end-of-month clamping.
+            </p>
           </div>
 
           {/* Stats grid */}
@@ -211,8 +197,8 @@ export default function DateDifference() {
               label="Weeks"
               value={`${result.weeks}w ${result.remainingDays}d`}
             />
-            <StatBox label="Business Days" value={result.businessDays} />
-            <StatBox label="Weekend Days" value={result.weekendDays} />
+            <StatBox label="Business Days (inclusive)" value={result.businessDays} />
+            <StatBox label="Weekend Days (inclusive)" value={result.weekendDays} />
           </div>
         </>
       )}
