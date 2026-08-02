@@ -1,6 +1,14 @@
 "use client";
 
-import { useRef, useState, useCallback, useMemo, useEffect, useId } from "react";
+import {
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useId,
+  useSyncExternalStore,
+} from "react";
 import { AlertCircle, ClipboardPaste, Lock, Plus, Upload } from "lucide-react";
 import { usePdfXRayContext } from "@/lib/xray/pdf-xray-context";
 
@@ -55,6 +63,10 @@ const stateStyles: Record<DropState, string> = {
   error: "border-destructive bg-destructive/5",
 };
 
+const subscribeToHydration = () => () => {};
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
+
 export default function FileDropZone({
   accept,
   multiple = false,
@@ -69,6 +81,11 @@ export default function FileDropZone({
   privacyNote = "Files stay in your browser — nothing is uploaded",
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot
+  );
   const [state, setState] = useState<DropState>("idle");
   const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
   const [errorMsg, setErrorMsg] = useState("");
@@ -183,21 +200,25 @@ export default function FileDropZone({
 
   return (
     <div className={`relative ${className}`}>
-      <label htmlFor={inputId} className="sr-only">
-        {multiple ? "Choose files" : "Choose a file"}
-      </label>
-      <input
-        id={inputId}
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        multiple={multiple}
-        className="sr-only"
-        tabIndex={-1}
-        aria-describedby={describedBy}
-        aria-invalid={state === "error" || undefined}
-        onChange={handleChange}
-      />
+      {isHydrated ? (
+        <>
+          <label htmlFor={inputId} className="sr-only">
+            {multiple ? "Choose files" : "Choose a file"}
+          </label>
+          <input
+            id={inputId}
+            ref={inputRef}
+            type="file"
+            accept={accept}
+            multiple={multiple}
+            className="sr-only"
+            tabIndex={-1}
+            aria-describedby={describedBy}
+            aria-invalid={state === "error" || undefined}
+            onChange={handleChange}
+          />
+        </>
+      ) : null}
       <p id={descriptionId} className="sr-only">
         {inputDescription}
       </p>

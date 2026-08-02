@@ -1,7 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ClipboardPaste, Lock, Sparkles, Upload } from "lucide-react";
 import { addToast } from "@/lib/toast";
 
@@ -11,6 +18,10 @@ const SmartConverter = dynamic(loadSmartConverter, {
   ssr: false,
   loading: () => null,
 });
+
+const subscribeToHydration = () => () => {};
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
 
 function SmartConverterSkeleton({
   isDraggingOver,
@@ -139,6 +150,11 @@ function SmartConverterSkeleton({
 }
 
 export default function SmartConverterDeferred() {
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot
+  );
   const [enabled, setEnabled] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [pendingFileToken, setPendingFileToken] = useState(0);
@@ -230,23 +246,27 @@ export default function SmartConverterDeferred() {
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {pendingFile ? `Loading file tools for ${pendingFile.name}.` : ""}
       </p>
-      <label htmlFor={inputId} className="sr-only">
-        Choose a file to convert or compress
-      </label>
-      <input
-        id={inputId}
-        ref={inputRef}
-        type="file"
-        accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.docx"
-        className="sr-only"
-        tabIndex={-1}
-        aria-describedby={descriptionId}
-        onChange={(event) => {
-          const file = event.target.files?.[0];
-          if (file) void activateWithFile(file);
-          event.target.value = "";
-        }}
-      />
+      {isHydrated ? (
+        <>
+          <label htmlFor={inputId} className="sr-only">
+            Choose a file to convert or compress
+          </label>
+          <input
+            id={inputId}
+            ref={inputRef}
+            type="file"
+            accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.docx"
+            className="sr-only"
+            tabIndex={-1}
+            aria-describedby={descriptionId}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (file) void activateWithFile(file);
+              event.target.value = "";
+            }}
+          />
+        </>
+      ) : null}
       <p id={descriptionId} className="sr-only">
         Choose one PNG, JPG, GIF, WebP, PDF, or DOCX file. You can also drag a file here or
         paste an image from your clipboard. Processing happens in your browser.
