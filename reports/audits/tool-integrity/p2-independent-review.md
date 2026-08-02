@@ -28,7 +28,7 @@ This is a go for code review, not an authorization to merge or promote. Approval
 
 - `git diff --check` passed. `main`, `origin/main`, and both P1 refs resolve to `aa5d1b6`; P1 SEO (`a3bff45`) and audit (`5faae38`) are ancestors of `main`.
 - I did not read, modify, delete, stage, or otherwise inspect user-owned `outputs/`. No configuration-file diff was present.
-- The implementation report's completed verification ledger was also reviewed: production build 174/174, TypeScript and zero-warning lint pass; Node 86 total, 84 pass plus 2 explicit HEIC-capability skips; Chromium 355 pass plus 6 explicit capability skips; Firefox 21/21; WebKit 21/21; bundle budget pass. Those suite totals are implementation evidence, not a substitute for the focused rerun above or post-deploy checks.
+- The implementation report's completed verification ledger was also reviewed: production build 174/174, TypeScript and zero-warning lint pass; Node 86 total, 84 pass plus 2 explicit HEIC-capability skips; Chromium 355 passed plus 6 declared skips / 0 failed; Firefox 21/21; WebKit 21/21; bundle budget pass. Those suite totals are implementation evidence, not a substitute for the focused rerun above or post-deploy checks.
 
 ## Findings
 

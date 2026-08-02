@@ -61,7 +61,7 @@ The existing production deployment still exposes live `/api/remove-bg` and `/api
 - Timer controls use a responsive three-column layout with a full-width start action, 44 px targets, deterministic focus handoff, timer/progress semantics, reduced-motion handling, and wall-clock-aware 250 ms updates.
 - Timer passed Firefox and WebKit at 320, 390, 430, 768, and 1440 px, in dark mode, reduced motion, keyboard/focus, and semantic checks.
 - Representative flagship and nine-family smoke coverage passed in Firefox and WebKit at mobile width with dark mode, overflow, artifact, and runtime assertions.
-- Exact cross-browser totals: Firefox 21/21; WebKit 21/21. Chromium full suite: 355 passed, 6 explicit capability skips, 0 failures.
+- Exact cross-browser totals: Firefox 21/21; WebKit 21/21. Chromium full suite: 355 passed, 6 declared skips, 0 failures. Those skips cover intentionally omitted nightly HEIC, heavy/live-backend, and duplicate custom-fixture cases; they are not counted as passes.
 - A local development diagnostic measured FCP/LCP 1,372 ms, TBT 218 ms, CLS 0, and 753.6 KiB transferred JavaScript. This is diagnostic lab evidence, not field Core Web Vitals; INP and 75th-percentile field data remain unavailable.
 
 ## Flagship verdicts and analytics
@@ -99,7 +99,7 @@ Recommendation: select **Industrial Precision**, borrowing Editorial Utility's p
 - TypeScript: PASS.
 - ESLint with zero warnings allowed: PASS.
 - Node: 86 total, 84 passed, 2 explicit HEIC capability skips, 0 failures.
-- Chromium: 361 total, 355 passed, 6 explicit capability skips, 0 failures.
+- Chromium: 361 total, 355 passed, 6 declared skips, 0 failures.
 - Firefox: 21/21 targeted cross-browser cases passed.
 - WebKit: 21/21 targeted cross-browser cases passed.
 - PDF-to-Fillable parsed placement: 2/2 passed, including an independent projection of the emitted AcroForm widget back to the browser click target on a rotated source page.
