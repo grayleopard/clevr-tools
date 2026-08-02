@@ -57,15 +57,8 @@ export interface NumbleTodayState {
   bestResult: number | null;
 }
 
-export interface NumbleSettings {
-  colorblindMode: boolean;
-  soundEnabled: boolean;
-  hardMode: boolean;
-}
-
 const STATS_KEY = "numble_stats";
 const TODAY_KEY = "numble_today";
-const SETTINGS_KEY = "numble_settings";
 const HOW_TO_PLAY_KEY = "numble_how_to_play_shown";
 
 function read<T>(key: string, fallback: T): T {
@@ -275,18 +268,6 @@ export function getTodayState(): NumbleTodayState | null {
 
 export function saveTodayState(state: NumbleTodayState): void {
   write(TODAY_KEY, state);
-}
-
-export function getSettings(): NumbleSettings {
-  return read<NumbleSettings>(SETTINGS_KEY, {
-    colorblindMode: false,
-    soundEnabled: false,
-    hardMode: false,
-  });
-}
-
-export function saveSettings(settings: NumbleSettings): void {
-  write(SETTINGS_KEY, settings);
 }
 
 export function hasSeenHowToPlay(): boolean {

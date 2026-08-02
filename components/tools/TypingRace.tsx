@@ -9,6 +9,16 @@ import {
 } from "@/lib/typing-stats";
 import { addToast } from "@/lib/toast";
 import { TipJar } from "@/components/tool/TipJar";
+import {
+  calculateAccuracy,
+  calculateWpm,
+  ghostCompletionMilliseconds,
+  matchingCharacterCount,
+} from "@/lib/p1-remediation/typing-metrics";
+import {
+  elapsedMilliseconds,
+  monotonicNow,
+} from "@/lib/p1-remediation/monotonic-timing";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
 
@@ -76,7 +86,6 @@ export default function TypingRace() {
   const [currentInput, setCurrentInput] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [isFocused, setIsFocused] = useState(false);
-  const [startTime, setStartTime] = useState(0);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [ghostProgress, setGhostProgress] = useState(0);
   const [correctChars, setCorrectChars] = useState(0);
@@ -99,7 +108,10 @@ export default function TypingRace() {
   const correctCharsRef = useRef(0);
   const incorrectCharsRef = useRef(0);
   const currentWordIndexRef = useRef(0);
+  const currentInputRef = useRef("");
   const wordsRef = useRef<string[]>([]);
+  const startTimeRef = useRef(-1);
+  const raceGenerationRef = useRef(0);
 
   // Per-word typed text for coloring past words
   const typedWordsRef = useRef<
@@ -139,9 +151,12 @@ export default function TypingRace() {
     setCurrentWordIndex(0);
     currentWordIndexRef.current = 0;
     setCurrentInput("");
+    currentInputRef.current = "";
     setStatus("idle");
+    statusRef.current = "idle";
     setIsFocused(false);
-    setStartTime(0);
+    startTimeRef.current = -1;
+    raceGenerationRef.current += 1;
     setElapsedMs(0);
     setGhostProgress(0);
     setCorrectChars(0);
@@ -165,28 +180,42 @@ export default function TypingRace() {
   }, [correctChars, elapsedMs]);
 
   const endRace = useCallback(
-    (userWon: boolean) => {
+    (userWon: boolean, endedAt = monotonicNow()) => {
+      if (statusRef.current !== "racing" || startTimeRef.current < 0) return;
+      statusRef.current = userWon ? "won" : "lost";
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
 
-      const finalElapsedMs = Date.now() - startTime;
-      const finalElapsedSec = finalElapsedMs / 1000;
-      const totalChars = correctCharsRef.current + incorrectCharsRef.current;
-      const wpm = Math.round(
-        correctCharsRef.current / 5 / (finalElapsedSec / 60)
+      const finalElapsedMs = Math.max(
+        1,
+        elapsedMilliseconds(startTimeRef.current, endedAt)
       );
-      const accuracy =
-        totalChars > 0
-          ? Math.round((correctCharsRef.current / totalChars) * 1000) / 10
-          : 100;
+      const finalElapsedSec = finalElapsedMs / 1000;
+      let finalCorrectChars = correctCharsRef.current;
+      let finalIncorrectChars = incorrectCharsRef.current;
+
+      // A ghost loss can happen mid-word. Count the characters actually typed
+      // so the result does not discard current progress.
+      if (!userWon && currentInputRef.current.length > 0) {
+        const expected = wordsRef.current[currentWordIndexRef.current] ?? "";
+        const matches = matchingCharacterCount(expected, currentInputRef.current);
+        finalCorrectChars += matches;
+        finalIncorrectChars += currentInputRef.current.length - matches;
+      }
+
+      const totalChars = finalCorrectChars + finalIncorrectChars;
+      const wpm = calculateWpm(finalCorrectChars, finalElapsedMs);
+      const accuracy = calculateAccuracy(finalCorrectChars, totalChars);
 
       // Calculate ghost completion time
       const ghostWpm = DIFFICULTY_WPM[difficulty];
       const totalPassageChars = passage.length;
-      const ghostCharsPerMs = (ghostWpm * 5) / 60000;
-      const ghostCompletionMs = totalPassageChars / ghostCharsPerMs;
+      const ghostCompletionMs = ghostCompletionMilliseconds(
+        totalPassageChars,
+        ghostWpm
+      );
 
       let beatGhostBySec: number | null = null;
       if (userWon) {
@@ -220,8 +249,8 @@ export default function TypingRace() {
         mode,
         wpm,
         accuracy,
-        correctChars: correctCharsRef.current,
-        incorrectChars: incorrectCharsRef.current,
+        correctChars: finalCorrectChars,
+        incorrectChars: finalIncorrectChars,
         totalChars,
         duration: Math.round(finalElapsedSec),
         timestamp: Date.now(),
@@ -229,39 +258,36 @@ export default function TypingRace() {
       updateStreak();
       setHistoryRefresh((prev) => prev + 1);
     },
-    [startTime, difficulty, passage]
+    [difficulty, passage]
   );
 
   const startRace = useCallback(() => {
-    const now = Date.now();
-    setStartTime(now);
+    if (statusRef.current !== "idle" || passage.length === 0) return;
+    const now = monotonicNow();
+    startTimeRef.current = now;
+    statusRef.current = "racing";
+    const raceGeneration = raceGenerationRef.current + 1;
+    raceGenerationRef.current = raceGeneration;
     setStatus("racing");
     setIsFocused(true);
 
     const ghostWpm = DIFFICULTY_WPM[difficulty];
     const totalChars = passage.length;
-    const ghostCharsPerMs = (ghostWpm * 5) / 60000;
+    const ghostCompletionMs = ghostCompletionMilliseconds(totalChars, ghostWpm);
 
     intervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - now;
+      if (raceGenerationRef.current !== raceGeneration) return;
+      const tickedAt = monotonicNow();
+      const elapsed = elapsedMilliseconds(now, tickedAt);
       setElapsedMs(elapsed);
 
-      const newGhostProgress = Math.min(
-        1,
-        (elapsed * ghostCharsPerMs) / totalChars
-      );
+      const newGhostProgress = Math.min(1, elapsed / ghostCompletionMs);
       setGhostProgress(newGhostProgress);
 
       // Check if ghost finished
       if (newGhostProgress >= 1 && statusRef.current === "racing") {
-        // Ghost wins
         setGhostProgress(1);
-        // Small timeout to let state settle
-        setTimeout(() => {
-          if (statusRef.current === "racing") {
-            endRace(false);
-          }
-        }, 0);
+        endRace(false, tickedAt);
       }
     }, 50);
   }, [difficulty, passage, endRace]);
@@ -269,6 +295,7 @@ export default function TypingRace() {
   // Handle keydown
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Tab" || e.ctrlKey || e.metaKey || e.altKey) return;
       e.preventDefault();
 
       if (statusRef.current === "won" || statusRef.current === "lost") return;
@@ -285,8 +312,10 @@ export default function TypingRace() {
       if (e.key === " ") {
         if (statusRef.current !== "racing") return;
 
-        const word = words[currentWordIndex];
-        const input = currentInput;
+        const wordIndex = currentWordIndexRef.current;
+        const word = wordsRef.current[wordIndex];
+        const input = currentInputRef.current;
+        if (!word) return;
         if (input.length === 0) return;
 
         // Calculate per-character correct/incorrect
@@ -303,7 +332,7 @@ export default function TypingRace() {
         // Add +1 for the space character (correct)
         correct++;
 
-        typedWordsRef.current[currentWordIndex] = {
+        typedWordsRef.current[wordIndex] = {
           typed: input,
           correct: correct - 1,
           incorrect,
@@ -316,30 +345,33 @@ export default function TypingRace() {
         setIncorrectChars(newIncorrect);
         incorrectCharsRef.current = newIncorrect;
 
-        const nextIdx = currentWordIndex + 1;
+        const nextIdx = wordIndex + 1;
         setCurrentWordIndex(nextIdx);
         currentWordIndexRef.current = nextIdx;
         setCurrentInput("");
+        currentInputRef.current = "";
 
         // Check if user finished
-        if (nextIdx >= words.length) {
+        if (nextIdx >= wordsRef.current.length) {
           endRace(true);
         }
       } else if (e.key === "Backspace") {
-        if (currentInput.length > 0) {
-          setCurrentInput((prev) => prev.slice(0, -1));
+        if (currentInputRef.current.length > 0) {
+          currentInputRef.current = currentInputRef.current.slice(0, -1);
+          setCurrentInput(currentInputRef.current);
         }
-      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      } else if (e.key.length === 1) {
         if (statusRef.current !== "racing" && statusRef.current !== "idle")
           return;
-        const word = words[currentWordIndex];
+        const word = wordsRef.current[currentWordIndexRef.current];
         if (!word) return;
-        if (currentInput.length < word.length + 8) {
-          setCurrentInput((prev) => prev + e.key);
+        if (currentInputRef.current.length < word.length + 8) {
+          currentInputRef.current += e.key;
+          setCurrentInput(currentInputRef.current);
         }
       }
     },
-    [words, currentWordIndex, currentInput, startRace, endRace]
+    [startRace, endRace]
   );
 
   const handleChange = useCallback(
@@ -377,6 +409,8 @@ export default function TypingRace() {
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      raceGenerationRef.current += 1;
+      statusRef.current = "idle";
     };
   }, []);
 

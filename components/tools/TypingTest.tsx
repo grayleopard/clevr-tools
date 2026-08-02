@@ -5,20 +5,20 @@ import { RotateCcw, Copy, ChevronDown, ChevronUp, Volume2, VolumeX } from "lucid
 import { addToast } from "@/lib/toast";
 import { TipJar } from "@/components/tool/TipJar";
 import { english200, quotes, passages, advancedPassages } from "@/lib/word-lists";
+import {
+  calculateTypingMetrics,
+  type TypingMetrics,
+} from "@/lib/p1-remediation/typing-metrics";
+import {
+  elapsedMilliseconds,
+  monotonicNow,
+} from "@/lib/p1-remediation/monotonic-timing";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type TestMode = "time" | "words" | "quote";
 type TestStatus = "idle" | "running" | "finished";
 type TextTier = "simple" | "standard" | "advanced";
-
-interface WordResult {
-  word: string;
-  typed: string;
-  correct: boolean;
-  /** raw WPM for this individual word (chars / 5 / (seconds elapsed for this word / 60)) */
-  rawWpm: number;
-}
 
 interface PerSecondData {
   second: number;
@@ -52,10 +52,6 @@ function generatePassageWords(neededWords: number = 400): string[] {
   // If somehow not enough, repeat
   const doubled = (combined + ' ' + combined).split(/\s+/).filter(w => w.length > 0);
   return doubled.slice(0, neededWords);
-}
-
-function clamp(val: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, val));
 }
 
 // ─── Sound ───────────────────────────────────────────────────────────────────
@@ -172,7 +168,6 @@ export default function TypingTest() {
   const [words, setWords] = useState<string[]>([]);
   const [wordIndex, setWordIndex] = useState(0);
   const [currentInput, setCurrentInput] = useState("");
-  const [, setWordResults] = useState<WordResult[]>([]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [, setElapsed] = useState(0);
   const [liveWpm, setLiveWpm] = useState(0);
@@ -183,6 +178,7 @@ export default function TypingTest() {
   const [wordWindowStart, setWordWindowStart] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [currentQuote, setCurrentQuote] = useState<{ text: string; attribution: string } | null>(null);
+  const [finalMetrics, setFinalMetrics] = useState<TypingMetrics | null>(null);
 
   // ── Authoritative mutable refs for input system ──
   const wordListRef = useRef<string[]>([]);
@@ -192,22 +188,13 @@ export default function TypingTest() {
   const typedWordsRef = useRef<string[]>([]);
 
   // ── Other refs ──
-  const startTimeRef = useRef(0);
-  const wordStartTimeRef = useRef(0);
+  const startTimeRef = useRef(-1);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const statsTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const correctCharsRef = useRef(0);
-  const totalCharsRef = useRef(0);
-  const totalCorrectWordsRef = useRef(0);
-  const totalIncorrectWordsRef = useRef(0);
-  const extraCharsRef = useRef(0);
-  const missedCharsRef = useRef(0);
   const perSecondRef = useRef<PerSecondData[]>([]);
-  const wordResultsRef = useRef<WordResult[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const wordsContainerRef = useRef<HTMLDivElement>(null);
   const wordSpansRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const tabPressedRef = useRef(false);
   const statusRef = useRef<TestStatus>("idle");
 
   // Keep statusRef in sync
@@ -229,9 +216,9 @@ export default function TypingTest() {
     if (statsTimerRef.current) { clearInterval(statsTimerRef.current); statsTimerRef.current = null; }
 
     setStatus("idle");
+    statusRef.current = "idle";
     setWordIndex(0);
     setCurrentInput("");
-    setWordResults([]);
     setTimeLeft(testMode === "time" ? timeOption : 0);
     setElapsed(0);
     setLiveWpm(0);
@@ -240,6 +227,8 @@ export default function TypingTest() {
     setPerSecondData([]);
     setCaretPos(null);
     setWordWindowStart(0);
+    setIsFocused(false);
+    setFinalMetrics(null);
 
     // Reset authoritative refs
     currentWordIndexRef.current = 0;
@@ -247,16 +236,8 @@ export default function TypingTest() {
     wordWindowStartRef.current = 0;
     typedWordsRef.current = [];
 
-    correctCharsRef.current = 0;
-    totalCharsRef.current = 0;
-    totalCorrectWordsRef.current = 0;
-    totalIncorrectWordsRef.current = 0;
-    extraCharsRef.current = 0;
-    missedCharsRef.current = 0;
     perSecondRef.current = [];
-    wordResultsRef.current = [];
-    startTimeRef.current = 0;
-    wordStartTimeRef.current = 0;
+    startTimeRef.current = -1;
 
     if (newWords) {
       if (testMode === "quote") {
@@ -304,13 +285,15 @@ export default function TypingTest() {
   // ── Start test ──
   const startTest = useCallback(() => {
     setStatus("running");
-    startTimeRef.current = Date.now();
-    wordStartTimeRef.current = Date.now();
+    statusRef.current = "running";
+    startTimeRef.current = monotonicNow();
 
     if (testMode === "time") {
       setTimeLeft(timeOption);
       timerRef.current = setInterval(() => {
-        const elapsedSec = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        const elapsedSec = Math.floor(
+          elapsedMilliseconds(startTimeRef.current, monotonicNow()) / 1000
+        );
         const left = timeOption - elapsedSec;
         setTimeLeft(Math.max(0, left));
         setElapsed(elapsedSec);
@@ -320,107 +303,57 @@ export default function TypingTest() {
       }, 200);
     } else {
       timerRef.current = setInterval(() => {
-        const elapsedSec = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        const elapsedSec = Math.floor(
+          elapsedMilliseconds(startTimeRef.current, monotonicNow()) / 1000
+        );
         setElapsed(elapsedSec);
       }, 200);
     }
 
     // Stats timer (every second for chart data) — reads ONLY from refs to avoid stale closures
     statsTimerRef.current = setInterval(() => {
-      const elapsedSeconds = (Date.now() - startTimeRef.current) / 1000;
+      const elapsedMs = elapsedMilliseconds(startTimeRef.current, monotonicNow());
+      const elapsedSeconds = elapsedMs / 1000;
       if (elapsedSeconds <= 0) return;
 
-      // Correct chars: fully correct completed words (word + space)
-      let correctChars = 0;
-      let totalTypedChars = 0;
-      for (let i = 0; i < currentWordIndexRef.current; i++) {
-        const expected = wordListRef.current[i];
-        const typed = typedWordsRef.current[i] ?? '';
-        totalTypedChars += typed.length + 1; // +1 for space
-        if (typed === expected) {
-          correctChars += expected.length + 1;
-        }
-      }
-      // Partial credit for current word (char-by-char match)
-      const curExpected = wordListRef.current[currentWordIndexRef.current] ?? '';
-      const curTyped = currentInputRef.current;
-      totalTypedChars += curTyped.length;
-      for (let i = 0; i < Math.min(curTyped.length, curExpected.length); i++) {
-        if (curTyped[i] === curExpected[i]) correctChars++;
-      }
+      const metrics = calculateTypingMetrics({
+        expectedWords: wordListRef.current,
+        typedWords: typedWordsRef.current,
+        completedWords: currentWordIndexRef.current,
+        currentInput: currentInputRef.current,
+        elapsedMs,
+      });
+      setLiveWpm(metrics.wpm);
+      setLiveRawWpm(metrics.rawWpm);
+      setLiveAccuracy(Math.round(metrics.accuracy));
 
-      const wpm = Math.round((correctChars / 5) / (elapsedSeconds / 60));
-      const rawWpm = Math.round((totalTypedChars / 5) / (elapsedSeconds / 60));
-      setLiveWpm(wpm);
-      setLiveRawWpm(rawWpm);
-
-      const accuracy = totalTypedChars > 0 ? Math.round((correctChars / totalTypedChars) * 100) : 100;
-      setLiveAccuracy(accuracy);
-
-      perSecondRef.current.push({ second: Math.floor(elapsedSeconds), wpm, rawWpm });
+      perSecondRef.current.push({
+        second: Math.floor(elapsedSeconds),
+        wpm: metrics.wpm,
+        rawWpm: metrics.rawWpm,
+      });
     }, 1000);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testMode, timeOption]);
 
   // ── Finish test ──
   const finishTest = useCallback(() => {
+    if (statusRef.current === "finished" || startTimeRef.current < 0) return;
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
     if (statsTimerRef.current) { clearInterval(statsTimerRef.current); statsTimerRef.current = null; }
 
-    // Save whatever is currently being typed for the current word
-    typedWordsRef.current[currentWordIndexRef.current] = currentInputRef.current;
+    const metrics = calculateTypingMetrics({
+      expectedWords: wordListRef.current,
+      typedWords: typedWordsRef.current,
+      completedWords: currentWordIndexRef.current,
+      currentInput: currentInputRef.current,
+      elapsedMs: elapsedMilliseconds(startTimeRef.current, monotonicNow()),
+    });
 
-    // Build wordResults from typedWordsRef for the results screen
-    const builtResults: WordResult[] = [];
-    const wordList = wordListRef.current;
-    // Only count words up to the current word index (words the user reached)
-    const wordsReached = currentWordIndexRef.current;
-    for (let i = 0; i < wordsReached; i++) {
-      const word = wordList[i] ?? "";
-      const typed = typedWordsRef.current[i] ?? "";
-      builtResults.push({
-        word,
-        typed,
-        correct: typed === word,
-        rawWpm: 0, // per-word WPM not tracked in new model
-      });
-    }
-    wordResultsRef.current = builtResults;
-
-    // Recalculate character stats from typedWordsRef
-    correctCharsRef.current = 0;
-    totalCharsRef.current = 0;
-    totalCorrectWordsRef.current = 0;
-    totalIncorrectWordsRef.current = 0;
-    extraCharsRef.current = 0;
-    missedCharsRef.current = 0;
-    for (let i = 0; i < wordsReached; i++) {
-      const word = wordList[i] ?? "";
-      const typed = typedWordsRef.current[i] ?? "";
-      const isCorrect = typed === word;
-      if (isCorrect) {
-        correctCharsRef.current += word.length + 1; // +1 for space
-        totalCorrectWordsRef.current++;
-      } else {
-        let correctInWord = 0;
-        for (let c = 0; c < Math.min(typed.length, word.length); c++) {
-          if (typed[c] === word[c]) correctInWord++;
-        }
-        correctCharsRef.current += correctInWord;
-        totalIncorrectWordsRef.current++;
-        if (typed.length > word.length) {
-          extraCharsRef.current += typed.length - word.length;
-        }
-        if (typed.length < word.length) {
-          missedCharsRef.current += word.length - typed.length;
-        }
-      }
-      totalCharsRef.current += typed.length + 1;
-    }
-
+    statusRef.current = "finished";
     setStatus("finished");
+    setFinalMetrics(metrics);
     setPerSecondData([...perSecondRef.current]);
-    setWordResults([...wordResultsRef.current]);
   }, []);
 
   // ── Caret positioning (uses data-word / data-char attributes) ──
@@ -535,19 +468,12 @@ export default function TypingTest() {
   // ── Single keydown handler (NO keypress/keyup/input listeners) ──
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      // Tab+Enter restart
-      if (e.key === "Tab") {
+      // Ctrl/Command+Enter restarts without taking over Tab focus navigation.
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && !e.altKey) {
         e.preventDefault();
-        tabPressedRef.current = true;
-        return;
-      }
-      if (e.key === "Enter" && tabPressedRef.current) {
-        e.preventDefault();
-        tabPressedRef.current = false;
         resetTest(true);
         return;
       }
-      tabPressedRef.current = false;
 
       // Ignore modifier keys except shift
       if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -611,8 +537,6 @@ export default function TypingTest() {
         // Store typed input for this word
         typedWordsRef.current[currentWordIndexRef.current] = typed;
 
-        wordStartTimeRef.current = Date.now();
-
         // Advance to next word
         currentWordIndexRef.current += 1;
         currentInputRef.current = typedWordsRef.current[currentWordIndexRef.current] ?? "";
@@ -673,58 +597,16 @@ export default function TypingTest() {
   }, []);
 
   // ── Computed results ──
-  const results = useMemo(() => {
-    if (status !== "finished") return null;
-
-    const finalResults = wordResultsRef.current;
-    const elapsedSec = Math.max(1, Math.floor((Date.now() - startTimeRef.current) / 1000));
-
-    const wpm = Math.round((correctCharsRef.current / 5) / (elapsedSec / 60));
-    const rawWpm = Math.round((totalCharsRef.current / 5) / (elapsedSec / 60));
-    const totalTyped = totalCharsRef.current;
-    const accuracy = totalTyped > 0 ? Math.round((correctCharsRef.current / totalTyped) * 1000) / 10 : 100;
-
-    // Consistency = 100 - coefficient of variation of per-word raw WPMs
-    const rawWpms = finalResults.map((r) => r.rawWpm).filter((v) => v > 0);
-    let consistency = 100;
-    if (rawWpms.length > 1) {
-      const mean = rawWpms.reduce((a, b) => a + b, 0) / rawWpms.length;
-      const variance = rawWpms.reduce((a, b) => a + (b - mean) ** 2, 0) / rawWpms.length;
-      const stddev = Math.sqrt(variance);
-      const cv = mean > 0 ? (stddev / mean) * 100 : 0;
-      consistency = clamp(Math.round(100 - cv), 0, 100);
-    }
-
-    const correctWords = finalResults.filter((r) => r.correct).length;
-    const incorrectWords = finalResults.filter((r) => !r.correct).length;
-
-    // Character breakdown
-    let correctChars = 0;
-    let incorrectChars = 0;
-    for (const r of finalResults) {
-      for (let i = 0; i < Math.max(r.word.length, r.typed.length); i++) {
-        if (i < r.typed.length && i < r.word.length) {
-          if (r.typed[i] === r.word[i]) correctChars++;
-          else incorrectChars++;
-        }
-      }
-    }
-
-    return {
-      wpm,
-      rawWpm,
-      accuracy,
-      consistency,
-      correctWords,
-      incorrectWords,
-      correctChars,
-      incorrectChars,
-      extraChars: extraCharsRef.current,
-      missedChars: missedCharsRef.current,
-      time: elapsedSec,
-      totalWords: finalResults.length,
-    };
-  }, [status]);
+  const results = useMemo(
+    () =>
+      status === "finished" && finalMetrics
+        ? {
+            ...finalMetrics,
+            time: Math.round((finalMetrics.elapsedMs / 1000) * 10) / 10,
+          }
+        : null,
+    [finalMetrics, status]
+  );
 
   // ── Copy results ──
   const copyResults = useCallback(async () => {
@@ -735,7 +617,7 @@ export default function TypingTest() {
         ? `${wordCountOption} words`
         : "quote";
 
-    const text = `clevr.tools Typing Test\nWPM: ${results.wpm} | Accuracy: ${results.accuracy}% | Consistency: ${results.consistency}%\nMode: ${modeLabel} | clevr.tools/type/typing-test`;
+    const text = `clevr.tools Typing Test\nWPM: ${results.wpm} | Accuracy: ${results.accuracy}% | Raw WPM: ${results.rawWpm}\nMode: ${modeLabel} | clevr.tools/type/typing-test`;
     try {
       await navigator.clipboard.writeText(text);
       addToast("Results copied to clipboard", "success");
@@ -1005,7 +887,7 @@ export default function TypingTest() {
       {/* ── Restart hint ── */}
       {status !== "finished" && (
         <p className="text-center text-xs text-muted-foreground/60">
-          <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">Tab</kbd>
+          <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">Ctrl/⌘</kbd>
           {" + "}
           <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">Enter</kbd>
           {" to restart"}
@@ -1034,11 +916,10 @@ export default function TypingTest() {
           </div>
 
           {/* Detail grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <StatBox label="Characters" value={`${results.correctChars}/${results.incorrectChars}/${results.extraChars}/${results.missedChars}`} sub="correct / incorrect / extra / missed" />
-            <StatBox label="Consistency" value={`${results.consistency}%`} />
             <StatBox label="Time" value={`${results.time}s`} />
-            <StatBox label="Words" value={`${results.correctWords}/${results.incorrectWords}`} sub="correct / incorrect" />
+            <StatBox label="Words" value={`${results.correctWords}/${results.incorrectWords}/${results.partialWords}`} sub="correct / incorrect / partial" />
           </div>
 
           {/* Quote attribution */}
@@ -1054,33 +935,7 @@ export default function TypingTest() {
           {/* Actions */}
           <div className="flex items-center justify-center gap-3">
             <button
-              onClick={() => {
-                // Same words, reset
-                currentWordIndexRef.current = 0;
-                currentInputRef.current = "";
-                wordWindowStartRef.current = 0;
-                typedWordsRef.current = [];
-                setWordWindowStart(0);
-                setWordIndex(0);
-                setCurrentInput("");
-                setStatus("idle");
-                setIsFocused(false);
-                setTimeLeft(testMode === "time" ? timeOption : 0);
-                setElapsed(0);
-                setLiveWpm(0);
-                setLiveRawWpm(0);
-                setLiveAccuracy(100);
-                setPerSecondData([]);
-                setCaretPos(null);
-                correctCharsRef.current = 0;
-                totalCharsRef.current = 0;
-                totalCorrectWordsRef.current = 0;
-                totalIncorrectWordsRef.current = 0;
-                extraCharsRef.current = 0;
-                missedCharsRef.current = 0;
-                perSecondRef.current = [];
-                wordResultsRef.current = [];
-              }}
+              onClick={() => resetTest(false)}
               className="flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
@@ -1103,7 +958,7 @@ export default function TypingTest() {
 
           {/* Restart hint */}
           <p className="text-center text-xs text-muted-foreground/60">
-            <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">Tab</kbd>
+            <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">Ctrl/⌘</kbd>
             {" + "}
             <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">Enter</kbd>
             {" to restart"}

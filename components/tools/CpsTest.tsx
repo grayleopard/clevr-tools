@@ -3,6 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { saveSession, updateStreak, getPersonalBest } from "@/lib/typing-stats";
 import { TipJar } from "@/components/tool/TipJar";
+import {
+  elapsedMilliseconds,
+  hasElapsed,
+  monotonicNow,
+  ratePerSecond,
+  remainingMilliseconds,
+} from "@/lib/p1-remediation/monotonic-timing";
 import StreakDisplay from "./StreakDisplay";
 import TypingHistory from "./TypingHistory";
 
@@ -32,6 +39,7 @@ export default function CpsTest() {
   const [status, setStatus] = useState<"idle" | "running" | "done">("idle");
   const [clicks, setClicks] = useState(0);
   const [timeLeft, setTimeLeft] = useState(5);
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [result, setResult] = useState<{ cps: number; clicks: number; duration: number } | null>(null);
   const [isNewPB, setIsNewPB] = useState(false);
@@ -43,52 +51,76 @@ export default function CpsTest() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const clicksRef = useRef(0);
   const durationRef = useRef(duration);
+  const statusRef = useRef<"idle" | "running" | "done">("idle");
+  const startTimeRef = useRef(-1);
 
   // Keep refs in sync
   useEffect(() => { durationRef.current = duration; }, [duration]);
 
-  // Reset when duration changes (and we're idle)
   useEffect(() => {
-    if (status === "idle") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting timer state when game status changes
-      setTimeLeft(duration);
-      setClicks(0);
-      clicksRef.current = 0;
-    }
-  }, [duration, status]);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      statusRef.current = "done";
+    };
+  }, []);
 
-  function startTest() {
+  function startTest(startedAt: number) {
+    if (statusRef.current !== "idle") return;
     // Load previous best before starting
-    const pb = getPersonalBest("cps-test", `${duration}s`);
+    const nominalDuration = durationRef.current;
+    const pb = getPersonalBest("cps-test", `${nominalDuration}s`);
     setPreviousBest(pb ? pb.wpm : null); // CPS stored in wpm field
 
+    startTimeRef.current = startedAt;
+    statusRef.current = "running";
     setStatus("running");
     setIsFocused(true);
-    setTimeLeft(durationRef.current);
+    setTimeLeft(nominalDuration);
+    setElapsedMs(0);
 
     timerRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current!);
-          endTest();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+      const tickedAt = monotonicNow();
+      const elapsed = elapsedMilliseconds(startTimeRef.current, tickedAt);
+      const remaining = remainingMilliseconds(
+        startTimeRef.current,
+        durationRef.current * 1000,
+        tickedAt
+      );
+      setElapsedMs(elapsed);
+      setTimeLeft(Math.ceil(remaining / 100) / 10);
+      if (hasElapsed(startTimeRef.current, durationRef.current * 1000, tickedAt)) {
+        endTest(tickedAt);
+      }
+    }, 50);
   }
 
-  function endTest() {
+  function endTest(endedAt = monotonicNow()) {
+    if (statusRef.current !== "running" || startTimeRef.current < 0) return;
+    statusRef.current = "done";
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
     const totalClicks = clicksRef.current;
-    const dur = durationRef.current;
-    const cps = Math.round((totalClicks / dur) * 10) / 10; // 1 decimal
+    const nominalDuration = durationRef.current;
+    const actualElapsedMs = Math.max(
+      1,
+      elapsedMilliseconds(startTimeRef.current, endedAt)
+    );
+    const actualDuration = Math.round((actualElapsedMs / 1000) * 100) / 100;
+    // Derive the displayed rate from the same two-decimal duration shown to
+    // the user so the visible figures remain arithmetically consistent.
+    const cps = Math.round(ratePerSecond(totalClicks, actualDuration * 1000) * 10) / 10;
 
     setStatus("done");
     setIsFocused(false);
-    setResult({ cps, clicks: totalClicks, duration: dur });
+    setTimeLeft(0);
+    setElapsedMs(actualElapsedMs);
+    setResult({ cps, clicks: totalClicks, duration: actualDuration });
 
     // Check for personal best
-    const pb = getPersonalBest("cps-test", `${dur}s`);
+    const pb = getPersonalBest("cps-test", `${nominalDuration}s`);
     const isNew = !pb || cps > pb.wpm;
     setIsNewPB(isNew);
 
@@ -96,64 +128,59 @@ export default function CpsTest() {
     saveSession({
       id: crypto.randomUUID(),
       tool: "cps-test",
-      mode: `${dur}s`,
+      mode: `${nominalDuration}s`,
       wpm: cps,
       accuracy: 100,
       correctChars: totalClicks,
       incorrectChars: 0,
       totalChars: totalClicks,
-      duration: dur,
+      duration: Math.max(1, Math.round(actualElapsedMs / 1000)),
       timestamp: Date.now(),
     });
     updateStreak();
     setHistoryRefresh(prev => prev + 1);
   }
 
-  function handleClick(e: React.MouseEvent) {
-    // Only count left clicks
-    if (e.button !== 0) return;
-
+  function handleActivation() {
     // Visual feedback ripple
     setRipple(true);
     setTimeout(() => setRipple(false), 100);
 
-    if (status === "idle") {
+    const activatedAt = monotonicNow();
+    if (statusRef.current === "idle") {
       clicksRef.current = 1;
       setClicks(1);
-      startTest();
+      startTest(activatedAt);
       return;
     }
 
-    if (status === "running") {
+    if (statusRef.current === "running") {
+      if (
+        hasElapsed(
+          startTimeRef.current,
+          durationRef.current * 1000,
+          activatedAt
+        )
+      ) {
+        endTest(activatedAt);
+        return;
+      }
       clicksRef.current++;
       setClicks(clicksRef.current);
     }
   }
 
-  function handleTouchStart(e: React.TouchEvent) {
-    e.preventDefault(); // prevent double-tap zoom and scroll
-
-    if (status === "idle") {
-      clicksRef.current = 1;
-      setClicks(1);
-      startTest();
-      return;
-    }
-
-    if (status === "running") {
-      clicksRef.current++;
-      setClicks(clicksRef.current);
-      setRipple(true);
-      setTimeout(() => setRipple(false), 100);
-    }
-  }
-
-  function resetTest() {
+  function resetTest(nextDuration: Duration = duration) {
     if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = null;
+    statusRef.current = "idle";
+    startTimeRef.current = -1;
+    durationRef.current = nextDuration;
     setStatus("idle");
     setClicks(0);
     clicksRef.current = 0;
-    setTimeLeft(duration);
+    setTimeLeft(nextDuration);
+    setElapsedMs(0);
     setIsFocused(false);
     setResult(null);
     setIsNewPB(false);
@@ -168,8 +195,8 @@ export default function CpsTest() {
     }).catch(() => {});
   }
 
-  const cps = status === "running" && timeLeft > 0
-    ? Math.round((clicks / Math.max(1, duration - timeLeft + 1)) * 10) / 10
+  const cps = status === "running" && elapsedMs > 0
+    ? Math.round(ratePerSecond(clicks, elapsedMs) * 10) / 10
     : 0;
 
   return (
@@ -181,7 +208,7 @@ export default function CpsTest() {
         {([1, 5, 10, 30, 60] as Duration[]).map(d => (
           <button
             key={d}
-            onClick={() => { setDuration(d); resetTest(); }}
+            onClick={() => { setDuration(d); resetTest(d); }}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               duration === d
                 ? "bg-primary text-primary-foreground"
@@ -193,14 +220,15 @@ export default function CpsTest() {
 
       {/* Click area or results */}
       {status !== "done" ? (
-        <div
-          onMouseDown={handleClick}
-          onTouchStart={handleTouchStart}
+        <button
+          type="button"
+          onClick={handleActivation}
           onContextMenu={e => e.preventDefault()}
-          className={`relative rounded-xl cursor-pointer select-none min-h-64 md:min-h-80 flex flex-col items-center justify-center transition-colors duration-100 ${
+          aria-label={status === "idle" ? "Start CPS test" : "Register click"}
+          className={`relative w-full rounded-xl cursor-pointer select-none touch-manipulation min-h-64 md:min-h-80 flex flex-col items-center justify-center transition-colors duration-100 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
             ripple ? "bg-zone-raised" : "bg-zone"
           } border border-zone-border`}
-          style={{ WebkitUserSelect: "none", userSelect: "none" } as React.CSSProperties}
+          style={{ WebkitUserSelect: "none", userSelect: "none" }}
         >
           {status === "idle" ? (
             <div className="text-center pointer-events-none">
@@ -223,7 +251,7 @@ export default function CpsTest() {
               <p className="text-zone-dim text-sm">Keep clicking!</p>
             </div>
           )}
-        </div>
+        </button>
       ) : (
         /* Results */
         <div className="rounded-xl bg-zone p-8 text-center">
@@ -244,8 +272,8 @@ export default function CpsTest() {
               <div className="text-xs text-zone-muted">Total Clicks</div>
             </div>
             <div className="rounded-xl border border-zone-border bg-zone-raised py-3">
-              <div className="text-lg font-semibold text-zone-text tabular-nums">{result?.duration}s</div>
-              <div className="text-xs text-zone-muted">Duration</div>
+              <div className="text-lg font-semibold text-zone-text tabular-nums">{result?.duration.toFixed(2)}s</div>
+              <div className="text-xs text-zone-muted">Actual Duration</div>
             </div>
             <div className="rounded-xl border border-zone-border bg-zone-raised py-3">
               <div className="text-lg font-semibold text-zone-text">{result ? getRating(result.cps) : ""}</div>
@@ -254,7 +282,7 @@ export default function CpsTest() {
           </div>
 
           <div className="flex gap-3 justify-center">
-            <button onClick={resetTest} className="px-6 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm">
+            <button onClick={() => resetTest()} className="px-6 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm">
               Try Again
             </button>
             <button onClick={handleShare} className="px-6 py-2.5 rounded-lg bg-muted text-foreground font-medium text-sm">

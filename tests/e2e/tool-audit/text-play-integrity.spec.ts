@@ -11,14 +11,12 @@ test.describe("text, developer, time, typing, and play integrity", () => {
     await mkdir(ARTIFACT_DIR, { recursive: true });
   });
 
-  test("Case Converter reproduces the rule-aware Title Case promise mismatch", async ({ page }) => {
+  test("Case Converter applies its documented title-case rules", async ({ page }) => {
     await page.goto("/text/case-converter");
     await page.getByPlaceholder("Paste or type your text here…").fill("the art of war");
     await page.getByRole("button", { name: "Title Case", exact: true }).click();
 
-    // The public copy promises "The Art of War". Preserve the current incorrect
-    // output as a deterministic defect reproduction until production is repaired.
-    await expect(page.getByText("The Art Of War", { exact: true })).toBeVisible();
+    await expect(page.getByText("The Art of War", { exact: true })).toBeVisible();
   });
 
   test("Character Counter exposes UTF-16 code units rather than user-perceived characters", async ({ page }) => {
@@ -126,29 +124,18 @@ test.describe("text, developer, time, typing, and play integrity", () => {
     expect(value).not.toMatch(/[0O1lI]/);
   });
 
-  test("Random Number Generator cannot cover the advertised range above 2^32", async ({ page }) => {
-    await page.addInitScript(() => {
-      const original = Crypto.prototype.getRandomValues;
-      Object.defineProperty(Crypto.prototype, "getRandomValues", {
-        configurable: true,
-        value<T extends ArrayBufferView | null>(array: T): T {
-          if (array instanceof Uint32Array) {
-            array.fill(0xffffffff);
-            return array;
-          }
-          return original.call(this, array as Uint8Array) as T;
-        },
-      });
-    });
+  test("Random Number Generator enforces its unbiased inclusive range contract", async ({ page }) => {
     await page.goto("/generate/random-number");
     await page.getByLabel("Min").fill("0");
     await page.getByLabel("Max").fill("5000000000");
     await page.getByLabel("Count").fill("1");
     await page.getByRole("button", { name: "Generate", exact: true }).click();
+    await expect(page.getByText(/cannot contain more than 4294967296 integers/i)).toBeVisible();
 
-    // Even the maximum possible Uint32 maps to 4,294,967,295; the final
-    // 705M values in the advertised range can never be selected.
-    await expect(page.getByText("4294967295", { exact: true })).toBeVisible();
+    await page.getByLabel("Min").fill("-7");
+    await page.getByLabel("Max").fill("-7");
+    await page.getByRole("button", { name: "Generate", exact: true }).click();
+    await expect(page.getByText("-7", { exact: true })).toBeVisible();
   });
 
   test("Timer and Stopwatch use wall-clock deltas across pause/resume", async ({ page }) => {
@@ -177,15 +164,15 @@ test.describe("text, developer, time, typing, and play integrity", () => {
     await expect(page.locator("main p.font-mono").first()).toHaveText(/00:01\.(?:7\d|8[0-5])/);
   });
 
-  test("Keyboard Tester traps a plain Tab key at the current control", async ({ page }) => {
+  test("Keyboard Tester preserves plain Tab navigation", async ({ page }) => {
     await page.goto("/type/keyboard-tester");
     const reset = page.getByRole("button", { name: "Reset", exact: true });
     await reset.focus();
     await page.keyboard.press("Tab");
-    await expect(reset).toBeFocused();
+    await expect(reset).not.toBeFocused();
   });
 
-  test("Typing Test reports a fabricated 100% consistency for deliberately uneven timing", async ({ page }) => {
+  test("Typing Test removes fabricated consistency and reports elapsed-time metrics", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-08-01T12:00:00Z") });
     await page.goto("/type/typing-test");
     await page.getByRole("button", { name: "Words", exact: true }).click();
@@ -209,23 +196,29 @@ test.describe("text, developer, time, typing, and play integrity", () => {
       await page.clock.fastForward(index % 2 === 0 ? 100 : 1_500);
     }
 
-    const consistency = page.getByText("Consistency", { exact: true }).locator("..");
-    await expect(consistency).toContainText("100%");
+    await expect(page.getByText("Consistency", { exact: true })).toHaveCount(0);
+    const resultWpm = Number(
+      await page
+        .getByText("WPM", { exact: true })
+        .first()
+        .locator("xpath=preceding-sibling::p[1]")
+        .textContent()
+    );
+    expect(resultWpm).toBeGreaterThan(0);
   });
 
-  test("Numble hard mode still accepts a four-number solve and exports a valid share PNG", async ({ page }) => {
+  test("Numble removes no-op settings, solves the daily puzzle, and exports a valid share PNG", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-08-01T12:00:00Z") });
     await page.addInitScript(() => localStorage.setItem("numble_how_to_play_shown", "true"));
     await page.goto("/play/numble");
 
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
-    const hardModeRow = page.getByText("Hard mode", { exact: true }).locator("..").locator("..");
-    await hardModeRow.getByRole("button").click();
-    await page.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Settings", exact: true })).toHaveCount(0);
+    await expect(page.getByText("Hard mode", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Colorblind mode", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Sound", { exact: true })).toHaveCount(0);
 
     // Deterministic 2026-08-01 daily puzzle: [50,100,6,1,10,3] -> 980.
-    // This reaches the target in three operations using only four numbers,
-    // although hard mode says all six are required.
+    // The ordinary puzzle remains solvable after inert settings are removed.
     await page.getByRole("button", { name: "100", exact: true }).click();
     await page.getByRole("button", { name: "+", exact: true }).click();
     await page.getByRole("button", { name: "1", exact: true }).click();

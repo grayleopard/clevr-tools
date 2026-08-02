@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { Copy, Trash2, ClipboardPaste } from "lucide-react";
 import { addToast } from "@/lib/toast";
 import { TipJar } from "@/components/tool/TipJar";
+import { toEditorialTitleCase } from "@/lib/p1-remediation/title-case";
 
 // ─── Conversion functions ──────────────────────────────────────────────────
 
@@ -15,10 +16,7 @@ const converters: Record<string, (t: string) => string> = {
   },
   lower: (t) => t.toLowerCase(),
   upper: (t) => t.toUpperCase(),
-  title: (t) => {
-    // Capitalize first letter of each word; preserve existing spacing
-    return t.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-  },
+  title: toEditorialTitleCase,
   toggle: (t) =>
     t
       .split("")
@@ -177,6 +175,13 @@ export default function CaseConverter() {
           </button>
         ))}
       </div>
+
+      {activeCase === "title" && (
+        <p className="text-xs text-muted-foreground">
+          English editorial title case keeps common articles, conjunctions, and
+          prepositions lowercase except at title, subtitle, and line boundaries.
+        </p>
+      )}
 
       {/* Output */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">

@@ -1,7 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, CircleHelp, Settings } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { BarChart3, CircleHelp } from "lucide-react";
 import {
   formatCountdown,
   generateDailyPuzzle,
@@ -17,18 +24,15 @@ import type {
   SolutionStep,
 } from "@/lib/numble";
 import {
-  getSettings,
   getStats,
   getTodayState,
   hasSeenHowToPlay,
   markHowToPlaySeen,
   saveResult,
-  saveSettings,
   saveTodayState,
 } from "@/lib/numble-storage";
 import type {
   NumbleAchievement,
-  NumbleSettings,
   NumbleStats,
   NumbleTodayState,
 } from "@/lib/numble-storage";
@@ -294,7 +298,6 @@ function createInitialSession() {
   return {
     mode: "daily" as const,
     puzzle,
-    settings: getSettings(),
     stats: getStats(),
     showTutorial: !hasSeenHowToPlay(),
     countdownSec: getSecondsUntilMidnight(),
@@ -303,6 +306,10 @@ function createInitialSession() {
       restoredState && restoredState.date === today ? restoredState : null
     ),
   };
+}
+
+function subscribeToHydration(): () => void {
+  return () => {};
 }
 
 function TutorialModal({
@@ -534,73 +541,6 @@ function StatsModal({
   );
 }
 
-function SettingsModal({
-  settings,
-  onSave,
-  onClose,
-}: {
-  settings: NumbleSettings;
-  onSave: (settings: NumbleSettings) => void;
-  onClose: () => void;
-}) {
-  const [local, setLocal] = useState<NumbleSettings>({ ...settings });
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--bg-elevated)] p-6 shadow-2xl">
-        <h2 className="text-2xl font-bold text-[var(--text-primary)]">Settings</h2>
-        <div className="mt-5 space-y-4">
-          {[
-            {
-              key: "colorblindMode" as const,
-              label: "Colorblind mode",
-              description: "Use stronger emphasis on selection states.",
-            },
-            {
-              key: "soundEnabled" as const,
-              label: "Sound effects",
-              description: "Play subtle feedback sounds.",
-            },
-            {
-              key: "hardMode" as const,
-              label: "Hard mode",
-              description: "Require using all 6 numbers for the solve.",
-            },
-          ].map((item) => (
-            <div key={item.key} className="flex items-center justify-between gap-4 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-4">
-              <div>
-                <div className="font-medium text-[var(--text-primary)]">{item.label}</div>
-                <div className="mt-1 text-sm text-[var(--text-secondary)]">{item.description}</div>
-              </div>
-              <button
-                onClick={() => setLocal((prev) => ({ ...prev, [item.key]: !prev[item.key] }))}
-                className={`relative h-6 w-11 rounded-full transition-colors ${local[item.key] ? "bg-[var(--clr-accent)]" : "bg-[var(--bg-base)]"}`}
-              >
-                <span className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${local[item.key] ? "translate-x-5" : ""}`} />
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className="mt-6 flex gap-3">
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-xl bg-[var(--bg-surface)] py-3 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-base)]"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => onSave(local)}
-            className="flex-1 rounded-xl bg-[var(--clr-accent)] py-3 text-sm font-semibold text-white transition-colors hover:bg-[var(--clr-accent-hover)]"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function AchievementRail({ achievements }: { achievements: NumbleAchievement[] }) {
   if (achievements.length === 0) return null;
 
@@ -766,6 +706,11 @@ function ResultsPanel({
 
 export default function NumbleGame() {
   const initialSession = useMemo(() => createInitialSession(), []);
+  const hasHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false
+  );
 
   const [mode, setMode] = useState<NumbleMode>(initialSession.mode);
   const [puzzle, setPuzzle] = useState<DailyPuzzle | null>(initialSession.puzzle);
@@ -780,12 +725,8 @@ export default function NumbleGame() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showTutorial, setShowTutorial] = useState(initialSession.showTutorial);
   const [showStats, setShowStats] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const [optimalSolution, setOptimalSolution] = useState<SolutionStep[] | null>(null);
   const [countdownSec, setCountdownSec] = useState(initialSession.countdownSec);
-  const [settings, setSettingsState] = useState<NumbleSettings>(
-    initialSession.settings
-  );
   const [stats, setStats] = useState<NumbleStats>(initialSession.stats);
   const [closestResult, setClosestResult] = useState<number | null>(
     initialSession.closestResult
@@ -1178,7 +1119,7 @@ export default function NumbleGame() {
     return `Only ${closestDiff} away from target. A finish within 10 still keeps you in star range.`;
   }, [closestDiff, gameStatus, puzzle, steps.length]);
 
-  if (!puzzle) {
+  if (!hasHydrated || !puzzle) {
     return <div className="flex h-64 items-center justify-center text-[var(--text-secondary)]">Loading…</div>;
   }
 
@@ -1202,9 +1143,6 @@ export default function NumbleGame() {
             </button>
             <button onClick={() => setShowTutorial(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Tutorial" aria-label="Tutorial">
               <CircleHelp className="h-4 w-4" />
-            </button>
-            <button onClick={() => setShowSettings(true)} className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]" title="Settings" aria-label="Settings">
-              <Settings className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -1420,17 +1358,6 @@ export default function NumbleGame() {
         />
       ) : null}
       {showStats ? <StatsModal stats={stats} onClose={() => setShowStats(false)} /> : null}
-      {showSettings ? (
-        <SettingsModal
-          settings={settings}
-          onSave={(nextSettings) => {
-            setSettingsState(nextSettings);
-            saveSettings(nextSettings);
-            setShowSettings(false);
-          }}
-          onClose={() => setShowSettings(false)}
-        />
-      ) : null}
       <AchievementRail achievements={unlockedAchievements} />
     </div>
   );

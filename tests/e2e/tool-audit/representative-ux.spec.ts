@@ -40,10 +40,8 @@ test.describe("representative mobile, dark-mode, and runtime integrity", () => {
   for (const [family, route] of representatives) {
     test(`${family}: 390px layout and actual theme toggle`, async ({ page }) => {
       test.fail(
-        ["/time/timer", "/play/numble"].includes(route),
-        route === "/time/timer"
-          ? "Known P2: the custom-time row clips Start and creates 6px document overflow at 390px"
-          : "Known P2: a normal returning Numble visit with persisted tutorial state raises React hydration error #418"
+        route === "/time/timer",
+        "Known P2: the custom-time row clips Start and creates 6px document overflow at 390px"
       );
       const runtimeErrors: string[] = [];
       page.on("pageerror", (error) => runtimeErrors.push(`pageerror: ${error.message}`));

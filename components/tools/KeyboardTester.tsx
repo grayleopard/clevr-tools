@@ -135,6 +135,15 @@ export default function KeyboardTester() {
   // Event handlers
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      // Tab and Shift+Tab must retain their native focus-navigation behavior.
+      // We can still report the physical key without suppressing the event.
+      if (e.key === "Tab") {
+        setHeldKeys((prev) => new Set([...prev, e.code]));
+        setTestedKeys((prev) => new Set([...prev, e.code]));
+        setLastKey({ key: e.key, code: e.code, keyCode: e.keyCode });
+        return;
+      }
+
       // Allow specific browser shortcuts
       if (
         (e.ctrlKey || e.metaKey) &&
@@ -149,7 +158,15 @@ export default function KeyboardTester() {
         return;
       }
 
-      e.preventDefault();
+      const eventTarget = e.target instanceof Element ? e.target : null;
+      const isInteractiveTarget = Boolean(
+        eventTarget?.closest(
+          'button, a[href], input, textarea, select, summary, [contenteditable="true"], [role="button"], [role="link"]'
+        )
+      );
+      // Preserve native activation and editing behavior when focus is on a
+      // real interactive element. The visualizer still observes the key.
+      if (!isInteractiveTarget) e.preventDefault();
       setHeldKeys((prev) => new Set([...prev, e.code]));
       setTestedKeys((prev) => new Set([...prev, e.code]));
       setLastKey({ key: e.key, code: e.code, keyCode: e.keyCode });
@@ -184,7 +201,7 @@ export default function KeyboardTester() {
   return (
     <div className="space-y-6">
       {/* Key info panel */}
-      <div className="rounded-xl border border-border bg-card p-4">
+      <div className="rounded-xl border border-border bg-card p-4" aria-live="polite">
         {lastKey ? (
           <div className="flex flex-wrap items-center gap-6 text-sm">
             <div>
