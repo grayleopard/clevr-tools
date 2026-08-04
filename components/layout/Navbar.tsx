@@ -76,7 +76,7 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <NavbarLogo />
 
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
             {navigationCategories.map((category) => (
               <div key={category.id} className="group relative">
                 <Link
