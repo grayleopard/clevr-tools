@@ -114,7 +114,7 @@ export default function Navbar() {
               </Link>
 
               <div
-                className="pointer-events-none invisible absolute left-1/2 top-full z-50 w-max -translate-x-1/2 pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100"
+                className="pointer-events-none invisible absolute right-0 top-full z-50 w-max pt-3 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100 xl:left-1/2 xl:right-auto xl:-translate-x-1/2"
                 aria-label="Play tools"
               >
                 <div className="min-w-[360px] border border-[color:var(--ghost-border)] bg-card/95 p-4 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl">
