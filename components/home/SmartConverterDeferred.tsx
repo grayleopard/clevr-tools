@@ -62,7 +62,7 @@ function SmartConverterSkeleton({
         const file = event.dataTransfer.files?.[0];
         if (file) onDropFile(file);
       }}
-      className={`relative overflow-hidden border-2 border-dashed px-5 py-9 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:px-8 motion-reduce:transition-none ${
+      className={`relative overflow-hidden border-2 border-dashed px-5 py-10 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:px-6 motion-reduce:transition-none ${
         isDraggingOver
           ? "border-primary/55 bg-primary/[0.08] motion-reduce:transform-none"
           : "border-[color:var(--ghost-border)] bg-card/[0.88] hover:border-primary/40 hover:bg-card"
@@ -73,15 +73,15 @@ function SmartConverterSkeleton({
         onClick={onActivateBrowse}
         tabIndex={-1}
         aria-hidden="true"
-        className="absolute inset-0 z-10 cursor-pointer rounded-[inherit] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+        className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
       />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(var(--ghost-border)_1px,transparent_1px),linear-gradient(90deg,var(--ghost-border)_1px,transparent_1px)] [background-size:24px_24px]" />
       </div>
 
       <div className="pointer-events-none relative z-20 flex min-h-[256px] min-w-0 flex-col items-center justify-center gap-5">
-        <div className="relative">
-          <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center border-2 border-primary bg-primary/10">
+        <div className="relative animate-bob motion-reduce:animate-none">
+          <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center border-2 border-primary/25 bg-primary/10">
             <Upload className="h-7 w-7 text-primary" aria-hidden="true" />
           </div>
           <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary/[0.15]">
@@ -133,7 +133,7 @@ function SmartConverterSkeleton({
           {["PNG", "JPG", "GIF", "WebP", "PDF", "DOCX"].map((format) => (
             <span
               key={format}
-              className="border-b border-[color:var(--ghost-border)] bg-background/90 px-1 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground"
+              className="border border-[color:var(--ghost-border)] bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
             >
               {format}
             </span>
@@ -142,7 +142,7 @@ function SmartConverterSkeleton({
 
         <p className="flex max-w-full items-start justify-center gap-2 break-words text-xs leading-5 text-muted-foreground">
           <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-          <span>All processing happens in your browser. Your files never leave your device.</span>
+          <span>These six formats are handled in your browser. Every tool states where its processing happens before you start.</span>
         </p>
       </div>
     </div>

@@ -62,12 +62,12 @@ export default function MobileNavigation() {
   }
 
   return (
-    <div ref={rootRef} className="relative lg:hidden">
+    <div ref={rootRef} className="relative md:hidden">
       <button
         ref={triggerRef}
         type="button"
         onClick={() => (open ? close() : setOpen(true))}
-        className="border border-[color:var(--ghost-border)] bg-transparent p-2.5 text-muted-foreground transition-colors hover:border-primary hover:bg-primary/10 hover:text-primary"
+        className="rounded-xl border border-[color:var(--ghost-border)] bg-muted/70 p-2.5 text-muted-foreground transition-colors hover:bg-accent hover:text-primary"
         aria-expanded={open}
         aria-controls={menuId}
         aria-haspopup="true"
@@ -83,7 +83,7 @@ export default function MobileNavigation() {
       {open && (
         <div
           id={menuId}
-          className="absolute right-0 top-14 z-50 max-h-[70dvh] w-[calc(100vw-2rem)] overflow-y-auto border border-[color:var(--ghost-border)] bg-card/98 p-3 shadow-[var(--ambient-shadow-strong)]"
+          className="absolute right-0 top-14 z-50 max-h-[70dvh] w-[calc(100vw-2rem)] overflow-y-auto border border-[color:var(--ghost-border)] bg-card/95 p-3 shadow-[var(--ambient-shadow-strong)] backdrop-blur-2xl"
         >
           <nav className="space-y-2" aria-label="Mobile navigation">
             <MobileSearchTrigger
@@ -91,10 +91,10 @@ export default function MobileNavigation() {
                 close();
                 return triggerRef.current;
               }}
-              className="flex w-full items-center gap-2 border-b border-[color:var(--ghost-border)] bg-muted/55 px-5 py-4 text-sm font-medium text-foreground transition-colors hover:text-primary"
+              className="flex w-full items-center gap-2 rounded-2xl bg-muted/55 px-5 py-4 text-sm font-medium text-foreground transition-colors hover:text-primary"
             />
 
-            <div className="border-b border-[color:var(--ghost-border)] bg-muted/55 p-2">
+            <div className="rounded-2xl bg-muted/55 p-2">
               <button
                 type="button"
                 onClick={() => toggleSection("play")}
@@ -112,7 +112,7 @@ export default function MobileNavigation() {
               </button>
 
               {expandedSection === "play" && (
-                <div id={`${menuId}-play`} className="mt-2 space-y-1 border-t border-[color:var(--ghost-border)] bg-card/80 p-2">
+                <div id={`${menuId}-play`} className="mt-2 space-y-1 rounded-2xl bg-card/80 p-2">
                   {playLinks.map((item) => (
                     <Link
                       key={item.route}
@@ -148,7 +148,7 @@ export default function MobileNavigation() {
               const sectionId = `${menuId}-${category.id}`;
 
               return (
-                <div key={category.id} className="border-b border-[color:var(--ghost-border)] bg-muted/55 p-2">
+                <div key={category.id} className="rounded-2xl bg-muted/55 p-2">
                   <button
                     type="button"
                     onClick={() => toggleSection(category.id)}
@@ -166,7 +166,7 @@ export default function MobileNavigation() {
                   </button>
 
                   {expanded && (
-                    <div id={sectionId} className="mt-2 space-y-1 border-t border-[color:var(--ghost-border)] bg-card/80 p-2">
+                    <div id={sectionId} className="mt-2 space-y-1 rounded-2xl bg-card/80 p-2">
                       {category.featured.map((tool) => (
                         <Link
                           key={tool.route}
@@ -194,7 +194,7 @@ export default function MobileNavigation() {
             <Link
               href="/blog"
               onClick={() => close()}
-              className="block bg-muted/55 px-5 py-4 text-sm font-medium text-foreground transition-colors hover:text-primary"
+              className="block rounded-2xl bg-muted/55 px-5 py-4 text-sm font-medium text-foreground transition-colors hover:text-primary"
             >
               Blog
             </Link>

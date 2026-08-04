@@ -7,10 +7,11 @@ test.describe("North Star production direction", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      "Tools that get out of your way"
+      /Free tools\. No signup\.\s*Clear processing boundaries\./
     );
     await expect(page.getByRole("button", { name: /Browse Files/i })).toBeVisible();
-    await expect(page.getByText(/Privacy is a tool-by-tool contract/i)).toBeVisible();
+    await expect(page.getByText(/Local workflows run in your browser/i)).toBeVisible();
+    await expect(page.getByText(/every tool states where processing happens/i).first()).toBeVisible();
     await expect(page.getByText(/Nothing leaves your device/i)).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "Browse by task" })).toBeVisible();
   });
@@ -19,7 +20,7 @@ test.describe("North Star production direction", () => {
     await page.goto("/files", { waitUntil: "domcontentloaded" });
 
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Files & Assets");
-    await expect(page.getByText(/Each tool states where processing happens/i)).toBeVisible();
+    await expect(page.getByText(/Each tool states where processing happens/i).first()).toBeVisible();
     await expect(page.getByRole("link", { name: /Image Compressor/i }).first()).toBeVisible();
   });
 
