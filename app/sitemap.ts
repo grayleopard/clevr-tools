@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     createEntry("/play/meme-generator"),
     ...siteCategories.map((category) => createEntry(category.route)),
     ...tools
-      .filter((tool) => tool.live !== false)
+      .filter((tool) => tool.live !== false && tool.indexable !== false)
       .map((tool) => createEntry(tool.route)),
     createEntry("/blog"),
     ...blogEntries,

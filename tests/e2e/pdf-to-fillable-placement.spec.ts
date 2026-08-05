@@ -3,6 +3,7 @@ import path from "node:path";
 import { promises as fs } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { PDFDocument, degrees } from "pdf-lib";
+import { CONTAINED_ROUTES } from "./tool-routes";
 
 function fixture(name: string): string {
   return path.join(process.cwd(), "tests", "fixtures", name);
@@ -157,50 +158,57 @@ async function placeAndExport(
   expect(Math.max(parsedViewportRect.width, parsedViewportRect.height)).toBeLessThan(0.85);
 }
 
-test("/tools/pdf-to-fillable places a field and exports", async ({ page }) => {
-  await uploadAndPlaceAt(page, fixture("sample.pdf"), 0.2, 0.2);
-});
+test.describe("PDF-to-Fillable placement", () => {
+  test.skip(
+    CONTAINED_ROUTES.has("/tools/pdf-to-fillable"),
+    "PDF-to-Fillable is intentionally unavailable pending compatibility verification"
+  );
 
-test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => {
-  const rotatedFixture = await createRotatedFixture();
-  const canvasRenderErrors: string[] = [];
-
-  page.on("console", (message) => {
-    if (message.type() !== "error") return;
-    const text = message.text();
-    if (text.includes("Cannot use the same canvas during multiple render() operations")) {
-      canvasRenderErrors.push(text);
-    }
-  });
-  page.on("pageerror", (error) => {
-    const text = String(error?.message || "");
-    if (text.includes("Cannot use the same canvas during multiple render() operations")) {
-      canvasRenderErrors.push(text);
-    }
+  test("/tools/pdf-to-fillable places a field and exports", async ({ page }) => {
+    await uploadAndPlaceAt(page, fixture("sample.pdf"), 0.2, 0.2);
   });
 
-  await page.goto("/tools/pdf-to-fillable?debug=1", { waitUntil: "domcontentloaded" });
-  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+  test("/tools/pdf-to-fillable handles rotated source pages", async ({ page }) => {
+    const rotatedFixture = await createRotatedFixture();
+    const canvasRenderErrors: string[] = [];
 
-  const input = page.locator('main input[type="file"]').first();
-  await expect(input).toBeAttached();
-  await input.setInputFiles(rotatedFixture);
+    page.on("console", (message) => {
+      if (message.type() !== "error") return;
+      const text = message.text();
+      if (text.includes("Cannot use the same canvas during multiple render() operations")) {
+        canvasRenderErrors.push(text);
+      }
+    });
+    page.on("pageerror", (error) => {
+      const text = String(error?.message || "");
+      if (text.includes("Cannot use the same canvas during multiple render() operations")) {
+        canvasRenderErrors.push(text);
+      }
+    });
 
-  const overlay = page.locator('[data-testid="pdf-fillable-overlay"]').first();
-  await expect(overlay).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
+    await page.goto("/tools/pdf-to-fillable?debug=1", { waitUntil: "domcontentloaded" });
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
 
-  await expect(page.getByRole("checkbox", { name: /View upright/i })).toHaveCount(0);
-  await expect(page.getByText(/page\.rotate 90°/i)).toBeVisible();
-  await expect(page.getByText(/totalRotation 270°/i)).toBeVisible();
-  await expect(page.getByText(/userRotation 0°/i)).toBeVisible();
-  await expect
-    .poll(async () => {
-      const box = await overlay.boundingBox();
-      return box?.height ?? 0;
-    })
-    .toBeGreaterThan(100);
+    const input = page.locator('main input[type="file"]').first();
+    await expect(input).toBeAttached();
+    await input.setInputFiles(rotatedFixture);
 
-  await placeAndExport(page, overlay, 0.25, 0.25);
-  expect(canvasRenderErrors).toHaveLength(0);
+    const overlay = page.locator('[data-testid="pdf-fillable-overlay"]').first();
+    await expect(overlay).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText(/Rendering page…/i)).toHaveCount(0, { timeout: 20_000 });
+
+    await expect(page.getByRole("checkbox", { name: /View upright/i })).toHaveCount(0);
+    await expect(page.getByText(/page\.rotate 90°/i)).toBeVisible();
+    await expect(page.getByText(/totalRotation 270°/i)).toBeVisible();
+    await expect(page.getByText(/userRotation 0°/i)).toBeVisible();
+    await expect
+      .poll(async () => {
+        const box = await overlay.boundingBox();
+        return box?.height ?? 0;
+      })
+      .toBeGreaterThan(100);
+
+    await placeAndExport(page, overlay, 0.25, 0.25);
+    expect(canvasRenderErrors).toHaveLength(0);
+  });
 });

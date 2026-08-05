@@ -13,6 +13,8 @@ export interface Tool {
   badge?: 'new' | 'popular';
   /** false = excluded from public discovery and sitemap; the direct route may remain */
   live?: boolean;
+  /** false = usable by visitors, but excluded from search indexing pending content/trust review */
+  indexable?: boolean;
   /** true = capability is intentionally disabled on its direct route pending remediation */
   contained?: boolean;
   /** Overrides the auto-derived sidebar privacy message. Defaults based on category. */
@@ -596,6 +598,7 @@ export const tools: Tool[] = [
     relatedTools: ['merge-pdf', 'split-pdf', 'rotate-pdf'],
     badge: 'new',
     live: false,
+    contained: true,
   },
   {
     slug: 'resize-image',

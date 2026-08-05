@@ -1,13 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { TOOL_ROUTES, FILE_TOOL_CATEGORIES, categoryForRoute } from "./tool-routes";
-
-const CONTAINED_ROUTES = new Set([
-  "/tools/background-remover",
-  "/convert/heic-to-jpg",
-  "/calc/poker",
-  "/calc/take-home-pay",
-  "/calc/paycheck",
-]);
+import {
+  TOOL_ROUTES,
+  FILE_TOOL_CATEGORIES,
+  CONTAINED_ROUTES,
+  categoryForRoute,
+} from "./tool-routes";
 
 test.describe("tool route smoke", () => {
   test.describe.configure({ mode: "parallel" });
