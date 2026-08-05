@@ -76,10 +76,21 @@ function metric(fileA, fileB, filter, pattern) {
 }
 
 async function setSlider(page, testId, value, minimum) {
-  const slider = page.getByTestId(testId).filter({ visible: true }).first();
+  const root = page.getByTestId(testId).filter({ visible: true }).first();
+  const slider = root.getByRole("slider").first();
   await slider.focus();
   await slider.press("Home");
   for (let step = minimum; step < value; step += 1) await slider.press("ArrowRight");
+  const actualValue = Number(await slider.getAttribute("aria-valuenow"));
+  if (actualValue !== value) throw new Error(`${testId} expected ${value}, received ${actualValue}.`);
+}
+
+async function clickPressed(page, testId) {
+  const control = page.getByTestId(testId).filter({ visible: true }).first();
+  await control.click();
+  if (await control.getAttribute("aria-pressed") !== "true") {
+    throw new Error(`${testId} did not enter its selected state.`);
+  }
 }
 
 async function saveDownload(page, locator, destination) {
@@ -98,12 +109,12 @@ async function executeCase(testCase, destination) {
   await page.goto(`${baseUrl}${testCase.tool_route}`, { waitUntil: "domcontentloaded", timeout: 120_000 });
   if (testCase.tool_route === "/compress/image") {
     await setSlider(page, "benchmark-image-quality", Number(testCase.quality_setting), 1);
-    await page.getByTestId(`benchmark-image-format-${testCase.output_selector}`).filter({ visible: true }).first().click();
+    await clickPressed(page, `benchmark-image-format-${testCase.output_selector}`);
   } else {
     await setSlider(page, "benchmark-gif-compression", Number(testCase.gif_compression), 0);
-    await page.getByTestId(`benchmark-gif-colors-${testCase.gif_max_colors}`).filter({ visible: true }).first().click();
-    await page.getByTestId(`benchmark-gif-frame-${testCase.gif_frame_reduction}`).filter({ visible: true }).first().click();
-    await page.getByTestId(`benchmark-gif-scale-${testCase.gif_scale_pct}`).filter({ visible: true }).first().click();
+    await clickPressed(page, `benchmark-gif-colors-${testCase.gif_max_colors}`);
+    await clickPressed(page, `benchmark-gif-frame-${testCase.gif_frame_reduction}`);
+    await clickPressed(page, `benchmark-gif-scale-${testCase.gif_scale_pct}`);
   }
   const wallStarted = performance.now();
   await page.getByTestId("benchmark-file-input").first().setInputFiles(path.join(releaseRoot, testCase.input_path));

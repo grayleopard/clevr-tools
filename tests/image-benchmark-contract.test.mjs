@@ -55,6 +55,9 @@ test("benchmark harness preserves the evidence and publication gates", () => {
   assert.match(runner, /visual_review_status: "PENDING"/);
   assert.match(runner, /publication_ready = false/);
   assert.match(runner, /rawRows\.length === 380/);
+  assert.match(runner, /getByRole\("slider"\)/);
+  assert.match(runner, /aria-valuenow/);
+  assert.match(runner, /aria-pressed/);
   assert.match(runner, /output\.mime !== testCase\.expected_mime/);
   assert.match(runner, /expected.*frames, received/);
   assert.match(runner, /duration differs by/);
