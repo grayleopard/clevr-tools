@@ -2,9 +2,17 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { expectedReducedFrameCount } from "../scripts/benchmark/image-compression/lib.mjs";
 
 const projectRoot = process.cwd();
 const read = (relativePath) => fs.readFileSync(path.join(projectRoot, relativePath), "utf8");
+
+test("GIF benchmark frame expectations retain the final animation frame", () => {
+  assert.equal(expectedReducedFrameCount(24, 1), 24);
+  assert.equal(expectedReducedFrameCount(24, 2), 13);
+  assert.equal(expectedReducedFrameCount(24, 3), 9);
+  assert.equal(expectedReducedFrameCount(1, 4), 1);
+});
 
 test("image benchmark has stable UI hooks for measured downloads", () => {
   const dropZone = read("components/tool/FileDropZone.tsx");

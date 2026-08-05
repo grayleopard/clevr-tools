@@ -86,6 +86,17 @@ export function median(values) {
   return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
+/** Match the GIF tool: keep every Nth frame and always retain the final frame. */
+export function expectedReducedFrameCount(frameCount, reduction) {
+  if (!Number.isInteger(frameCount) || frameCount < 1) throw new Error("frameCount must be a positive integer");
+  if (!Number.isInteger(reduction) || reduction < 1) throw new Error("reduction must be a positive integer");
+  const kept = new Set([frameCount - 1]);
+  for (let index = 0; index < frameCount; index += 1) {
+    if (reduction === 1 || index % reduction === 0) kept.add(index);
+  }
+  return kept.size;
+}
+
 export async function writeJson(filePath, value) {
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
 }

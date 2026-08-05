@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import sharp from "sharp";
-import { commandVersion, fileBytes, parseArgs, run, sha256, writeCsv, writeJson } from "./lib.mjs";
+import { commandVersion, expectedReducedFrameCount, fileBytes, parseArgs, run, sha256, writeCsv, writeJson } from "./lib.mjs";
 
 const projectRoot = process.cwd();
 const args = parseArgs(process.argv.slice(2));
@@ -170,7 +170,7 @@ for (const source of sources) {
       expected_mime: "image/gif",
       expected_width: Math.max(1, Math.round(800 * testCase.gif_scale_pct / 100)),
       expected_height: Math.max(1, Math.round(450 * testCase.gif_scale_pct / 100)),
-      expected_frames: Math.max(1, Math.ceil((gifMetadata.pages ?? 24) / testCase.gif_frame_reduction)),
+      expected_frames: expectedReducedFrameCount(gifMetadata.pages ?? 24, testCase.gif_frame_reduction),
       expected_duration_ms: (gifMetadata.delay ?? []).reduce((sum, delay) => sum + delay, 0),
     });
   }
