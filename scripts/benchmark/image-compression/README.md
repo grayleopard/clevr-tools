@@ -1,0 +1,18 @@
+# Image compression benchmark harness
+
+This harness implements the frozen corpus and browser-run contract in `reports/seo/image-compression-benchmark-brief.md`. Generated releases go under ignored `benchmark-artifacts/`; they are evidence packages, not application assets.
+
+1. Build and serve a clean production commit on a fixed local URL. Set `CLEVR_BUILD_COMMIT=<the exact 40-character Git commit>` during `npm run build`; the runner verifies that value from the served page before measuring anything.
+2. Prepare an immutable release:
+
+   `npm run benchmark:image:prepare -- --version 2026-08-04-release-01 --operator NAME --reviewer NAME`
+
+3. Prove the pipeline with one case, one warm-up, and five recorded runs:
+
+   For an intentionally dirty dry run only, add `--allow-dirty-pilot` to preparation and add both `--allow-dirty-pilot` and `--allow-unverified-build-pilot` to execution. These flags permanently disqualify that release from approval.
+
+   `npm run benchmark:image:run -- --release benchmark-artifacts/image-compression/2026-08-04-release-01 --base-url http://127.0.0.1:3101 --case-limit 1`
+
+4. Prepare a new release version before the complete 76-case run. Never overwrite or present a pilot as benchmark evidence.
+
+The runner always marks generated work as not publication-ready. A complete automated run still requires the visual-review crops, second-reviewer reproduction, correction contact, and release approval defined in the execution specification. Copy `release-approval.template.json` into the release as `review/release-approval.json`, fill it with real evidence, and run `npm run benchmark:image:approve -- --release <release-directory>`. The approval command re-hashes every artifact and refuses approval unless every gate passes.

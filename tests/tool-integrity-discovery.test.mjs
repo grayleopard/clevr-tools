@@ -91,7 +91,7 @@ test("sitemap projects exactly the current public portfolio", () => {
   const entries = sitemapModule.default();
   const routes = new Set(entries.map((entry) => new URL(entry.url).pathname));
 
-  assert.equal(entries.length, 127);
+  assert.equal(entries.length, 128);
   for (const route of indexableRoutes) assert.ok(routes.has(route), `sitemap omitted ${route}`);
   for (const tool of registry.tools.filter((item) => item.live === false || item.indexable === false)) {
     assert.ok(!routes.has(tool.route), `sitemap exposed excluded ${tool.route}`);
@@ -101,6 +101,7 @@ test("sitemap projects exactly the current public portfolio", () => {
     assert.match(pageSource, /hiddenToolRobots\(tool\)/, `${tool.slug} lacks noindex metadata`);
   }
   assert.ok(routes.has("/play/numble"));
+  assert.ok(routes.has("/methodology"));
   assert.ok(!routes.has("/play/meme-generator"));
 
   const memeGeneratorSource = fs.readFileSync(

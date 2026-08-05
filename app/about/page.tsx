@@ -1,6 +1,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About | clevr.tools",
@@ -42,6 +43,21 @@ export default function AboutPage() {
               clean, and trustworthy.
             </p>
 
+            <h2>Our responsibility</h2>
+
+            <p>
+              clevr.tools is accountable for the tools and claims we publish.
+              We do not present an unfinished or externally processed capability
+              as a ready-to-use local tool. When a tool needs more evidence or a
+              clearer handling boundary, we can limit it or keep it out of normal
+              discovery while it is reviewed.
+            </p>
+
+            <p>
+              Read <Link href="/methodology">how we test tools, describe limitations, and handle corrections</Link>.
+              For privacy and data-handling details, see our <Link href="/privacy">Privacy Policy</Link>.
+            </p>
+
             <h2>What&apos;s available</h2>
 
             <ul>
@@ -55,7 +71,10 @@ export default function AboutPage() {
               <li>Calculators (mortgage, BMI, compound interest, GPA, and more)</li>
             </ul>
 
-            <p>New tools are added regularly. Built in the USA.</p>
+            <p>
+              New tools are added only when we can describe what they do and how
+              they handle your information clearly. Built in the USA.
+            </p>
           </div>
         </div>
       </main>

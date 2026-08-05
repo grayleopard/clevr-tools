@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     createEntry(""),
     createEntry("/about"),
     createEntry("/privacy"),
+    createEntry("/methodology"),
     createEntry("/play"),
     createEntry("/play/numble"),
     ...siteCategories.map((category) => createEntry(category.route)),
