@@ -40,6 +40,8 @@ case_key,tool_route,source_id,input_format,input_sha256,case_id,quality_setting,
 
 The case manifest records pre-run inputs, selected controls, and testable output-contract fields. It must not predict output size, quality score, runtime, or success.
 
+For GIF frame reduction, the expected count must match the product contract: retain every Nth frame starting at frame zero and also retain the final frame. A 24-frame input therefore yields 13 frames for “Every 2nd” and 9 frames for “Every 3rd”; the final frame is not discarded merely because its index is off-cycle.
+
 ## Raw-results data contract
 
 Use [`image-compression-results-template.csv`](./image-compression-results-template.csv) unchanged for the raw observation fields, and add a release-local sidecar mapping from `benchmark_version` to `run-manifest.json` and `case-manifest.csv`.
