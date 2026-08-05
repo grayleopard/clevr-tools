@@ -38,6 +38,7 @@ test("image benchmark has stable UI hooks for measured downloads", () => {
     "benchmark-gif-processing-ms",
     "benchmark-gif-download",
   ]) assert.match(gifs, new RegExp(hook));
+  assert.equal((gifs.match(/aria-pressed=/g) ?? []).length >= 3, true);
 });
 
 test("benchmark harness preserves the evidence and publication gates", () => {

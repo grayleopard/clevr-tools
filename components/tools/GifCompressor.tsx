@@ -256,6 +256,7 @@ export default function GifCompressor() {
               key={value}
               type="button"
               onClick={() => setMaxColors(value)}
+              aria-pressed={maxColors === value}
               data-testid={`benchmark-gif-colors-${value}`}
               className={`rounded-[1rem] border px-3 py-2 text-sm font-medium transition-colors ${
                 maxColors === value
@@ -284,6 +285,7 @@ export default function GifCompressor() {
               key={option.value}
               type="button"
               onClick={() => setFrameReduction(option.value)}
+              aria-pressed={frameReduction === option.value}
               data-testid={`benchmark-gif-frame-${option.value}`}
               className={`rounded-[1rem] border px-3 py-2 text-sm font-medium transition-colors ${
                 frameReduction === option.value
@@ -305,6 +307,7 @@ export default function GifCompressor() {
               key={option.value}
               type="button"
               onClick={() => setScale(option.value)}
+              aria-pressed={scale === option.value}
               data-testid={`benchmark-gif-scale-${option.value}`}
               className={`rounded-[1rem] border px-3 py-2 text-sm font-medium transition-colors ${
                 scale === option.value
