@@ -215,7 +215,7 @@ export default function CommandPalette() {
         ref={triggerRef}
         type="button"
         onClick={show}
-        className="hidden items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-muted/60 px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:flex"
+        className="hidden items-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-muted/60 px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:flex"
         aria-haspopup="dialog"
         aria-expanded={open}
       >

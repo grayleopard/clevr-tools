@@ -26,7 +26,7 @@ interface ToolPageLayoutProps {
 function PrivacyNote({ privacyContext = "input" }: { privacyContext?: PrivacyContext }) {
   if (privacyContext === "input") {
     return (
-      <div className="rounded-[1.25rem] bg-card/80 px-4 py-4 text-sm text-muted-foreground">
+      <div className="border-l-4 border-primary bg-card/80 px-4 py-4 text-sm text-muted-foreground">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
           Private by default
         </p>
@@ -59,7 +59,7 @@ function SidebarLinks({
         <div className="mt-4 space-y-2">
           <Link
             href={categoryHref}
-            className="flex min-h-11 min-w-0 items-center gap-2 rounded-[1rem] bg-card/80 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="flex min-h-11 min-w-0 items-center gap-2 border-b border-[color:var(--ghost-border)] bg-card/80 px-3 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <ArrowLeft className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
             <span className="min-w-0 break-words">{categoryName}</span>
@@ -68,7 +68,7 @@ function SidebarLinks({
             <Link
               key={tool.href}
               href={tool.href}
-              className="flex min-h-11 min-w-0 items-center justify-between gap-3 rounded-[1rem] px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-card/70 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="flex min-h-11 min-w-0 items-center justify-between gap-3 border-b border-[color:var(--ghost-border)] px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <span className="min-w-0 break-words">{tool.name}</span>
               <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -97,7 +97,7 @@ export default function ToolPageLayout({
     <div className="space-y-5">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(15rem,18rem)] xl:grid-cols-[220px_minmax(0,1fr)_280px] 2xl:grid-cols-[240px_minmax(0,1fr)_300px]">
         <aside className="hidden min-w-0 xl:block">
-          <div className="sticky top-24 rounded-[1.5rem] bg-muted/55 p-5">
+          <div className="sticky top-24 border border-[color:var(--ghost-border)] bg-muted/55 p-5">
             <SidebarLinks
               categoryName={categoryName}
               categoryHref={categoryHref}
@@ -110,15 +110,15 @@ export default function ToolPageLayout({
         <div className="min-w-0 space-y-6">
           <div
             data-toc-scope
-            className="min-w-0 rounded-[2rem] bg-card/[0.96] p-5 shadow-[var(--shadow-sm)] sm:p-6 lg:p-8 2xl:p-10"
+            className="min-w-0 border border-[color:var(--ghost-border)] bg-card/[0.96] p-5 sm:p-6 lg:p-8 2xl:p-10"
           >
             {children}
           </div>
 
           {/* Mobile only — the tool itself comes first on mobile; navigation
               follows rather than pushing the tool below the fold. */}
-          <details className="group rounded-[1.4rem] bg-muted/55 p-3 xl:hidden">
-            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between rounded-[1rem] px-3 py-3 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+          <details className="group border border-[color:var(--ghost-border)] bg-muted/55 p-3 xl:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 py-3 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
               <span className="flex min-w-0 items-center gap-2">
                 <Menu className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                 Navigation
@@ -128,7 +128,7 @@ export default function ToolPageLayout({
                 aria-hidden="true"
               />
             </summary>
-            <div className="mt-3 rounded-[1.15rem] bg-card/80 p-3">
+            <div className="mt-3 border-t border-[color:var(--ghost-border)] bg-card/80 p-3">
               <SidebarLinks
                 categoryName={categoryName}
                 categoryHref={categoryHref}
@@ -142,7 +142,7 @@ export default function ToolPageLayout({
         <aside className="min-w-0 lg:pt-0">
           <div className="space-y-6 lg:sticky lg:top-24">
             {settingsPanel ? (
-              <div className="rounded-[1.5rem] bg-muted/55 p-5">
+              <div className="border-l-4 border-primary bg-muted/55 p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                   {settingsTitle}
                 </p>
@@ -151,7 +151,7 @@ export default function ToolPageLayout({
             ) : null}
 
             {infoPanel ? (
-              <div className="rounded-[1.5rem] bg-muted/55 p-5">
+              <div className="border-l border-[color:var(--ghost-border)] bg-muted/55 p-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                   {infoTitle}
                 </p>

@@ -15,7 +15,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "clevr.tools — Free Online File & Text Tools",
   description:
-    "Free browser-based file and text tools: compress images, convert formats, generate QR codes, count words, convert case, and more. No signup. Nothing ever leaves your device.",
+    "Free online file and text tools: compress images, convert formats, generate QR codes, count words, convert case, and more. Local tools are clearly labeled and run in your browser.",
   alternates: {
     canonical: "https://www.clevr.tools",
   },
@@ -235,11 +235,12 @@ export default function HomePage() {
               <h1 className="font-display text-4xl font-extrabold uppercase leading-[0.92] tracking-[-0.02em] text-foreground sm:text-5xl lg:text-6xl">
                 Free tools. No signup.
                 <br />
-                <span className="text-primary">Nothing</span> leaves your device.
+                <span className="text-primary">Clear</span> processing boundaries.
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
                 File converters, calculators, typing tests, and developer tools. Search for one or
-                drop a file below — everything runs in your browser.
+                drop a supported file below. Local workflows run in your browser, and every tool
+                states where processing happens before you start.
               </p>
             </div>
 
@@ -249,7 +250,7 @@ export default function HomePage() {
 
                 <div className="mt-6">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                    Most used this week
+                    Common starting points
                   </p>
                   <ul className="mt-2">
                     {mostUsedTools.map((tool) => (

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Editorial Utility — clevr.tools flagship direction</title>
+  <style>
+    :root {
+      --paper: oklch(97.5% .018 83);
+      --paper-shadow: oklch(91.5% .028 83);
+      --paper-deep: oklch(85% .032 83);
+      --ink: oklch(23% .035 54);
+      --sub: oklch(44% .027 54);
+      --faint: oklch(62% .022 60);
+      --rule: oklch(76% .035 80);
+      --green: oklch(51% .105 151);
+      --green-dark: oklch(32% .07 151);
+      --green-wash: oklch(91.5% .055 151);
+      --amber: oklch(64% .11 78);
+      --red: oklch(52% .15 33);
+      --focus: oklch(42% .14 151);
+      --page: min(1180px, calc(100vw - 48px));
+      --display: Iowan Old Style, Baskerville, "Times New Roman", serif;
+      --body: Optima, Candara, "Gill Sans", sans-serif;
+      --small: "Avenir Next", "Segoe UI", sans-serif;
+    }
+    [data-theme="dark"] {
+      --paper: oklch(17% .021 242);
+      --paper-shadow: oklch(21% .025 242);
+      --paper-deep: oklch(28% .027 242);
+      --ink: oklch(91% .02 84);
+      --sub: oklch(74% .02 84);
+      --faint: oklch(59% .02 84);
+      --rule: oklch(41% .025 242);
+      --green: oklch(78% .11 151);
+      --green-dark: oklch(85% .07 151);
+      --green-wash: oklch(27% .052 151);
+      --amber: oklch(80% .1 80);
+      --red: oklch(73% .13 33);
+      --focus: oklch(83% .13 151);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); scroll-behavior: smooth; }
+    body { min-width: 320px; margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; text-rendering: optimizeLegibility; }
+    a { color: inherit; text-decoration: none; }
+    button, input { color: inherit; font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+    .skip { position: fixed; top: 10px; left: 12px; z-index: 90; transform: translateY(-160%); background: var(--green-dark); color: var(--paper); padding: 10px 13px; font-family: var(--small); font-size: .8rem; font-weight: 800; }
+    .skip:focus { transform: translateY(0); }
+    .note { display: flex; align-items: center; justify-content: center; min-height: 31px; padding: 6px 16px; border-bottom: 1px solid var(--rule); color: var(--sub); font-family: var(--small); font-size: .67rem; font-weight: 800; letter-spacing: .1em; text-align: center; text-transform: uppercase; }
+    .note b { margin-right: 8px; color: var(--green); }
+    .masthead { width: var(--page); margin: 0 auto; padding: 19px 0 16px; border-bottom: 2px solid var(--ink); }
+    .mast-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px; }
+    .issue { color: var(--faint); font-family: var(--small); font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .brand { justify-self: center; font-family: var(--display); font-size: 2rem; font-weight: 700; letter-spacing: -.075em; line-height: 1; }
+    .brand em { color: var(--green); font-style: italic; }
+    .mast-actions { justify-self: end; display: flex; gap: 7px; }
+    .mini-button { display: inline-grid; width: 39px; height: 33px; place-items: center; border: 0; border-left: 1px solid var(--rule); background: transparent; color: var(--sub); cursor: pointer; }
+    .mini-button:hover { color: var(--green-dark); background: var(--green-wash); }
+    .menu { display: none; }
+    .nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 0 19px; margin-top: 14px; font-family: var(--small); font-size: .76rem; font-weight: 750; letter-spacing: .045em; }
+    .nav button, .nav a { border: 0; background: none; padding: 3px 0; color: var(--sub); cursor: pointer; }
+    .nav button:hover, .nav a:hover, .nav .active { color: var(--green-dark); text-decoration: underline; text-decoration-color: var(--green); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+    .mobile-sheet { display: none; }
+    main { width: var(--page); margin: 0 auto; }
+    .view { display: none; animation: print .36s cubic-bezier(.16, 1, .3, 1) both; }
+    .view.active { display: block; }
+    .folio { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--green-dark); font-family: var(--small); font-size: .69rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .folio::after { content: ""; width: 42px; height: 1px; background: currentColor; }
+    h1, h2, h3, p { margin-top: 0; }
+    .home-hero { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(260px, .82fr); gap: clamp(42px, 9vw, 120px); padding: clamp(65px, 11vw, 130px) 0 58px; }
+    h1 { max-width: 10ch; margin: 18px 0 0; font-family: var(--display); font-size: clamp(3.6rem, 8.2vw, 7.3rem); font-weight: 500; letter-spacing: -.07em; line-height: .84; }
+    .emerald { color: var(--green); font-style: italic; }
+    .intro { max-width: 48ch; margin: 25px 0 0; color: var(--sub); font-size: clamp(1rem, 1.6vw, 1.22rem); line-height: 1.65; }
+    .hero-side { align-self: end; border-top: 3px solid var(--green); border-bottom: 1px solid var(--rule); padding: 18px 0 20px; }
+    .hero-side h2 { margin: 0; font-family: var(--display); font-size: 1.85rem; font-weight: 500; letter-spacing: -.04em; }
+    .hero-side p { margin: 8px 0 17px; color: var(--sub); font-size: .88rem; line-height: 1.55; }
+    .quick-links { margin: 0; padding: 0; list-style: none; }
+    .quick-links li { border-top: 1px solid var(--rule); }
+    .quick-links button { display: grid; grid-template-columns: 22px 1fr auto; width: 100%; gap: 11px; align-items: baseline; border: 0; background: none; padding: 12px 0; text-align: left; cursor: pointer; }
+    .quick-links button:hover strong { color: var(--green-dark); }
+    .quick-links b { color: var(--green); font-family: var(--display); font-size: 1.1rem; }
+    .quick-links strong { font-family: var(--small); font-size: .84rem; }
+    .quick-links span { color: var(--faint); font-family: var(--small); font-size: .72rem; }
+    .privacy-whisper { display: flex; gap: 9px; margin-top: 19px; color: var(--green-dark); font-family: var(--small); font-size: .76rem; line-height: 1.45; }
+    .privacy-whisper svg { flex: 0 0 auto; margin-top: 2px; }
+    .home-index { padding: 52px 0 clamp(62px, 9vw, 110px); border-top: 1px solid var(--rule); }
+    .index-title { display: grid; grid-template-columns: 1fr minmax(180px, .5fr); gap: 30px; align-items: end; padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
+    .index-title h2 { margin: 12px 0 0; font-family: var(--display); font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 500; letter-spacing: -.065em; line-height: .9; }
+    .index-title p { margin: 0; color: var(--sub); font-size: .87rem; }
+    .feature-list { border-bottom: 1px solid var(--rule); }
+    .feature { display: grid; grid-template-columns: 54px minmax(0, 1fr) minmax(200px, .58fr) 20px; gap: 18px; align-items: center; min-height: 94px; border-top: 1px solid var(--rule); }
+    .feature:first-child { border-top: 0; }
+    .feature .num { color: var(--green); font-family: var(--display); font-size: 1.8rem; font-style: italic; }
+    .feature button { border: 0; background: none; padding: 13px 0; text-align: left; cursor: pointer; }
+    .feature button:hover strong { color: var(--green-dark); }
+    .feature strong { display: block; font-family: var(--display); font-size: 1.35rem; font-weight: 600; letter-spacing: -.025em; }
+    .feature span { color: var(--sub); font-size: .82rem; line-height: 1.4; }
+    .feature .tag { justify-self: start; border-bottom: 1px solid var(--green); color: var(--green-dark); font-family: var(--small); font-size: .65rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+    .feature .arrow { color: var(--green); font-size: 1.4rem; text-align: right; }
+    .reading-room { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 57px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); }
+    .reading-room article { min-height: 200px; padding: 26px 29px 30px; }
+    .reading-room article + article { border-left: 1px solid var(--rule); background: var(--paper-shadow); }
+    .reading-room h3 { margin: 12px 0 10px; font-family: var(--display); font-size: 1.8rem; font-weight: 500; letter-spacing: -.045em; }
+    .reading-room p:last-child { max-width: 40ch; margin: 0; color: var(--sub); font-size: .86rem; }
+    .reading-room a { color: var(--green-dark); font-family: var(--small); font-size: .8rem; font-weight: 800; text-decoration: underline; text-decoration-color: var(--green); text-underline-offset: 4px; }
+    .category-hero { display: grid; grid-template-columns: 1fr minmax(250px, .52fr); gap: 50px; padding: clamp(60px, 10vw, 110px) 0 44px; border-bottom: 2px solid var(--ink); }
+    .category-hero h1 { max-width: 11ch; }
+    .category-hero .deck { align-self: end; margin: 0; color: var(--sub); font-size: 1.03rem; line-height: 1.65; }
+    .contents { margin: 0; padding: 0; list-style: none; border-top: 3px solid var(--green); }
+    .contents li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; border-bottom: 1px solid var(--rule); padding: 12px 0; }
+    .contents b { color: var(--green); font-family: var(--display); font-style: italic; }
+    .contents span { color: var(--sub); font-family: var(--small); font-size: .78rem; line-height: 1.35; }
+    .files-section { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 38px; padding: 43px 0; border-bottom: 1px solid var(--rule); }
+    .files-section h2 { margin: 0; color: var(--green-dark); font-family: var(--small); font-size: .74rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+    .tool-columns { columns: 2; column-gap: 36px; }
+    .tool-entry { display: block; break-inside: avoid; margin-bottom: 1px; border-top: 1px solid var(--rule); padding: 13px 0 15px; }
+    .tool-entry:hover strong { color: var(--green-dark); }
+    .tool-entry strong { display: block; font-family: var(--display); font-size: 1.15rem; font-weight: 600; letter-spacing: -.02em; }
+    .tool-entry span { display: block; margin-top: 4px; color: var(--sub); font-size: .78rem; line-height: 1.45; }
+    .breadcrumbs { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 22px; color: var(--faint); font-family: var(--small); font-size: .72rem; }
+    .breadcrumbs button { border: 0; background: none; padding: 0; color: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .breadcrumbs span:last-child { color: var(--ink); }
+    .tool-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 30px; align-items: end; padding: 26px 0 34px; border-bottom: 2px solid var(--ink); }
+    .tool-header h1 { max-width: 13ch; }
+    .tool-header p { max-width: 56ch; margin: 15px 0 0; color: var(--sub); }
+    .state-note { border-bottom: 2px solid var(--green); padding-bottom: 8px; color: var(--green-dark); font-family: var(--small); font-size: .65rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+    .process { display: grid; grid-template-columns: minmax(0, 1fr) 285px; gap: 0 35px; padding: 40px 0 62px; }
+    .progress-path { display: flex; gap: 0; border-bottom: 1px solid var(--rule); }
+    .progress-path button { position: relative; flex: 1; border: 0; background: none; padding: 0 0 14px; color: var(--faint); font-family: var(--small); font-size: .69rem; font-weight: 800; letter-spacing: .08em; text-align: left; text-transform: uppercase; cursor: pointer; }
+    .progress-path button::after { content: ""; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background: transparent; }
+    .progress-path button.active { color: var(--green-dark); }
+    .progress-path button.active::after { background: var(--green); }
+    .work { padding-top: 28px; }
+    .drop-page { display: grid; min-height: 398px; place-items: center; border: 1px solid var(--rule); background: var(--paper-shadow); padding: 30px; text-align: center; }
+    .drop-page .sheet-icon { position: relative; display: grid; width: 75px; height: 92px; place-items: center; margin: 0 auto 25px; border: 1px solid var(--green); background: var(--paper); color: var(--green); box-shadow: 10px 10px 0 var(--green-wash); }
+    .drop-page h2, .result-copy h2 { margin: 0; font-family: var(--display); font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 500; letter-spacing: -.055em; line-height: .92; }
+    .drop-page p { max-width: 36ch; margin: 15px auto 0; color: var(--sub); font-size: .9rem; }
+    .buttons { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
+    .drop-page .buttons { justify-content: center; }
+    .primary, .secondary { min-height: 45px; border: 1px solid var(--green); padding: 10px 15px; font-family: var(--small); font-size: .8rem; font-weight: 850; cursor: pointer; }
+    .primary { background: var(--green); color: oklch(16% .02 151); }
+    .primary:hover { background: var(--green-dark); color: var(--paper); }
+    .secondary { background: var(--paper); color: var(--green-dark); }
+    .secondary:hover { background: var(--green-wash); }
+    .acceptable { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-top: 20px; color: var(--faint); font-family: var(--small); font-size: .65rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .acceptable span:not(:last-child)::after { content: "·"; margin-left: 7px; color: var(--green); }
+    .working-note { display: flex; gap: 8px; align-items: flex-start; max-width: 480px; margin: 22px auto 0; color: var(--green-dark); font-family: var(--small); font-size: .74rem; text-align: left; }
+    .sidebar { border-top: 3px solid var(--green); padding-top: 15px; }
+    .sidebar h2 { margin: 0; font-family: var(--display); font-size: 1.45rem; font-weight: 500; letter-spacing: -.035em; }
+    .sidebar p { color: var(--sub); font-size: .82rem; line-height: 1.58; }
+    .side-rule { border: 0; border-top: 1px solid var(--rule); margin: 20px 0; }
+    .side-list { margin: 0; padding: 0; list-style: none; }
+    .side-list li { display: grid; grid-template-columns: 1fr auto; gap: 10px; border-bottom: 1px solid var(--rule); padding: 9px 0; color: var(--sub); font-family: var(--small); font-size: .74rem; }
+    .side-list b { color: var(--ink); font-weight: 850; }
+    .selected-file { display: grid; grid-template-columns: 50px 1fr; gap: 14px; align-items: center; border-bottom: 1px solid var(--rule); padding-bottom: 21px; }
+    .selected-file .small-sheet { display: grid; width: 43px; height: 53px; place-items: center; border: 1px solid var(--green); background: var(--green-wash); color: var(--green-dark); }
+    .selected-file strong { display: block; font-family: var(--display); font-size: 1.2rem; font-weight: 600; }
+    .selected-file span { display: block; color: var(--sub); font-family: var(--small); font-size: .74rem; }
+    .settings { margin-top: 26px; }
+    .settings label, .settings .label { display: flex; justify-content: space-between; align-items: center; font-family: var(--small); font-size: .76rem; font-weight: 850; }
+    .settings output { color: var(--green-dark); font-size: 1.15rem; }
+    input[type="range"] { width: 100%; margin: 11px 0 3px; accent-color: var(--green); }
+    .range-note { display: flex; justify-content: space-between; color: var(--faint); font-family: var(--small); font-size: .65rem; }
+    .format-choices { display: grid; gap: 6px; margin-top: 9px; }
+    .format-choices button { display: grid; grid-template-columns: 1fr auto; gap: 9px; width: 100%; border: 1px solid var(--rule); background: transparent; padding: 10px; color: var(--sub); font-family: var(--small); font-size: .75rem; font-weight: 800; text-align: left; cursor: pointer; }
+    .format-choices button:hover, .format-choices .picked { border-color: var(--green); background: var(--green-wash); color: var(--green-dark); }
+    .format-choices small { font-size: .65rem; font-weight: 600; }
+    .result-spread { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--rule); }
+    .image-sheet { min-width: 0; padding: 15px; }
+    .image-sheet + .image-sheet { border-left: 1px solid var(--rule); background: var(--green-wash); }
+    .image-sheet header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 13px; color: var(--faint); font-family: var(--small); font-size: .65rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .image-sheet + .image-sheet header { color: var(--green-dark); }
+    .illustration { position: relative; min-height: 253px; overflow: hidden; background: var(--paper-shadow); background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, color-mix(in oklch, var(--rule) 58%, transparent) 29px); }
+    .illus-frame { position: absolute; inset: 12% 11%; overflow: hidden; border: 1px solid var(--rule); background: linear-gradient(135deg, oklch(88% .09 101), oklch(65% .12 151)); }
+    .illus-frame::before { content: ""; position: absolute; bottom: -9%; left: -12%; width: 83%; height: 73%; background: oklch(39% .07 154); clip-path: polygon(0 100%, 50% 20%, 72% 60%, 100% 0, 100% 100%); }
+    .illus-frame::after { content: ""; position: absolute; top: 17%; right: 17%; width: 19%; aspect-ratio: 1; border: 2px solid oklch(97% .015 83); border-radius: 50%; }
+    .image-sheet p { margin: 11px 0 0; color: var(--sub); font-family: var(--small); font-size: .71rem; line-height: 1.4; }
+    .result-copy { display: grid; grid-template-columns: 1fr auto; gap: 25px; align-items: end; margin-top: 27px; border-bottom: 2px solid var(--ink); padding-bottom: 22px; }
+    .result-copy p { max-width: 62ch; margin: 9px 0 0; color: var(--sub); font-size: .83rem; }
+    footer { width: var(--page); margin: 0 auto; padding: 28px 0 max(32px, env(safe-area-inset-bottom)); }
+    .footer-row { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 30px; border-top: 1px solid var(--rule); padding-top: 22px; }
+    .footer-row p { max-width: 57ch; margin: 10px 0 0; color: var(--sub); font-family: var(--small); font-size: .75rem; }
+    .footer-row nav { display: flex; gap: 15px; font-family: var(--small); font-size: .77rem; font-weight: 800; }
+    .footer-row nav a:hover { color: var(--green-dark); text-decoration: underline; text-decoration-color: var(--green); text-underline-offset: 4px; }
+    .toast { position: fixed; right: 18px; bottom: 18px; z-index: 50; max-width: 350px; transform: translateY(130%); border-top: 3px solid var(--green); background: var(--ink); padding: 12px 15px; color: var(--paper); font-family: var(--small); font-size: .78rem; transition: transform .24s cubic-bezier(.16, 1, .3, 1); }
+    .toast.show { transform: translateY(0); }
+    @keyframes print { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+    @media (max-width: 820px) {
+      :root { --page: min(100% - 32px, 700px); }
+      .mast-top { grid-template-columns: 1fr auto; }
+      .issue { display: none; }
+      .brand { justify-self: start; }
+      .nav { display: none; }
+      .menu { display: inline-grid; }
+      .mobile-sheet { position: fixed; inset: 83px 16px auto; z-index: 40; max-height: calc(100dvh - 103px); overflow-y: auto; border: 1px solid var(--rule); background: var(--paper); box-shadow: 0 22px 40px oklch(24% .03 70 / .16); padding: 8px; }
+      .mobile-sheet.open { display: block; }
+      .mobile-sheet button, .mobile-sheet a { display: block; width: 100%; border: 0; background: none; padding: 14px 12px; color: var(--ink); font-family: var(--small); font-size: .88rem; font-weight: 800; text-align: left; cursor: pointer; }
+      .mobile-sheet button:hover, .mobile-sheet a:hover { background: var(--green-wash); color: var(--green-dark); }
+      .home-hero, .category-hero { grid-template-columns: 1fr; gap: 43px; }
+      .index-title { grid-template-columns: 1fr; gap: 13px; }
+      .feature { grid-template-columns: 40px minmax(0, 1fr) 18px; gap: 11px; min-height: 78px; }
+      .feature > .tag { display: none; }
+      .reading-room { grid-template-columns: 1fr; }
+      .reading-room article + article { border-top: 1px solid var(--rule); border-left: 0; }
+      .files-section { grid-template-columns: 1fr; gap: 18px; }
+      .tool-header { display: block; }
+      .state-note { display: inline-block; margin-top: 19px; }
+      .process { grid-template-columns: 1fr; gap: 32px; }
+      .sidebar { order: -1; }
+      .result-copy { grid-template-columns: 1fr; }
+      .footer-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      h1 { font-size: clamp(3.25rem, 15vw, 4.5rem); }
+      .home-hero { padding-top: 64px; }
+      .feature .num { font-size: 1.35rem; }
+      .feature strong { font-size: 1.07rem; }
+      .feature span { display: none; }
+      .tool-columns { columns: 1; }
+      .drop-page { min-height: 355px; padding: 20px; }
+      .result-spread { grid-template-columns: 1fr; }
+      .image-sheet + .image-sheet { border-top: 1px solid var(--rule); border-left: 0; }
+      .illustration { min-height: 215px; }
+      .buttons { display: grid; }
+      .buttons > * { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to main content</a>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute;overflow:hidden"><symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol><symbol id="file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol><symbol id="image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="9" r="1.6" fill="currentColor"/><path d="m5 18 5-5 3 3 3-4 3 6" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol><symbol id="moon" viewBox="0 0 24 24"><path d="M19.5 15.4A8.5 8.5 0 0 1 8.6 4.5 8.5 8.5 0 1 0 19.5 15.4Z" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol><symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol><symbol id="menu-icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.9"/></symbol></svg>
+  <div class="note"><b>Prototype</b> Editorial Utility · controls demonstrate visual states only · no file is processed in this artifact</div>
+  <header class="masthead"><div class="mast-top"><span class="issue">clevr.tools / browser edition</span><a href="#home" data-go="home" class="brand"><em>clevr</em>.tools</a><div class="mast-actions"><button type="button" class="mini-button" data-theme aria-label="Switch to dark theme"><svg width="17" height="17"><use href="#moon"></use></svg></button><button type="button" class="mini-button menu" data-menu aria-expanded="false" aria-controls="mobile-sheet" aria-label="Open navigation"><svg width="18" height="18"><use href="#menu-icon"></use></svg></button></div></div><nav class="nav" aria-label="Primary navigation"><button type="button" data-go="files">Files</button><a href="#home">Text &amp; Code</a><a href="#home">Calculate</a><a href="#home">Time</a><a href="#home">Type</a><a href="#home">Play</a><a href="#home">Blog</a></nav></header>
+  <aside id="mobile-sheet" class="mobile-sheet" aria-label="Mobile navigation"><button type="button" data-go="home">Home</button><button type="button" data-go="files">Files</button><a href="#home">Text &amp; Code</a><a href="#home">Calculate</a><a href="#home">Time</a><a href="#home">Type</a><a href="#home">Play</a><a href="#home">Blog</a></aside>
+  <main id="content">
+    <section class="view active" data-view="home" aria-labelledby="home-title"><div class="home-hero"><div><p class="folio">The useful edition</p><h1 id="home-title">A quieter way to <span class="emerald">finish</span> a file.</h1><p class="intro">Tools for the unglamorous jobs that still need doing: reduce an image, turn a document into a PDF, merge pages, clean up a format. Private by design, and clear from the first click.</p></div><aside class="hero-side"><p class="folio">Start with a task</p><h2>What needs changing?</h2><p>Pick the direct route. No account, no detour, no file storage.</p><ol class="quick-links"><li><button type="button" data-go="compress-empty"><b>01</b><strong>Compress an image</strong><span>→</span></button></li><li><button type="button" data-go="files"><b>02</b><strong>Convert a file</strong><span>→</span></button></li><li><button type="button" data-go="files"><b>03</b><strong>Combine PDF pages</strong><span>→</span></button></li></ol><p class="privacy-whisper"><svg width="16" height="16"><use href="#lock"></use></svg><span>Your file stays in this browser. Processing is local to your device.</span></p></aside></div><section class="home-index" aria-labelledby="useful-title"><div class="index-title"><div><p class="folio">Most useful now</p><h2 id="useful-title">The workaday<br>collection.</h2></div><p>Each tool is named for the task you arrived with, then gets out of the way.</p></div><div class="feature-list" role="list"><article class="feature" role="listitem"><span class="num">1</span><button type="button" data-go="compress-empty"><strong>Image Compressor</strong><span>Compress JPG, PNG &amp; WebP images and compare the result.</span></button><span class="tag">Private / local</span><span class="arrow">→</span></article><article class="feature" role="listitem"><span class="num">2</span><button type="button" data-go="files"><strong>PDF to JPG Converter</strong><span>Convert PDF pages to high-quality JPG images — batch supported.</span></button><span class="tag">Files</span><span class="arrow">→</span></article><article class="feature" role="listitem"><span class="num">3</span><button type="button" data-go="files"><strong>Merge PDF</strong><span>Combine multiple PDF files into one — drag to reorder.</span></button><span class="tag">Files</span><span class="arrow">→</span></article><article class="feature" role="listitem"><span class="num">4</span><button type="button" data-go="files"><strong>Image Resizer</strong><span>Resize images by dimensions, presets, or target file size.</span></button><span class="tag">Files</span><span class="arrow">→</span></article></div><div class="reading-room"><article><p class="folio">File tools</p><h3>Do the work in your browser.</h3><p>File handling is designed for the moment you need it. The project leaves no permanent copy in a clevr.tools account because there is no account.</p></article><article><p class="folio">A practical guide</p><h3>Choose the right format.</h3><p>Photos, screenshots, and transparent graphics benefit from different output formats. Our guides help make the tradeoff visible.</p><a href="#home">Read about PNG, JPG &amp; WebP →</a></article></div></section></section>
+
+    <section class="view" data-view="files" aria-labelledby="files-title"><div class="category-hero"><div><p class="folio">Files / core workflow</p><h1 id="files-title">Files with a <span class="emerald">next</span> step.</h1></div><div><p class="deck">Compress, convert, and transform files directly in your browser. Select a task, keep control of the source, and download exactly the output you need.</p><ol class="contents"><li><b>01</b><span>Compress images and PDFs</span></li><li><b>02</b><span>Convert common image formats</span></li><li><b>03</b><span>Arrange, split, and export PDFs</span></li></ol></div></div><section class="files-section"><h2>Compress</h2><div class="tool-columns"><a class="tool-entry" href="#compress-empty" data-go="compress-empty"><strong>Image Compressor</strong><span>Compress JPG, PNG &amp; WebP images and compare the result.</span></a><a class="tool-entry" href="#files"><strong>GIF Compressor</strong><span>Compress animated GIFs in your browser while preserving motion.</span></a><a class="tool-entry" href="#files"><strong>PDF Compressor</strong><span>Strip metadata and reduce PDF file size in your browser.</span></a></div></section><section class="files-section"><h2>Convert images</h2><div class="tool-columns"><a class="tool-entry" href="#files"><strong>JPG to PNG Converter</strong><span>Convert JPG images to PNG format.</span></a><a class="tool-entry" href="#files"><strong>PNG to JPG Converter</strong><span>Convert PNG images to JPG with a white background fill.</span></a><a class="tool-entry" href="#files"><strong>PNG to WebP Converter</strong><span>Convert PNG images to the modern WebP format.</span></a><a class="tool-entry" href="#files"><strong>WebP to PNG Converter</strong><span>Convert WebP images to lossless PNG format.</span></a></div></section><section class="files-section"><h2>PDF tools</h2><div class="tool-columns"><a class="tool-entry" href="#files"><strong>PDF to JPG Converter</strong><span>Convert PDF pages to high-quality JPG images — batch supported.</span></a><a class="tool-entry" href="#files"><strong>JPG to PDF Converter</strong><span>Combine JPG, PNG &amp; WebP images into a single PDF document.</span></a><a class="tool-entry" href="#files"><strong>Merge PDF</strong><span>Combine multiple PDF files into one — drag to reorder.</span></a><a class="tool-entry" href="#files"><strong>Split PDF</strong><span>Extract pages or split a PDF into separate files.</span></a><a class="tool-entry" href="#files"><strong>Rotate PDF</strong><span>Rotate pages individually or all at once.</span></a><a class="tool-entry" href="#files"><strong>Word to PDF Converter</strong><span>Export Word documents as a PDF file.</span></a></div></section><section class="files-section"><h2>Create &amp; edit</h2><div class="tool-columns"><a class="tool-entry" href="#files"><strong>Image Resizer</strong><span>Resize images by dimensions, presets, or target file size.</span></a><a class="tool-entry" href="#files"><strong>Image Cropper</strong><span>Crop images to an exact area in your browser.</span></a><a class="tool-entry" href="#files"><strong>Invoice Generator</strong><span>Create a professional invoice and download it as a PDF.</span></a></div></section></section>
+
+    <section class="view" data-view="compress-empty" aria-labelledby="empty-title"><div class="breadcrumbs"><button type="button" data-go="home">Home</button><span>/</span><button type="button" data-go="files">Files</button><span>/</span><span>Image Compressor</span></div><header class="tool-header"><div><p class="folio">Image Compressor</p><h1 id="empty-title">Make the image lighter.</h1><p>Compress JPG, PNG &amp; WebP images and compare the result before you download.</p></div><span class="state-note">State 01 / choose</span></header><div class="process"><section><nav class="progress-path" aria-label="Image compressor states"><button class="active" type="button" data-go="compress-empty">01 Choose</button><button type="button" data-go="compress-settings">02 Set</button><button type="button" data-go="compress-results">03 Check</button></nav><div class="work"><div class="drop-page"><div><div class="sheet-icon"><svg width="40" height="40"><use href="#image"></use></svg></div><h2>Bring in an image.</h2><p>Drop JPG, PNG, or WebP images here. You can also browse your device or paste from the clipboard.</p><div class="buttons"><button type="button" class="primary" data-go="compress-settings">Browse images</button><button type="button" class="secondary" data-go="compress-settings">Paste clipboard</button></div><div class="acceptable"><span>JPG</span><span>PNG</span><span>WebP</span><span>50 MB max</span></div><p class="working-note"><svg width="16" height="16"><use href="#lock"></use></svg><span>Privacy first: the live tool does all compression inside your browser, so your images never leave your device.</span></p></div></div></div></section><aside class="sidebar"><h2>Before you begin</h2><p>Start with the quality setting, then look closely at text, sharp edges, faces, and gradients before downloading a result.</p><hr class="side-rule"><ul class="side-list"><li><b>Input</b><span>JPG, PNG, WebP</span></li><li><b>Formats out</b><span>Original, JPG, WebP</span></li><li><b>Compare</b><span>Before / after</span></li><li><b>Storage</b><span>Browser-only</span></li></ul></aside></div></section>
+
+    <section class="view" data-view="compress-settings" aria-labelledby="settings-title"><div class="breadcrumbs"><button type="button" data-go="home">Home</button><span>/</span><button type="button" data-go="files">Files</button><span>/</span><span>Image Compressor</span></div><header class="tool-header"><div><p class="folio">Image Compressor</p><h1 id="settings-title">Choose what matters.</h1><p>Use a high setting first, then lower it in small steps if file size is the priority.</p></div><span class="state-note">State 02 / set</span></header><div class="process"><section><nav class="progress-path" aria-label="Image compressor states"><button type="button" data-go="compress-empty">01 Choose</button><button class="active" type="button" data-go="compress-settings">02 Set</button><button type="button" data-go="compress-results">03 Check</button></nav><div class="work"><div class="drop-page" style="min-height:340px"><div><div class="sheet-icon"><svg width="40" height="40"><use href="#image"></use></svg></div><h2>Image selected.</h2><p>In the live tool, its filename and dimensions are visible here while it waits for you to finish the settings.</p><div class="buttons"><button type="button" class="primary" data-go="compress-results">Review output</button><button type="button" class="secondary" data-go="compress-empty">Choose another</button></div><p class="working-note"><svg width="16" height="16"><use href="#lock"></use></svg><span>Prototype state only. The production tool does not send your file to a server.</span></p></div></div></div></section><aside class="sidebar"><h2>Compression settings</h2><div class="settings"><label for="editorial-quality"><span>Quality</span><output id="editorial-output" for="editorial-quality">80%</output></label><input id="editorial-quality" type="range" min="1" max="100" value="80"><div class="range-note"><span>Smaller file</span><span>Better quality</span></div></div><div class="settings"><div class="label"><span>Output format</span><span></span></div><div class="format-choices" role="radiogroup" aria-label="Output format"><button type="button" data-format class="picked" role="radio" aria-checked="true"><span>Keep original</span><small>Safest compatibility</small></button><button type="button" data-format role="radio" aria-checked="false"><span>JPG</span><small>For photos</small></button><button type="button" data-format role="radio" aria-checked="false"><span>WebP</span><small>For the web</small></button></div></div><div class="settings"><div class="label"><span>Quick presets</span><span></span></div><div class="format-choices"><button type="button" data-quality="80"><span>Web (80)</span><small>Balanced</small></button><button type="button" data-quality="95"><span>Ultra (95)</span><small>Higher fidelity</small></button></div></div></aside></div></section>
+
+    <section class="view" data-view="compress-results" aria-labelledby="results-title"><div class="breadcrumbs"><button type="button" data-go="home">Home</button><span>/</span><button type="button" data-go="files">Files</button><span>/</span><span>Image Compressor</span></div><header class="tool-header"><div><p class="folio">Image Compressor</p><h1 id="results-title">Look before you leave.</h1><p>Use the comparison to decide whether the visual tradeoff is right for where this image will be used.</p></div><span class="state-note">State 03 / check</span></header><div class="process"><section><nav class="progress-path" aria-label="Image compressor states"><button type="button" data-go="compress-empty">01 Choose</button><button type="button" data-go="compress-settings">02 Set</button><button class="active" type="button" data-go="compress-results">03 Check</button></nav><div class="work"><div class="result-spread"><article class="image-sheet"><header><span>Original</span><span>Preview</span></header><div class="illustration"><div class="illus-frame"></div></div><p>Your local image appears here in the finished tool. It is not represented by a fake sample filename or result metric.</p></article><article class="image-sheet"><header><span>Optimized</span><span>Preview</span></header><div class="illustration"><div class="illus-frame"></div></div><p>The production tool shows the output preview and actual size, savings, dimensions, and file type after processing.</p></article></div><div class="result-copy"><div><h2>Ready when it looks right.</h2><p>Layout-only prototype: values are intentionally omitted. The real image compressor provides the concrete output details from your browser-local result, then lets you download it.</p></div><div class="buttons"><button type="button" class="secondary" data-go="compress-empty">Process another</button><button type="button" class="primary" data-toast="Prototype only — the live image compressor generates the download in your browser.">Download optimized</button></div></div></div></section><aside class="sidebar"><h2>Output details</h2><p>These fields are calculated from the chosen image—not estimated from a generic example.</p><ul class="side-list"><li><b>Format</b><span>After processing</span></li><li><b>Dimensions</b><span>After processing</span></li><li><b>File count</b><span>After processing</span></li><li><b>Savings</b><span>After processing</span></li></ul><hr class="side-rule"><p>Compression is lossy and one-way. Keep an original when you may need to export again.</p></aside></div></section>
+  </main>
+  <footer><div class="footer-row"><div><a href="#home" data-go="home" class="brand"><em>clevr</em>.tools</a><p>File processing happens in your browser. Your files stay on your device.</p></div><nav aria-label="Footer"><a href="#home">About</a><a href="#home">Privacy</a><a href="#home">Blog</a></nav></div></footer>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    (() => { const root=document.documentElement, views=[...document.querySelectorAll('[data-view]')], go=[...document.querySelectorAll('[data-go]')], menu=document.querySelector('[data-menu]'), sheet=document.getElementById('mobile-sheet'), theme=document.querySelector('[data-theme]'), toast=document.querySelector('.toast'); let toastTimer; const valid=new Set(views.map(v=>v.dataset.view)); function show(name,push=true){const next=valid.has(name)?name:'home';views.forEach(v=>v.classList.toggle('active',v.dataset.view===next));go.forEach(b=>b.classList.toggle('active',b.dataset.go===next));if(push)location.hash=next;sheet.classList.remove('open');menu?.setAttribute('aria-expanded','false');window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});} go.forEach(b=>b.addEventListener('click',e=>{if(b.dataset.go){e.preventDefault();show(b.dataset.go)}}));window.addEventListener('hashchange',()=>show(location.hash.slice(1),false));show(location.hash.slice(1)||'home',false);menu?.addEventListener('click',()=>{const open=sheet.classList.toggle('open');menu.setAttribute('aria-expanded',String(open))});theme?.addEventListener('click',()=>{const dark=root.dataset.theme==='dark';root.dataset.theme=dark?'light':'dark';theme.setAttribute('aria-label',dark?'Switch to dark theme':'Switch to light theme');theme.innerHTML=`<svg width="17" height="17"><use href="#${dark?'moon':'sun'}"></use></svg>`});const range=document.getElementById('editorial-quality'),out=document.getElementById('editorial-output');range?.addEventListener('input',()=>out.value=`${range.value}%`);document.querySelectorAll('[data-quality]').forEach(b=>b.addEventListener('click',()=>{range.value=b.dataset.quality;range.dispatchEvent(new Event('input'))}));document.querySelectorAll('[data-format]').forEach(b=>b.addEventListener('click',()=>document.querySelectorAll('[data-format]').forEach(other=>{const on=other===b;other.classList.toggle('picked',on);other.setAttribute('aria-checked',String(on))})));document.querySelectorAll('[data-toast]').forEach(b=>b.addEventListener('click',()=>{toast.textContent=b.dataset.toast;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),3600)}));})();
+  </script>
+  <script>
+    (() => {
+      const home = document.querySelector('[data-view="home"]');
+      if (home) {
+        home.querySelector('.intro').textContent = 'Tools for the unglamorous jobs that still need doing: reduce an image, turn a document into a PDF, merge pages, clean up a format. Clear from the first click.';
+        const route = [...home.querySelectorAll('.hero-side > p')].find((node) => !node.classList.contains('folio') && !node.classList.contains('privacy-whisper'));
+        if (route) route.textContent = 'Pick the direct route, then get back to what you were doing.';
+        const privacy = home.querySelector('.privacy-whisper span');
+        if (privacy) privacy.textContent = 'For the featured Image Compressor, your image stays in this browser while it is processed.';
+        const browserNote = home.querySelector('.reading-room article:first-child p:last-child');
+        if (browserNote) browserNote.textContent = 'The featured local file workflows are designed to complete in the browser, without adding a separate upload queue.';
+      }
+      const deck = document.querySelector('[data-view="files"] .deck');
+      if (deck) deck.textContent = 'Featured file workflows run directly in your browser. Select a task, keep control of the source, and download exactly the output you need.';
+      const title = [...document.querySelectorAll('.tool-entry strong')].find((node) => node.textContent === 'PDF Compressor');
+      if (title?.nextElementSibling) title.nextElementSibling.textContent = 'Rewrite a PDF locally; file size can vary by source.';
+      const footer = document.querySelector('footer .footer-row p');
+      if (footer) footer.textContent = 'Prototype scope: the featured Image Compressor is browser-local. Confirm privacy handling on each production tool.';
+    })();
+  </script>
+</body>
+</html>

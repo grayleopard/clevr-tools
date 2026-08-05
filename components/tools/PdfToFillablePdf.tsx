@@ -23,6 +23,8 @@ import {
 import type { FillableFieldDefinition, FillableFieldType } from "@/lib/pdf/fillable-pdf";
 import {
   clampPdfRectToPage,
+  pdfRectToViewportRect,
+  viewportRectToPdfRect,
 } from "@/lib/pdf/field-placement.mjs";
 
 interface PdfViewportLike {
@@ -46,32 +48,40 @@ interface PdfPageLike {
 interface PdfLike {
   numPages: number;
   getPage: (pageNumber: number) => Promise<PdfPageLike>;
-  destroy?: () => void;
+  destroy?: () => void | Promise<void>;
+}
+
+interface PdfLoadingTaskLike {
+  promise: Promise<unknown>;
+  destroy?: () => void | Promise<void>;
 }
 
 interface FillableFieldUI {
   id: string;
   type: FillableFieldType;
   pageIndex: number;
+  /** Canonical unrotated PDF coordinates. Never store viewport coordinates. */
   xPt: number;
   yPt: number;
   widthPt: number;
   heightPt: number;
   name: string;
   label?: string;
-  placedRotation: number;
 }
 
 interface DragState {
   fieldId: string;
   startMouseX: number;
   startMouseY: number;
-  startFieldX: number;
-  startFieldY: number;
+  startFieldLeftPx: number;
+  startFieldTopPx: number;
+  fieldWidthPx: number;
+  fieldHeightPx: number;
   fieldWidthPt: number;
   fieldHeightPt: number;
-  vpWidth: number;
-  vpHeight: number;
+  viewport: PdfViewportLike;
+  pageWidthPt: number;
+  pageHeightPt: number;
 }
 
 interface PageMetrics {
@@ -184,8 +194,11 @@ export default function PdfToFillablePdf() {
   const pageInherentRotationRef = useRef<Record<number, number>>({});
   const userRotationRef = useRef(0);
   const viewportRef = useRef<PdfViewportLike | null>(null);
+  const loadingTaskRef = useRef<PdfLoadingTaskLike | null>(null);
   const renderTaskRef = useRef<import("pdfjs-dist").RenderTask | null>(null);
+  const renderTaskPromiseRef = useRef<Promise<void> | null>(null);
   const renderSeqRef = useRef(0);
+  const loadSeqRef = useRef(0);
   const fieldCountRef = useRef<Record<FillableFieldType, number>>({
     text: 0,
     checkbox: 0,
@@ -213,15 +226,37 @@ export default function PdfToFillablePdf() {
     renderTaskRef.current = null;
   }, []);
 
+  const cancelLoadingTask = useCallback(() => {
+    const task = loadingTaskRef.current;
+    loadingTaskRef.current = null;
+    if (!task?.destroy) return;
+    try {
+      void Promise.resolve(task.destroy()).catch(() => {
+        // Ignore destruction races when a new file replaces an old load.
+      });
+    } catch {
+      // Ignore synchronous destruction races for the same reason.
+    }
+  }, []);
+
   const destroyPdf = useCallback(() => {
     renderSeqRef.current += 1;
+    loadSeqRef.current += 1;
     cancelRenderTask();
-    if (pdfRef.current?.destroy) {
-      pdfRef.current.destroy();
+    cancelLoadingTask();
+    const activePdf = pdfRef.current;
+    if (activePdf?.destroy) {
+      try {
+        void Promise.resolve(activePdf.destroy()).catch(() => {
+          // Ignore destruction races when replacing or unmounting a preview.
+        });
+      } catch {
+        // Ignore synchronous destruction races when replacing or unmounting a preview.
+      }
     }
     pdfRef.current = null;
     viewportRef.current = null;
-  }, [cancelRenderTask]);
+  }, [cancelLoadingTask, cancelRenderTask]);
 
   useEffect(() => {
     return () => {
@@ -235,12 +270,18 @@ export default function PdfToFillablePdf() {
       const canvas = canvasRef.current;
       if (!pdf || !canvas) return;
       const seq = ++renderSeqRef.current;
+      const previousRender = renderTaskPromiseRef.current;
       cancelRenderTask();
 
       setIsRenderingPage(true);
       try {
+        // PDF.js cannot render two tasks into one canvas at once. Cancellation
+        // is asynchronous, so drain the old task before starting a new one.
+        if (previousRender) await previousRender;
+        if (seq !== renderSeqRef.current || pdfRef.current !== pdf) return;
+
         const page = await pdf.getPage(pageIndex + 1);
-        if (seq !== renderSeqRef.current) return;
+        if (seq !== renderSeqRef.current || pdfRef.current !== pdf) return;
 
         const pageRotate = page.rotate || 0;
         pageInherentRotationRef.current[pageIndex] = pageRotate;
@@ -272,19 +313,24 @@ export default function PdfToFillablePdf() {
           canvas,
         });
         renderTaskRef.current = task;
-
-        try {
-          await task.promise;
-        } catch (error) {
+        const taskPromise = task.promise.catch((error) => {
           if (isRenderCancelledError(error)) return;
           throw error;
+        });
+        renderTaskPromiseRef.current = taskPromise;
+
+        try {
+          await taskPromise;
         } finally {
           if (renderTaskRef.current === task) {
             renderTaskRef.current = null;
           }
+          if (renderTaskPromiseRef.current === taskPromise) {
+            renderTaskPromiseRef.current = null;
+          }
         }
 
-        if (seq !== renderSeqRef.current) return;
+        if (seq !== renderSeqRef.current || pdfRef.current !== pdf) return;
 
         viewportRef.current = cssViewport;
         pageInfoRef.current[pageIndex] = {
@@ -331,24 +377,51 @@ export default function PdfToFillablePdf() {
       pageInherentRotationRef.current = {};
       fieldCountRef.current = { text: 0, checkbox: 0, date: 0, signature: 0 };
       destroyPdf();
+      const loadSeq = ++loadSeqRef.current;
+      let loadingTask: PdfLoadingTaskLike | null = null;
 
       try {
         const fileBytes = new Uint8Array(await uploaded.arrayBuffer());
+        if (loadSeq !== loadSeqRef.current) return;
         const pdfjs = await loadPdfJs();
-        const loadingTask = pdfjs.getDocument({ data: fileBytes.slice(0) });
+        if (loadSeq !== loadSeqRef.current) return;
+        loadingTask = pdfjs.getDocument({ data: fileBytes.slice(0) }) as PdfLoadingTaskLike;
+        loadingTaskRef.current = loadingTask;
         const pdf = (await loadingTask.promise) as unknown as PdfLike;
+        if (loadSeq !== loadSeqRef.current) {
+          try {
+            await pdf.destroy?.();
+          } catch {
+            // The replacement load owns the UI; ignore cleanup races.
+          }
+          return;
+        }
+        if (pdf.numPages < 1) {
+          try {
+            await pdf.destroy?.();
+          } catch {
+            // Opening fails either way; do not replace its error with cleanup noise.
+          }
+          throw new Error("PDF has no pages");
+        }
 
         pdfBytesRef.current = fileBytes;
         pdfRef.current = pdf;
         setFile(uploaded);
         setPageCount(pdf.numPages);
       } catch (error) {
+        if (loadSeq !== loadSeqRef.current) return;
         console.error(error);
         setFile(null);
         pdfBytesRef.current = null;
         addToast("Failed to open this PDF.", "error");
       } finally {
-        setIsLoadingPdf(false);
+        if (loadingTaskRef.current === loadingTask) {
+          loadingTaskRef.current = null;
+        }
+        if (loadSeq === loadSeqRef.current) {
+          setIsLoadingPdf(false);
+        }
       }
     },
     [destroyPdf]
@@ -381,7 +454,8 @@ export default function PdfToFillablePdf() {
   const placeField = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const overlay = overlayRef.current;
-      if (!overlay || !pageMetrics) return;
+      const viewport = viewportRef.current;
+      if (!overlay || !pageMetrics || !viewport) return;
       if ((event.target as HTMLElement).closest("[data-field-id]")) return;
 
       const rect = overlay.getBoundingClientRect();
@@ -391,20 +465,33 @@ export default function PdfToFillablePdf() {
       const vx = clamp(event.clientX - rect.left, 0, rect.width);
       const vy = clamp(event.clientY - rect.top, 0, rect.height);
 
-      const scale = zoom;
       const defaults = FIELD_DEFAULTS[activeFieldType];
-
-      // Field position in viewport points (scale=1)
-      const x = vx / scale;
-      const y = vy / scale;
-
-      // Viewport width/height at scale=1
-      const vpWidth = pageMetrics.widthCss / scale;
-      const vpHeight = pageMetrics.heightCss / scale;
-
-      // Clamp to page bounds in viewport points
-      const clampedX = Math.max(0, Math.min(x, vpWidth - defaults.widthPt));
-      const clampedY = Math.max(0, Math.min(y, vpHeight - defaults.heightPt));
+      // Start from a raw-PDF sized rectangle, project it into the current
+      // viewport, then map the click target back to one canonical raw rect.
+      // This keeps source rotation, user rotation, zoom, and DPR out of the
+      // persisted field definition.
+      const defaultViewportRect = pdfRectToViewportRect({
+        viewport,
+        xPt: 0,
+        yPt: 0,
+        widthPt: defaults.widthPt,
+        heightPt: defaults.heightPt,
+      });
+      const rawRect = viewportRectToPdfRect({
+        viewport,
+        leftPx: vx,
+        topPx: vy,
+        widthPx: defaultViewportRect.widthPx,
+        heightPx: defaultViewportRect.heightPx,
+      });
+      const clamped = clampPdfRectToPage({
+        xPt: rawRect.xPt,
+        yPt: rawRect.yPt,
+        widthPt: defaults.widthPt,
+        heightPt: defaults.heightPt,
+        pageWidthPt: pageMetrics.pageWidthPt,
+        pageHeightPt: pageMetrics.pageHeightPt,
+      });
 
       fieldCountRef.current[activeFieldType] += 1;
       const nextCount = fieldCountRef.current[activeFieldType];
@@ -419,11 +506,10 @@ export default function PdfToFillablePdf() {
           id,
           type: activeFieldType,
           pageIndex: currentPage,
-          xPt: clampedX,
-          yPt: clampedY,
-          widthPt: defaults.widthPt,
-          heightPt: defaults.heightPt,
-          placedRotation: pageMetrics.totalRotation,
+          xPt: clamped.xPt,
+          yPt: clamped.yPt,
+          widthPt: clamped.widthPt,
+          heightPt: clamped.heightPt,
           name: nextFieldName(activeFieldType, nextCount),
           label: fieldLabelForType(activeFieldType),
         },
@@ -434,66 +520,77 @@ export default function PdfToFillablePdf() {
         yCss: vy,
         nx: vx / rect.width,
         ny: vy / rect.height,
-        xPt: clampedX,
-        yPt: clampedY,
+        xPt: clamped.xPt,
+        yPt: clamped.yPt,
       });
     },
-    [activeFieldType, currentPage, pageMetrics, zoom]
+    [activeFieldType, currentPage, pageMetrics]
   );
 
   const handleFieldPointerDown = useCallback(
     (event: React.PointerEvent<HTMLButtonElement>, field: FillableFieldUI) => {
-      const overlay = overlayRef.current;
-      if (!overlay || !pageMetrics) return;
+      const viewport = viewportRef.current;
+      if (!viewport || !pageMetrics) return;
       event.preventDefault();
       event.stopPropagation();
       setSelectedFieldId(field.id);
 
-      const scale = zoom;
-      const vpWidth = pageMetrics.widthCss / scale;
-      const vpHeight = pageMetrics.heightCss / scale;
+      const viewportRect = pdfRectToViewportRect({
+        viewport,
+        xPt: field.xPt,
+        yPt: field.yPt,
+        widthPt: field.widthPt,
+        heightPt: field.heightPt,
+      });
 
       dragRef.current = {
         fieldId: field.id,
         startMouseX: event.clientX,
         startMouseY: event.clientY,
-        startFieldX: field.xPt,
-        startFieldY: field.yPt,
+        startFieldLeftPx: viewportRect.leftPx,
+        startFieldTopPx: viewportRect.topPx,
+        fieldWidthPx: viewportRect.widthPx,
+        fieldHeightPx: viewportRect.heightPx,
         fieldWidthPt: field.widthPt,
         fieldHeightPt: field.heightPt,
-        vpWidth,
-        vpHeight,
+        viewport,
+        pageWidthPt: pageMetrics.pageWidthPt,
+        pageHeightPt: pageMetrics.pageHeightPt,
       };
     },
-    [pageMetrics, zoom]
+    [pageMetrics]
   );
-
-  // Store latest zoom in ref so the drag handler (registered once) can access it
-  const zoomRef = useRef(zoom);
-  zoomRef.current = zoom;
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
       const drag = dragRef.current;
       if (!drag) return;
 
-      const currentZoom = zoomRef.current;
-      const deltaX = (event.clientX - drag.startMouseX) / currentZoom;
-      const deltaY = (event.clientY - drag.startMouseY) / currentZoom;
-
-      const newX = drag.startFieldX + deltaX;
-      const newY = drag.startFieldY + deltaY;
-
-      const clampedX = Math.max(0, Math.min(newX, drag.vpWidth - drag.fieldWidthPt));
-      const clampedY = Math.max(0, Math.min(newY, drag.vpHeight - drag.fieldHeightPt));
+      const deltaX = event.clientX - drag.startMouseX;
+      const deltaY = event.clientY - drag.startMouseY;
+      const rawRect = viewportRectToPdfRect({
+        viewport: drag.viewport,
+        leftPx: drag.startFieldLeftPx + deltaX,
+        topPx: drag.startFieldTopPx + deltaY,
+        widthPx: drag.fieldWidthPx,
+        heightPx: drag.fieldHeightPx,
+      });
+      const clamped = clampPdfRectToPage({
+        xPt: rawRect.xPt,
+        yPt: rawRect.yPt,
+        widthPt: drag.fieldWidthPt,
+        heightPt: drag.fieldHeightPt,
+        pageWidthPt: drag.pageWidthPt,
+        pageHeightPt: drag.pageHeightPt,
+      });
 
       setFields((previous) =>
         previous.map((field) =>
           field.id === drag.fieldId
             ? {
                 ...field,
-                xPt: clampedX,
-                yPt: clampedY,
+                xPt: clamped.xPt,
+                yPt: clamped.yPt,
               }
             : field
         )
@@ -516,9 +613,6 @@ export default function PdfToFillablePdf() {
   const updateSelectedField = useCallback(
     (patch: Partial<FillableFieldUI>) => {
       if (!selectedFieldId || !pageMetrics) return;
-      const scale = zoom;
-      const vpWidth = pageMetrics.widthCss / scale;
-      const vpHeight = pageMetrics.heightCss / scale;
       setFields((previous) =>
         previous.map((field) => {
           if (field.id !== selectedFieldId) return field;
@@ -528,8 +622,8 @@ export default function PdfToFillablePdf() {
             yPt: merged.yPt,
             widthPt: merged.widthPt,
             heightPt: merged.heightPt,
-            pageWidthPt: vpWidth,
-            pageHeightPt: vpHeight,
+            pageWidthPt: pageMetrics.pageWidthPt,
+            pageHeightPt: pageMetrics.pageHeightPt,
           });
           return {
             ...merged,
@@ -541,7 +635,7 @@ export default function PdfToFillablePdf() {
         })
       );
     },
-    [pageMetrics, selectedFieldId, zoom]
+    [pageMetrics, selectedFieldId]
   );
 
   const removeField = useCallback(
@@ -573,7 +667,9 @@ export default function PdfToFillablePdf() {
         height: field.heightPt,
         name: field.name,
         label: field.label,
-        placedRotation: field.placedRotation,
+        // Kept for the current declaration shape; exporter intentionally
+        // ignores it because x/y/width/height are already raw PDF values.
+        placedRotation: 0,
       }));
       const output = await createFillablePdf(source, outputFields);
       const blob = new Blob([new Uint8Array(output)], { type: "application/pdf" });
@@ -603,6 +699,8 @@ export default function PdfToFillablePdf() {
     setFields([]);
     setSelectedFieldId(null);
     setFile(null);
+    setIsLoadingPdf(false);
+    setIsRenderingPage(false);
     setPageCount(0);
     setCurrentPage(0);
     setPageMetrics(null);
@@ -617,14 +715,11 @@ export default function PdfToFillablePdf() {
       if (!selectedField || !pageMetrics) return;
       const parsed = Number(value);
       if (!Number.isFinite(parsed)) return;
-      const scale = zoom;
-      const vpWidth = pageMetrics.widthCss / scale;
-      const vpHeight = pageMetrics.heightCss / scale;
-      const max = key === "widthPt" ? vpWidth : vpHeight;
+      const max = key === "widthPt" ? pageMetrics.pageWidthPt : pageMetrics.pageHeightPt;
       const bounded = clamp(parsed, 8, Math.max(8, max));
       updateSelectedField({ [key]: bounded } as Partial<FillableFieldUI>);
     },
-    [pageMetrics, selectedField, updateSelectedField, zoom]
+    [pageMetrics, selectedField, updateSelectedField]
   );
 
   return (
@@ -753,6 +848,16 @@ export default function PdfToFillablePdf() {
                 >
                   {fieldsOnCurrentPage.map((field) => {
                     const selected = selectedFieldId === field.id;
+                    const viewport = viewportRef.current;
+                    const fieldViewportRect = viewport
+                      ? pdfRectToViewportRect({
+                          viewport,
+                          xPt: field.xPt,
+                          yPt: field.yPt,
+                          widthPt: field.widthPt,
+                          heightPt: field.heightPt,
+                        })
+                      : null;
 
                     return (
                       <button
@@ -770,10 +875,10 @@ export default function PdfToFillablePdf() {
                             : "border-sky-500/70 bg-sky-500/10 text-sky-700"
                         }`}
                         style={{
-                          left: field.xPt * zoom,
-                          top: field.yPt * zoom,
-                          width: Math.max(14, field.widthPt * zoom),
-                          height: Math.max(14, field.heightPt * zoom),
+                          left: fieldViewportRect?.leftPx ?? 0,
+                          top: fieldViewportRect?.topPx ?? 0,
+                          width: Math.max(14, fieldViewportRect?.widthPx ?? 0),
+                          height: Math.max(14, fieldViewportRect?.heightPx ?? 0),
                         }}
                       >
                         <span className="truncate">{field.label || field.name}</span>

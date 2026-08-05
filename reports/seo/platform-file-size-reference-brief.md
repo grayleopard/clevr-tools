@@ -1,6 +1,6 @@
 # Platform file-size reference brief
 
-Status: research plan only. **No numeric platform limit in this document is approved for publication.** Every value must be opened on the named first-party source, checked for the exact product surface and account tier, recorded with a verification date, and reviewed again immediately before publishing.
+Status: research plan only. **No numeric platform limit in this document is approved for publication.** Every value must be opened on the named first-party source, checked for the exact product surface and account tier, recorded with a verification date, and reviewed again immediately before publishing. Use the companion [primary-source protocol](./platform-file-size-verification-protocol.md) and [blank verification register](./platform-file-size-verification-register-template.csv) for execution.
 
 ## Why this needs a verification gate
 

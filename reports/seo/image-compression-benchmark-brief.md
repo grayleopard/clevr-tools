@@ -1,6 +1,6 @@
 # Original image-compression benchmark brief
 
-Status: ready to implement. No performance result, compression percentage, or quality conclusion should be published until the corpus is frozen and every `input_bytes` / `output_bytes` field in the companion CSV is measured.
+Status: ready to implement. No performance result, compression percentage, or quality conclusion should be published until the corpus is frozen and every `input_bytes` / `output_bytes` field in the companion CSV is measured. The reproducible release layout, attempt counts, failure handling, and raw-data contract are in [image-compression-benchmark-execution-spec.md](./image-compression-benchmark-execution-spec.md); no benchmark results are recorded there.
 
 ## Research question
 

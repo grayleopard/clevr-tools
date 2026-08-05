@@ -101,9 +101,9 @@ export default function CategoryPageScaffold({
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-          <div id="category-overview" className="mb-12 max-w-3xl scroll-mt-24 sm:mb-14">
-            <nav className="mb-6 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-24">
+          <div id="category-overview" className="grid scroll-mt-24 gap-7 border-b-2 border-foreground py-14 sm:py-20 lg:grid-cols-[8rem_minmax(0,1fr)] lg:gap-10">
+            <nav className="flex items-start gap-2 text-xs font-medium text-muted-foreground lg:pt-2">
               <Link href="/" className="transition-colors hover:text-primary">
                 Home
               </Link>
@@ -111,26 +111,24 @@ export default function CategoryPageScaffold({
               <span>{categoryName}</span>
             </nav>
 
-            <div className="mb-6 inline-flex items-center gap-2 rounded-md bg-primary/10 px-3 py-1.5 text-primary">
-              <Icon className="h-[14px] w-[14px]" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
-                {headerLabel}
-              </span>
+            <div>
+              <div className="mb-6 inline-flex items-center gap-2 text-primary">
+                <span className="grid size-8 place-items-center border border-primary/40 bg-primary/10"><Icon className="h-4 w-4" /></span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">{headerLabel}</span>
+              </div>
+
+              <h1 className="font-display text-[clamp(3.25rem,8vw,7rem)] font-black uppercase leading-[0.82] tracking-[-0.08em]">
+                {titleLineOne}
+                <br />
+                <span className="text-primary">{titleLineTwo}</span>
+              </h1>
+
+              <p className="mt-7 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{description}</p>
             </div>
-
-            <h1 className="mb-6 text-5xl font-extrabold leading-[0.95] tracking-tighter md:text-6xl">
-              {titleLineOne}
-              <br />
-              <span className="text-primary">{titleLineTwo}</span>
-            </h1>
-
-            <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-              {description}
-            </p>
           </div>
 
           {primaryFeaturedTool ? (
-            <section aria-labelledby="featured-tools-heading" className="mb-12 sm:mb-14">
+            <section aria-labelledby="featured-tools-heading" className="border-b border-[color:var(--ghost-border)] py-12 sm:py-16">
               <div className="mb-5 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
@@ -138,7 +136,7 @@ export default function CategoryPageScaffold({
                   </p>
                   <h2
                     id="featured-tools-heading"
-                    className="mt-2 text-2xl font-bold tracking-tight text-foreground"
+                    className="mt-2 font-display text-3xl font-black uppercase tracking-[-0.055em] text-foreground"
                   >
                     {featuredTitle ?? `Featured ${categoryName.toLowerCase()} tools`}
                   </h2>
@@ -151,19 +149,19 @@ export default function CategoryPageScaffold({
               <div className="grid gap-4 lg:grid-cols-12">
                 <Link
                   href={primaryFeaturedTool.route}
-                  className="group relative flex min-h-64 flex-col justify-between overflow-hidden rounded-[1.75rem] bg-primary p-7 text-primary-foreground shadow-[var(--ambient-shadow)] transition-transform duration-200 hover:-translate-y-0.5 lg:col-span-5"
+                  className="group relative flex min-h-64 flex-col justify-between overflow-hidden border border-primary bg-primary p-7 text-primary-foreground transition-colors duration-200 hover:bg-primary-dim lg:col-span-5"
                 >
                   <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-primary-foreground/10" />
                   <div className="relative flex items-start justify-between gap-4">
-                    <div className="rounded-xl bg-primary-foreground/15 p-3">
+                    <div className="border border-primary-foreground/25 bg-primary-foreground/15 p-3">
                       {PrimaryFeaturedIcon ? <PrimaryFeaturedIcon className="h-6 w-6" /> : null}
                     </div>
-                    <span className="rounded-full bg-primary-foreground/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em]">
+                    <span className="border border-primary-foreground/25 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em]">
                       Featured
                     </span>
                   </div>
                   <div className="relative mt-12">
-                    <h3 className="text-2xl font-bold tracking-tight">
+                    <h3 className="font-display text-3xl font-black uppercase leading-none tracking-[-0.05em]">
                       {primaryFeaturedTool.name}
                     </h3>
                     <p className="mt-3 max-w-md text-sm leading-6 text-primary-foreground/80">
@@ -176,7 +174,7 @@ export default function CategoryPageScaffold({
                   </div>
                 </Link>
 
-                <div className="grid gap-4 sm:grid-cols-2 lg:col-span-7">
+                <div className="grid gap-x-6 sm:grid-cols-2 lg:col-span-7">
                   {secondaryFeaturedTools.map((tool) => (
                     <ToolCard key={tool.slug} tool={tool} />
                   ))}
@@ -198,7 +196,7 @@ export default function CategoryPageScaffold({
                   <Link
                     key={section.title}
                     href={`#${getSectionId(section.title)}`}
-                    className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[color:var(--ghost-border)] bg-card px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+                    className="inline-flex shrink-0 items-center gap-2 border border-[color:var(--ghost-border)] bg-card px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:bg-primary/10 hover:text-primary"
                   >
                     {section.title}
                     {section.tools ? (
@@ -212,27 +210,27 @@ export default function CategoryPageScaffold({
             </nav>
           ) : null}
 
-          <div className="space-y-12">
+          <div>
             {visibleSections.map((section) => {
               const hasTools = (section.tools?.length ?? 0) > 0;
               return (
                 <section
                   key={section.title}
                   id={getSectionId(section.title)}
-                  className="scroll-mt-24"
+                  className="grid scroll-mt-24 border-b border-[color:var(--ghost-border)] py-10 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-8"
                 >
-                  <div className="mb-6 mt-12 flex items-baseline gap-3 border-b border-[color:var(--ghost-border)] pb-4">
-                    <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                  <div className="mb-5 flex items-baseline gap-3 lg:mb-0 lg:block">
+                    <h2 className="text-xs font-black uppercase tracking-[0.16em] text-primary">
                       {section.title}
                     </h2>
                     {section.tools ? (
-                      <span className="text-xs font-medium tabular-nums text-muted-foreground">
+                      <span className="text-xs font-medium tabular-nums text-muted-foreground lg:mt-2 lg:block">
                         {section.tools.length} {section.tools.length === 1 ? "tool" : "tools"}
                       </span>
                     ) : null}
                   </div>
                   {hasTools ? (
-                    <div className={`grid gap-4 ${section.columnsClassName ?? "lg:grid-cols-3"}`}>
+                    <div className={`grid gap-x-8 ${section.columnsClassName ?? "lg:grid-cols-3"}`}>
                       {section.tools?.map((tool) => (
                         <ToolCard key={tool.slug} tool={tool} />
                       ))}

@@ -70,3 +70,36 @@ test("createFillablePdf preserves source page rotation metadata", async () => {
   assert.ok(rect.x >= 0 && rect.x <= pageWidth, "Field x must be inside page bounds");
   assert.ok(rect.y >= 0 && rect.y <= pageHeight, "Field y must be inside page bounds");
 });
+
+test("createFillablePdf preserves canonical widget rectangles for every source rotation", async () => {
+  const base = await readFile(fixturePath("sample.pdf"));
+  const expected = { x: 96, y: 144, width: 180, height: 28 };
+
+  for (const sourceRotation of [0, 90, 180, 270]) {
+    const input = await PDFDocument.load(base);
+    input.getPage(0).setRotation(degrees(sourceRotation));
+    const output = await createFillablePdf(await input.save(), [
+      {
+        type: "text",
+        pageIndex: 0,
+        ...expected,
+        name: `raw_${sourceRotation}`,
+        // A former viewport-space exporter used this to transform a second
+        // time. Raw rectangles must remain unchanged regardless of it.
+        placedRotation: (360 - sourceRotation) % 360,
+      },
+    ]);
+
+    const parsed = await PDFDocument.load(output);
+    const page = parsed.getPage(0);
+    const widget = parsed.getForm().getFields()[0].acroField.getWidgets()[0].getRectangle();
+
+    assert.equal(page.getRotation().angle, sourceRotation);
+    // pdf-lib's 1pt border expands the widget annotation by 0.5pt on each
+    // side. Compare its inner field rectangle to the raw canonical input.
+    assert.equal(widget.x + 0.5, expected.x, `rotation ${sourceRotation}: x`);
+    assert.equal(widget.y + 0.5, expected.y, `rotation ${sourceRotation}: y`);
+    assert.equal(widget.width - 1, expected.width, `rotation ${sourceRotation}: width`);
+    assert.equal(widget.height - 1, expected.height, `rotation ${sourceRotation}: height`);
+  }
+});

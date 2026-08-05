@@ -167,6 +167,66 @@ test("rotated viewport rectangle mapping remains consistent", () => {
   approxEqual(viewportRect.heightPx, 40);
 });
 
+test("canonical raw rectangles preserve click semantics across source/view rotations, zoom, and DPR", () => {
+  const pageWidth = 612;
+  const pageHeight = 792;
+  const fieldWidthPt = 180;
+  const fieldHeightPt = 28;
+
+  for (const sourceRotation of [0, 90, 180, 270]) {
+    for (const userRotation of [0, 90, 180, 270]) {
+      const rotation = (360 - sourceRotation + userRotation) % 360;
+      const isQuarterTurn = rotation === 90 || rotation === 270;
+
+      for (const zoom of [0.6, 1, 1.5]) {
+        for (const dpr of [1, 2]) {
+          // The visible overlay is CSS-sized; DPR only changes the backing
+          // canvas. A correct raw rectangle must therefore map identically.
+          const viewport = createMockViewport({
+            pageWidth,
+            pageHeight,
+            viewportWidth: (isQuarterTurn ? pageHeight : pageWidth) * zoom,
+            viewportHeight: (isQuarterTurn ? pageWidth : pageHeight) * zoom,
+            rotation,
+          });
+          const clickLeftPx = viewport.width * 0.25;
+          const clickTopPx = viewport.height * 0.25;
+          const defaultViewportRect = pdfRectToViewportRect({
+            viewport,
+            xPt: 0,
+            yPt: 0,
+            widthPt: fieldWidthPt,
+            heightPt: fieldHeightPt,
+          });
+          const rawFromClick = viewportRectToPdfRect({
+            viewport,
+            leftPx: clickLeftPx,
+            topPx: clickTopPx,
+            widthPx: defaultViewportRect.widthPx,
+            heightPx: defaultViewportRect.heightPx,
+          });
+          const rawRect = clampPdfRectToPage({
+            xPt: rawFromClick.xPt,
+            yPt: rawFromClick.yPt,
+            widthPt: fieldWidthPt,
+            heightPt: fieldHeightPt,
+            pageWidthPt: pageWidth,
+            pageHeightPt: pageHeight,
+          });
+          const renderedRect = pdfRectToViewportRect({ viewport, ...rawRect });
+
+          approxEqual(rawRect.widthPt, fieldWidthPt);
+          approxEqual(rawRect.heightPt, fieldHeightPt);
+          approxEqual(renderedRect.leftPx, clickLeftPx);
+          approxEqual(renderedRect.topPx, clickTopPx);
+          approxEqual((viewport.width * dpr) / dpr, viewport.width);
+          approxEqual((viewport.height * dpr) / dpr, viewport.height);
+        }
+      }
+    }
+  }
+});
+
 test("mapDomPointToPdfPoint converts click with inverted Y and clamps inside page", () => {
   const viewport = createMockViewport({
     pageWidth: 500,

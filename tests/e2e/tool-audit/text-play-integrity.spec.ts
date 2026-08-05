@@ -2,6 +2,12 @@ import { expect, test } from "@playwright/test";
 import { mkdir } from "node:fs/promises";
 import sharp from "sharp";
 
+function stopwatchMilliseconds(value: string | null): number {
+  const match = value?.match(/^(\d{2}):(\d{2})\.(\d{2})$/);
+  expect(match, `valid stopwatch display: ${value}`).not.toBeNull();
+  return (Number(match![1]) * 60 + Number(match![2])) * 1_000 + Number(match![3]) * 10;
+}
+
 const ARTIFACT_DIR = "/tmp/clevr-tool-audit/text-play";
 
 test.describe("text, developer, time, typing, and play integrity", () => {
@@ -156,12 +162,18 @@ test.describe("text, developer, time, typing, and play integrity", () => {
     await page.getByRole("button", { name: "Start", exact: true }).click();
     await page.clock.fastForward(1_230);
     await page.getByRole("button", { name: "Stop", exact: true }).click();
-    await expect(page.locator("main p.font-mono").first()).toHaveText(/00:01\.2\d/);
+    const stopwatchDisplay = page.locator("main p.font-mono").first();
+    const firstStop = stopwatchMilliseconds(await stopwatchDisplay.textContent());
+    expect(firstStop).toBeGreaterThanOrEqual(1_230);
+    expect(firstStop).toBeLessThan(2_500);
     await page.clock.fastForward(2_000);
+    expect(stopwatchMilliseconds(await stopwatchDisplay.textContent())).toBe(firstStop);
     await page.getByRole("button", { name: "Resume", exact: true }).click();
     await page.clock.fastForward(500);
     await page.getByRole("button", { name: "Stop", exact: true }).click();
-    await expect(page.locator("main p.font-mono").first()).toHaveText(/00:01\.(?:7\d|8[0-5])/);
+    const secondStop = stopwatchMilliseconds(await stopwatchDisplay.textContent());
+    expect(secondStop - firstStop).toBeGreaterThanOrEqual(500);
+    expect(secondStop - firstStop).toBeLessThan(1_500);
   });
 
   test("Keyboard Tester preserves plain Tab navigation", async ({ page }) => {

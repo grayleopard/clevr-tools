@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, useRef } from "react";
-import type { XRayResponse, XRayResult } from "./types";
+import type { XRayResponse } from "./types";
 
 export type AnalysisState = "idle" | "analyzing" | "complete" | "error";
 
@@ -40,31 +40,9 @@ export function PdfXRayProvider({ children }: { children: React.ReactNode }) {
     const file = fileRef.current;
     if (!file) return;
 
-    setAnalysisState("analyzing");
-    setError(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/xray", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data: XRayResult = await response.json();
-
-      if (data.success) {
-        setResult(data);
-        setAnalysisState("complete");
-      } else {
-        setError(data.error);
-        setAnalysisState("error");
-      }
-    } catch {
-      setError("Something went wrong. Please try again.");
-      setAnalysisState("error");
-    }
+    setResult(null);
+    setError("File X-Ray is currently unavailable.");
+    setAnalysisState("error");
   }, []);
 
   const resetAnalysis = useCallback(() => {

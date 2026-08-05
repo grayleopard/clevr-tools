@@ -16,6 +16,8 @@ const PRESETS = [
   { label: "1 hr", seconds: 3600 },
 ];
 
+const TIMER_TICK_MS = 250;
+
 function formatTime(s: number): string {
   const h = Math.floor(s / 3600);
   const m = Math.floor((s % 3600) / 60);
@@ -61,6 +63,7 @@ export default function TimerTool() {
   const startTimeRef = useRef(0);
   const initialRemainingRef = useRef(0);
   const originalTitleRef = useRef("");
+  const pauseResumeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Store original title
   useEffect(() => {
@@ -80,6 +83,14 @@ export default function TimerTool() {
       document.title = originalTitleRef.current;
     }
   }, [remaining, status]);
+
+  // Starting from a preset unmounts its trigger. Move focus to the next
+  // available control so keyboard users retain their place in the workflow.
+  useEffect(() => {
+    if (status === "running" || status === "paused") {
+      pauseResumeButtonRef.current?.focus();
+    }
+  }, [status]);
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current) {
@@ -110,7 +121,7 @@ export default function TimerTool() {
         } else {
           setRemaining(left);
         }
-      }, 100);
+      }, TIMER_TICK_MS);
     },
     [clearTimer]
   );
@@ -158,7 +169,7 @@ export default function TimerTool() {
         } else {
           setRemaining(left);
         }
-      }, 100);
+      }, TIMER_TICK_MS);
     }
   }, [status, remaining, clearTimer]);
 
@@ -189,13 +200,17 @@ export default function TimerTool() {
     <div className="space-y-6">
       {/* Done overlay */}
       {status === "done" && (
-        <div className="rounded-xl border-2 border-primary bg-primary/10 dark:border-emerald-500 dark:bg-emerald-500/10 p-8 text-center space-y-4 animate-pulse">
+        <div
+          role="alert"
+          className="space-y-4 rounded-xl border-2 border-primary bg-primary/10 p-8 text-center animate-pulse motion-reduce:animate-none dark:border-emerald-500 dark:bg-emerald-500/10"
+        >
           <p className="text-4xl sm:text-5xl font-bold text-primary dark:text-emerald-500">
             Time&apos;s Up!
           </p>
           <button
+            type="button"
             onClick={handleDismiss}
-            className="rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="min-h-11 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Dismiss
           </button>
@@ -213,8 +228,9 @@ export default function TimerTool() {
               {PRESETS.map((p) => (
                 <button
                   key={p.seconds}
+                  type="button"
                   onClick={() => handlePreset(p.seconds)}
-                  className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+                  className="min-h-11 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
                 >
                   {p.label}
                 </button>
@@ -227,8 +243,8 @@ export default function TimerTool() {
             <p className="text-sm font-medium text-muted-foreground mb-2">
               Custom time
             </p>
-            <div className="flex items-end gap-2">
-              <div>
+            <div className="grid grid-cols-3 gap-x-2 gap-y-3 sm:flex sm:items-end">
+              <div className="min-w-0">
                 <label htmlFor="timer-hours" className="block text-xs text-muted-foreground mb-1">
                   Hours
                 </label>
@@ -240,13 +256,14 @@ export default function TimerTool() {
                   value={hours}
                   onChange={(e) => setHours(e.target.value)}
                   placeholder="0"
-                  className="w-20 rounded-lg border border-border bg-background px-3 py-2 text-center text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  inputMode="numeric"
+                  className="min-h-11 min-w-0 w-full rounded-lg border border-border bg-background px-3 py-2 text-center text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 sm:w-20"
                 />
               </div>
-              <span className="pb-2 text-muted-foreground">:</span>
-              <div>
+              <span aria-hidden="true" className="hidden pb-2 text-muted-foreground sm:block">:</span>
+              <div className="min-w-0">
                 <label htmlFor="timer-minutes" className="block text-xs text-muted-foreground mb-1">
-                  Min
+                  Minutes
                 </label>
                 <input
                   id="timer-minutes"
@@ -256,13 +273,14 @@ export default function TimerTool() {
                   value={minutes}
                   onChange={(e) => setMinutes(e.target.value)}
                   placeholder="0"
-                  className="w-20 rounded-lg border border-border bg-background px-3 py-2 text-center text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  inputMode="numeric"
+                  className="min-h-11 min-w-0 w-full rounded-lg border border-border bg-background px-3 py-2 text-center text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 sm:w-20"
                 />
               </div>
-              <span className="pb-2 text-muted-foreground">:</span>
-              <div>
+              <span aria-hidden="true" className="hidden pb-2 text-muted-foreground sm:block">:</span>
+              <div className="min-w-0">
                 <label htmlFor="timer-seconds" className="block text-xs text-muted-foreground mb-1">
-                  Sec
+                  Seconds
                 </label>
                 <input
                   id="timer-seconds"
@@ -272,12 +290,14 @@ export default function TimerTool() {
                   value={seconds}
                   onChange={(e) => setSeconds(e.target.value)}
                   placeholder="0"
-                  className="w-20 rounded-lg border border-border bg-background px-3 py-2 text-center text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  inputMode="numeric"
+                  className="min-h-11 min-w-0 w-full rounded-lg border border-border bg-background px-3 py-2 text-center text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 sm:w-20"
                 />
               </div>
               <button
+                type="button"
                 onClick={handleCustomStart}
-                className="rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="col-span-3 min-h-11 w-full rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:col-auto sm:w-auto"
               >
                 Start
               </button>
@@ -290,24 +310,38 @@ export default function TimerTool() {
       {status !== "idle" && status !== "done" && (
         <div className="space-y-6">
           <div className="text-center">
-            <p className="text-6xl sm:text-8xl font-mono font-bold tabular-nums text-foreground dark:text-emerald-500">
+            <p
+              role="timer"
+              aria-label={`${formatTime(remaining)} remaining`}
+              className="text-6xl sm:text-8xl font-mono font-bold tabular-nums text-foreground dark:text-emerald-500"
+            >
               {formatTime(remaining)}
             </p>
           </div>
 
           {/* Progress bar */}
-          <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+          <div
+            role="progressbar"
+            aria-label="Timer progress"
+            aria-valuemin={0}
+            aria-valuemax={totalSeconds}
+            aria-valuenow={remaining}
+            aria-valuetext={`${formatTime(remaining)} remaining`}
+            className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
+          >
             <div
-              className="h-full rounded-full bg-primary dark:bg-emerald-500 transition-all duration-200"
-              style={{ width: `${progressPercent}%` }}
+              className="h-full w-full origin-left rounded-full bg-primary transition-transform duration-200 motion-reduce:transition-none dark:bg-emerald-500"
+              style={{ transform: `scaleX(${progressPercent / 100})` }}
             />
           </div>
 
           {/* Controls */}
           <div className="flex justify-center gap-3">
             <button
+              ref={pauseResumeButtonRef}
+              type="button"
               onClick={handlePauseResume}
-              className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="flex min-h-11 items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               {status === "running" ? (
                 <>
@@ -320,8 +354,9 @@ export default function TimerTool() {
               )}
             </button>
             <button
+              type="button"
               onClick={handleReset}
-              className="flex items-center gap-2 rounded-lg border border-border px-6 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+              className="flex min-h-11 items-center gap-2 rounded-lg border border-border px-6 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <RotateCcw className="h-4 w-4" /> Reset
             </button>

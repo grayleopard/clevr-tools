@@ -1,0 +1,117 @@
+tool_name,route,correctness_30,demonstrated_demand_25,differentiation_20,strategic_fit_15,maintainability_10,known_non_demand_subtotal_75,total_score,gsc_evidence,backlink_evidence,recommendation,decision_basis
+Image Compressor,/compress/image,25,UNKNOWN,12,15,7,59,UNKNOWN,UNKNOWN,UNKNOWN,FLAGSHIP,local-first-core-candidate
+GIF Compressor,/tools/gif-compressor,23,UNKNOWN,13,10,6,52,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+PNG to JPG Converter,/convert/png-to-jpg,28,UNKNOWN,5,11,8,52,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+QR Code Generator,/generate/qr-code,22,UNKNOWN,4,8,8,42,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+HEIC to JPG Converter,/convert/heic-to-jpg,0,UNKNOWN,8,5,3,16,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,contained-core-function-gate
+WebP to PNG Converter,/convert/webp-to-png,28,UNKNOWN,5,10,8,51,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+PNG to WebP Converter,/convert/png-to-webp,27,UNKNOWN,5,11,8,51,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+JPG to PNG Converter,/convert/jpg-to-png,28,UNKNOWN,4,9,8,49,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+AI Background Remover,/tools/background-remover,0,UNKNOWN,10,10,2,22,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,unconfigured-processor-privacy-gate
+PDF Compressor,/compress/pdf,18,UNKNOWN,4,13,8,43,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+PDF to JPG Converter,/convert/pdf-to-jpg,28,UNKNOWN,7,14,6,55,UNKNOWN,UNKNOWN,UNKNOWN,FLAGSHIP,local-first-core-candidate
+JPG to PDF Converter,/convert/jpg-to-pdf,25,UNKNOWN,5,12,7,49,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Merge PDF,/tools/merge-pdf,28,UNKNOWN,6,13,8,55,UNKNOWN,UNKNOWN,UNKNOWN,FLAGSHIP,local-first-core-candidate
+Split PDF,/tools/split-pdf,27,UNKNOWN,6,12,6,51,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Rotate PDF,/tools/rotate-pdf,28,UNKNOWN,5,11,6,50,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+PDF to Fillable PDF,/tools/pdf-to-fillable,21,UNKNOWN,13,7,3,44,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,interoperability-and-input-gate
+Image Resizer,/tools/resize-image,14,UNKNOWN,10,14,6,44,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+PNG to PDF Converter,/convert/png-to-pdf,25,UNKNOWN,5,12,7,49,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Word to PDF Converter,/convert/word-to-pdf,15,UNKNOWN,9,11,4,39,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Word Counter,/text/word-counter,24,UNKNOWN,5,14,9,52,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Case Converter,/text/case-converter,12,UNKNOWN,4,13,8,37,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Lorem Ipsum Generator,/text/lorem-generator,26,UNKNOWN,3,11,9,49,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Remove Line Breaks,/text/remove-line-breaks,23,UNKNOWN,4,13,9,49,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Text to Slug,/text/text-to-slug,17,UNKNOWN,4,12,9,42,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Character Counter,/text/character-counter,20,UNKNOWN,3,13,9,45,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+JSON Formatter,/dev/json-formatter,22,UNKNOWN,5,13,8,48,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Find & Replace,/text/find-and-replace,22,UNKNOWN,5,13,8,48,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Sort Lines,/text/sort-lines,25,UNKNOWN,4,11,9,49,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Base64 Encode / Decode,/dev/base64,29,UNKNOWN,4,13,9,55,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Password Generator,/generate/password,14,UNKNOWN,5,14,7,40,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Random Number Generator,/generate/random-number,10,UNKNOWN,3,12,8,33,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Color Picker,/dev/color-picker,24,UNKNOWN,4,12,9,49,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Percentage Calculator,/calc/percentage,28,UNKNOWN,15,15,9,67,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Odds Calculator,/calc/odds-calculator,30,UNKNOWN,9,5,8,52,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,responsible-gambling-policy-gate
+Poker Calculator,/calc/poker,0,UNKNOWN,10,5,3,18,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,contained-gambling-correctness-gate
+Unit Converter,/calc/unit-converter,30,UNKNOWN,16,15,9,70,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+URL Encoder / Decoder,/dev/url-encoder,29,UNKNOWN,4,13,9,55,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Timer,/time/timer,27,UNKNOWN,4,14,8,53,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Stopwatch,/time/stopwatch,29,UNKNOWN,4,14,9,56,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Pomodoro Timer,/time/pomodoro,23,UNKNOWN,5,14,8,50,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Age Calculator,/calc/age,12,UNKNOWN,16,15,6,49,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Date Difference,/calc/date-difference,13,UNKNOWN,15,15,6,49,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+UUID Generator,/dev/uuid,29,UNKNOWN,4,12,9,54,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+BMI Calculator,/calc/bmi,26,UNKNOWN,12,10,7,55,UNKNOWN,UNKNOWN,UNKNOWN,FIX,clinical-estimate-boundary
+Mortgage Calculator,/calc/mortgage,24,UNKNOWN,15,14,7,60,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Tip Calculator,/calc/tip,29,UNKNOWN,10,14,9,62,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Discount Calculator,/calc/discount,30,UNKNOWN,12,14,9,65,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Compound Interest Calculator,/calc/compound-interest,28,UNKNOWN,12,11,7,58,UNKNOWN,UNKNOWN,UNKNOWN,FIX,financial-estimate-boundary
+GPA Calculator,/calc/gpa,28,UNKNOWN,13,13,8,62,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Typing Test,/type/typing-test,12,UNKNOWN,7,14,6,39,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+WPM Test,/type/wpm-test,21,UNKNOWN,5,13,7,46,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Keyboard Tester,/type/keyboard-tester,14,UNKNOWN,5,12,8,39,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Typing Practice,/type/typing-practice,18,UNKNOWN,8,13,6,45,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Typing Race,/type/race,10,UNKNOWN,8,11,5,34,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Word Blitz,/type/word-blitz,20,UNKNOWN,8,10,6,44,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Code Typing Challenge,/type/code-challenge,25,UNKNOWN,10,13,7,55,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Image Cropper,/files/image-cropper,12,UNKNOWN,9,13,7,41,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Invoice Generator,/files/invoice-generator,16,UNKNOWN,8,4,4,32,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,invoice-legal-artifact-gate
+Salary Calculator,/calc/salary,30,UNKNOWN,12,14,9,65,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Take-Home Pay Calculator,/calc/take-home-pay,0,UNKNOWN,10,5,3,18,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,contained-payroll-safety-gate
+Loan Calculator,/calc/loan,28,UNKNOWN,10,11,8,57,UNKNOWN,UNKNOWN,UNKNOWN,FIX,financial-estimate-boundary
+Auto Loan Calculator,/calc/auto-loan,24,UNKNOWN,13,14,7,58,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Credit Card Payoff Calculator,/calc/credit-card-payoff,23,UNKNOWN,15,15,7,60,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Savings Goal Calculator,/calc/savings-goal,28,UNKNOWN,11,11,7,57,UNKNOWN,UNKNOWN,UNKNOWN,FIX,financial-estimate-boundary
+Retirement Calculator,/calc/retirement,25,UNKNOWN,13,11,6,55,UNKNOWN,UNKNOWN,UNKNOWN,FIX,financial-estimate-boundary
+Investment Return Calculator,/calc/investment-return,26,UNKNOWN,11,11,7,55,UNKNOWN,UNKNOWN,UNKNOWN,FIX,financial-estimate-boundary
+Debt-to-Income Calculator,/calc/debt-to-income,25,UNKNOWN,13,14,8,60,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Net Worth Calculator,/calc/net-worth,28,UNKNOWN,11,14,8,61,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Sales Tax Calculator,/calc/sales-tax,24,UNKNOWN,14,14,6,58,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Amortization Calculator,/calc/amortization,14,UNKNOWN,13,14,6,47,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Car Payment Calculator,/calc/car-payment,25,UNKNOWN,2,8,5,40,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,duplicative-payment-intent
+Paycheck Calculator,/calc/paycheck,0,UNKNOWN,7,5,3,15,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,contained-payroll-safety-gate
+Down Payment Calculator,/calc/down-payment,28,UNKNOWN,10,10,7,55,UNKNOWN,UNKNOWN,UNKNOWN,FIX,financial-estimate-boundary
+Calorie Calculator (TDEE),/calc/calorie,24,UNKNOWN,15,14,7,60,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Macro Calculator,/calc/macro,24,UNKNOWN,14,14,7,59,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Body Fat Calculator,/calc/body-fat,5,UNKNOWN,12,5,4,26,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,clinical-boundary-gate
+Due Date Calculator,/calc/due-date,25,UNKNOWN,13,5,5,48,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,reproductive-health-boundary-gate
+Ovulation Calculator,/calc/ovulation,25,UNKNOWN,12,4,5,46,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,reproductive-health-boundary-gate
+Ideal Weight Calculator,/calc/ideal-weight,24,UNKNOWN,10,4,5,43,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,clinical-framing-boundary-gate
+Calories Burned Calculator,/calc/calories-burned,26,UNKNOWN,12,10,6,54,UNKNOWN,UNKNOWN,UNKNOWN,FIX,clinical-estimate-boundary
+Sleep Calculator,/calc/sleep,23,UNKNOWN,14,13,7,57,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Pace Calculator,/calc/pace,18,UNKNOWN,15,14,7,54,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Length Converter,/calc/convert/length,29,UNKNOWN,11,14,9,63,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Weight Converter,/calc/convert/weight,29,UNKNOWN,11,14,9,63,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Temperature Converter,/calc/convert/temperature,25,UNKNOWN,12,14,8,59,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Volume Converter,/calc/convert/volume,29,UNKNOWN,11,14,9,63,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Area Converter,/calc/convert/area,29,UNKNOWN,11,14,9,63,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Speed Converter,/calc/convert/speed,29,UNKNOWN,11,14,9,63,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Time Converter,/calc/convert/time,30,UNKNOWN,11,14,9,64,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Data Size Converter,/calc/convert/data,25,UNKNOWN,12,15,7,59,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Pressure Converter,/calc/convert/pressure,29,UNKNOWN,12,14,9,64,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Energy Converter,/calc/convert/energy,30,UNKNOWN,12,14,9,65,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Frequency Converter,/calc/convert/frequency,29,UNKNOWN,11,14,9,63,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Fuel Economy Converter,/calc/convert/fuel-economy,24,UNKNOWN,14,14,7,59,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Angle Converter,/calc/convert/angle,30,UNKNOWN,11,14,9,64,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Power Converter,/calc/convert/power,29,UNKNOWN,12,14,9,64,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Force Converter,/calc/convert/force,30,UNKNOWN,11,14,9,64,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+Cooking Converter,/calc/convert/cooking,29,UNKNOWN,13,14,9,65,UNKNOWN,UNKNOWN,UNKNOWN,KEEP,bounded-utility-evidence
+CM to Inches Converter,/calc/convert/cm-to-inches,29,UNKNOWN,2,7,8,46,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+KG to Pounds Converter,/calc/convert/kg-to-lbs,29,UNKNOWN,2,7,8,46,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Miles to Kilometers Converter,/calc/convert/miles-to-km,29,UNKNOWN,2,7,8,46,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Fahrenheit to Celsius Converter,/calc/convert/fahrenheit-to-celsius,25,UNKNOWN,2,6,7,40,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Feet to Meters Converter,/calc/convert/feet-to-meters,29,UNKNOWN,2,7,8,46,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Ounces to Grams Converter,/calc/convert/oz-to-grams,29,UNKNOWN,2,7,8,46,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Liters to Gallons Converter,/calc/convert/liters-to-gallons,29,UNKNOWN,2,7,8,46,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Inches to Feet Converter,/calc/convert/inches-to-feet,30,UNKNOWN,1,6,8,45,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Meters to Feet Converter,/calc/convert/meters-to-feet,29,UNKNOWN,2,7,8,46,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Cups to Milliliters Converter,/calc/convert/cups-to-ml,30,UNKNOWN,3,7,8,48,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Pounds to KG Converter,/calc/convert/lbs-to-kg,28,UNKNOWN,2,6,8,44,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Millimeters to Inches Converter,/calc/convert/mm-to-inches,30,UNKNOWN,2,7,8,47,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Acres to Square Feet Converter,/calc/convert/acres-to-sq-ft,28,UNKNOWN,2,6,7,43,UNKNOWN,UNKNOWN,UNKNOWN,CONSOLIDATE,single-pair-duplicate
+Mbps to Gbps Converter,/calc/convert/mbps-to-gbps,27,UNKNOWN,8,14,8,57,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+CPS Test,/type/cps-test,12,UNKNOWN,4,9,7,32,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Reaction Time Test,/type/reaction-time,24,UNKNOWN,4,10,8,46,UNKNOWN,UNKNOWN,UNKNOWN,FIX,existing-correctness-or-repair-gate
+Numble,/play/numble,15,UNKNOWN,12,5,4,36,UNKNOWN,UNKNOWN,UNKNOWN,HIDE,unowned-play-product-gate
+Meme Generator,/play/meme-generator,22,UNKNOWN,3,2,3,30,UNKNOWN,UNKNOWN,UNKNOWN,REMOVE,undocumented-template-provenance-and-fit

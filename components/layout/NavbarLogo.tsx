@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap } from "lucide-react";
 
 export default function NavbarLogo() {
   const pathname = usePathname();
@@ -10,19 +9,19 @@ export default function NavbarLogo() {
   return (
     <Link
       href="/"
-      className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-2xl tracking-tight text-foreground transition-colors hover:text-primary"
+      className="group flex items-center gap-3 py-1 font-display text-[1.55rem] font-black tracking-[-0.075em] text-foreground transition-colors hover:text-primary"
       onClick={() => {
         if (pathname === "/") {
           window.dispatchEvent(new CustomEvent("clevr:reset-home"));
         }
       }}
     >
-      <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-        <Zap className="h-[18px] w-[18px]" />
+      <span className="grid size-6 rotate-45 place-items-center border-2 border-primary transition-transform duration-200 group-hover:rotate-[135deg] motion-reduce:transition-none">
+        <span className="size-2 bg-primary" />
       </span>
       <span>
-        <span className="font-black text-primary">clevr</span>
-        <span className="font-medium text-muted-foreground/80">.tools</span>
+        <span>clevr</span>
+        <span className="text-primary">.tools</span>
       </span>
     </Link>
   );

@@ -49,7 +49,13 @@ export interface XRayResponse {
 export interface XRayError {
   success: false;
   error: string;
-  code: "FILE_TOO_LARGE" | "INVALID_FILE" | "RATE_LIMITED" | "ANALYSIS_FAILED" | "EXTRACTION_FAILED";
+  code:
+    | "UNAVAILABLE"
+    | "FILE_TOO_LARGE"
+    | "INVALID_FILE"
+    | "RATE_LIMITED"
+    | "ANALYSIS_FAILED"
+    | "EXTRACTION_FAILED";
 }
 
 export type XRayResult = XRayResponse | XRayError;

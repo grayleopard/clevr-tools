@@ -22,14 +22,21 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { usePasteImage } from "@/lib/usePasteImage";
-import { setPendingFile } from "@/lib/file-handoff";
 import {
-  detectSmartConverterFileType,
+  clearPendingFile,
+  createCancelableTransition,
+  createHandoffOperationId,
+  getHandoffCapability,
+  setPendingFile,
+  type HandoffFileKind,
+} from "@/lib/file-handoff";
+import {
   getSmartConverterActions,
   getSmartConverterRoute,
   type SmartConverterActionId,
   type SmartConverterFileType,
 } from "@/lib/image-remediation/smart-converter-contracts";
+import { detectRasterFormatFromBytes } from "@/lib/image-remediation/raster-formats";
 import { addToast } from "@/lib/toast";
 import { formatBytes, truncateFilename } from "@/lib/utils";
 
@@ -142,6 +149,141 @@ const ACTION_DEFS: Record<ActionId, ActionDef> = {
   },
 };
 
+const MEBIBYTE = 1024 * 1024;
+const SMART_CONVERTER_BYTE_LIMITS: Record<HandoffFileKind, number> = {
+  png: 50 * MEBIBYTE,
+  jpg: 50 * MEBIBYTE,
+  gif: 50 * MEBIBYTE,
+  webp: 50 * MEBIBYTE,
+  pdf: 100 * MEBIBYTE,
+  docx: 50 * MEBIBYTE,
+};
+
+type DeclaredFileKind = HandoffFileKind | "heic" | null;
+
+function declaredKindFromName(name: string): DeclaredFileKind {
+  const extension = name.split(".").pop()?.toLowerCase();
+  switch (extension) {
+    case "png":
+    case "gif":
+    case "webp":
+    case "pdf":
+    case "docx":
+      return extension;
+    case "jpg":
+    case "jpeg":
+      return "jpg";
+    case "heic":
+    case "heif":
+      return "heic";
+    default:
+      return null;
+  }
+}
+
+function declaredKindFromMime(type: string): DeclaredFileKind {
+  switch (type.toLowerCase()) {
+    case "image/png":
+      return "png";
+    case "image/jpeg":
+      return "jpg";
+    case "image/gif":
+      return "gif";
+    case "image/webp":
+      return "webp";
+    case "application/pdf":
+      return "pdf";
+    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+      return "docx";
+    case "image/heic":
+    case "image/heif":
+      return "heic";
+    default:
+      return null;
+  }
+}
+
+function hasPdfSignature(bytes: Uint8Array): boolean {
+  const header = String.fromCharCode(...bytes);
+  return header.indexOf("%PDF-") >= 0;
+}
+
+function hasDocxContainerSignature(bytes: Uint8Array): boolean {
+  return (
+    bytes.length >= 4 &&
+    bytes[0] === 0x50 &&
+    bytes[1] === 0x4b &&
+    bytes[2] === 0x03 &&
+    bytes[3] === 0x04
+  );
+}
+
+function kindFromContentHeader(bytes: Uint8Array): HandoffFileKind | null {
+  const raster = detectRasterFormatFromBytes(bytes);
+  if (raster === "jpeg") return "jpg";
+  if (raster === "png" || raster === "gif" || raster === "webp") return raster;
+  if (hasPdfSignature(bytes)) return "pdf";
+  if (hasDocxContainerSignature(bytes)) return "docx";
+  return null;
+}
+
+function isHandoffFileKind(type: FileType): type is HandoffFileKind {
+  return type === "png" || type === "jpg" || type === "gif" || type === "webp" || type === "pdf" || type === "docx";
+}
+
+export async function verifySmartConverterFile(
+  file: File
+): Promise<{ type: FileType; error?: string }> {
+  if (file.size === 0) {
+    return { type: "unknown", error: "That file is empty. Choose a non-empty file to continue." };
+  }
+
+  const [nameKind, mimeKind] = [
+    declaredKindFromName(file.name),
+    declaredKindFromMime(file.type),
+  ];
+  if (nameKind && mimeKind && nameKind !== mimeKind) {
+    return {
+      type: "unknown",
+      error: "The file name and reported type disagree. Choose the original file instead.",
+    };
+  }
+
+  const declaredKind = nameKind ?? mimeKind;
+  // The contained iOS image format has no homepage action. Do not route it
+  // through an unverified decoder from this homepage surface.
+  if (declaredKind === "heic") return { type: "heic" };
+
+  const header = new Uint8Array(await file.slice(0, 1024).arrayBuffer());
+  const contentKind = kindFromContentHeader(header);
+
+  if (declaredKind && declaredKind !== contentKind) {
+    return {
+      type: "unknown",
+      error: "The file contents do not match its name or reported type. Choose the original file instead.",
+    };
+  }
+
+  if (!contentKind) {
+    return declaredKind
+      ? {
+          type: "unknown",
+          error: "This file does not contain a supported PNG, JPG, GIF, WebP, PDF, or DOCX header.",
+        }
+      : { type: "unknown" };
+  }
+
+  if (file.size > SMART_CONVERTER_BYTE_LIMITS[contentKind]) {
+    const limit = SMART_CONVERTER_BYTE_LIMITS[contentKind] / MEBIBYTE;
+    return {
+      type: "unknown",
+      error: `${contentKind.toUpperCase()} files are limited to ${limit} MB here.`,
+    };
+  }
+
+  return { type: contentKind };
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function FileTypeIcon({ type, className }: { type: FileType; className?: string }) {
@@ -195,8 +337,7 @@ function IdleView({
         className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
       />
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-[18%] top-8 h-20 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_1px_1px,var(--ghost-border)_1px,transparent_0)] [background-size:16px_16px]" />
+        <div className="absolute inset-0 opacity-60 [background-image:linear-gradient(var(--ghost-border)_1px,transparent_1px),linear-gradient(90deg,var(--ghost-border)_1px,transparent_1px)] [background-size:24px_24px]" />
       </div>
 
       <div className="pointer-events-none relative z-20 flex min-h-[256px] min-w-0 flex-col items-center justify-center gap-5">
@@ -211,7 +352,7 @@ function IdleView({
 
         <div className="min-w-0 max-w-full space-y-3">
           <p
-            className="break-words text-2xl font-extrabold tracking-[-0.03em] text-foreground sm:text-[2rem]"
+            className="break-words font-display text-3xl font-black uppercase leading-none tracking-[-0.055em] text-foreground sm:text-4xl"
             aria-live="polite"
             aria-atomic="true"
           >
@@ -231,7 +372,7 @@ function IdleView({
               event.stopPropagation();
               onBrowse();
             }}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,var(--primary-fixed),var(--primary))] px-5 py-3 text-sm font-semibold text-[var(--on-primary)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto dark:bg-[linear-gradient(135deg,var(--primary),var(--primary-dim))] motion-reduce:transform-none motion-reduce:transition-none"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-primary px-5 py-3 text-sm font-bold text-[var(--on-primary)] transition-[transform,background-color,color] duration-150 hover:bg-primary-dim hover:text-background active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
           >
             <Upload className="h-4 w-4" aria-hidden="true" />
             Browse Files
@@ -242,7 +383,7 @@ function IdleView({
               event.stopPropagation();
               onPasteClipboard();
             }}
-            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/[0.85] px-5 py-3 text-sm font-semibold text-primary transition-[background-color,color,border-color,transform] duration-150 hover:bg-muted/80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-card/[0.88] px-5 py-3 text-sm font-bold text-primary transition-[background-color,color,border-color,transform] duration-150 hover:bg-primary/10 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
           >
             <ClipboardPaste className="h-4 w-4" aria-hidden="true" />
             Paste Clipboard
@@ -382,7 +523,7 @@ function DetectedView({
                   >
                     <div
                       className={[
-                        "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
+                        "mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center border border-[color:var(--ghost-border)] transition-colors",
                         isNavigating
                           ? "bg-primary/10"
                           : "bg-muted/80 group-hover:bg-primary/10",
@@ -453,6 +594,114 @@ export default function SmartConverter({
   const errorId = `smart-converter-error-${idStem}`;
   // stageRef lets processFile read current stage without adding it as a dep
   const stageRef = useRef<Stage>("idle");
+  const detectedRef = useRef<DetectedFile | null>(null);
+  const processGenerationRef = useRef(0);
+  const handoffOperationIdRef = useRef<string | null>(null);
+  const handoffCommittedRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const transitionRef = useRef(createCancelableTransition());
+
+  const clearDetected = useCallback(() => {
+    const previous = detectedRef.current;
+    if (previous?.previewUrl) URL.revokeObjectURL(previous.previewUrl);
+    detectedRef.current = null;
+    setDetected(null);
+  }, []);
+
+  const cancelPendingAction = useCallback((clearCommittedHandoff = true) => {
+    transitionRef.current?.cancel();
+    const operationId = handoffOperationIdRef.current;
+    if (operationId && (clearCommittedHandoff || !handoffCommittedRef.current)) {
+      clearPendingFile(operationId);
+    }
+    handoffOperationIdRef.current = null;
+    handoffCommittedRef.current = false;
+    setNavigatingAction(null);
+  }, []);
+
+  const reset = useCallback(() => {
+    processGenerationRef.current += 1;
+    cancelPendingAction(true);
+    clearDetected();
+    setError(null);
+    stageRef.current = "idle";
+    setStage("idle");
+  }, [cancelPendingAction, clearDetected]);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    const transition = transitionRef.current;
+    return () => {
+      isMountedRef.current = false;
+      processGenerationRef.current += 1;
+      transition.cancel();
+      const operationId = handoffOperationIdRef.current;
+      if (operationId && !handoffCommittedRef.current) clearPendingFile(operationId);
+      const previous = detectedRef.current;
+      if (previous?.previewUrl) URL.revokeObjectURL(previous.previewUrl);
+      detectedRef.current = null;
+    };
+  }, []);
+
+  // ── Logo-click reset (same-page nav) ─────────────────────────────────────
+
+  useEffect(() => {
+    const handleReset = () => reset();
+    window.addEventListener("clevr:reset-home", handleReset);
+    return () => window.removeEventListener("clevr:reset-home", handleReset);
+  }, [reset]);
+
+  // ── Core logic ────────────────────────────────────────────────────────────
+
+  const processFile = useCallback(async (file: File) => {
+    const processGeneration = ++processGenerationRef.current;
+    cancelPendingAction(true);
+    clearDetected();
+    setError(null);
+
+    try {
+      const verification = await verifySmartConverterFile(file);
+      if (!isMountedRef.current || processGeneration !== processGenerationRef.current) return;
+      if (verification.error) {
+        setError(verification.error);
+        stageRef.current = "idle";
+        setStage("idle");
+        return;
+      }
+
+      const type = verification.type;
+      const isPreviewable = (["png", "jpg", "gif", "webp"] as FileType[]).includes(type);
+      let previewUrl: string | null = null;
+      let dimensions: { width: number; height: number } | null = null;
+
+      if (isPreviewable) {
+        previewUrl = URL.createObjectURL(file);
+        try {
+          const bitmap = await createImageBitmap(file);
+          dimensions = { width: bitmap.width, height: bitmap.height };
+          bitmap.close();
+        } catch {
+          // Dimensions are supplemental; verified file headers remain enough to continue.
+        }
+      }
+
+      if (!isMountedRef.current || processGeneration !== processGenerationRef.current) {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        return;
+      }
+
+      const nextDetected = { file, type, previewUrl, dimensions };
+      detectedRef.current = nextDetected;
+      setDetected(nextDetected);
+      stageRef.current = "detected";
+      setStage("detected");
+    } catch {
+      if (!isMountedRef.current || processGeneration !== processGenerationRef.current) return;
+      setError("We couldn't read that file. Choose the original file and try again.");
+      stageRef.current = "idle";
+      setStage("idle");
+    }
+  }, [cancelPendingAction, clearDetected]);
 
   // ── Full-page drag-and-drop ───────────────────────────────────────────────
 
@@ -473,7 +722,7 @@ export default function SmartConverter({
       setIsPageDragging(false);
       setDropZoneDragging(false);
       const file = e.dataTransfer?.files[0];
-      if (file) processFileRef.current(file);
+      if (file) void processFile(file);
     };
 
     document.addEventListener("dragenter", handleDragEnter);
@@ -486,69 +735,7 @@ export default function SmartConverter({
       document.removeEventListener("dragover", handleDragOver);
       document.removeEventListener("drop", handleDrop);
     };
-  }, []);
-
-  // ── URL cleanup on unmount ────────────────────────────────────────────────
-
-  useEffect(() => {
-    return () => {
-      if (detected?.previewUrl) URL.revokeObjectURL(detected.previewUrl);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ── Logo-click reset (same-page nav) ─────────────────────────────────────
-
-  useEffect(() => {
-    const handleReset = () => {
-      setDetected((prev) => {
-        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-        return null;
-      });
-      setError(null);
-      setNavigatingAction(null);
-      stageRef.current = "idle";
-      setStage("idle");
-    };
-    window.addEventListener("clevr:reset-home", handleReset);
-    return () => window.removeEventListener("clevr:reset-home", handleReset);
-  }, []);
-
-  // ── Core logic ────────────────────────────────────────────────────────────
-
-  const processFile = useCallback(async (file: File) => {
-    setError(null);
-    setNavigatingAction(null);
-
-    const type = detectSmartConverterFileType(file);
-    const isPreviewable = (["png", "jpg", "gif", "webp"] as FileType[]).includes(type);
-    let previewUrl: string | null = null;
-    let dimensions: { width: number; height: number } | null = null;
-
-    if (isPreviewable) {
-      previewUrl = URL.createObjectURL(file);
-      try {
-        const bitmap = await createImageBitmap(file);
-        dimensions = { width: bitmap.width, height: bitmap.height };
-        bitmap.close();
-      } catch {
-        // dimensions unavailable — no-op
-      }
-    }
-
-    // Clean up previous preview URL
-    setDetected((prev) => {
-      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return { file, type, previewUrl, dimensions };
-    });
-
-    stageRef.current = "detected";
-    setStage("detected");
-  }, []);
-
-  // Keep a stable ref so the drag event closure always calls the latest processFile
-  const processFileRef = useRef(processFile);
-  processFileRef.current = processFile;
+  }, [processFile]);
 
   usePasteImage(processFile);
 
@@ -565,45 +752,70 @@ export default function SmartConverter({
     if (!deferredFile || !deferredFileToken) return;
     if (handledDeferredFileTokenRef.current === deferredFileToken) return;
     handledDeferredFileTokenRef.current = deferredFileToken;
-    processFile(deferredFile);
+    queueMicrotask(() => {
+      void processFile(deferredFile);
+    });
     onDeferredFileHandled?.();
   }, [deferredFile, deferredFileToken, onDeferredFileHandled, processFile]);
 
   const handleAction = useCallback(
     (actionId: ActionId) => {
       if (!detected || navigatingAction) return;
-      const route = getSmartConverterRoute(detected.type, actionId);
-      if (!route) {
+      const verifiedKind = detected.type;
+      const route = getSmartConverterRoute(verifiedKind, actionId);
+      if (!route || !isHandoffFileKind(verifiedKind)) {
         setError("That action is not supported for this file type.");
         return;
       }
+      const capability = getHandoffCapability(route);
+      if (!capability || !capability.acceptedKinds.includes(verifiedKind)) {
+        setError("That destination cannot accept this verified file.");
+        return;
+      }
+
+      const operationId = createHandoffOperationId();
+      handoffOperationIdRef.current = operationId;
+      handoffCommittedRef.current = false;
       setNavigatingAction(actionId);
 
       // Brief feedback delay (spinner visible) before navigating
-      setTimeout(() => {
-        setPendingFile(detected.file);
-        router.push(route);
-        if (detected.previewUrl) URL.revokeObjectURL(detected.previewUrl);
-        setDetected(null);
+      transitionRef.current?.schedule(160, () => {
+        if (
+          !isMountedRef.current ||
+          handoffOperationIdRef.current !== operationId ||
+          detectedRef.current !== detected
+        ) {
+          return;
+        }
+
+        setPendingFile(detected.file, {
+          verifiedKind,
+          targetRoute: route,
+          byteLimit: capability.byteLimit,
+          operationId,
+        });
+        handoffCommittedRef.current = true;
+
+        try {
+          router.push(route);
+        } catch {
+          clearPendingFile(operationId);
+          handoffOperationIdRef.current = null;
+          handoffCommittedRef.current = false;
+          setNavigatingAction(null);
+          setError("We couldn't open that tool. Please try again.");
+          return;
+        }
+
+        clearDetected();
         setNavigatingAction(null);
         stageRef.current = "idle";
         setStage("idle");
         setError(null);
-      }, 160);
+      });
     },
-    [detected, router, navigatingAction]
+    [clearDetected, detected, navigatingAction, router]
   );
-
-  const reset = useCallback(() => {
-    if (navigatingAction) return; // don't reset while navigating
-    setDetected((prev) => {
-      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
-      return null;
-    });
-    setError(null);
-    stageRef.current = "idle";
-    setStage("idle");
-  }, [navigatingAction]);
 
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -673,7 +885,7 @@ export default function SmartConverter({
           <div
             id={errorId}
             role="alert"
-            className="mb-3 flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive"
+            className="mb-3 flex items-center gap-2 border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
           >
             <span className="min-w-0 flex-1 break-words">{error}</span>
             <button

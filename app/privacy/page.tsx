@@ -66,13 +66,14 @@ export default function PrivacyPage() {
               <h2 className="text-lg font-semibold tracking-tight">Usage Analytics</h2>
               <p className="text-muted-foreground">
                 We use Google Analytics to understand how people use the site — which tools get
-                used, which pages are visited, and how traffic flows. This data is anonymous and
-                aggregated. We can see that &ldquo;someone visited the image compressor&rdquo; but
-                not who you are.
+                used, which pages are visited, and how traffic flows. Our custom tool events are
+                limited to an allowlisted tool identifier and lifecycle details such as success,
+                failure category, or bounded duration. They do not include file contents,
+                filenames, clipboard data, text inputs, or exception messages. Google may process
+                standard visit and device data under its own privacy policy.
               </p>
               <p className="text-muted-foreground">
-                We don&apos;t collect names, email addresses, or any personally identifying
-                information. There are no accounts and no sign-ups.
+                We don&apos;t ask for names or email addresses. There are no accounts or sign-ups.
               </p>
             </section>
 
@@ -129,11 +130,11 @@ export default function PrivacyPage() {
                 A small number of tools use AI models too large to run in a browser tab, so they
                 may need to send a file to a server for processing. Those capabilities remain
                 unavailable unless the tool identifies the processor and presents verified data
-                handling terms before submission. The experimental Background Remover is
-                currently disabled because its processor, retention, and deletion contract has
-                not been verified. Do not submit sensitive files to an unavailable or
-                experimental route. Tools explicitly described as local continue to process files
-                in the browser.
+                handling terms before submission. File X-Ray and the experimental Background
+                Remover are currently disabled because their processor, retention, training, and
+                deletion terms have not been fully verified. Do not submit sensitive files to an
+                unavailable or experimental route. Tools explicitly described as local continue
+                to process files in the browser.
               </p>
             </section>
 

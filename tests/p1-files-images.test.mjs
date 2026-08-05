@@ -189,3 +189,13 @@ test("both Smart Converter loading states omit contained and legacy formats", ()
     }
   }
 });
+
+test("Word to PDF exposes only its implemented DOCX input contract", () => {
+  const source = fs.readFileSync(
+    path.join(projectRoot, "components/tools/WordToPdf.tsx"),
+    "utf8"
+  );
+  const acceptValues = [...source.matchAll(/accept="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(acceptValues, [".docx"]);
+  assert.doesNotMatch(source, /accept="[^"]*\.doc(?:,|")/i);
+});

@@ -364,8 +364,18 @@ test.describe("PDF artifact integrity", () => {
   });
 });
 
-test("Background Remover direct API is unconfigured and unavailable", async ({ request }) => {
+test("Background Remover direct API is hard-disabled", async ({ request }) => {
   const response = await request.post("/api/remove-bg");
   expect(response.status()).toBe(503);
-  expect(await response.json()).toEqual({ error: "Background removal is not configured yet." });
+  expect(await response.json()).toEqual({ error: "Background removal is currently unavailable." });
+});
+
+test("File X-Ray direct API is hard-disabled", async ({ request }) => {
+  const response = await request.post("/api/xray");
+  expect(response.status()).toBe(503);
+  expect(await response.json()).toEqual({
+    success: false,
+    error: "File X-Ray is currently unavailable.",
+    code: "UNAVAILABLE",
+  });
 });

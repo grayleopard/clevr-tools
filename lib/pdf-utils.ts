@@ -20,6 +20,15 @@ async function getPdfJs() {
   return pdfjs;
 }
 
+async function destroyPdfResource(resource: { destroy?: () => unknown } | null): Promise<void> {
+  try {
+    await resource?.destroy?.();
+  } catch {
+    // Destruction can race PDF.js cancellation. The original operation error
+    // is more useful than a cleanup error.
+  }
+}
+
 /**
  * Render a single PDF page to a JPEG data URL (for thumbnails).
  * pageIndex is 0-based.
@@ -32,17 +41,28 @@ export async function renderPageThumbnail(
   const pdfjs = await getPdfJs();
   // Copy buffer to avoid detached ArrayBuffer issues
   const copy = data.slice(0);
-  const doc = await pdfjs.getDocument({ data: copy }).promise;
-  const page = await doc.getPage(pageIndex + 1);
-  const viewport = page.getViewport({ scale });
-  const canvas = document.createElement("canvas");
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
-  const ctx = canvas.getContext("2d")!;
-  await page.render({ canvasContext: ctx, viewport, canvas }).promise;
-  const dataUrl = canvas.toDataURL("image/jpeg", normalizeCanvasQuality(0.6));
-  doc.destroy();
-  return dataUrl;
+  const loadingTask = pdfjs.getDocument({ data: copy });
+  let didLoadDocument = false;
+
+  try {
+    const doc = await loadingTask.promise;
+    didLoadDocument = true;
+    try {
+      const page = await doc.getPage(pageIndex + 1);
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d")!;
+      await page.render({ canvasContext: ctx, viewport, canvas }).promise;
+      return canvas.toDataURL("image/jpeg", normalizeCanvasQuality(0.6));
+    } finally {
+      await destroyPdfResource(doc);
+    }
+  } catch (error) {
+    if (!didLoadDocument) await destroyPdfResource(loadingTask);
+    throw error;
+  }
 }
 
 /**
@@ -55,24 +75,36 @@ export async function renderAllThumbnails(
 ): Promise<string[]> {
   const pdfjs = await getPdfJs();
   const copy = data.slice(0);
-  const doc = await pdfjs.getDocument({ data: copy }).promise;
-  const count = doc.numPages;
-  const thumbnails: string[] = [];
+  const loadingTask = pdfjs.getDocument({ data: copy });
+  let didLoadDocument = false;
 
-  for (let i = 0; i < count; i++) {
-    const page = await doc.getPage(i + 1);
-    const viewport = page.getViewport({ scale });
-    const canvas = document.createElement("canvas");
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const ctx = canvas.getContext("2d")!;
-    await page.render({ canvasContext: ctx, viewport, canvas }).promise;
-    thumbnails.push(canvas.toDataURL("image/jpeg", normalizeCanvasQuality(0.6)));
-    onProgress?.(i + 1, count);
+  try {
+    const doc = await loadingTask.promise;
+    didLoadDocument = true;
+    try {
+      const count = doc.numPages;
+      const thumbnails: string[] = [];
+
+      for (let i = 0; i < count; i++) {
+        const page = await doc.getPage(i + 1);
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext("2d")!;
+        await page.render({ canvasContext: ctx, viewport, canvas }).promise;
+        thumbnails.push(canvas.toDataURL("image/jpeg", normalizeCanvasQuality(0.6)));
+        onProgress?.(i + 1, count);
+      }
+
+      return thumbnails;
+    } finally {
+      await destroyPdfResource(doc);
+    }
+  } catch (error) {
+    if (!didLoadDocument) await destroyPdfResource(loadingTask);
+    throw error;
   }
-
-  doc.destroy();
-  return thumbnails;
 }
 
 /**
@@ -87,23 +119,34 @@ export async function renderPageToJpgBlob(
 ): Promise<Blob> {
   const pdfjs = await getPdfJs();
   const copy = data.slice(0);
-  const doc = await pdfjs.getDocument({ data: copy }).promise;
-  const page = await doc.getPage(pageIndex + 1);
-  const viewport = page.getViewport({ scale });
-  const canvas = document.createElement("canvas");
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
-  const ctx = canvas.getContext("2d")!;
-  await page.render({ canvasContext: ctx, viewport, canvas }).promise;
-  const blob = await new Promise<Blob>((resolve, reject) =>
-    canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
-      "image/jpeg",
-      normalizeCanvasQuality(quality)
-    )
-  );
-  doc.destroy();
-  return blob;
+  const loadingTask = pdfjs.getDocument({ data: copy });
+  let didLoadDocument = false;
+
+  try {
+    const doc = await loadingTask.promise;
+    didLoadDocument = true;
+    try {
+      const page = await doc.getPage(pageIndex + 1);
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d")!;
+      await page.render({ canvasContext: ctx, viewport, canvas }).promise;
+      return await new Promise<Blob>((resolve, reject) =>
+        canvas.toBlob(
+          (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
+          "image/jpeg",
+          normalizeCanvasQuality(quality)
+        )
+      );
+    } finally {
+      await destroyPdfResource(doc);
+    }
+  } catch (error) {
+    if (!didLoadDocument) await destroyPdfResource(loadingTask);
+    throw error;
+  }
 }
 
 /** Parse a page range string like "1-3, 5, 7-9" into 0-based page indices. */

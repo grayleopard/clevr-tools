@@ -1,6 +1,14 @@
 "use client";
 
-import { useRef, useState, useCallback, useMemo, useEffect, useId } from "react";
+import {
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useId,
+  useSyncExternalStore,
+} from "react";
 import { AlertCircle, ClipboardPaste, Lock, Plus, Upload } from "lucide-react";
 import { usePdfXRayContext } from "@/lib/xray/pdf-xray-context";
 
@@ -55,6 +63,10 @@ const stateStyles: Record<DropState, string> = {
   error: "border-destructive bg-destructive/5",
 };
 
+const subscribeToHydration = () => () => {};
+const getClientHydrationSnapshot = () => true;
+const getServerHydrationSnapshot = () => false;
+
 export default function FileDropZone({
   accept,
   multiple = false,
@@ -69,6 +81,11 @@ export default function FileDropZone({
   privacyNote = "Files stay in your browser — nothing is uploaded",
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    getClientHydrationSnapshot,
+    getServerHydrationSnapshot
+  );
   const [state, setState] = useState<DropState>("idle");
   const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
   const [errorMsg, setErrorMsg] = useState("");
@@ -183,21 +200,25 @@ export default function FileDropZone({
 
   return (
     <div className={`relative ${className}`}>
-      <label htmlFor={inputId} className="sr-only">
-        {multiple ? "Choose files" : "Choose a file"}
-      </label>
-      <input
-        id={inputId}
-        ref={inputRef}
-        type="file"
-        accept={accept}
-        multiple={multiple}
-        className="sr-only"
-        tabIndex={-1}
-        aria-describedby={describedBy}
-        aria-invalid={state === "error" || undefined}
-        onChange={handleChange}
-      />
+      {isHydrated ? (
+        <>
+          <label htmlFor={inputId} className="sr-only">
+            {multiple ? "Choose files" : "Choose a file"}
+          </label>
+          <input
+            id={inputId}
+            ref={inputRef}
+            type="file"
+            accept={accept}
+            multiple={multiple}
+            className="sr-only"
+            tabIndex={-1}
+            aria-describedby={describedBy}
+            aria-invalid={state === "error" || undefined}
+            onChange={handleChange}
+          />
+        </>
+      ) : null}
       <p id={descriptionId} className="sr-only">
         {inputDescription}
       </p>
@@ -209,7 +230,7 @@ export default function FileDropZone({
         <div className="space-y-2">
           <button
             type="button"
-            className="flex min-h-14 w-full min-w-0 items-center justify-center gap-2 rounded-[1.15rem] border border-dashed border-[color:var(--ghost-border)] bg-muted/50 px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="flex min-h-14 w-full min-w-0 items-center justify-center gap-2 border border-dashed border-[color:var(--ghost-border)] bg-muted/50 px-4 py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             onClick={openPicker}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
@@ -245,7 +266,7 @@ export default function FileDropZone({
         </div>
       ) : (
         <div
-          className={`group relative min-h-[260px] overflow-hidden rounded-[2rem] border-2 border-dashed p-5 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:p-8 motion-reduce:transition-none ${stateStyles[state]}`}
+          className={`group relative min-h-[300px] overflow-hidden border-2 border-dashed p-5 text-center transition-[border-color,background-color,transform] duration-200 focus-within:border-primary/60 sm:p-8 motion-reduce:transition-none ${stateStyles[state]}`}
           onDragEnter={(e) => {
             e.preventDefault();
             if (!e.dataTransfer.types.includes("Files")) return;
@@ -279,7 +300,6 @@ export default function FileDropZone({
               <rect width="100%" height="100%" fill={`url(#${gridPatternId})`} />
             </svg>
           </div>
-          <div className="pointer-events-none absolute inset-x-[18%] top-8 h-20 rounded-full bg-primary/10 blur-3xl" />
 
           {state === "error" ? (
             <div
@@ -299,8 +319,8 @@ export default function FileDropZone({
             </div>
           ) : (
             <div className="pointer-events-none relative z-20 flex flex-col items-center gap-5">
-              <div className={`rounded-full bg-card p-4 shadow-[var(--shadow-sm)] transition-[transform,box-shadow] duration-300 group-hover:scale-110 motion-reduce:transform-none motion-reduce:transition-none ${state === "hover" ? "scale-115 shadow-[0_0_24px_var(--primary)/0.15]" : ""}`}>
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <div className={`border-2 border-primary bg-primary/10 p-4 transition-transform duration-300 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none ${state === "hover" ? "scale-105" : ""}`}>
+                <span className="flex h-10 w-10 items-center justify-center">
                   <Upload
                     className={`h-5 w-5 text-primary transition-transform duration-300 motion-reduce:transform-none motion-reduce:transition-none ${state === "hover" ? "-translate-y-0.5" : ""}`}
                     aria-hidden="true"
@@ -308,7 +328,7 @@ export default function FileDropZone({
                 </span>
               </div>
               <div className="min-w-0 max-w-full space-y-2">
-                <p className="break-words text-lg font-semibold tracking-[-0.02em] text-foreground">
+                <p className="break-words font-display text-3xl font-black uppercase leading-none tracking-[-0.055em] text-foreground">
                   {state === "hover" ? "Drop it here" : headline}
                 </p>
                 <p className="break-words text-sm leading-7 text-muted-foreground">
@@ -324,7 +344,7 @@ export default function FileDropZone({
                     event.stopPropagation();
                     openPicker();
                   }}
-                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-5 py-3 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-[transform,opacity] duration-150 hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-primary px-5 py-3 text-sm font-bold text-[var(--on-primary)] transition-[transform,background-color,color] duration-150 hover:bg-primary-dim hover:text-background active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   <Upload className="h-4 w-4" aria-hidden="true" />
                   Browse Files
@@ -336,7 +356,7 @@ export default function FileDropZone({
                       event.stopPropagation();
                       onPasteClipboard?.();
                     }}
-                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[color:var(--ghost-border)] bg-card/80 px-5 py-3 text-sm font-semibold text-primary transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transition-none"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 border border-primary bg-card/80 px-5 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-auto motion-reduce:transition-none"
                   >
                     <ClipboardPaste className="h-4 w-4" aria-hidden="true" />
                     Paste Clipboard
@@ -348,13 +368,13 @@ export default function FileDropZone({
                 {formatLabels.map((fmt) => (
                   <span
                     key={fmt}
-                    className="rounded-full bg-muted/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
+                    className="border-b border-[color:var(--ghost-border)] bg-muted/70 px-1 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground"
                   >
                     {fmt}
                   </span>
                 ))}
                 {maxSizeMB && (
-                  <span className="rounded-full bg-muted/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  <span className="border-b border-[color:var(--ghost-border)] bg-muted/70 px-1 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
                     Max {maxSizeMB} MB
                   </span>
                 )}
