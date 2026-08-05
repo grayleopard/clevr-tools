@@ -1,16 +1,8 @@
 import { expect, test } from "@playwright/test";
-
-const containedRoutes = [
-  "/tools/background-remover",
-  "/convert/heic-to-jpg",
-  "/tools/pdf-to-fillable",
-  "/calc/poker",
-  "/calc/take-home-pay",
-  "/calc/paycheck",
-] as const;
+import { CONTAINED_ROUTES } from "./tool-routes";
 
 test.describe("P0/P1 direct-route containment", () => {
-  for (const route of containedRoutes) {
+  for (const route of CONTAINED_ROUTES) {
     test(`${route} is noindexed and exposes no operational control`, async ({ page }) => {
       const response = await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(response?.status()).toBeLessThan(400);

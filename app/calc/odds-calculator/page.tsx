@@ -4,7 +4,6 @@ import OddsCalculator from "@/components/tools/OddsCalculator";
 import FaqSchema from "@/components/seo/FaqSchema";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import { getToolBySlug } from "@/lib/tools";
-import { hiddenToolRobots } from "@/lib/seo/robots";
 
 const tool = getToolBySlug("odds-calculator")!;
 const faqItems = getToolFaqs("odds-calculator");
@@ -12,7 +11,6 @@ const faqItems = getToolFaqs("odds-calculator");
 export const metadata: Metadata = {
   title: tool.metaTitle,
   description: tool.metaDescription,
-  ...hiddenToolRobots(tool),
   alternates: { canonical: `https://www.clevr.tools${tool.route}` },
   openGraph: {
     title: tool.metaTitle,

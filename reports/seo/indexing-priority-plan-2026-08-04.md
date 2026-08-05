@@ -13,16 +13,17 @@ high-confidence index in which every submitted URL deserves to rank.
 
 | Cohort | Count | Current action |
 |---|---:|---|
-| Live, index-eligible tools | 102 | Keep in the sitemap and improve using query evidence. |
-| Live, pending trust review | 6 | Keep usable, emit `noindex,follow`, and omit from the sitemap. |
+| Live, index-eligible tools | 108 | Keep in the sitemap and improve using query evidence. |
+| Indexable trust-upgrade priorities | 6 | Keep indexable while adding stronger sources, limitations, review dates, and ownership. |
 | Unavailable/contained tools | 6 | Keep disabled, emit `noindex,follow`, and omit from discovery and the sitemap. |
 | Pair-specific converter candidates | 14 | Keep unchanged until GSC and backlink evidence determines keep versus consolidate. |
 | Distinct broad converters newly exposed on `/calculate` | 8 | Keep indexable and monitor discovery/indexing. |
 
-The six live pages pending trust review are Body Fat, Due Date, Ovulation,
-Ideal Weight, Odds Calculator, and Invoice Generator. They can graduate only
-after the page has the appropriate sources, assumptions and limitations,
-review date, and accountable reviewer or owner for its subject matter.
+Body Fat, Due Date, Ovulation, Ideal Weight, Odds Calculator, and Invoice
+Generator are distinct user tasks and remain indexable. They are also the first
+trust-upgrade cohort: add appropriate sources, assumptions and limitations,
+review dates, and accountable review or ownership without withholding their
+useful functionality from search.
 
 The six contained tools are HEIC to JPG, Background Remover, PDF to Fillable,
 Poker, Take-Home Pay, and Paycheck.
@@ -31,6 +32,8 @@ Poker, Take-Home Pay, and Paycheck.
 
 - Maintain separate `live` and `indexable` route decisions so product utility
   does not automatically become a Google indexation decision.
+- Keep all six useful health, odds, and invoice pages indexable; use page-level
+  evidence and trust improvements instead of a blanket subject-matter gate.
 - Keep the sitemap limited to canonical URLs that are intended for search.
 - Expose the eight distinct broad converters through crawlable HTML links:
   Time, Pressure, Energy, Frequency, Fuel Economy, Angle, Power, and Force.
@@ -55,21 +58,41 @@ tools, and workflow guides. For each retained page:
    normal crawlable anchors.
 
 Add a public testing/editorial-methodology page and expand the About/footer
-ownership signals before attempting to establish authority in health, finance,
-gambling, or tax-adjacent topics.
+ownership signals while strengthening health, finance, gambling, and
+tax-adjacent pages with subject-appropriate sourcing and boundaries.
+
+## GSC evidence received on 2026-08-04
+
+The three-month export contains 21 clicks and 38,680 impressions. The six
+trust-upgrade pages account for 1,745 impressions (4.5% of the site total), and
+Ovulation earned two clicks. Exact-intent queries include `ovulation
+calculator`, `fertile window calculator`, `ideal weight calculator`, `implied
+probability calculator`, `betting odds calculator`, and `pdf invoice
+generator`. This is enough evidence to keep the six pages indexable while their
+trust presentation improves.
+
+The latest 28 complete days (2026-07-06 through 2026-08-02) contain 9 clicks
+and 10,995 impressions. Odds Calculator, Ideal Weight, Due Date, and Body Fat
+continue to receive impressions in this window. Low or missing rows for the
+other two pages are not retirement evidence because GSC omits anonymized and
+low-volume queries.
+
+The Coverage export reports 106 indexed and 117 not indexed as of 2026-07-23.
+The largest unresolved cohorts are 59 `Crawled - currently not indexed` and 11
+`Discovered - currently not indexed` URLs. The supplied Coverage archive
+contains aggregate reason counts but not the URL examples, so the page-level
+classification of those 70 URLs remains open.
 
 ## P1: obtain the missing decision data
 
-Screenshots are enough to identify the coverage problem, but not to decide the
-fate of individual URLs. Export the raw data described in
-`reports/seo/gsc-analysis-request.md`, including:
+The three-month and 28-day performance exports and the aggregate Coverage
+export have been received. The remaining data request is:
 
-- Search performance for the latest 28 complete days and three months.
-- Page and query rows, ideally joined through the Search Analytics API.
 - Example URLs from `Crawled - currently not indexed` and
-  `Discovered - currently not indexed`.
-- Page/query evidence for all 14 pair-specific converter routes, Car Payment
-  and Auto Loan, Typing Test and WPM Test, and the six pending-review pages.
+  `Discovered - currently not indexed`, plus the 404, redirect, noindex, and
+  alternate-canonical cohorts.
+- API-level page/query rows if available; the UI exports provide page-only and
+  query-only tables and cannot prove which query belongs to which landing page.
 - Backlink/referring-domain data for every proposed redirect or retirement.
 
 ## P2: consolidate only when evidence supports it
@@ -85,7 +108,7 @@ represent a genuine equivalent replacement; otherwise return `404` or `410`.
 ## Measurement cadence
 
 - After deployment: submit the updated sitemap and inspect representative URLs.
-- After 7 days: confirm Google has seen the new sitemap and noindex changes.
+- After 7 days: confirm Google has seen the new sitemap and containment changes.
 - After 28 complete days: compare indexed URL count by approved cohort, landing
   page impressions, query alignment, CTR by position/device, and crawl status.
 - Do not request indexing for every URL. Request it for a small representative
@@ -97,4 +120,3 @@ represent a genuine equivalent replacement; otherwise return `404` or `410`.
 - [Build and submit a sitemap](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap)
 - [Canonicalization methods](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls)
 - [Redirects and Google Search](https://developers.google.com/search/docs/crawling-indexing/301-redirects)
-

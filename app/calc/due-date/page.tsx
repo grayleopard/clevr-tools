@@ -3,7 +3,6 @@ import DueDateCalculator from "@/components/tools/DueDateCalculator";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
-import { hiddenToolRobots } from "@/lib/seo/robots";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "due-date")!;
@@ -12,7 +11,6 @@ const faqItems = getToolFaqs("due-date");
 export const metadata: Metadata = {
   title: tool.metaTitle,
   description: tool.metaDescription,
-  ...hiddenToolRobots(tool),
   alternates: { canonical: `https://www.clevr.tools${tool.route}` },
   openGraph: {
     title: tool.metaTitle,

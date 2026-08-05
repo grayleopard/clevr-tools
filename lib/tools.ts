@@ -1276,7 +1276,6 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['percentage-calculator', 'salary', 'loan'],
     badge: 'new',
-    indexable: false,
   },
   {
     slug: 'poker',
@@ -2189,7 +2188,6 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['word-counter', 'pdf-compressor'],
     badge: 'new',
-    indexable: false,
   },
   // ─── Financial Calculators ───────────────────────────────────────────────
   {
@@ -2881,7 +2879,6 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['bmi-calculator', 'ideal-weight', 'calorie'],
-    indexable: false,
   },
   {
     slug: 'due-date',
@@ -2921,7 +2918,6 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['ovulation', 'age-calculator', 'date-difference'],
-    indexable: false,
   },
   {
     slug: 'ovulation',
@@ -2960,7 +2956,6 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['due-date', 'age-calculator', 'date-difference'],
-    indexable: false,
   },
   {
     slug: 'ideal-weight',
@@ -2996,7 +2991,6 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['bmi-calculator', 'body-fat', 'calorie'],
-    indexable: false,
   },
   {
     slug: 'calories-burned',
