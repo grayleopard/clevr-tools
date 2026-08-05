@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.clevr.tools/play/meme-generator",
   },
+  robots: { index: false, follow: true },
   openGraph: {
     title: "Meme Generator — Free, No Signup | clevr.tools",
     description: "Create memes instantly. Pick a template, add text, download.",

@@ -18,6 +18,7 @@ high-confidence index in which every submitted URL deserves to rank.
 | Unavailable/contained tools | 6 | Keep disabled, emit `noindex,follow`, and omit from discovery and the sitemap. |
 | Pair-specific converter candidates | 14 | Keep unchanged until GSC and backlink evidence determines keep versus consolidate. |
 | Distinct broad converters newly exposed on `/calculate` | 8 | Keep indexable and monitor discovery/indexing. |
+| Meme Generator surfaces | 31 | Preserve direct functionality, but noindex the base and 30 templates and remove the product from sitemap/navigation until asset provenance and product quality are defensible. |
 
 Body Fat, Due Date, Ovulation, Ideal Weight, Odds Calculator, and Invoice
 Generator are distinct user tasks and remain indexable. They are also the first
@@ -37,6 +38,9 @@ Poker, Take-Home Pay, and Paycheck.
 - Keep the sitemap limited to canonical URLs that are intended for search.
 - Expose the eight distinct broad converters through crawlable HTML links:
   Time, Pressure, Energy, Frequency, Fuel Economy, Angle, Power, and Force.
+- Keep the working Meme Generator reachable by direct URL, but remove its base
+  page from the sitemap and discovery and emit `noindex,follow` across the base
+  and all 30 near-duplicate template pages.
 - Keep PDF to Fillable disabled until its reader compatibility, rotated-page
   placement, keyboard/touch operation, accessibility, and privacy claims pass.
 - Let the removed `/convert/pdf-to-word` URL return a real not-found response
@@ -78,22 +82,40 @@ other two pages are not retirement evidence because GSC omits anonymized and
 low-volume queries.
 
 The Coverage export reports 106 indexed and 117 not indexed as of 2026-07-23.
-The largest unresolved cohorts are 59 `Crawled - currently not indexed` and 11
-`Discovered - currently not indexed` URLs. The supplied Coverage archive
-contains aggregate reason counts but not the URL examples, so the page-level
-classification of those 70 URLs remains open.
+All 117 URL examples were subsequently captured from the authenticated Page
+indexing report and reconciled against the post-PR-23 repository:
 
-## P1: obtain the missing decision data
+| GSC reason | URLs | Disposition |
+|---|---:|---|
+| Crawled - currently not indexed | 59 | 27 meme-template URLs, 8 pair converters, 5 blog posts, 4 file converters, 4 PDF/contained tools, 3 text tools, 1 legacy alias, and 7 static/framework assets. There are 56 unique paths because three paths appear twice. |
+| Discovered - currently not indexed | 11 | Three blog posts, six newly exposed broad converters, intentionally contained Paycheck, and Rotate PDF. All showed `N/A` for last crawl, consistent with a discovery problem at the July 23 snapshot. |
+| Page with redirect | 16 | Expected host canonicalization and explicit legacy aliases; no redirect defect was found. |
+| Not found (404) | 5 | `/convert/pdf-to-word` is intentionally gone; `/blog/hello-world`, `/$`, and `/&` are stale or malformed; `/generate/url-encoder` now has an exact permanent redirect to `/dev/url-encoder`. |
+| Excluded by `noindex` | 3 | Meme-template pages, matching the intentional near-duplicate containment policy. |
+| Alternate page with proper canonical | 1 | `/?ref=producthunt`, correctly canonicalized to the homepage. |
+| Redirect error | 22 | Historical non-`www` URLs whose validation has already passed; no active action required. |
 
-The three-month and 28-day performance exports and the aggregate Coverage
-export have been received. The remaining data request is:
+The Links report contains nine external links, all targeting the homepage:
+eight from Product Hunt and one from saaslet.io. No tool, converter, blog, or
+Meme Generator URL has an external backlink recorded by GSC.
 
-- Example URLs from `Crawled - currently not indexed` and
-  `Discovered - currently not indexed`, plus the 404, redirect, noindex, and
-  alternate-canonical cohorts.
+The Meme Generator cohort earned 189 impressions and zero clicks in the
+three-month export (184 template impressions and five for the base page), then
+19 impressions and zero clicks in the latest 28 days. That evidence, combined
+with no external backlinks and the existing unverified template-provenance
+gate, supports reversible search/discovery containment without deleting the
+working tool.
+
+## P1: remaining evidence
+
+The performance exports, complete URL-level indexing cohorts, and GSC backlink
+report have been received. Remaining evidence is no longer a blocker for the
+technical cleanup. It would improve later content and consolidation decisions:
+
 - API-level page/query rows if available; the UI exports provide page-only and
   query-only tables and cannot prove which query belongs to which landing page.
-- Backlink/referring-domain data for every proposed redirect or retirement.
+- Product analytics for direct use, successful task completion, and repeat use.
+- A documented rights/provenance decision for bundled meme-template imagery.
 
 ## P2: consolidate only when evidence supports it
 
@@ -101,6 +123,12 @@ The 14 pair-specific converters overlap with broad converters. Retain a pair
 page only when it has distinct query demand, backlinks, or a genuinely distinct
 user experience. Otherwise redirect it directly to the matching broad
 converter. Evaluate Car Payment versus Auto Loan using the same rule.
+
+Five pair-specific converters present in the three-month page export generated
+60 impressions and zero clicks. Several briefly appeared around positions 8-10,
+so the evidence is too thin to justify blanket retirement. Keep the cohort
+indexable for the next complete 28-day measurement window, then evaluate each
+route separately rather than applying a family-wide redirect.
 
 Do not redirect retired URLs to a generic category page. A redirect should
 represent a genuine equivalent replacement; otherwise return `404` or `410`.

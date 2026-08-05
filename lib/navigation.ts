@@ -194,11 +194,5 @@ export const playLinks: readonly PlayLink[] = [
     "route": "/play/numble",
     "description": "Daily number puzzle",
     "icon": "hash"
-  },
-  {
-    "label": "Meme Generator",
-    "route": "/play/meme-generator",
-    "description": "Create memes from templates or your own image",
-    "icon": "image"
   }
 ];

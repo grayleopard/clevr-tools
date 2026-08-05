@@ -93,7 +93,7 @@ test("header data keeps every top-level destination and only live featured tools
   );
   assert.deepEqual(
     navigationModule.playLinks.map((link) => link.label),
-    ["Numble", "Meme Generator"]
+    ["Numble"]
   );
 
   const liveRoutes = new Set(liveTools.map((tool) => tool.route));
