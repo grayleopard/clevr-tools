@@ -44,6 +44,7 @@ test("benchmark harness preserves the evidence and publication gates", () => {
   const prepare = read("scripts/benchmark/image-compression/prepare.mjs");
   const runner = read("scripts/benchmark/image-compression/run.mjs");
   const approval = read("scripts/benchmark/image-compression/approve.mjs");
+  const review = read("scripts/benchmark/image-compression/review.mjs");
 
   assert.equal((prepare.match(/case_id: "same-/g) ?? []).length, 3);
   assert.equal((prepare.match(/case_id: "to-/g) ?? []).length, 2);
@@ -64,4 +65,8 @@ test("benchmark harness preserves the evidence and publication gates", () => {
   assert.match(approval, /Independent reproduction must name at least/);
   assert.match(approval, /Output hash mismatch/);
   assert.match(approval, /APPROVED_FOR_PUBLICATION/);
+  assert.match(review, /PENDING_HUMAN/);
+  assert.match(review, /maximumErrorTile/);
+  assert.match(review, /timestamp-contact-sheet\.png/);
+  assert.match(review, /reviewRows\.length/);
 });
