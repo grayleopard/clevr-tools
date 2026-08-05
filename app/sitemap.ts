@@ -19,7 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     createEntry("/privacy"),
     createEntry("/play"),
     createEntry("/play/numble"),
-    createEntry("/play/meme-generator"),
     ...siteCategories.map((category) => createEntry(category.route)),
     ...tools
       .filter((tool) => tool.live !== false && tool.indexable !== false)

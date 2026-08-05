@@ -91,7 +91,7 @@ test("sitemap projects exactly the current public portfolio", () => {
   const entries = sitemapModule.default();
   const routes = new Set(entries.map((entry) => new URL(entry.url).pathname));
 
-  assert.equal(entries.length, 128);
+  assert.equal(entries.length, 127);
   for (const route of indexableRoutes) assert.ok(routes.has(route), `sitemap omitted ${route}`);
   for (const tool of registry.tools.filter((item) => item.live === false || item.indexable === false)) {
     assert.ok(!routes.has(tool.route), `sitemap exposed excluded ${tool.route}`);
@@ -101,7 +101,13 @@ test("sitemap projects exactly the current public portfolio", () => {
     assert.match(pageSource, /hiddenToolRobots\(tool\)/, `${tool.slug} lacks noindex metadata`);
   }
   assert.ok(routes.has("/play/numble"));
-  assert.ok(routes.has("/play/meme-generator"));
+  assert.ok(!routes.has("/play/meme-generator"));
+
+  const memeGeneratorSource = fs.readFileSync(
+    path.join(projectRoot, "app/play/meme-generator/page.tsx"),
+    "utf8"
+  );
+  assert.match(memeGeneratorSource, /robots:\s*{\s*index:\s*false,\s*follow:\s*true\s*}/);
 });
 
 test("navigation and search expose live tools without leaking hidden tools", () => {
@@ -115,7 +121,7 @@ test("navigation and search expose live tools without leaking hidden tools", () 
   assert.ok(featuredRoutes.every((route) => liveRoutes.has(route)));
   assert.deepEqual(
     navigation.playLinks.map((entry) => entry.route),
-    ["/play/numble", "/play/meme-generator"]
+    ["/play/numble"]
   );
 });
 
