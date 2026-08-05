@@ -13,6 +13,9 @@
     "perf:route-bytes": "node scripts/perf/route-bytes.mjs / /compress/image /convert/pdf-to-jpg",
     "test": "node --test",
     "test:e2e": "playwright test",
+    "benchmark:image:prepare": "node scripts/benchmark/image-compression/prepare.mjs",
+    "benchmark:image:run": "node scripts/benchmark/image-compression/run.mjs",
+    "benchmark:image:approve": "node scripts/benchmark/image-compression/approve.mjs",
     "test:bundle-budget": "node scripts/perf/check-bundle-budget.mjs"
   },
   "browserslist": [

@@ -27,6 +27,8 @@ interface FileDropZoneProps {
   headline?: string;
   subline?: string;
   privacyNote?: string;
+  /** Optional stable hook for audited browser automation. */
+  inputTestId?: string;
 }
 
 function formatBytes(bytes: number): string {
@@ -79,6 +81,7 @@ export default function FileDropZone({
   headline = "Drop files here",
   subline = "Drop a file, get the result. Nothing is uploaded.",
   privacyNote = "Files stay in your browser — nothing is uploaded",
+  inputTestId,
 }: FileDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isHydrated = useSyncExternalStore(
@@ -209,6 +212,7 @@ export default function FileDropZone({
             id={inputId}
             ref={inputRef}
             type="file"
+            data-testid={inputTestId}
             accept={accept}
             multiple={multiple}
             className="sr-only"

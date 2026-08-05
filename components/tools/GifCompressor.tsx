@@ -238,6 +238,8 @@ export default function GifCompressor() {
           step={1}
           value={[compression]}
           onValueChange={([value]) => setCompression(value)}
+          aria-label="GIF compression"
+          data-testid="benchmark-gif-compression"
           className="w-full"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
@@ -254,6 +256,7 @@ export default function GifCompressor() {
               key={value}
               type="button"
               onClick={() => setMaxColors(value)}
+              data-testid={`benchmark-gif-colors-${value}`}
               className={`rounded-[1rem] border px-3 py-2 text-sm font-medium transition-colors ${
                 maxColors === value
                   ? "border-primary bg-primary/10 text-primary"
@@ -281,6 +284,7 @@ export default function GifCompressor() {
               key={option.value}
               type="button"
               onClick={() => setFrameReduction(option.value)}
+              data-testid={`benchmark-gif-frame-${option.value}`}
               className={`rounded-[1rem] border px-3 py-2 text-sm font-medium transition-colors ${
                 frameReduction === option.value
                   ? "border-primary bg-primary/10 text-primary"
@@ -301,6 +305,7 @@ export default function GifCompressor() {
               key={option.value}
               type="button"
               onClick={() => setScale(option.value)}
+              data-testid={`benchmark-gif-scale-${option.value}`}
               className={`rounded-[1rem] border px-3 py-2 text-sm font-medium transition-colors ${
                 scale === option.value
                   ? "border-primary bg-primary/10 text-primary"
@@ -385,6 +390,7 @@ export default function GifCompressor() {
             void handleCompress();
           }}
           disabled={isProcessing}
+          data-testid="benchmark-gif-compress"
           className="inline-flex min-h-14 w-full items-center justify-center rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-6 py-4 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isProcessing ? "Compressing…" : result ? "Recompress GIF" : "Compress GIF"}
@@ -428,6 +434,7 @@ export default function GifCompressor() {
           accept=".gif"
           maxSizeMB={50}
           onFiles={handleFiles}
+          inputTestId="benchmark-file-input"
           resetKey={resetKey}
           compact={Boolean(selected)}
           headline="Drop any GIF here"
@@ -436,6 +443,14 @@ export default function GifCompressor() {
             void handleClipboardPaste();
           }}
         />
+
+        <span
+          className="sr-only"
+          data-testid="benchmark-gif-analysis"
+          data-state={selected?.analysis ? "ready" : selected ? "reading" : "idle"}
+        >
+          {selected?.analysis ? "GIF analysis ready" : selected ? "Reading GIF" : "No GIF selected"}
+        </span>
 
         {selected && !result && !isProcessing ? (
           <section className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
@@ -592,7 +607,11 @@ export default function GifCompressor() {
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                         Process time
                       </p>
-                      <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
+                      <p
+                        className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums"
+                        data-testid="benchmark-gif-processing-ms"
+                        data-processing-ms={result.processMs}
+                      >
                         {result.processMs}ms
                       </p>
                     </div>
@@ -620,6 +639,13 @@ export default function GifCompressor() {
                     href={result.previewUrl}
                     download={result.file.name}
                     onClick={() => setDownloaded(true)}
+                    data-testid="benchmark-gif-download"
+                    data-output-mime={result.file.type}
+                    data-output-width={result.analysis.width}
+                    data-output-height={result.analysis.height}
+                    data-output-frames={result.analysis.frameCount}
+                    data-output-duration-ms={result.analysis.durationMs}
+                    data-output-colors={result.analysis.colors}
                     className="inline-flex min-h-14 items-center gap-2 rounded-xl bg-[linear-gradient(180deg,#6ee7b7_0%,#10b981_100%)] px-8 py-4 text-sm font-semibold text-[var(--on-primary-fixed)] shadow-[var(--shadow-sm)] transition-opacity hover:opacity-95"
                   >
                     <Download className="h-4 w-4" />

@@ -344,6 +344,7 @@ export default function ImageCompressor() {
           value={[quality]}
           onValueChange={([value]) => setQuality(value)}
           aria-label="Compression quality"
+          data-testid="benchmark-image-quality"
           className="w-full"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
@@ -361,6 +362,7 @@ export default function ImageCompressor() {
               type="button"
               onClick={() => setOutputFormat(fmt)}
               aria-pressed={outputFormat === fmt}
+              data-testid={`benchmark-image-format-${fmt}`}
               className={`border px-3 py-2 text-left text-sm font-medium transition-colors ${
                 outputFormat === fmt
                   ? "border-primary bg-primary/10 text-primary"
@@ -468,6 +470,7 @@ export default function ImageCompressor() {
           multiple
           maxSizeMB={50}
           onFiles={handleFiles}
+          inputTestId="benchmark-file-input"
           resetKey={resetKey}
           compact={hasSelection}
           onPasteClipboard={() => {
@@ -538,7 +541,11 @@ export default function ImageCompressor() {
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                           Process time
                         </p>
-                        <p className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums">
+                        <p
+                          className="mt-3 text-2xl font-bold tracking-[-0.02em] text-foreground tabular-nums"
+                          data-testid="benchmark-image-processing-ms"
+                          data-processing-ms={lastProcessMs ?? undefined}
+                        >
                           {lastProcessMs !== null ? `${lastProcessMs}ms` : "Pending"}
                         </p>
                       </div>
@@ -566,6 +573,10 @@ export default function ImageCompressor() {
                       href={primaryResult.url}
                       download={primaryResult.file.name}
                       onClick={markDownloaded}
+                      data-testid="benchmark-image-download"
+                      data-output-mime={primaryResult.file.type}
+                      data-output-width={primaryResult.width}
+                      data-output-height={primaryResult.height}
                       className="inline-flex min-h-14 items-center gap-2 border border-primary bg-primary px-8 py-4 text-sm font-bold text-[var(--on-primary)] transition-colors hover:bg-primary-dim hover:text-background"
                     >
                       <Download className="h-4 w-4" />

@@ -24,6 +24,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.clevr.tools"),
   other: {
     "impact-site-verification": "05a1dc41-14e9-4d66-989d-f20e41c74409",
+    "clevr-build-commit":
+      process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.CLEVR_BUILD_COMMIT ?? "unknown",
   },
   openGraph: {
     type: "website",

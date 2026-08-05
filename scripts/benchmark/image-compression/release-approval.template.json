@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "benchmark_version": "REPLACE_WITH_RELEASE_VERSION",
+  "release_owner": "REPLACE_WITH_NAME",
+  "release_owner_approved_at_utc": "YYYY-MM-DDTHH:mm:ssZ",
+  "clean_production_build_confirmed": true,
+  "build_commit": "REPLACE_WITH_40_CHARACTER_GIT_COMMIT",
+  "visual_reviewer": "REPLACE_WITH_NAME",
+  "visual_review_case_keys": [],
+  "independent_reviewer": "REPLACE_WITH_A_DIFFERENT_PERSON",
+  "independent_reproduction_case_keys": [],
+  "independent_reproduction_evidence": "review/REPLACE_WITH_EVIDENCE_FILE",
+  "correction_contact": "privacy@clevr.tools",
+  "notes": ""
+}

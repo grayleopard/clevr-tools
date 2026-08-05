@@ -31,6 +31,9 @@ export default function Footer() {
             <Link href="/privacy" className="transition-colors hover:text-primary">
               Privacy
             </Link>
+            <Link href="/methodology" className="transition-colors hover:text-primary">
+              Methodology
+            </Link>
             <Link href="/blog" className="transition-colors hover:text-primary">
               Blog
             </Link>

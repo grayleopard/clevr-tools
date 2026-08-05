@@ -67,7 +67,7 @@ cwebp -quiet -q 90 -m 6 -metadata none canonical.png -o input.webp
 Generate one 2-second, 24-frame, 800 × 450 pan/zoom animation from each canonical master. Use a deterministic filter graph and a fixed 256-color palette:
 
 ```sh
-ffmpeg -y -loop 1 -i canonical.png -filter_complex "scale=900:506:force_original_aspect_ratio=increase,crop=900:506,zoompan=z='min(zoom+0.003,1.07)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=24:s=800x450:fps=12,split[a][b];[a]palettegen=max_colors=256:stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a" -frames:v 24 input.gif
+ffmpeg -y -loop 1 -framerate 12 -t 2 -i canonical.png -filter_complex "scale=900:506:force_original_aspect_ratio=increase,crop=900:506,zoompan=z='min(zoom+0.003,1.07)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=24:s=800x450:fps=12,split[a][b];[a]palettegen=max_colors=256:stats_mode=full[p];[b][p]paletteuse=dither=sierra2_4a" -frames:v 24 input.gif
 ```
 
 Verify rather than assume: MIME type `image/gif`, 800 × 450 dimensions, 24 decoded frames, approximately 2 seconds total duration, and looping animation. Record the exact byte count. GIF behavior is defined by the [GIF89a specification](https://www.w3.org/Graphics/GIF/spec-gif89a.txt); the current product libraries are [`gifuct-js`](https://github.com/matt-way/gifuct-js) and [`gifenc`](https://github.com/matt-way/gifenc).
