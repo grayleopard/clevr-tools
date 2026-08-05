@@ -5,6 +5,7 @@ import FaqSchema from "@/components/seo/FaqSchema";
 import ToolLayout from "@/components/tool/ToolLayout";
 import InvoiceGenerator from "@/components/tools/InvoiceGenerator";
 import { notFound } from "next/navigation";
+import { hiddenToolRobots } from "@/lib/seo/robots";
 
 const tool = getToolBySlug("invoice-generator")!;
 const faqItems = getToolFaqs("invoice-generator");
@@ -14,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: tool.metaTitle,
     description: tool.metaDescription,
+    ...hiddenToolRobots(tool),
     openGraph: {
       title: tool.metaTitle,
       description: tool.metaDescription,

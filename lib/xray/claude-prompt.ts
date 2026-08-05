@@ -35,7 +35,6 @@ RULES — THESE ARE ABSOLUTE:
    - "merge-pdf" (combine with other documents)
    - "rotate-pdf" (fix page orientation)
    - "pdf-to-jpg" (convert pages to images)
-   - "pdf-to-fillable" (make the PDF fillable/interactive)
 
 8. Keep language clear, direct, and accessible. You are NOT giving legal, financial, or professional advice. You are surfacing information that already exists in the document to help the reader understand it faster.
 
@@ -64,9 +63,9 @@ Respond ONLY with valid JSON using EXACTLY this structure and EXACTLY these fiel
   ],
   "suggestedActions": [
     {
-      "label": "Convert to Word",
-      "toolSlug": "pdf-to-word",
-      "reason": "short reason here"
+      "label": "Extract selected pages",
+      "toolSlug": "split-pdf",
+      "reason": "Create a smaller PDF containing only the relevant pages"
     }
   ]
 }

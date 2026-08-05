@@ -40,10 +40,13 @@ const searchIndex = loadTypeScript("lib/search-index.ts");
 const liveTools = registry.tools.filter((tool) => tool.live !== false);
 const liveRoutes = new Set(liveTools.map((tool) => tool.route));
 const liveSlugs = new Set(liveTools.map((tool) => tool.slug));
+const indexableTools = liveTools.filter((tool) => tool.indexable !== false);
+const indexableRoutes = new Set(indexableTools.map((tool) => tool.route));
 const requiredContainedSlugs = [
   "background-remover",
   "heic-to-jpg",
   "paycheck",
+  "pdf-to-fillable",
   "poker",
   "take-home-pay",
 ];
@@ -88,10 +91,14 @@ test("sitemap projects exactly the current public portfolio", () => {
   const entries = sitemapModule.default();
   const routes = new Set(entries.map((entry) => new URL(entry.url).pathname));
 
-  assert.equal(entries.length, 128);
-  for (const route of liveRoutes) assert.ok(routes.has(route), `sitemap omitted ${route}`);
-  for (const tool of registry.tools.filter((item) => item.live === false)) {
-    assert.ok(!routes.has(tool.route), `sitemap exposed hidden ${tool.route}`);
+  assert.equal(entries.length, 122);
+  for (const route of indexableRoutes) assert.ok(routes.has(route), `sitemap omitted ${route}`);
+  for (const tool of registry.tools.filter((item) => item.live === false || item.indexable === false)) {
+    assert.ok(!routes.has(tool.route), `sitemap exposed excluded ${tool.route}`);
+
+    const pagePath = path.join(projectRoot, "app", tool.route.slice(1), "page.tsx");
+    const pageSource = fs.readFileSync(pagePath, "utf8");
+    assert.match(pageSource, /hiddenToolRobots\(tool\)/, `${tool.slug} lacks noindex metadata`);
   }
   assert.ok(routes.has("/play/numble"));
   assert.ok(routes.has("/play/meme-generator"));
@@ -190,7 +197,7 @@ test("contained-route link detector covers JSX attributes and Markdown links", (
   assert.match("[convert](https://clevr.tools/convert/heic-to-jpg?from=blog)", pattern);
 });
 
-test("category audit preserves the known 22-route converter discovery gap", () => {
+test("category audit exposes broad converters while holding pair-specific duplicates for review", () => {
   const categorySlugs = new Set(
     siteStructure.siteCategories.flatMap((category) =>
       category.subcategories.flatMap((subcategory) => subcategory.slugs)
@@ -202,15 +209,10 @@ test("category audit preserves the known 22-route converter discovery gap", () =
     .sort();
   const expected = [
     "/calc/convert/acres-to-sq-ft",
-    "/calc/convert/angle",
     "/calc/convert/cm-to-inches",
     "/calc/convert/cups-to-ml",
-    "/calc/convert/energy",
     "/calc/convert/fahrenheit-to-celsius",
     "/calc/convert/feet-to-meters",
-    "/calc/convert/force",
-    "/calc/convert/frequency",
-    "/calc/convert/fuel-economy",
     "/calc/convert/inches-to-feet",
     "/calc/convert/kg-to-lbs",
     "/calc/convert/lbs-to-kg",
@@ -220,9 +222,6 @@ test("category audit preserves the known 22-route converter discovery gap", () =
     "/calc/convert/miles-to-km",
     "/calc/convert/mm-to-inches",
     "/calc/convert/oz-to-grams",
-    "/calc/convert/power",
-    "/calc/convert/pressure",
-    "/calc/convert/time",
   ];
   assert.deepEqual(missingRoutes, expected);
 });
@@ -233,7 +232,6 @@ test("legacy tool aliases remain explicit, bounded, permanent redirects", () => 
     (match) => match[1]
   );
   assert.deepEqual(redirectSources, [
-    "/convert/pdf-to-word",
     "/files/image-resizer",
     "/generate/url-encoder",
     "/generate/base64",

@@ -13,6 +13,8 @@ export interface Tool {
   badge?: 'new' | 'popular';
   /** false = excluded from public discovery and sitemap; the direct route may remain */
   live?: boolean;
+  /** false = usable by visitors, but excluded from search indexing pending content/trust review */
+  indexable?: boolean;
   /** true = capability is intentionally disabled on its direct route pending remediation */
   contained?: boolean;
   /** Overrides the auto-derived sidebar privacy message. Defaults based on category. */
@@ -596,6 +598,7 @@ export const tools: Tool[] = [
     relatedTools: ['merge-pdf', 'split-pdf', 'rotate-pdf'],
     badge: 'new',
     live: false,
+    contained: true,
   },
   {
     slug: 'resize-image',
@@ -1273,6 +1276,7 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['percentage-calculator', 'salary', 'loan'],
     badge: 'new',
+    indexable: false,
   },
   {
     slug: 'poker',
@@ -2185,6 +2189,7 @@ export const tools: Tool[] = [
     `,
     relatedTools: ['word-counter', 'pdf-compressor'],
     badge: 'new',
+    indexable: false,
   },
   // ─── Financial Calculators ───────────────────────────────────────────────
   {
@@ -2876,6 +2881,7 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['bmi-calculator', 'ideal-weight', 'calorie'],
+    indexable: false,
   },
   {
     slug: 'due-date',
@@ -2915,6 +2921,7 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['ovulation', 'age-calculator', 'date-difference'],
+    indexable: false,
   },
   {
     slug: 'ovulation',
@@ -2953,6 +2960,7 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['due-date', 'age-calculator', 'date-difference'],
+    indexable: false,
   },
   {
     slug: 'ideal-weight',
@@ -2988,6 +2996,7 @@ export const tools: Tool[] = [
       </table>
     `,
     relatedTools: ['bmi-calculator', 'body-fat', 'calorie'],
+    indexable: false,
   },
   {
     slug: 'calories-burned',

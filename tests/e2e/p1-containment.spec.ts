@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 const containedRoutes = [
   "/tools/background-remover",
   "/convert/heic-to-jpg",
+  "/tools/pdf-to-fillable",
   "/calc/poker",
   "/calc/take-home-pay",
   "/calc/paycheck",

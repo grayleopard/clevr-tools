@@ -152,8 +152,10 @@ export const siteCategories: SiteCategory[] = [
       {
         label: "Unit Converters",
         slugs: ["convert-length", "convert-weight", "convert-temperature", "convert-volume", "convert-cooking", "convert-data", "convert-speed", "convert-area"],
-        seeAllRoute: "/calculate",
-        seeAllLabel: "See all converters",
+      },
+      {
+        label: "More Converters",
+        slugs: ["convert-time", "convert-pressure", "convert-energy", "convert-frequency", "convert-fuel-economy", "convert-angle", "convert-power", "convert-force"],
       },
     ],
   },
