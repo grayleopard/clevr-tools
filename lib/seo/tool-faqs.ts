@@ -1,4 +1,5 @@
 import type { FaqItem } from "@/components/seo/FaqSchema";
+import { DATA_SIZE_FAQS } from "@/lib/data-size";
 
 export const toolFaqsBySlug: Record<string, FaqItem[]> = {
   "background-remover": [
@@ -2396,28 +2397,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
         "1 hour = 3,600 seconds, 1 day = 86,400 seconds, 1 week = 604,800 seconds, 1 year = 31,557,600 seconds (using 365.25 days).",
     },
   ],
-  "convert-data": [
-    {
-      question: "What data units can I convert between?",
-      answer:
-        "Bits, bytes, kilobytes, megabytes, gigabytes, terabytes, petabytes, megabits, and gigabits. The converter uses standard binary definitions (1 KB = 1,024 bytes).",
-    },
-    {
-      question: "Is the data size converter free?",
-      answer:
-        "Yes. This converter is completely free with no signup. All calculations run in your browser.",
-    },
-    {
-      question: "What is the difference between megabits and megabytes?",
-      answer:
-        "A megabit (Mb) is 1/8 of a megabyte (MB). Internet speeds are measured in megabits per second (Mbps), while file sizes use megabytes. A 100 Mbps connection downloads about 12.5 MB per second.",
-    },
-    {
-      question: "What is the difference between KB and KiB?",
-      answer:
-        "KB (kilobyte) is ambiguous: it can mean 1,000 or 1,024 bytes. KiB (kibibyte) always means 1,024 bytes. This converter uses the binary standard (1 KB = 1,024 bytes) which is how operating systems report file sizes.",
-    },
-  ],
+  "convert-data": [...DATA_SIZE_FAQS],
   "convert-pressure": [
     {
       question: "What pressure units can I convert between?",

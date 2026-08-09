@@ -844,7 +844,7 @@ export const searchIndex: readonly SearchTool[] = [
     "name": "Data Size Converter",
     "route": "/calc/convert/data",
     "category": "calc",
-    "shortDescription": "Convert between bytes, KB, MB, GB, TB, and bits.",
+    "shortDescription": "Convert SI kB, MB, GB and IEC KiB, MiB, GiB units plus bits and bytes.",
     "aliases": [],
     "icon": "Binary"
   },

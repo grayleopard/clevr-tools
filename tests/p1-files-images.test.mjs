@@ -6,7 +6,7 @@ import ts from "typescript";
 
 const projectRoot = process.cwd();
 
-function loadTypeScript(relativePath) {
+function loadTypeScript(relativePath, dependencies = {}) {
   const source = fs.readFileSync(path.join(projectRoot, relativePath), "utf8");
   const output = ts.transpileModule(source, {
     compilerOptions: {
@@ -18,8 +18,11 @@ function loadTypeScript(relativePath) {
   new Function("exports", "module", "require", output)(
     transpiledModule.exports,
     transpiledModule,
-    () => {
-      throw new Error("Unexpected test dependency");
+    (specifier) => {
+      if (!Object.hasOwn(dependencies, specifier)) {
+        throw new Error(`Unexpected test dependency: ${specifier}`);
+      }
+      return dependencies[specifier];
     }
   );
   return transpiledModule.exports;
@@ -28,7 +31,8 @@ function loadTypeScript(relativePath) {
 const raster = loadTypeScript("lib/image-remediation/raster-formats.ts");
 const heic = loadTypeScript("lib/image-remediation/heic-validation.ts");
 const smart = loadTypeScript("lib/image-remediation/smart-converter-contracts.ts");
-const registry = loadTypeScript("lib/tools.ts");
+const dataSize = loadTypeScript("lib/data-size.ts");
+const registry = loadTypeScript("lib/tools.ts", { "@/lib/data-size": dataSize });
 
 test("raster format detection follows magic bytes instead of filenames", () => {
   assert.equal(

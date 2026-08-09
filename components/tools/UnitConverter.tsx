@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import { ArrowLeftRight, Copy } from "lucide-react";
 import { addToast } from "@/lib/toast";
 import { TipJar } from "@/components/tool/TipJar";
+import { DATA_SIZE_UNIT_REGISTRY } from "@/lib/data-size";
 
 // ─── Unit definitions ───────────────────────────────────────────────────────
 
@@ -112,17 +113,13 @@ const CATEGORIES: Category[] = [
   {
     id: "data",
     label: "Data",
-    defaultFrom: "mb",
-    defaultTo: "gb",
-    units: [
-      { id: "bit", label: "Bits (b)", factor: 0.125 },
-      { id: "byte", label: "Bytes (B)", factor: 1 },
-      { id: "kb", label: "Kilobytes (KB)", factor: 1024 },
-      { id: "mb", label: "Megabytes (MB)", factor: 1048576 },
-      { id: "gb", label: "Gigabytes (GB)", factor: 1073741824 },
-      { id: "tb", label: "Terabytes (TB)", factor: 1099511627776 },
-      { id: "pb", label: "Petabytes (PB)", factor: 1125899906842624 },
-    ],
+    defaultFrom: "MB",
+    defaultTo: "GB",
+    units: DATA_SIZE_UNIT_REGISTRY.map((unit) => ({
+      id: unit.symbol,
+      label: `${unit.label} (${unit.symbol})`,
+      factor: unit.bytesPerUnit,
+    })),
   },
 ];
 

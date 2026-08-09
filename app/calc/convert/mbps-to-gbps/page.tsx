@@ -39,8 +39,8 @@ export default function Page() {
             <strong className="text-foreground">Formula:</strong> Gbps = Mbps &divide; 1,000
           </p>
           <p className="mt-2">
-            1 Gbps = 1,000 Mbps. Network speeds use decimal (base-10) prefixes, unlike data storage
-            which uses binary (base-2).
+            1 Gbps = 1,000 Mbps. Network speeds use decimal (base-10) prefixes. Data storage may be
+            expressed in decimal SI units or explicitly named binary IEC units.
           </p>
           <div className="overflow-x-auto mt-4">
             <table className="w-full text-sm border-collapse">
