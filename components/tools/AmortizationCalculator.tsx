@@ -182,7 +182,7 @@ export default function AmortizationCalculator() {
 
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Interest impact</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Interest saved</p>
                 <p className="mt-1 text-lg font-bold tabular-nums text-emerald-600 dark:text-emerald-300">
                   {result.interestSaved > 0 ? `${fmt(result.interestSaved)} saved` : "No reduction"}
                 </p>
