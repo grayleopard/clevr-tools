@@ -1,3 +1,5 @@
+import { dataSizeSeoContent } from "@/lib/data-size";
+
 export interface Tool {
   slug: string;
   name: string;
@@ -1340,7 +1342,7 @@ export const tools: Tool[] = [
 
       <h2>Good to know</h2>
       <p><strong>Temperature is the only non-linear conversion.</strong> Length, weight, and volume are all simple multiplication (1 inch is always 2.54 cm). Temperature requires both multiplication and addition because Fahrenheit and Celsius have different zero points. The formula is F = (C x 9/5) + 32. Kelvin is simpler: K = C + 273.15.</p>
-      <p><strong>Digital storage has two standards.</strong> In the SI (decimal) system, 1 GB = 1,000 MB. In the binary (IEC) system used by operating systems, 1 GiB = 1,024 MiB. This is why a "500 GB" hard drive shows as ~465 GB in your file manager. This converter uses binary (1,024-based) values, which matches what your OS reports.</p>
+      <p><strong>Digital storage has two explicit standards.</strong> In SI decimal, 1 GB = 1,000 MB. In IEC binary, 1 GiB = 1,024 MiB. The data-unit choices use these symbols and factors directly, so MB is never used as a label for MiB.</p>
       <p><strong>Fluid ounces and weight ounces are different units.</strong> A fluid ounce measures volume; a weight ounce measures mass. They happen to be close for water (1 fl oz of water weighs about 1 oz), but for other liquids the numbers diverge. Make sure you're converting the right type.</p>
       <p><strong>Bidirectional editing saves time.</strong> You don't need to swap "from" and "to" fields. Just type in whichever field you have the value for and the other field updates. This is faster than most converter tools that force a one-directional flow.</p>
 
@@ -1356,11 +1358,11 @@ export const tools: Tool[] = [
           <tr><td>1 gallon</td><td>liters</td><td>3.78541 L</td></tr>
           <tr><td>1 cup</td><td>milliliters</td><td>236.588 mL</td></tr>
           <tr><td>0 &deg;C</td><td>Fahrenheit</td><td>32 &deg;F</td></tr>
-          <tr><td>1 GB</td><td>megabytes</td><td>1,024 MB</td></tr>
+          <tr><td>1 GB</td><td>megabytes</td><td>1,000 MB</td></tr>
         </tbody>
       </table>
     `,
-    relatedTools: ['percentage-calculator'],
+    relatedTools: ['convert-data', 'convert-speed', 'convert-angle', 'percentage-calculator'],
   },
   // ─── Not-yet-built tools ───────────────────────────────────────────────────
   {
@@ -3107,7 +3109,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['calories-burned', 'calorie', 'bmi-calculator'],
+    relatedTools: ['convert-speed', 'calories-burned', 'calorie', 'bmi-calculator'],
   },
   // ─── General Unit Converters ─────────────────────────────────────────
   {
@@ -3320,6 +3322,7 @@ export const tools: Tool[] = [
       <h2>Good to know</h2>
       <p><strong>Quick mph-to-km/h estimate: multiply by 1.6.</strong> 60 mph is about 97 km/h. 100 km/h is about 62 mph. For most driving situations, these estimates are close enough to understand speed limit signs in another country.</p>
       <p><strong>A knot is one nautical mile per hour.</strong> Knots are used in aviation and maritime because they tie directly to the latitude/longitude coordinate system. One knot = 1.852 km/h = 1.151 mph. When a pilot reports airspeed in knots, they are describing movement relative to the coordinate grid of the Earth.</p>
+      <p><strong>Feet per second is common in engineering.</strong> One foot per second equals exactly 0.3048 m/s, or about 1.09728 km/h and 0.681818 mph. It is useful for projectile motion, flow rates, and US engineering specifications.</p>
       <p><strong>Meters per second puts everyday speeds in perspective.</strong> Walking speed is about 1.4 m/s. A fast sprint is about 10 m/s. Highway driving at 70 mph is about 31 m/s. The speed of sound at sea level is about 343 m/s. Using m/s helps you understand the physics behind familiar experiences.</p>
 
       <h2>Quick Reference</h2>
@@ -3334,6 +3337,7 @@ export const tools: Tool[] = [
           <tr><td>80.8</td><td>130</td><td>36.1</td><td>70.2</td><td>EU motorway limit</td></tr>
           <tr><td>100</td><td>160.9</td><td>44.7</td><td>86.9</td><td>Fast driving</td></tr>
           <tr><td>767</td><td>1,235</td><td>343</td><td>667</td><td>Speed of sound</td></tr>
+          <tr><td>0.682</td><td>1.097</td><td>0.3048</td><td>0.593</td><td>1 foot per second</td></tr>
         </tbody>
       </table>
     `,
@@ -3381,38 +3385,14 @@ export const tools: Tool[] = [
   {
     slug: 'convert-data',
     name: 'Data Size Converter',
-    shortDescription: 'Convert between bytes, KB, MB, GB, TB, and bits.',
+    shortDescription: 'Convert SI kB, MB, GB and IEC KiB, MiB, GiB units plus bits and bytes.',
     category: 'calc',
     route: '/calc/convert/data',
     acceptedFormats: [],
     icon: 'Binary',
-    metaTitle: 'Data Size Converter — KB, MB, GB & TB | clevr.tools',
-    metaDescription: 'Free data size converter. Convert between bits, bytes, kilobytes, megabytes, gigabytes, terabytes, petabytes, megabits, and gigabits.',
-    seoContent: `
-      <h2>When to use this</h2>
-      <p>You have a 4.7 GB file and want to know if it fits on a DVD (4.7 GB — but is that the same GB?). Or your cloud storage plan says 2 TB and you want to know how many gigabytes that is. Or you are calculating how long a download will take and need to convert between megabytes (file size) and megabits (internet speed). Data size conversion is essential for anyone working with files, storage, bandwidth, or cloud services.</p>
-      <p>This converter handles bits, bytes, kilobytes, megabytes, gigabytes, terabytes, petabytes, and their bit-based counterparts (megabits, gigabits). The most commonly searched conversions are GB to MB, TB to GB, and MB to KB. It also bridges the gap between bytes (used for file sizes) and bits (used for network speeds) — a distinction that confuses many people.</p>
-
-      <h2>Good to know</h2>
-      <p><strong>There are two definitions of "kilobyte" and they differ by 2.4%.</strong> In the decimal (SI) system, 1 KB = 1,000 bytes. In the binary (IEC) system, 1 KiB = 1,024 bytes. The difference compounds at larger scales: 1 TB (decimal) = 1,000,000,000,000 bytes, but 1 TiB (binary) = 1,099,511,627,776 bytes — a 10% gap. Hard drive manufacturers use decimal; operating systems often use binary. This is why a "1 TB" drive shows up as about 931 GB in your file manager.</p>
-      <p><strong>8 bits = 1 byte, always.</strong> Internet speeds are measured in bits per second (Mbps, Gbps), but file sizes are measured in bytes (MB, GB). To convert, divide bits by 8. A 100 Mbps connection downloads at about 12.5 MB/s — not 100 MB/s. This is the single most common source of confusion in data size discussions.</p>
-      <p><strong>Storage needs grow exponentially.</strong> A single 4K photo is about 10 MB. An hour of 4K video is roughly 20 GB. A typical smartphone now ships with 128–256 GB of storage. Understanding the scale relationships helps you plan purchases and manage your storage wisely.</p>
-
-      <h2>Quick Reference</h2>
-      <table>
-        <thead><tr><th>Unit</th><th>Bytes (Decimal)</th><th>Practical Reference</th></tr></thead>
-        <tbody>
-          <tr><td>1 Byte</td><td>1</td><td>A single character</td></tr>
-          <tr><td>1 KB</td><td>1,000</td><td>Short text file</td></tr>
-          <tr><td>1 MB</td><td>1,000,000</td><td>1 minute of MP3 audio</td></tr>
-          <tr><td>1 GB</td><td>1,000,000,000</td><td>~250 MP3 songs</td></tr>
-          <tr><td>1 TB</td><td>10^12</td><td>~500 hours of HD video</td></tr>
-          <tr><td>1 PB</td><td>10^15</td><td>~1,000 TB — large data center</td></tr>
-          <tr><td>1 Megabit</td><td>125,000 bytes</td><td>Network speed unit</td></tr>
-          <tr><td>1 Gigabit</td><td>125,000,000 bytes</td><td>Fast network speed</td></tr>
-        </tbody>
-      </table>
-    `,
+    metaTitle: 'Data Size Converter — kB, MB, GB, TB & GiB | clevr.tools',
+    metaDescription: 'Free data size converter for KB, MB, GB, TB, KiB, MiB, GiB, bits, and bytes. Compare SI decimal and IEC binary units. No signup.',
+    seoContent: dataSizeSeoContent,
     relatedTools: ['mbps-to-gbps', 'convert-time', 'convert-length'],
   },
   {
@@ -3570,7 +3550,7 @@ export const tools: Tool[] = [
   {
     slug: 'convert-angle',
     name: 'Angle Converter',
-    shortDescription: 'Convert between degrees, radians, gradians, and arcseconds.',
+    shortDescription: 'Convert between degrees, radians, gradians, arcminutes, and arcseconds.',
     category: 'calc',
     route: '/calc/convert/angle',
     acceptedFormats: [],
@@ -3586,20 +3566,21 @@ export const tools: Tool[] = [
       <p><strong>The key formula: radians = degrees x (pi / 180).</strong> A full circle is 360 degrees or 2pi radians. So 180° = pi radians, 90° = pi/2, and 45° = pi/4. Memorizing these anchor points covers most common conversions.</p>
       <p><strong>Most programming languages use radians.</strong> JavaScript's Math.sin(), Python's math.sin(), and virtually every math library expect radians as input. Forgetting to convert from degrees is one of the most common bugs in graphics and game programming.</p>
       <p><strong>Gradians are used in surveying.</strong> A full circle is 400 gradians (also called gons). This makes right angles exactly 100 gradians, which simplifies certain surveying calculations. You will rarely encounter gradians outside of European surveying contexts.</p>
+      <p><strong>Arcminutes and arcseconds divide a degree.</strong> One degree equals 60 arcminutes or 3,600 arcseconds. Surveying, navigation, and astronomy often use degrees-minutes-seconds notation when decimal degrees are not precise enough.</p>
 
       <h2>Quick Reference</h2>
       <table>
-        <thead><tr><th>Degrees</th><th>Radians</th><th>Gradians</th><th>Context</th></tr></thead>
+        <thead><tr><th>Degrees</th><th>Radians</th><th>Gradians</th><th>Arcminutes</th><th>Arcseconds</th><th>Context</th></tr></thead>
         <tbody>
-          <tr><td>0°</td><td>0</td><td>0 grad</td><td>Starting point</td></tr>
-          <tr><td>30°</td><td>pi/6 (0.524)</td><td>33.33 grad</td><td>Common trig angle</td></tr>
-          <tr><td>45°</td><td>pi/4 (0.785)</td><td>50 grad</td><td>Diagonal / 45° angle</td></tr>
-          <tr><td>60°</td><td>pi/3 (1.047)</td><td>66.67 grad</td><td>Equilateral triangle</td></tr>
-          <tr><td>90°</td><td>pi/2 (1.571)</td><td>100 grad</td><td>Right angle</td></tr>
-          <tr><td>120°</td><td>2pi/3 (2.094)</td><td>133.33 grad</td><td>Obtuse angle</td></tr>
-          <tr><td>180°</td><td>pi (3.142)</td><td>200 grad</td><td>Straight line</td></tr>
-          <tr><td>270°</td><td>3pi/2 (4.712)</td><td>300 grad</td><td>Three-quarter turn</td></tr>
-          <tr><td>360°</td><td>2pi (6.283)</td><td>400 grad</td><td>Full circle</td></tr>
+          <tr><td>0°</td><td>0</td><td>0 grad</td><td>0</td><td>0</td><td>Starting point</td></tr>
+          <tr><td>30°</td><td>pi/6 (0.524)</td><td>33.33 grad</td><td>1,800</td><td>108,000</td><td>Common trig angle</td></tr>
+          <tr><td>45°</td><td>pi/4 (0.785)</td><td>50 grad</td><td>2,700</td><td>162,000</td><td>Diagonal / 45° angle</td></tr>
+          <tr><td>60°</td><td>pi/3 (1.047)</td><td>66.67 grad</td><td>3,600</td><td>216,000</td><td>Equilateral triangle</td></tr>
+          <tr><td>90°</td><td>pi/2 (1.571)</td><td>100 grad</td><td>5,400</td><td>324,000</td><td>Right angle</td></tr>
+          <tr><td>120°</td><td>2pi/3 (2.094)</td><td>133.33 grad</td><td>7,200</td><td>432,000</td><td>Obtuse angle</td></tr>
+          <tr><td>180°</td><td>pi (3.142)</td><td>200 grad</td><td>10,800</td><td>648,000</td><td>Straight line</td></tr>
+          <tr><td>270°</td><td>3pi/2 (4.712)</td><td>300 grad</td><td>16,200</td><td>972,000</td><td>Three-quarter turn</td></tr>
+          <tr><td>360°</td><td>2pi (6.283)</td><td>400 grad</td><td>21,600</td><td>1,296,000</td><td>Full circle</td></tr>
         </tbody>
       </table>
     `,
@@ -4266,7 +4247,7 @@ export const tools: Tool[] = [
       <p>The conversion is straightforward: divide Mbps by 1,000 to get Gbps, or multiply Gbps by 1,000 to get Mbps. So 500 Mbps = 0.5 Gbps, and 2.5 Gbps = 2,500 Mbps. While the math is simple, having a converter is useful when comparing plans, reading spec sheets, or quickly translating between units during a conversation with your IT team or internet provider.</p>
 
       <h2>Good to know</h2>
-      <p><strong>Mbps uses base-10 (decimal), not base-2.</strong> In networking, 1 Gbps = 1,000 Mbps (not 1,024). This follows the SI prefix system. Storage uses the binary system (where 1 GB = 1,024 MB in some contexts), but network speeds consistently use decimal prefixes. Do not confuse the two.</p>
+      <p><strong>Mbps uses base-10 (decimal), not base-2.</strong> In networking, 1 Gbps = 1,000 Mbps (not 1,024). This follows the SI prefix system. Storage may use decimal SI symbols such as GB or explicit binary IEC symbols such as GiB; do not treat those symbols as interchangeable.</p>
       <p><strong>Bits and bytes are different.</strong> Internet speeds are measured in bits per second, but file sizes are measured in bytes. There are 8 bits in a byte. So a 1 Gbps connection can theoretically transfer 125 megabytes per second (1,000 Mbps / 8), not 1,000 MB/s. When your ISP says 100 Mbps, your maximum download speed is about 12.5 MB/s — which is why your downloads seem slower than the advertised speed.</p>
       <p><strong>Real-world speeds are lower than advertised.</strong> Protocol overhead, network congestion, Wi-Fi interference, and server limitations mean you rarely get 100% of your rated speed. A "gigabit" connection typically delivers 800–950 Mbps over a wired Ethernet connection and 400–700 Mbps over Wi-Fi, depending on your router and environment.</p>
 

@@ -29,7 +29,8 @@ function loadTypeScript(relativePath, dependencies = {}) {
   return transpiledModule.exports;
 }
 
-const registry = loadTypeScript("lib/tools.ts");
+const dataSize = loadTypeScript("lib/data-size.ts");
+const registry = loadTypeScript("lib/tools.ts", { "@/lib/data-size": dataSize });
 const navigation = loadTypeScript("lib/navigation.ts");
 const siteStructure = loadTypeScript("lib/site-structure.ts", {
   "@/lib/tools": registry,

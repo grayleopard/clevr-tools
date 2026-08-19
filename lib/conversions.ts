@@ -1,3 +1,5 @@
+import { DATA_SIZE_UNIT_REGISTRY } from "@/lib/data-size";
+
 export interface ConversionUnit {
   label: string;
   symbol: string;
@@ -152,18 +154,13 @@ export const timeConfig: UnitConverterConfig = {
 // ─── Data (base: byte) ─────────────────────────────────────────────────
 export const dataConfig: UnitConverterConfig = {
   category: "Data",
-  description: "Convert between digital data storage and transfer units",
-  units: [
-    { label: "Bits", symbol: "bit", toBase: (v) => v / 8, fromBase: (v) => v * 8 },
-    { label: "Bytes", symbol: "B", toBase: (v) => v, fromBase: (v) => v },
-    { label: "Kilobytes", symbol: "KB", toBase: (v) => v * 1024, fromBase: (v) => v / 1024 },
-    { label: "Megabytes", symbol: "MB", toBase: (v) => v * 1048576, fromBase: (v) => v / 1048576 },
-    { label: "Gigabytes", symbol: "GB", toBase: (v) => v * 1073741824, fromBase: (v) => v / 1073741824 },
-    { label: "Terabytes", symbol: "TB", toBase: (v) => v * 1099511627776, fromBase: (v) => v / 1099511627776 },
-    { label: "Petabytes", symbol: "PB", toBase: (v) => v * 1125899906842624, fromBase: (v) => v / 1125899906842624 },
-    { label: "Megabits", symbol: "Mbit", toBase: (v) => v * 125000, fromBase: (v) => v / 125000 },
-    { label: "Gigabits", symbol: "Gbit", toBase: (v) => v * 125000000, fromBase: (v) => v / 125000000 },
-  ],
+  description: "Convert between SI decimal, IEC binary, byte, and bit units",
+  units: DATA_SIZE_UNIT_REGISTRY.map((unit) => ({
+    label: unit.label,
+    symbol: unit.symbol,
+    toBase: (value) => value * unit.bytesPerUnit,
+    fromBase: (value) => value / unit.bytesPerUnit,
+  })),
   defaultFromUnit: "MB",
   defaultToUnit: "GB",
 };

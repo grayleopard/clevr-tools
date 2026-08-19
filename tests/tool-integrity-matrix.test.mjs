@@ -98,6 +98,22 @@ function parseCsv(source) {
 }
 
 function loadRegistry() {
+  const dataSizeSource = fs.readFileSync(path.join(projectRoot, "lib/data-size.ts"), "utf8");
+  const dataSizeOutput = ts.transpileModule(dataSizeSource, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+    },
+  }).outputText;
+  const dataSizeModule = { exports: {} };
+  new Function("exports", "module", "require", dataSizeOutput)(
+    dataSizeModule.exports,
+    dataSizeModule,
+    () => {
+      throw new Error("lib/data-size.ts unexpectedly imported a runtime dependency");
+    }
+  );
+
   const source = fs.readFileSync(path.join(projectRoot, "lib/tools.ts"), "utf8");
   const output = ts.transpileModule(source, {
     compilerOptions: {
@@ -109,7 +125,8 @@ function loadRegistry() {
   new Function("exports", "module", "require", output)(
     transpiledModule.exports,
     transpiledModule,
-    () => {
+    (specifier) => {
+      if (specifier === "@/lib/data-size") return dataSizeModule.exports;
       throw new Error("lib/tools.ts unexpectedly imported a runtime dependency");
     }
   );
