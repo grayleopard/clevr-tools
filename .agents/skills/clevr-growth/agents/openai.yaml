@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clevr Growth"
+  short_description: "Run evidence-led SEO and authority growth for clevr.tools"
+  default_prompt: "Use Clevr's search, product-integrity, and analytics evidence to prioritize and execute the next ethical growth sprint."
