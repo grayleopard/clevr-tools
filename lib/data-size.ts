@@ -146,7 +146,7 @@ export const DATA_SIZE_WORKED_EXAMPLES = [
 ] as const;
 
 export const DATA_SIZE_COMPATIBILITY_NOTE =
-  "Compatibility note: this calculator previously applied 1,024-based factors to MB, GB, TB and PB. Those SI symbols now use their standard 1,000-based values. Choose IEC units such as MiB, GiB, TiB or PiB when you need the former binary quantities.";
+  "Use SI symbols such as MB, GB, TB and PB for standard 1,000-based values. Choose IEC units such as MiB, GiB, TiB or PiB when the source uses 1,024-based binary quantities.";
 
 const availableSymbols = DATA_SIZE_UNIT_REGISTRY.map((unit) => unit.symbol).join(", ");
 

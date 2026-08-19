@@ -24,6 +24,7 @@ const commonConversions = [
     href: "/calc/convert/angle",
   },
 ] as const;
+const commonConversionSlugs = new Set(["convert-data", "convert-speed", "convert-angle"]);
 
 export const metadata: Metadata = {
   title: "Calculators — Free Online Financial & Math Calculators | clevr.tools",
@@ -85,6 +86,7 @@ export default function CalculatePage() {
           title: sub.label,
           columnsClassName: "sm:grid-cols-2 xl:grid-cols-3",
           tools: sub.slugs
+            .filter((slug) => !commonConversionSlugs.has(slug))
             .map((slug) => getToolBySlug(slug))
             .filter((tool): tool is Tool => tool !== undefined && tool.live !== false),
         })),
