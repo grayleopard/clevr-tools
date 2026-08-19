@@ -11,6 +11,8 @@ export const metadata: Metadata = {
     "Clear, task-focused guides for compressing and converting files, cleaning text, and improving typing.",
   alternates: { canonical: "https://www.clevr.tools/blog" },
   openGraph: {
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     title: "Practical Guides for Files, Text & Typing | clevr.tools",
     description:
       "Clear, task-focused guides for compressing and converting files, cleaning text, and improving typing.",

@@ -40,6 +40,7 @@ export async function generateMetadata({
     authors: [{ name: "clevr.tools", url: SITE_URL }],
     alternates: { canonical: url },
     openGraph: {
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
       title,
       description: post.description,
       url,

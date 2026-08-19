@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: category.description,
   alternates: { canonical: "https://www.clevr.tools/text-code" },
   openGraph: {
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     title: "Text & Code Tools — Free Online Text & Dev Tools | clevr.tools",
     description: category.description,
     url: "https://www.clevr.tools/text-code",

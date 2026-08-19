@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   },
   robots: { index: false, follow: true },
   openGraph: {
+    type: "website",
     title: "Meme Generator — Free, No Signup | clevr.tools",
     description: "Create memes instantly. Pick a template, add text, download.",
     url: "https://www.clevr.tools/play/meme-generator",

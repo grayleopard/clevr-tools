@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: category.description,
   alternates: { canonical: "https://www.clevr.tools/files" },
   openGraph: {
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     title: "File Tools — Free Online Compress, Convert & PDF Tools | clevr.tools",
     description: category.description,
     url: "https://www.clevr.tools/files",

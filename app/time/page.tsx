@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: category.description,
   alternates: { canonical: "https://www.clevr.tools/time" },
   openGraph: {
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     title: "Time Tools — Free Online Timers & Stopwatch | clevr.tools",
     description: category.description,
     url: "https://www.clevr.tools/time",
