@@ -13,6 +13,7 @@ Operate growth as a reliability-led product program. Earn visibility by making u
 - Treat Google Search Console as the source of truth for Clevr performance. Use third-party estimates only for discovery.
 - Never fabricate demand, rankings, benchmarks, reviews, experts, or usage claims.
 - Never buy links, exchange ranking credit, mass-submit directories, or automate unsolicited outreach.
+- Draft prospect lists and outreach messages for owner review, but never send email, direct messages, form submissions, or publisher pitches without explicit owner approval for that outreach batch.
 - Reject thin programmatic pages, generic AI articles, keyword stuffing, bulk title rewrites, and duplicate route families.
 - Preserve useful direct routes while keeping broken, unavailable, unsafe, or duplicative surfaces out of discovery and the sitemap.
 - Do not read or modify `outputs/` unless the owner explicitly authorizes it.
@@ -76,6 +77,8 @@ When subagents are authorized, split work into non-overlapping tasks:
 - independent reviewer: adversarial review of the final diff
 
 Use Luna Max for bounded research/review and Terra for larger code or data tasks unless the user specifies otherwise. Never silently substitute a model.
+
+Delegation does not authorize external contact. Do not connect or use email, messaging, CRM, or outreach tools to contact prospects until the owner approves the specific prospect list and message batch.
 
 ### 6. Implement and verify
 

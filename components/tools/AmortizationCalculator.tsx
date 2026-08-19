@@ -157,7 +157,9 @@ export default function AmortizationCalculator() {
               </div>
 
               <div className="rounded-lg bg-primary/5 p-5 ring-1 ring-primary/15">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">With extra payment</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                  {result.extraPayment > 0 ? "With extra payment" : "Selected plan"}
+                </p>
                 <p className="mt-2 text-2xl font-bold tabular-nums text-primary">
                   {fmt(result.scheduledPayment)} <span className="text-sm font-medium text-muted-foreground">/ month</span>
                 </p>
@@ -256,51 +258,17 @@ export default function AmortizationCalculator() {
             later payments are mostly principal.
           </p>
           <p className="mt-3">
-            Example: On a $300,000, 30-year mortgage at 7%, your monthly payment is $1,996.
-          </p>
-          <ul className="list-disc pl-5 mt-2 space-y-1">
-            <li>Month 1: $1,750 goes to interest, $246 to principal</li>
-            <li>Month 180 (year 15): $1,340 to interest, $656 to principal</li>
-            <li>Month 360 (final): $12 to interest, $1,984 to principal</li>
-          </ul>
-          <p className="mt-3">
-            By year 15, you&apos;ve paid approximately 45% of your total lifetime interest but reduced
-            your principal by only about 20%. This front-loading of interest is why extra early
-            payments save so much money.
+            The schedule above calculates that split for every month using your loan amount, rate,
+            term, and extra payment. Compare the first and final rows to see how the interest share
+            falls as the remaining principal declines.
           </p>
         </section>
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">The Power of Extra Payments</h2>
-          <p>On a $300,000, 30-year, 7% mortgage (monthly payment: $1,996):</p>
-          <div className="overflow-x-auto mt-3">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-primary/10">
-                  <th className="text-left p-2 font-medium">Extra Monthly Payment</th>
-                  <th className="text-left p-2 font-medium">Interest Saved</th>
-                  <th className="text-left p-2 font-medium">Years Saved</th>
-                  <th className="text-left p-2 font-medium">Payoff Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["$0 (baseline)", "—", "—", "30 years"],
-                  ["$100/month", "~$47,000", "~3 years", "~27 years"],
-                  ["$200/month", "~$89,000", "~6 years", "~24 years"],
-                  ["$500/month", "~$175,000", "~12 years", "~18 years"],
-                ].map((row, i) => (
-                  <tr key={i} className="even:bg-muted/30">
-                    {row.map((cell, j) => (
-                      <td key={j} className="p-2">{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3">
-            Even $100 extra per month saves meaningful money over the life of the loan. Use the
-            &quot;Extra Monthly Payment&quot; field in the calculator above to see your specific numbers.
+          <p>
+            Add an amount in the &quot;Extra Monthly Payment&quot; field to compare the selected plan
+            with the base schedule. The summary reports the calculated interest and time saved for
+            those inputs rather than relying on a generic example.
           </p>
           <p className="mt-3">
             The key insight: extra payments reduce the balance faster, which means less interest

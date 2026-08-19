@@ -1744,7 +1744,7 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
     {
       question: "Does it account for interest earnings?",
       answer:
-        "Yes. If you specify an expected interest rate (e.g., 4-5% for a high-yield savings account), the calculator factors in compound interest, reducing the monthly contribution needed to reach your goal.",
+        "Yes. Enter the annual interest rate currently offered by your account and the calculator will factor estimated compound growth into the monthly contribution. Savings rates can change, so revisit the estimate when your provider changes the rate.",
     },
     {
       question: "What savings goals should I prioritize?",

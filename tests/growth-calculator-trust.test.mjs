@@ -20,7 +20,22 @@ test("mortgage and auto-loan results provide a contextual down-payment path", ()
 });
 
 test("savings goal states contribution timing without stale rate claims", () => {
-  const content = source("components/tools/SavingsGoalCalculator.tsx");
-  assert.match(content, /contributions are made at the end of each month/i);
-  assert.doesNotMatch(content, /As of 2025|4–5% APY|0\.01–0\.1%/);
+  const component = source("components/tools/SavingsGoalCalculator.tsx");
+  const tools = source("lib/tools.ts");
+  const faqs = source("lib/seo/tool-faqs.ts");
+  assert.match(component, /contributions are made at the end of each month/i);
+  for (const content of [component, tools, faqs]) {
+    assert.doesNotMatch(content, /As of 2025|4[–-]5% APY|typical high-yield savings/i);
+  }
+});
+
+test("amortization guidance does not hardcode a contradictory extra-payment outcome", () => {
+  const tools = source("lib/tools.ts");
+  const component = source("components/tools/AmortizationCalculator.tsx");
+  for (const content of [tools, component]) {
+    assert.doesNotMatch(
+      content,
+      /\$82,?000 in interest|6\.5 years early|saves \$82,?153|~\$89,?000|~6 years/i
+    );
+  }
 });

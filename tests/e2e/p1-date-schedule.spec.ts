@@ -67,12 +67,15 @@ test.describe("P1 date and schedule calculator remediations", () => {
     await page.getByLabel("Loan Amount ($)", { exact: true }).fill("300000");
     await page.getByLabel("Interest Rate (%)", { exact: true }).fill("6.5");
     await page.getByLabel("Loan Term (years)", { exact: true }).fill("30");
-    await page.getByLabel("Extra Monthly Payment ($)", { exact: true }).fill("100");
 
     const summary = page.getByRole("region", {
       name: "See the cost and payoff impact of extra payments",
       exact: true,
     });
+    await expect(summary).toContainText("Selected plan");
+
+    await page.getByLabel("Extra Monthly Payment ($)", { exact: true }).fill("100");
+
     await expect(summary).toBeVisible();
     await expect(summary).toContainText("Base plan");
     await expect(summary).toContainText("$1,896.20 / month");
@@ -93,6 +96,19 @@ test.describe("P1 date and schedule calculator remediations", () => {
     await expect(payoffRow.locator("td").nth(2)).toHaveText("$814.80");
     await expect(payoffRow.locator("td").nth(3)).toHaveText("$4.41");
     await expect(payoffRow.locator("td").nth(4)).toHaveText("$0.00");
+  });
+
+  test("credit card payoff reports a remaining balance when 50 years is insufficient", async ({ page }) => {
+    await openTool(page, "/calc/credit-card-payoff");
+    await page.getByLabel("Current Balance ($)", { exact: true }).fill("5000");
+    await page.getByLabel("APR (%)", { exact: true }).fill("22");
+    await page.getByLabel("Monthly Payment ($)", { exact: true }).fill("91.6667");
+
+    const cappedState = page.getByRole("status");
+    await expect(cappedState).toContainText("Not Paid Off Within 50 Years");
+    await expect(cappedState).toContainText("$4,901.46");
+    await expect(cappedState).toContainText("Monthly Payment to Amortize in 50 Years");
+    await expect(cappedState).toContainText("$91.67");
   });
 
   test("pace and split displays carry rounded seconds on both sides of rollover", async ({ page }) => {
