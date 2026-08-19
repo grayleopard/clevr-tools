@@ -69,6 +69,21 @@ test.describe("P1 date and schedule calculator remediations", () => {
     await page.getByLabel("Loan Term (years)", { exact: true }).fill("30");
     await page.getByLabel("Extra Monthly Payment ($)", { exact: true }).fill("100");
 
+    const summary = page.getByRole("region", {
+      name: "See the cost and payoff impact of extra payments",
+      exact: true,
+    });
+    await expect(summary).toBeVisible();
+    await expect(summary).toContainText("Base plan");
+    await expect(summary).toContainText("$1,896.20 / month");
+    await expect(summary).toContainText("Month 360");
+    await expect(summary).toContainText("With extra payment");
+    await expect(summary).toContainText("$1,996.20 / month");
+    await expect(summary).toContainText("Month 312 of 360");
+    await expect(summary).toContainText("$60,994.79 saved");
+    await expect(summary).toContainText("$819.21");
+    await expect(summary).toContainText("full-precision math");
+
     await expect(page.getByText("$621,638.68", { exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Show All 312 Months", exact: true }).click();
 

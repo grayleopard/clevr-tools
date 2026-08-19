@@ -16,11 +16,26 @@ function fmt(n: number): string {
 
 type PayoffResult =
   | { ok: true; months: number; totalInterest: number; totalPaid: number }
-  | { ok: false; emptyMessage: string };
+  | { ok: false; status: "invalid" | "interest-only"; emptyMessage: string }
+  | {
+      ok: false;
+      status: "capped";
+      remainingBalance: number;
+      requiredPayment: number;
+    };
 
-function calcPayoff(balance: number, apr: number, monthlyPayment: number): PayoffResult {
+function paymentForAmortization(balance: number, monthlyRate: number, months: number): number {
+  if (monthlyRate <= 0) return balance / months;
+  return (balance * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+}
+
+export function calcPayoff(balance: number, apr: number, monthlyPayment: number): PayoffResult {
   if (balance <= 0 || monthlyPayment <= 0) {
-    return { ok: false, emptyMessage: "Enter your balance and monthly payment to see your payoff timeline." };
+    return {
+      ok: false,
+      status: "invalid",
+      emptyMessage: "Enter your balance and monthly payment to see your payoff timeline.",
+    };
   }
   const monthlyRate = apr / 100 / 12;
   const minInterest = balance * monthlyRate;
@@ -30,6 +45,7 @@ function calcPayoff(balance: number, apr: number, monthlyPayment: number): Payof
     const minToProgress = Math.ceil(minInterest + 1);
     return {
       ok: false,
+      status: "interest-only",
       emptyMessage: `At ${fmt(monthlyPayment)}/month you're only covering interest — the balance will never go down. Pay at least ${fmt(minToProgress)}/month to start making progress.`,
     };
   }
@@ -45,6 +61,15 @@ function calcPayoff(balance: number, apr: number, monthlyPayment: number): Payof
     remaining = Math.max(0, remaining - principalPaid);
     totalInterest += interest;
     months++;
+  }
+
+  if (remaining > 0) {
+    return {
+      ok: false,
+      status: "capped",
+      remainingBalance: remaining,
+      requiredPayment: paymentForAmortization(balance, monthlyRate, MAX_MONTHS),
+    };
   }
 
   return {
@@ -138,7 +163,32 @@ export default function CreditCardPayoffCalculator() {
         </div>
       </div>
 
-      {!result.ok && <CalculatorEmptyState message={result.emptyMessage} />}
+      {!result.ok && result.status !== "capped" && <CalculatorEmptyState message={result.emptyMessage} />}
+
+      {!result.ok && result.status === "capped" && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="rounded-xl border border-dashed border-border bg-muted/20 px-6 py-6 text-center"
+        >
+          <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
+            Not Paid Off Within 50 Years
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            At {fmt(parseFloat(monthlyPayment) || 0)}/month, an estimated balance would remain after 600 monthly payments.
+          </p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg bg-background px-4 py-3">
+              <p className="text-xs text-muted-foreground">Remaining Balance</p>
+              <p className="mt-1 text-xl font-bold tabular-nums text-foreground">{fmt(result.remainingBalance)}</p>
+            </div>
+            <div className="rounded-lg bg-background px-4 py-3">
+              <p className="text-xs text-muted-foreground">Monthly Payment to Amortize in 50 Years</p>
+              <p className="mt-1 text-xl font-bold tabular-nums text-primary">{fmt(result.requiredPayment)}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {result.ok && (
         <>
