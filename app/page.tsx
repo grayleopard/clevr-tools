@@ -19,6 +19,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.clevr.tools",
   },
+  openGraph: {
+    type: "website",
+    title: "clevr.tools — Free Online File & Text Tools",
+    description:
+      "Free online file and text tools: compress images, convert formats, generate QR codes, count words, convert case, and more. Local tools are clearly labeled and run in your browser.",
+    url: "https://www.clevr.tools",
+    siteName: "clevr.tools",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+  },
 };
 
 /** Tools promoted in the hero's "Most used this week" list. */

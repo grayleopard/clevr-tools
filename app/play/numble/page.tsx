@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     "Free daily number puzzle. Combine 6 numbers to reach the target using +, \u2212, \u00d7, \u00f7. One puzzle per day, same for everyone. Track your streak.",
   alternates: { canonical: "https://www.clevr.tools/play/numble" },
   openGraph: {
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     title: "Numble \u2014 Daily Number Puzzle",
     description:
       "Free daily number puzzle. Combine 6 numbers to reach the target.",

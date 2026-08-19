@@ -118,6 +118,7 @@ export async function generateMetadata({
     robots: { index: false, follow: true },
     alternates: { canonical: url },
     openGraph: {
+      type: "website",
       title,
       description,
       url,

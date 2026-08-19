@@ -69,7 +69,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['gif-compressor', 'png-to-jpg', 'png-to-webp', 'resize-image'],
+    relatedTools: ['gif-compressor', 'image-cropper', 'png-to-webp', 'resize-image'],
     badge: 'popular',
   },
   {
@@ -449,7 +449,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['pdf-compressor', 'png-to-pdf', 'merge-pdf'],
+    relatedTools: ['pdf-compressor', 'png-to-pdf', 'merge-pdf', 'word-to-pdf'],
   },
   {
     slug: 'merge-pdf',
@@ -486,7 +486,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['split-pdf', 'pdf-compressor', 'rotate-pdf'],
+    relatedTools: ['split-pdf', 'pdf-compressor', 'rotate-pdf', 'word-to-pdf'],
   },
   {
     slug: 'split-pdf',
@@ -640,7 +640,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['gif-compressor', 'image-compressor', 'png-to-jpg', 'jpg-to-png'],
+    relatedTools: ['image-cropper', 'image-compressor', 'png-to-jpg', 'jpg-to-png'],
     badge: 'new',
   },
   {
@@ -677,7 +677,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['jpg-to-pdf', 'merge-pdf', 'png-to-jpg'],
+    relatedTools: ['jpg-to-pdf', 'merge-pdf', 'png-to-jpg', 'invoice-generator'],
   },
   // ─── Word ↔ PDF ───────────────────────────────────────────────────────────
   {
@@ -721,7 +721,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['pdf-compressor', 'merge-pdf'],
+    relatedTools: ['pdf-compressor', 'merge-pdf', 'invoice-generator'],
     badge: 'new',
   },
   // ─── Text Tools ───────────────────────────────────────────────────────────
@@ -1246,7 +1246,7 @@ export const tools: Tool[] = [
     route: '/calc/odds-calculator',
     acceptedFormats: [],
     icon: 'Percent',
-    metaTitle: 'Odds Calculator — Convert Odds, Parlays & Implied Probability | clevr.tools',
+    metaTitle: 'Odds Calculator — Convert Odds & Parlays | clevr.tools',
     metaDescription: 'Free odds calculator: convert American, decimal, and fractional odds. Calculate parlays, implied probability, and payouts. No signup required.',
     seoContent: `
       <h2>When to use this</h2>
@@ -1725,7 +1725,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['percentage-calculator', 'discount-calculator'],
+    relatedTools: ['percentage-calculator', 'discount-calculator', 'sales-tax'],
   },
   {
     slug: 'discount-calculator',
@@ -1763,7 +1763,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['percentage-calculator', 'tip-calculator'],
+    relatedTools: ['percentage-calculator', 'tip-calculator', 'sales-tax'],
   },
   {
     slug: 'compound-interest',
@@ -2416,7 +2416,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['compound-interest', 'retirement', 'down-payment'],
+    relatedTools: ['compound-interest', 'retirement', 'down-payment', 'net-worth'],
     badge: 'new',
   },
   {
@@ -2455,7 +2455,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['compound-interest', 'investment-return', 'savings-goal'],
+    relatedTools: ['compound-interest', 'investment-return', 'savings-goal', 'net-worth'],
     badge: 'new',
   },
   {

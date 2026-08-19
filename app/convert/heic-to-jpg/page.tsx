@@ -14,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: tool.metaDescription,
     ...hiddenToolRobots(tool),
     openGraph: {
+      type: "website",
       title: tool.metaTitle,
       description: tool.metaDescription,
       url: `https://www.clevr.tools${tool.route}`,

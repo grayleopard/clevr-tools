@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   ...hiddenToolRobots(tool),
   alternates: { canonical: `https://www.clevr.tools${tool.route}` },
   openGraph: {
+    type: "website",
     title: tool.metaTitle,
     description: tool.metaDescription,
     url: `https://www.clevr.tools${tool.route}`,

@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     canonical: "https://www.clevr.tools/methodology",
   },
   openGraph: {
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     title: "How clevr.tools Works | Methodology",
     description:
       "Our approach to tool testing, privacy disclosures, limitations, updates, and corrections.",

@@ -216,6 +216,10 @@ function getDifficultyDotColor(difficulty: NumbleDifficulty) {
   return "bg-emerald-400";
 }
 
+function NumbleTitle() {
+  return <h1 className="text-2xl font-bold tracking-tight">NUMBLE</h1>;
+}
+
 function computeHintTileIds(
   tiles: Tile[],
   hintStep: SolutionStep | null
@@ -1120,7 +1124,18 @@ export default function NumbleGame() {
   }, [closestDiff, gameStatus, puzzle, steps.length]);
 
   if (!hasHydrated || !puzzle) {
-    return <div className="flex h-64 items-center justify-center text-[var(--text-secondary)]">Loading…</div>;
+    return (
+      <div className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]">
+        <div className="border-b border-[var(--border-default)] px-4 py-3">
+          <div className="mx-auto max-w-5xl">
+            <NumbleTitle />
+          </div>
+        </div>
+        <div className="flex h-64 items-center justify-center text-[var(--text-secondary)]">
+          Loading…
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -1130,7 +1145,7 @@ export default function NumbleGame() {
       <div className="border-b border-[var(--border-default)] px-4 py-3">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">NUMBLE</h1>
+            <NumbleTitle />
             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[var(--text-tertiary)]">
               <span>{formatModeTitle(mode, puzzle)}</span>
               {mode === "daily" ? <span>· {new Date(puzzle.date + "T00:00:00Z").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })}</span> : null}

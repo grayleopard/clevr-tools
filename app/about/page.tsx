@@ -10,6 +10,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.clevr.tools/about",
   },
+  openGraph: {
+    type: "website",
+    title: "About | clevr.tools",
+    description:
+      "clevr.tools is a free collection of online file and text utilities. Local tools are clearly labeled and process files in your browser.",
+    url: "https://www.clevr.tools/about",
+    siteName: "clevr.tools",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+  },
 };
 
 export default function AboutPage() {

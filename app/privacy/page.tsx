@@ -3,13 +3,15 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "Privacy Policy & Data Handling | clevr.tools",
   description:
     "clevr.tools processes files locally in your browser by default. Learn what data we collect and how we use it.",
   alternates: {
     canonical: "https://www.clevr.tools/privacy",
   },
   openGraph: {
+    type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     title: "Privacy Policy | clevr.tools",
     description:
       "clevr.tools processes files locally in your browser by default. Your files stay on your device.",
