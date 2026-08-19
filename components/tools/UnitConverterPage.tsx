@@ -30,11 +30,13 @@ export default function UnitConverterPage({
   configKey,
   defaultFrom,
   defaultTo,
+  allowedUnits,
   seoContent,
 }: {
   configKey: string;
   defaultFrom?: string;
   defaultTo?: string;
+  allowedUnits?: readonly string[];
   seoContent?: React.ReactNode;
 }) {
   const config: UnitConverterConfig = converterConfigs[configKey] ?? converterConfigs.length;
@@ -48,14 +50,19 @@ export default function UnitConverterPage({
   const [dataSizeMode, setDataSizeMode] = useState<DataSizeMode>(DEFAULT_DATA_SIZE_MODE);
   const [significantDigits, setSignificantDigits] = useState(10);
   const isDataSize = configKey === "data";
+  const hasFixedUnitSet = (allowedUnits?.length ?? 0) > 0;
 
   const visibleUnits = useMemo(() => {
+    if (hasFixedUnitSet) {
+      const allowedSymbols = new Set(allowedUnits);
+      return config.units.filter((unit) => allowedSymbols.has(unit.symbol));
+    }
     if (!isDataSize) return config.units;
     const visibleSymbols = new Set(
       getDataSizeUnitsForMode(dataSizeMode).map((unit) => unit.symbol)
     );
     return config.units.filter((unit) => visibleSymbols.has(unit.symbol));
-  }, [config.units, dataSizeMode, isDataSize]);
+  }, [allowedUnits, config.units, dataSizeMode, hasFixedUnitSet, isDataSize]);
 
   const fromUnitObj = config.units.find((u) => u.symbol === fromUnit) ?? config.units[0];
   const toUnitObj = config.units.find((u) => u.symbol === toUnit) ?? config.units[1];
@@ -136,7 +143,7 @@ export default function UnitConverterPage({
     <div className="space-y-6">
       {/* Converter UI */}
       <div className="rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
-        {isDataSize && (
+        {isDataSize && !hasFixedUnitSet && (
           <fieldset className="mb-6 space-y-3">
             <legend className="text-sm font-semibold text-foreground">Unit system</legend>
             <div className="grid gap-2 sm:grid-cols-3" aria-label="Data size unit system">

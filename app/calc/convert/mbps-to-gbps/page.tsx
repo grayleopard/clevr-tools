@@ -30,7 +30,12 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ToolLayout tool={tool}>
-      <UnitConverterPage configKey="data" defaultFrom="Mbit" defaultTo="Gbit" />
+      <UnitConverterPage
+        configKey="data"
+        defaultFrom="Mbit"
+        defaultTo="Gbit"
+        allowedUnits={["Mbit", "Gbit"]}
+      />
       <FaqSchema items={faqItems} />
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
         <section>

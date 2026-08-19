@@ -884,7 +884,7 @@ export const searchIndex: readonly SearchTool[] = [
     "name": "Angle Converter",
     "route": "/calc/convert/angle",
     "category": "calc",
-    "shortDescription": "Convert between degrees, radians, gradians, and arcseconds.",
+    "shortDescription": "Convert between degrees, radians, gradians, arcminutes, and arcseconds.",
     "aliases": [],
     "icon": "Compass"
   },

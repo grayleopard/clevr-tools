@@ -34,3 +34,14 @@ test("Data Size exposes truthful modes, precision, copy, and a clean mobile rout
   expect(new URL(page.url()).pathname).toBe("/calc/convert/data");
   expect(new URL(page.url()).search).toBe("");
 });
+
+test("Mbps to Gbps stays limited to transfer-rate units", async ({ page }) => {
+  await page.goto("/calc/convert/mbps-to-gbps", { waitUntil: "domcontentloaded" });
+
+  await expect(page.getByRole("button", { name: /SI decimal/i })).toHaveCount(0);
+  await expect(page.getByLabel("From unit").locator("option")).toHaveText(["Megabits (Mbit)", "Gigabits (Gbit)"]);
+  await expect(page.getByLabel("To unit").locator("option")).toHaveText(["Megabits (Mbit)", "Gigabits (Gbit)"]);
+
+  await page.locator("#from-value").fill("1000");
+  await expect(page.locator("#to-value")).toHaveValue("1");
+});

@@ -2815,13 +2815,25 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
 };
 
 export function getToolFaqs(slug: string): FaqItem[] {
-  if (slug !== "image-compressor") return [];
-
-  const verifiedQuestions = new Set([
-    "Can I compress JPG and PNG files?",
-    "Will compression reduce image quality?",
-    "Can I compress multiple images in one session?",
-  ]);
+  const verifiedQuestionsBySlug: Record<string, readonly string[]> = {
+    "image-compressor": [
+      "Can I compress JPG and PNG files?",
+      "Will compression reduce image quality?",
+      "Can I compress multiple images in one session?",
+    ],
+    "convert-data": DATA_SIZE_FAQS.map((item) => item.question),
+    "convert-speed": [
+      "What speed units can I convert between?",
+      "What are common speed conversions?",
+      "What is a knot?",
+    ],
+    "convert-angle": [
+      "What angle units can I convert between?",
+      "How do I convert degrees to radians?",
+      "What is a gradian?",
+    ],
+  };
+  const verifiedQuestions = new Set(verifiedQuestionsBySlug[slug] ?? []);
   return (toolFaqsBySlug[slug] ?? []).filter((item) =>
     verifiedQuestions.has(item.question)
   );

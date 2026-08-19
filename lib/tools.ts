@@ -1362,7 +1362,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['percentage-calculator'],
+    relatedTools: ['convert-data', 'convert-speed', 'convert-angle', 'percentage-calculator'],
   },
   // ─── Not-yet-built tools ───────────────────────────────────────────────────
   {
@@ -3109,7 +3109,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['calories-burned', 'calorie', 'bmi-calculator'],
+    relatedTools: ['convert-speed', 'calories-burned', 'calorie', 'bmi-calculator'],
   },
   // ─── General Unit Converters ─────────────────────────────────────────
   {
@@ -3322,6 +3322,7 @@ export const tools: Tool[] = [
       <h2>Good to know</h2>
       <p><strong>Quick mph-to-km/h estimate: multiply by 1.6.</strong> 60 mph is about 97 km/h. 100 km/h is about 62 mph. For most driving situations, these estimates are close enough to understand speed limit signs in another country.</p>
       <p><strong>A knot is one nautical mile per hour.</strong> Knots are used in aviation and maritime because they tie directly to the latitude/longitude coordinate system. One knot = 1.852 km/h = 1.151 mph. When a pilot reports airspeed in knots, they are describing movement relative to the coordinate grid of the Earth.</p>
+      <p><strong>Feet per second is common in engineering.</strong> One foot per second equals exactly 0.3048 m/s, or about 1.09728 km/h and 0.681818 mph. It is useful for projectile motion, flow rates, and US engineering specifications.</p>
       <p><strong>Meters per second puts everyday speeds in perspective.</strong> Walking speed is about 1.4 m/s. A fast sprint is about 10 m/s. Highway driving at 70 mph is about 31 m/s. The speed of sound at sea level is about 343 m/s. Using m/s helps you understand the physics behind familiar experiences.</p>
 
       <h2>Quick Reference</h2>
@@ -3336,6 +3337,7 @@ export const tools: Tool[] = [
           <tr><td>80.8</td><td>130</td><td>36.1</td><td>70.2</td><td>EU motorway limit</td></tr>
           <tr><td>100</td><td>160.9</td><td>44.7</td><td>86.9</td><td>Fast driving</td></tr>
           <tr><td>767</td><td>1,235</td><td>343</td><td>667</td><td>Speed of sound</td></tr>
+          <tr><td>0.682</td><td>1.097</td><td>0.3048</td><td>0.593</td><td>1 foot per second</td></tr>
         </tbody>
       </table>
     `,
@@ -3388,8 +3390,8 @@ export const tools: Tool[] = [
     route: '/calc/convert/data',
     acceptedFormats: [],
     icon: 'Binary',
-    metaTitle: 'Data Size Converter — SI & IEC Units | clevr.tools',
-    metaDescription: 'Convert SI decimal and IEC binary data sizes, including kB, MB, GB, KiB, MiB, GiB, bytes, and bit multiples.',
+    metaTitle: 'Data Size Converter — kB, MB, GB, TB & GiB | clevr.tools',
+    metaDescription: 'Free data size converter for KB, MB, GB, TB, KiB, MiB, GiB, bits, and bytes. Compare SI decimal and IEC binary units. No signup.',
     seoContent: dataSizeSeoContent,
     relatedTools: ['mbps-to-gbps', 'convert-time', 'convert-length'],
   },
@@ -3548,7 +3550,7 @@ export const tools: Tool[] = [
   {
     slug: 'convert-angle',
     name: 'Angle Converter',
-    shortDescription: 'Convert between degrees, radians, gradians, and arcseconds.',
+    shortDescription: 'Convert between degrees, radians, gradians, arcminutes, and arcseconds.',
     category: 'calc',
     route: '/calc/convert/angle',
     acceptedFormats: [],
@@ -3564,20 +3566,21 @@ export const tools: Tool[] = [
       <p><strong>The key formula: radians = degrees x (pi / 180).</strong> A full circle is 360 degrees or 2pi radians. So 180° = pi radians, 90° = pi/2, and 45° = pi/4. Memorizing these anchor points covers most common conversions.</p>
       <p><strong>Most programming languages use radians.</strong> JavaScript's Math.sin(), Python's math.sin(), and virtually every math library expect radians as input. Forgetting to convert from degrees is one of the most common bugs in graphics and game programming.</p>
       <p><strong>Gradians are used in surveying.</strong> A full circle is 400 gradians (also called gons). This makes right angles exactly 100 gradians, which simplifies certain surveying calculations. You will rarely encounter gradians outside of European surveying contexts.</p>
+      <p><strong>Arcminutes and arcseconds divide a degree.</strong> One degree equals 60 arcminutes or 3,600 arcseconds. Surveying, navigation, and astronomy often use degrees-minutes-seconds notation when decimal degrees are not precise enough.</p>
 
       <h2>Quick Reference</h2>
       <table>
-        <thead><tr><th>Degrees</th><th>Radians</th><th>Gradians</th><th>Context</th></tr></thead>
+        <thead><tr><th>Degrees</th><th>Radians</th><th>Gradians</th><th>Arcminutes</th><th>Arcseconds</th><th>Context</th></tr></thead>
         <tbody>
-          <tr><td>0°</td><td>0</td><td>0 grad</td><td>Starting point</td></tr>
-          <tr><td>30°</td><td>pi/6 (0.524)</td><td>33.33 grad</td><td>Common trig angle</td></tr>
-          <tr><td>45°</td><td>pi/4 (0.785)</td><td>50 grad</td><td>Diagonal / 45° angle</td></tr>
-          <tr><td>60°</td><td>pi/3 (1.047)</td><td>66.67 grad</td><td>Equilateral triangle</td></tr>
-          <tr><td>90°</td><td>pi/2 (1.571)</td><td>100 grad</td><td>Right angle</td></tr>
-          <tr><td>120°</td><td>2pi/3 (2.094)</td><td>133.33 grad</td><td>Obtuse angle</td></tr>
-          <tr><td>180°</td><td>pi (3.142)</td><td>200 grad</td><td>Straight line</td></tr>
-          <tr><td>270°</td><td>3pi/2 (4.712)</td><td>300 grad</td><td>Three-quarter turn</td></tr>
-          <tr><td>360°</td><td>2pi (6.283)</td><td>400 grad</td><td>Full circle</td></tr>
+          <tr><td>0°</td><td>0</td><td>0 grad</td><td>0</td><td>0</td><td>Starting point</td></tr>
+          <tr><td>30°</td><td>pi/6 (0.524)</td><td>33.33 grad</td><td>1,800</td><td>108,000</td><td>Common trig angle</td></tr>
+          <tr><td>45°</td><td>pi/4 (0.785)</td><td>50 grad</td><td>2,700</td><td>162,000</td><td>Diagonal / 45° angle</td></tr>
+          <tr><td>60°</td><td>pi/3 (1.047)</td><td>66.67 grad</td><td>3,600</td><td>216,000</td><td>Equilateral triangle</td></tr>
+          <tr><td>90°</td><td>pi/2 (1.571)</td><td>100 grad</td><td>5,400</td><td>324,000</td><td>Right angle</td></tr>
+          <tr><td>120°</td><td>2pi/3 (2.094)</td><td>133.33 grad</td><td>7,200</td><td>432,000</td><td>Obtuse angle</td></tr>
+          <tr><td>180°</td><td>pi (3.142)</td><td>200 grad</td><td>10,800</td><td>648,000</td><td>Straight line</td></tr>
+          <tr><td>270°</td><td>3pi/2 (4.712)</td><td>300 grad</td><td>16,200</td><td>972,000</td><td>Three-quarter turn</td></tr>
+          <tr><td>360°</td><td>2pi (6.283)</td><td>400 grad</td><td>21,600</td><td>1,296,000</td><td>Full circle</td></tr>
         </tbody>
       </table>
     `,
