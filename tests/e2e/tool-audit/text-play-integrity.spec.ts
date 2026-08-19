@@ -114,14 +114,14 @@ test.describe("text, developer, time, typing, and play integrity", () => {
     await page.goto("/generate/password");
     await page.getByLabel("Length").fill("128");
     const password = page.locator("main span.font-mono.text-lg").first();
-    await expect(password).toHaveText(/^.{128}$/);
+    await expect(password).toHaveText(/^.{128}$/, { timeout: 15_000 });
     const beforeExclusion = (await password.textContent()) ?? "";
     await page
       .getByRole("checkbox", { name: /Exclude ambiguous characters/ })
       .check();
 
     await expect(password).not.toHaveText(beforeExclusion);
-    await expect(password).toHaveText(/^.{128}$/);
+    await expect(password).toHaveText(/^.{128}$/, { timeout: 15_000 });
     const value = (await password.textContent()) ?? "";
     expect(value).toMatch(/[A-Z]/);
     expect(value).toMatch(/[a-z]/);

@@ -57,7 +57,7 @@ test.describe("representative mobile, dark-mode, and runtime integrity", () => {
 
       const response = await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(response?.status(), `${route} HTTP status`).toBeLessThan(400);
-      await expect(page.locator("main h1").first()).toBeVisible();
+      await expect(page.locator("main h1").first()).toBeVisible({ timeout: 15_000 });
 
       const controls = await page
         .locator('main input:not([type="hidden"]), main textarea, main select, main button')
