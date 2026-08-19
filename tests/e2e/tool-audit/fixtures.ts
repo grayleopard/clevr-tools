@@ -204,7 +204,7 @@ export const FIXTURES: Record<string, Fixture> = {
     kind: "form",
     defaultsProduceResult: true,
     steps: [{ type: "fill", label: "Extra Monthly Payment ($)", value: "500" }],
-    successPattern: /Interest Saved/,
+    successPattern: /Interest Saved/i,
   },
   "car-payment": {
     kind: "form",

@@ -2394,24 +2394,25 @@ export const tools: Tool[] = [
       <h2>When to use this</h2>
       <p>You have a specific financial target — $15,000 for an emergency fund, $40,000 for a down payment, $5,000 for a vacation — and need to know exactly how much to save each month to get there on time. Enter your goal amount, how much you've already saved, your timeline, and the interest rate on your savings account. The calculator tells you the precise monthly contribution required.</p>
       <p>It works in the other direction too. If you can only set aside $600 a month, how long until you reach $30,000? Or if you have 24 months and can save $800/month, what's the maximum goal you can realistically hit? Playing with the inputs helps you find a plan that fits your budget and timeline rather than guessing or hoping.</p>
-      <p>This is also a motivational tool. Seeing that your $70,000 down payment goal requires $1,100/month for 5 years (with a high-yield savings account earning 4.5%) transforms an intimidating number into a concrete, achievable plan. And watching the interest component — money your savings earns for you — grow over time reinforces the discipline of consistent saving.</p>
+      <p>This is also a planning tool. Turning a large target into a monthly contribution makes the tradeoff between goal size and timeline concrete. You can enter the annual interest rate currently offered by your account to see how the estimate changes, then update that rate whenever the provider changes it.</p>
 
       <h2>Good to know</h2>
       <p><strong>The formula solves for monthly payment: PMT = (FV - PV x (1+r)^n) x r / [(1+r)^n - 1].</strong> FV is your savings goal, PV is your current savings, r is the monthly interest rate (APY / 12), and n is the number of months. Your current savings compound while you add new money each month, so even a modest starting balance helps.</p>
-      <p><strong>Interest rates matter more than you think for longer goals.</strong> Saving $50,000 over 5 years with 0% interest requires $833/month. At 4.5% APY (typical high-yield savings), you need only $750/month — the interest contributes roughly $5,000 over the period. Over 10 years, the gap widens further. Parking your savings in a high-yield account instead of a checking account is one of the easiest financial optimizations.</p>
+      <p><strong>Interest assumptions matter more for longer goals.</strong> Compare the result at 0% with the annual rate currently offered by your account. Savings rates can change, so the result is an estimate rather than a guaranteed return. Revisit the plan when your account rate, goal, or timeline changes.</p>
       <p><strong>The 50/30/20 budget gives you a savings baseline.</strong> Allocate 50% of after-tax income to needs, 30% to wants, and 20% to savings and debt repayment. On a $4,500/month take-home pay, that's $900/month for savings goals. If your calculator result exceeds your 20% allocation, you may need to extend the timeline or reduce the goal.</p>
       <p><strong>Automate it.</strong> Research consistently shows that automatic transfers on payday are the most effective savings strategy. Set up a recurring transfer for the exact amount the calculator shows, and treat it like a non-negotiable bill. People who automate savings reach their goals at significantly higher rates than those who transfer manually.</p>
       <p><strong>Build the emergency fund first.</strong> Financial planners almost universally recommend saving 3–6 months of essential expenses before targeting other goals. Without this cushion, an unexpected expense (car repair, medical bill, job loss) forces you to raid your savings goal or take on debt, setting you back further than if you'd built the safety net first.</p>
 
-      <h2>Quick Reference</h2>
+      <h2>Quick Reference Without Assumed Growth</h2>
+      <p>These simple examples divide the remaining goal by the number of months and assume no starting balance or interest. Enter your own balance and current annual rate above for a personalized estimate.</p>
       <table>
-        <thead><tr><th>Goal</th><th>Timeline</th><th>Monthly (0% interest)</th><th>Monthly (4.5% HYSA)</th><th>Interest Earned</th></tr></thead>
+        <thead><tr><th>Goal</th><th>Timeline</th><th>Monthly contribution</th></tr></thead>
         <tbody>
-          <tr><td>$5,000 (vacation)</td><td>12 months</td><td>$417</td><td>$407</td><td>$116</td></tr>
-          <tr><td>$15,000 (emergency)</td><td>18 months</td><td>$833</td><td>$804</td><td>$528</td></tr>
-          <tr><td>$25,000 (car)</td><td>3 years</td><td>$694</td><td>$651</td><td>$1,564</td></tr>
-          <tr><td>$50,000 (down payment)</td><td>5 years</td><td>$833</td><td>$750</td><td>$5,000</td></tr>
-          <tr><td>$100,000 (investment)</td><td>10 years</td><td>$833</td><td>$675</td><td>$19,000</td></tr>
+          <tr><td>$5,000</td><td>12 months</td><td>$416.67</td></tr>
+          <tr><td>$15,000</td><td>18 months</td><td>$833.33</td></tr>
+          <tr><td>$25,000</td><td>36 months</td><td>$694.44</td></tr>
+          <tr><td>$50,000</td><td>60 months</td><td>$833.33</td></tr>
+          <tr><td>$100,000</td><td>120 months</td><td>$833.33</td></tr>
         </tbody>
       </table>
     `,
@@ -2633,19 +2634,19 @@ export const tools: Tool[] = [
       <h2>Good to know</h2>
       <p><strong>The formula is M = P[r(1+r)^n] / [(1+r)^n - 1].</strong> P is the principal (loan amount), r is the monthly interest rate (annual rate / 12), and n is total number of payments (years × 12). Each month, interest = remaining balance × r, and principal = M - interest. As the balance shrinks, less goes to interest and more to principal — that's amortization.</p>
       <p><strong>Front-loading of interest is dramatic.</strong> On a $300,000 mortgage at 6.5% over 30 years, your first payment of $1,896 splits as $1,625 interest and $271 principal. You don't reach a 50/50 split until around year 19. This is why selling a home in the first few years often means you've barely touched the principal.</p>
-      <p><strong>Extra payments attack the back end of the schedule.</strong> When you pay an extra $200/month, that money goes entirely to principal. Each dollar of extra principal eliminates a future interest charge, creating a compounding savings effect. On the same $300,000 mortgage, $200/month extra saves about $82,000 in interest and pays off the loan 6.5 years early.</p>
+      <p><strong>Extra payments attack the back end of the schedule.</strong> When an extra payment is applied to principal, the lower balance reduces future interest charges. The exact savings and payoff date depend on the loan amount, rate, term, payment timing, and lender rules; use the comparison above for the selected inputs.</p>
       <p><strong>Biweekly payments are a stealth extra payment.</strong> Paying half your monthly payment every two weeks results in 26 half-payments (13 full payments) per year instead of 12. That one extra payment per year can shave 4–5 years off a 30-year mortgage.</p>
       <p><strong>Refinancing resets your amortization clock.</strong> If you refinance 10 years into a 30-year mortgage into a new 30-year mortgage, you restart the front-loaded interest cycle. Even at a lower rate, you may pay more total interest. Always compare total remaining cost, not just monthly payments.</p>
 
-      <h2>Quick Reference</h2>
+      <h2>What the comparison shows</h2>
       <table>
-        <thead><tr><th>Loan</th><th>Rate</th><th>Term</th><th>Monthly Payment</th><th>Total Interest</th><th>With $200/mo Extra</th></tr></thead>
+        <thead><tr><th>Result</th><th>How to use it</th></tr></thead>
         <tbody>
-          <tr><td>$200,000</td><td>6.0%</td><td>30 yr</td><td>$1,199</td><td>$231,640</td><td>$152,120 (saves $79,520)</td></tr>
-          <tr><td>$300,000</td><td>6.5%</td><td>30 yr</td><td>$1,896</td><td>$382,633</td><td>$300,480 (saves $82,153)</td></tr>
-          <tr><td>$300,000</td><td>6.5%</td><td>15 yr</td><td>$2,613</td><td>$170,389</td><td>$141,220 (saves $29,169)</td></tr>
-          <tr><td>$25,000</td><td>5.5%</td><td>5 yr</td><td>$478</td><td>$3,638</td><td>$2,490 (saves $1,148)</td></tr>
-          <tr><td>$40,000</td><td>7.0%</td><td>6 yr</td><td>$684</td><td>$9,225</td><td>$6,870 (saves $2,355)</td></tr>
+          <tr><td>Base monthly payment</td><td>The scheduled principal-and-interest payment without an extra amount.</td></tr>
+          <tr><td>Selected monthly payment</td><td>The base payment plus the extra monthly principal you entered.</td></tr>
+          <tr><td>Interest saved</td><td>The difference between total base-plan interest and selected-plan interest.</td></tr>
+          <tr><td>Time saved</td><td>The number of scheduled monthly payments removed by the extra amount.</td></tr>
+          <tr><td>Final payment</td><td>The adjusted last payment needed to clear the remaining calculated balance.</td></tr>
         </tbody>
       </table>
     `,

@@ -128,6 +128,9 @@ export default function SavingsGoalCalculator() {
             <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
               {fmt(result.monthlyNeeded)}
             </p>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Assumption: monthly contributions are made at the end of each month.
+            </p>
           </div>
 
           {/* Other frequencies */}
@@ -172,10 +175,8 @@ export default function SavingsGoalCalculator() {
             what you don&apos;t see. Most banks let you set up recurring automatic transfers.
           </p>
           <p className="mt-3">
-            <strong className="text-foreground">Use a high-yield savings account.</strong> As of 2025, many online banks and credit unions offer
-            4–5% APY on savings accounts. Traditional brick-and-mortar banks often offer 0.01–0.1%.
-            This difference compounds significantly over time. For a $20,000 emergency fund, the
-            difference is $800–$1,000 per year in interest.
+            <strong className="text-foreground">Compare account APYs and fees.</strong> Savings rates are variable and can change.
+            Enter the current APY offered by your account, and verify deposit insurance, withdrawal rules, and other terms with the provider.
           </p>
           <p className="mt-3">
             <strong className="text-foreground">Set specific goals, not vague intentions.</strong> &quot;Save $10,000 by December&quot; is more effective

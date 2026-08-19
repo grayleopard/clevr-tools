@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
 import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
@@ -396,6 +397,13 @@ export default function MortgageCalculator() {
               </table>
             </div>
           )}
+
+          <Link
+            href="/calc/down-payment"
+            className="inline-flex text-sm font-medium text-primary hover:underline"
+          >
+            Calculate your down payment
+          </Link>
         </>
       )}
 

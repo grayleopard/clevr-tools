@@ -41,6 +41,10 @@ export default function AmortizationCalculator() {
     return {
       ok: true as const,
       basePayment: calculation.basePayment,
+      baseTotalPaid: calculation.totalWithoutExtra,
+      baseTotalInterest: calculation.interestWithoutExtra,
+      extraPayment: extra,
+      scheduledPayment: calculation.basePayment + extra,
       totalPaidWith: calculation.totalWithExtra,
       totalInterestWith: calculation.interestWithExtra,
       interestSaved: calculation.interestSaved,
@@ -48,6 +52,7 @@ export default function AmortizationCalculator() {
       schedule: calculation.schedule,
       originalMonths: calculation.originalMonths,
       actualMonths: calculation.actualMonths,
+      finalPayment: calculation.schedule.at(-1)?.payment ?? 0,
     };
   }, [loanAmount, interestRate, loanTermYears, extraPayment]);
 
@@ -113,40 +118,92 @@ export default function AmortizationCalculator() {
 
       {result?.ok && (
         <>
-          {/* Monthly payment */}
-          <div className="text-center rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
-            <p className="text-sm text-muted-foreground mb-1">Scheduled Monthly Payment</p>
-            <p className="text-4xl sm:text-5xl font-bold text-primary tabular-nums">
-              {fmt(result.basePayment + (parseFloat(extraPayment) || 0))}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1 tabular-nums">
-              {fmt(result.basePayment)} base{(parseFloat(extraPayment) || 0) > 0 && ` + ${fmt(parseFloat(extraPayment) || 0)} extra`}
-            </p>
-          </div>
+          <section
+            aria-labelledby="amortization-summary-heading"
+            className="rounded-xl border border-border bg-card p-6 sm:p-8"
+          >
+            <div className="mb-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Payment plan summary</p>
+              <h2 id="amortization-summary-heading" className="mt-2 text-xl font-bold tracking-tight text-foreground">
+                See the cost and payoff impact of extra payments
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {result.extraPayment > 0
+                  ? `${fmt(result.extraPayment)} extra each month shortens the payoff timeline by ${result.monthsSaved} months.`
+                  : "Compare the base plan with an accelerated payoff by adding an extra monthly payment above."}
+              </p>
+            </div>
 
-          {/* Summary */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalInterestWith)}</span>
-              <span className="text-xs text-muted-foreground">Total Interest</span>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-lg bg-muted/20 p-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Base plan</p>
+                <p className="mt-2 text-2xl font-bold tabular-nums text-foreground">
+                  {fmt(result.basePayment)} <span className="text-sm font-medium text-muted-foreground">/ month</span>
+                </p>
+                <dl className="mt-4 grid gap-2 text-sm">
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-muted-foreground">Payoff</dt>
+                    <dd className="font-medium tabular-nums text-foreground">Month {result.originalMonths}</dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-muted-foreground">Total interest</dt>
+                    <dd className="font-medium tabular-nums text-foreground">{fmt(result.baseTotalInterest)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-muted-foreground">Total paid</dt>
+                    <dd className="font-medium tabular-nums text-foreground">{fmt(result.baseTotalPaid)}</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div className="rounded-lg bg-primary/5 p-5 ring-1 ring-primary/15">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                  {result.extraPayment > 0 ? "With extra payment" : "Selected plan"}
+                </p>
+                <p className="mt-2 text-2xl font-bold tabular-nums text-primary">
+                  {fmt(result.scheduledPayment)} <span className="text-sm font-medium text-muted-foreground">/ month</span>
+                </p>
+                <dl className="mt-4 grid gap-2 text-sm">
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-muted-foreground">Payoff</dt>
+                    <dd className="font-medium tabular-nums text-foreground">Month {result.actualMonths} of {result.originalMonths}</dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-muted-foreground">Total interest</dt>
+                    <dd className="font-medium tabular-nums text-foreground">{fmt(result.totalInterestWith)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-muted-foreground">Total paid</dt>
+                    <dd className="font-medium tabular-nums text-foreground">{fmt(result.totalPaidWith)}</dd>
+                  </div>
+                </dl>
+              </div>
             </div>
-            <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-              <span className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.totalPaidWith)}</span>
-              <span className="text-xs text-muted-foreground">Total Paid</span>
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Interest saved</p>
+                <p className="mt-1 text-lg font-bold tabular-nums text-emerald-600 dark:text-emerald-300">
+                  {result.interestSaved > 0 ? `${fmt(result.interestSaved)} saved` : "No reduction"}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">Compared with the base plan</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Final payment</p>
+                <p className="mt-1 text-lg font-bold tabular-nums text-foreground">{fmt(result.finalPayment)}</p>
+                <p className="mt-1 text-xs text-muted-foreground">Due in month {result.actualMonths}</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Time saved</p>
+                <p className="mt-1 text-lg font-bold tabular-nums text-foreground">{result.monthsSaved > 0 ? `${result.monthsSaved} months` : "None"}</p>
+                <p className="mt-1 text-xs text-muted-foreground">Calendar date needs a start date</p>
+              </div>
             </div>
-            {result.interestSaved > 0 && (
-              <>
-                <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-                  <span className="text-sm font-semibold text-emerald-500 dark:text-emerald-300 tabular-nums">{fmt(result.interestSaved)}</span>
-                  <span className="text-xs text-muted-foreground">Interest Saved</span>
-                </div>
-                <div className="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-muted/20 px-3 py-3">
-                  <span className="text-sm font-semibold text-emerald-500 dark:text-emerald-300 tabular-nums">{result.monthsSaved} mo</span>
-                  <span className="text-xs text-muted-foreground">Time Saved</span>
-                </div>
-              </>
-            )}
-          </div>
+
+            <p className="mt-6 border-t border-border pt-4 text-xs leading-relaxed text-muted-foreground">
+              Assumption: monthly values use full-precision math and the final payment is adjusted to clear the remaining balance; lender statements may differ slightly when payments are rounded to cents.
+            </p>
+          </section>
 
           {/* Amortization table */}
           <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -201,51 +258,17 @@ export default function AmortizationCalculator() {
             later payments are mostly principal.
           </p>
           <p className="mt-3">
-            Example: On a $300,000, 30-year mortgage at 7%, your monthly payment is $1,996.
-          </p>
-          <ul className="list-disc pl-5 mt-2 space-y-1">
-            <li>Month 1: $1,750 goes to interest, $246 to principal</li>
-            <li>Month 180 (year 15): $1,340 to interest, $656 to principal</li>
-            <li>Month 360 (final): $12 to interest, $1,984 to principal</li>
-          </ul>
-          <p className="mt-3">
-            By year 15, you&apos;ve paid approximately 45% of your total lifetime interest but reduced
-            your principal by only about 20%. This front-loading of interest is why extra early
-            payments save so much money.
+            The schedule above calculates that split for every month using your loan amount, rate,
+            term, and extra payment. Compare the first and final rows to see how the interest share
+            falls as the remaining principal declines.
           </p>
         </section>
         <section>
           <h2 className="text-lg font-semibold text-foreground mb-3">The Power of Extra Payments</h2>
-          <p>On a $300,000, 30-year, 7% mortgage (monthly payment: $1,996):</p>
-          <div className="overflow-x-auto mt-3">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-primary/10">
-                  <th className="text-left p-2 font-medium">Extra Monthly Payment</th>
-                  <th className="text-left p-2 font-medium">Interest Saved</th>
-                  <th className="text-left p-2 font-medium">Years Saved</th>
-                  <th className="text-left p-2 font-medium">Payoff Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["$0 (baseline)", "—", "—", "30 years"],
-                  ["$100/month", "~$47,000", "~3 years", "~27 years"],
-                  ["$200/month", "~$89,000", "~6 years", "~24 years"],
-                  ["$500/month", "~$175,000", "~12 years", "~18 years"],
-                ].map((row, i) => (
-                  <tr key={i} className="even:bg-muted/30">
-                    {row.map((cell, j) => (
-                      <td key={j} className="p-2">{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3">
-            Even $100 extra per month saves meaningful money over the life of the loan. Use the
-            &quot;Extra Monthly Payment&quot; field in the calculator above to see your specific numbers.
+          <p>
+            Add an amount in the &quot;Extra Monthly Payment&quot; field to compare the selected plan
+            with the base schedule. The summary reports the calculated interest and time saved for
+            those inputs rather than relying on a generic example.
           </p>
           <p className="mt-3">
             The key insight: extra payments reduce the balance faster, which means less interest

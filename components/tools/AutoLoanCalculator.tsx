@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { TipJar } from "@/components/tool/TipJar";
 import { CalculatorEmptyState } from "@/components/tool/CalculatorEmptyState";
 
@@ -203,6 +204,13 @@ export default function AutoLoanCalculator() {
               </tbody>
             </table>
           </div>
+
+          <Link
+            href="/calc/down-payment"
+            className="inline-flex text-sm font-medium text-primary hover:underline"
+          >
+            Calculate how much to save for a down payment
+          </Link>
         </>
       )}
 

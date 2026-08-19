@@ -251,8 +251,10 @@ test.describe("P1 typing, play, and title-case remediations", () => {
     expect(savedStep).toBeTruthy();
 
     await page.reload({ waitUntil: "domcontentloaded" });
+    await expect(page.getByText("NUMBLE", { exact: true })).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText("Steps", { exact: true }).locator("..")).toContainText(
-      String(savedStep?.result)
+      String(savedStep?.result),
+      { timeout: 15_000 }
     );
     await page.getByRole("button", { name: "Practice Puzzle", exact: true }).click();
     await expect(page.getByText("Practice does not affect your streak or stats", { exact: true })).toBeVisible();
