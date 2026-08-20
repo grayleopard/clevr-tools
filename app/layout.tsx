@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   description:
     "Free online file and text utilities: compress images, convert formats, generate QR codes, count words, convert case, and more. Local tools are clearly labeled and process files in your browser.",
   metadataBase: new URL("https://www.clevr.tools"),
+  manifest: "/manifest.json",
   other: {
     "impact-site-verification": "05a1dc41-14e9-4d66-989d-f20e41c74409",
     "clevr-build-commit":

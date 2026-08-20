@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import BrandLockup from "@/components/brand/BrandLockup";
 
 export default function Footer() {
   return (
@@ -7,15 +7,13 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-4">
-            <div className="flex items-center gap-3 text-sm font-black tracking-[-0.08em] text-foreground">
-              <span className="flex size-9 items-center justify-center bg-primary/10 text-primary">
-                <Zap className="h-[18px] w-[18px]" />
-              </span>
-              <span>
-                <span className="text-primary">clevr</span>
-                <span className="text-muted-foreground/80">.tools</span>
-              </span>
-            </div>
+            <Link
+              href="/"
+              className="group inline-flex items-center gap-3 py-1 font-display text-[1.4rem] font-black tracking-[-0.075em] text-foreground transition-colors hover:text-primary"
+              aria-label="clevr.tools home"
+            >
+              <BrandLockup markClassName="size-7" />
+            </Link>
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} clevr.tools
             </p>
