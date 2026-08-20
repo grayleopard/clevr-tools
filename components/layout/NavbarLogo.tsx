@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import BrandLockup from "@/components/brand/BrandLockup";
 
 export default function NavbarLogo() {
   const pathname = usePathname();
@@ -16,13 +17,7 @@ export default function NavbarLogo() {
         }
       }}
     >
-      <span className="grid size-6 rotate-45 place-items-center border-2 border-primary transition-transform duration-200 group-hover:rotate-[135deg] motion-reduce:transition-none">
-        <span className="size-2 bg-primary" />
-      </span>
-      <span>
-        <span>clevr</span>
-        <span className="text-primary">.tools</span>
-      </span>
+      <BrandLockup />
     </Link>
   );
 }

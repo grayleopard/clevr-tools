@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "clevr.tools — Free Online File Utilities";
+export const alt = "clevr.tools — fast, private browser tools";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -11,71 +11,98 @@ export default function OpenGraphImage() {
         style={{
           width: 1200,
           height: 630,
-          background: "#1D4ED8",
+          background: "#060e20",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: "stretch",
+          justifyContent: "space-between",
           fontFamily: "sans-serif",
+          color: "#dee5ff",
+          padding: "78px 88px",
+          position: "relative",
         }}
       >
-        {/* Logo row */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 20 }}>
-          <div
-            style={{
-              width: 88,
-              height: 88,
-              background: "rgba(255,255,255,0.15)",
-              borderRadius: 20,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="56" height="56" viewBox="0 0 32 32">
-              <polygon points="17,3 7,18 15,18 13,29 25,14 17,14" fill="white" />
-            </svg>
-          </div>
-          <div style={{ display: "flex", gap: 0 }}>
-            <span style={{ fontSize: 80, fontWeight: 800, color: "white", letterSpacing: -3, lineHeight: 1 }}>
-              clevr
-            </span>
-            <span style={{ fontSize: 80, fontWeight: 800, color: "#93c5fd", letterSpacing: -3, lineHeight: 1 }}>
-              .tools
-            </span>
-          </div>
-        </div>
-
-        {/* Tagline */}
         <div
           style={{
-            fontSize: 36,
-            color: "rgba(255,255,255,0.75)",
-            fontWeight: 400,
-            marginBottom: 44,
-            letterSpacing: -0.5,
+            position: "absolute",
+            inset: 28,
+            border: "1px solid #243050",
+            display: "flex",
           }}
-        >
-          Free file tools. No signup.
-        </div>
+        />
 
-        {/* Feature pills */}
-        <div style={{ display: "flex", gap: 16 }}>
-          {["Compress Images", "Convert Formats", "Generate QR Codes"].map((label) => (
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div
+            style={{
+              display: "flex",
+              color: "#6ee7b7",
+              fontSize: 18,
+              fontWeight: 700,
+              letterSpacing: 5,
+            }}
+          >
+            LOCAL-FIRST UTILITIES
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
             <div
-              key={label}
               style={{
-                background: "rgba(255,255,255,0.15)",
-                color: "white",
-                padding: "12px 28px",
-                borderRadius: 100,
-                fontSize: 24,
-                fontWeight: 500,
+                width: 76,
+                height: 76,
+                border: "8px solid #6ee7b7",
+                transform: "rotate(45deg)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {label}
+              <div style={{ width: 24, height: 24, background: "#6ee7b7" }} />
             </div>
-          ))}
+            <div style={{ display: "flex" }}>
+              <span style={{ fontSize: 88, fontWeight: 900, letterSpacing: -7, lineHeight: 1 }}>
+                clevr
+              </span>
+              <span
+                style={{
+                  fontSize: 88,
+                  fontWeight: 900,
+                  color: "#6ee7b7",
+                  letterSpacing: -7,
+                  lineHeight: 1,
+                }}
+              >
+                .tools
+              </span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              fontSize: 34,
+              color: "#a3aac4",
+              fontWeight: 500,
+              letterSpacing: -1,
+            }}
+          >
+            Fast tools · Clear privacy · No signup
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            justifyContent: "flex-end",
+            gap: 14,
+            color: "#a3aac4",
+            fontSize: 17,
+            fontWeight: 700,
+            letterSpacing: 2,
+          }}
+        >
+          <div style={{ display: "flex" }}>COMPRESS · CONVERT · CALCULATE</div>
+          <div style={{ display: "flex", color: "#6ee7b7" }}>CLEVR.TOOLS</div>
         </div>
       </div>
     ),

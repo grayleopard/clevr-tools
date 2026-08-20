@@ -4,13 +4,19 @@
   "description": "Free online file utilities — compress, convert, generate",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1D4ED8",
+  "background_color": "#f5f6f7",
+  "theme_color": "#060e20",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/icon.svg",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }
