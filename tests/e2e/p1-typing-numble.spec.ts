@@ -211,6 +211,9 @@ test.describe("P1 typing, play, and title-case remediations", () => {
   });
 
   test("Numble hydrates persisted state without exposing inert settings", async ({ page }) => {
+    // Daily generation, reload/restoration, and practice generation each run
+    // within this scenario; retain the per-assertion deadlines on slower CI.
+    test.setTimeout(60_000);
     const hydrationErrors: string[] = [];
     page.on("pageerror", (error) => hydrationErrors.push(error.message));
     page.on("console", (message) => {
