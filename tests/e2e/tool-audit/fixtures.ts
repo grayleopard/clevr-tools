@@ -427,14 +427,9 @@ export const FIXTURES: Record<string, Fixture> = {
     successPattern: /Download/i,
   },
   "heic-to-jpg": {
-    kind: "custom",
-    // heic2any's WASM decode hangs indefinitely under headless Chromium
-    // (confirmed: same genuine HEIC fixture converts in ~10s via manual
-    // interaction in the (headed) Browser pane, but never resolves after 80s+
-    // under `playwright test`'s headless run). Manually verified working;
-    // automating it reliably needs a headed run or a longer investigation
-    // into headless WASM/SIMD support, out of scope for this audit.
-    note: "manually verified working (~10s); hangs under headless Playwright — see comment",
+    kind: "file",
+    fixtureFiles: ["sample.heic"],
+    successPattern: /Download/i,
   },
   "webp-to-png": {
     kind: "file",

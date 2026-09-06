@@ -122,11 +122,11 @@ test("Data Size keeps its clean canonical and sitemap eligibility without result
   }).default();
   const routes = new Set(sitemap.map((entry) => new URL(entry.url).pathname));
   assert.ok(routes.has("/calc/convert/data"));
-  assert.ok(!routes.has("/convert/heic-to-jpg"));
+  assert.ok(routes.has("/convert/heic-to-jpg"));
 
   const heic = registry.tools.find((tool) => tool.slug === "heic-to-jpg");
-  assert.equal(heic.live, false);
-  assert.equal(heic.contained, true);
+  assert.equal(heic.live, true);
+  assert.notEqual(heic.contained, true);
 });
 
 test("Data Size UI keeps bounded controls and responsive layout cues", () => {

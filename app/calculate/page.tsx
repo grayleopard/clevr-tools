@@ -19,12 +19,17 @@ const commonConversions = [
     href: "/calc/convert/speed",
   },
   {
+    name: "Weight Converter",
+    description: "Convert kg, pounds, ounces and stone with precise factors.",
+    href: "/calc/convert/weight",
+  },
+  {
     name: "Angle Converter",
     description: "Move between degrees, radians, gradians, arcminutes, and arcseconds.",
     href: "/calc/convert/angle",
   },
 ] as const;
-const commonConversionSlugs = new Set(["convert-data", "convert-speed", "convert-angle"]);
+const commonConversionSlugs = new Set(["convert-data", "convert-speed", "convert-angle", "convert-weight"]);
 
 export const metadata: Metadata = {
   title: "Calculators — Free Online Financial & Math Calculators | clevr.tools",
@@ -60,7 +65,7 @@ export default function CalculatePage() {
         {
           title: "Common conversions",
           content: (
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {commonConversions.map((conversion) => (
                 <Link
                   key={conversion.href}

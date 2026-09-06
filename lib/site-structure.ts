@@ -40,6 +40,7 @@ export const siteCategories: SiteCategory[] = [
       {
         label: "Convert Images",
         slugs: [
+          "heic-to-jpg",
           "jpg-to-png",
           "png-to-jpg",
           "png-to-webp",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { Copy } from "lucide-react";
 import { TipJar } from "@/components/tool/TipJar";
 import { converterConfigs } from "@/lib/conversions";
@@ -14,7 +14,11 @@ import {
   type DataSizeMode,
 } from "@/lib/data-size";
 
+import { converterExamples, exampleResult, parseConverterInput, type ConverterExample } from "@/lib/converter-examples";
+import { trackCalculatorEvent } from "@/lib/analytics/calculator-events";
+
 function formatResult(value: number, significantDigits = 10): string {
+  if (!Number.isFinite(value)) return "";
   if (value === 0) return "0";
   const abs = Math.abs(value);
   if (abs >= 1e15 || (abs > 0 && abs < 1e-10)) {
@@ -49,6 +53,29 @@ export default function UnitConverterPage({
   const [activeField, setActiveField] = useState<"from" | "to">("from");
   const [dataSizeMode, setDataSizeMode] = useState<DataSizeMode>(DEFAULT_DATA_SIZE_MODE);
   const [significantDigits, setSignificantDigits] = useState(10);
+  const attemptRef = useRef({ started: false, succeeded: false });
+  const recordInput = (value: string, from = fromUnit, to = toUnit) => {
+    if (!attemptRef.current.started) {
+      trackCalculatorEvent(configKey, "started");
+      attemptRef.current.started = true;
+    }
+    const parsed = parseConverterInput(value);
+    const source = config.units.find((unit) => unit.symbol === from);
+    const target = config.units.find((unit) => unit.symbol === to);
+    if (parsed !== null && source && target && Number.isFinite(target.fromBase(source.toBase(parsed))) && !attemptRef.current.succeeded) {
+      trackCalculatorEvent(configKey, "succeeded");
+      attemptRef.current.succeeded = true;
+    }
+  };
+  const examples = allowedUnits?.length ? [] : converterExamples[configKey] ?? [];
+  const handleExample = (example: ConverterExample) => {
+    if (example.mode) setDataSizeMode(example.mode);
+    setFromUnit(example.from);
+    setToUnit(example.to);
+    setFromValue(String(example.value));
+    setActiveField("from");
+    recordInput(String(example.value), example.from, example.to);
+  };
   const isDataSize = configKey === "data";
   const hasFixedUnitSet = (allowedUnits?.length ?? 0) > 0;
 
@@ -76,13 +103,14 @@ export default function UnitConverterPage({
   );
 
   const toValue = useMemo(() => {
-    const v = parseFloat(fromValue);
-    if (isNaN(v)) return "";
+    const v = parseConverterInput(fromValue);
+    if (v === null) return "";
     return formatResult(convert(v, fromUnitObj, toUnitObj), significantDigits);
   }, [fromValue, fromUnitObj, toUnitObj, convert, significantDigits]);
 
   const handleFromChange = (val: string) => {
     setFromValue(val);
+    recordInput(val);
     setActiveField("from");
   };
 
@@ -92,22 +120,31 @@ export default function UnitConverterPage({
     // grouping before parsing, since a user editing the field mid-value
     // (rather than clearing it first) will pass the commas straight through.
     const cleaned = val.replace(/,/g, "");
-    const v = parseFloat(cleaned);
-    if (isNaN(v) || cleaned === "") {
+    const v = parseConverterInput(cleaned);
+    recordInput(cleaned, toUnit, fromUnit);
+    if (v === null) {
       setFromValue("");
       return;
     }
     const result = convert(v, toUnitObj, fromUnitObj);
-    setFromValue(String(parseFloat(result.toPrecision(10))));
+    setFromValue(String(parseFloat(result.toPrecision(significantDigits))));
   };
 
   const handleSwap = () => {
+    const value = parseConverterInput(fromValue);
+    setFromValue(value === null ? "" : String(convert(value, fromUnitObj, toUnitObj)));
     setFromUnit(toUnit);
     setToUnit(fromUnit);
+    setActiveField("from");
   };
 
   const handleClear = () => {
     setFromValue("1");
+    setFromUnit(effectiveDefaultFrom);
+    setToUnit(effectiveDefaultTo);
+    setDataSizeMode(DEFAULT_DATA_SIZE_MODE);
+    setSignificantDigits(10);
+    attemptRef.current = { started: false, succeeded: false };
     setActiveField("from");
   };
 
@@ -125,6 +162,7 @@ export default function UnitConverterPage({
     try {
       await navigator.clipboard.writeText(`${value} ${unit}`);
       addToast("Result copied", "success");
+      trackCalculatorEvent(configKey, "copy");
     } catch {
       addToast("Failed to copy", "error");
     }
@@ -141,6 +179,19 @@ export default function UnitConverterPage({
 
   return (
     <div className="space-y-6">
+      {examples.length > 0 && (
+        <section aria-label="Common conversion examples" className="space-y-2">
+          <h2 className="text-sm font-semibold">Try a common conversion</h2>
+          <div className="flex flex-wrap gap-2">
+            {examples.map((example) => (
+              <button key={`${example.value}-${example.from}-${example.to}`} type="button" onClick={() => handleExample(example)}
+                className="min-h-11 rounded-lg border border-border bg-card px-3 py-2 text-left text-sm hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                {example.value.toLocaleString("en-US")} {example.from} = {exampleResult(configKey, example)} {example.to}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
       {/* Converter UI */}
       <div className="rounded-xl border border-border border-l-4 border-l-primary/60 bg-primary/5 p-6">
         {isDataSize && !hasFixedUnitSet && (
@@ -174,7 +225,7 @@ export default function UnitConverterPage({
         )}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
           {/* From */}
-          <div className="flex-1 space-y-2">
+          <div className="min-w-0 flex-1 space-y-2">
             <label htmlFor="from-value" className="block text-sm font-medium text-foreground">From</label>
             <label htmlFor="from-unit" className="sr-only">From unit</label>
             <select
@@ -217,7 +268,7 @@ export default function UnitConverterPage({
           </div>
 
           {/* To */}
-          <div className="flex-1 space-y-2">
+          <div className="min-w-0 flex-1 space-y-2">
             <label htmlFor="to-value" className="block text-sm font-medium text-foreground">To</label>
             <label htmlFor="to-unit" className="sr-only">To unit</label>
             <select
@@ -252,6 +303,9 @@ export default function UnitConverterPage({
           </div>
         </div>
 
+        {fromValue && !toValue && (
+          <p role="status" className="mt-3 text-sm text-destructive">Enter a finite number that fits within the conversion range.</p>
+        )}
         {/* Result summary */}
         {fromValue && toValue && (
           <div className="mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row">
@@ -260,7 +314,7 @@ export default function UnitConverterPage({
               {" = "}
               <span className="font-semibold text-primary">{toValue} {toUnitObj.symbol}</span>
             </p>
-            {isDataSize && (
+            {(isDataSize || configKey === "speed" || configKey === "weight") && (
               <button
                 type="button"
                 onClick={handleCopyResult}
@@ -275,7 +329,7 @@ export default function UnitConverterPage({
         )}
 
         <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
-          {isDataSize && (
+          {(isDataSize || configKey === "speed" || configKey === "weight") && (
             <label className="flex min-h-11 items-center gap-2 text-xs font-medium text-muted-foreground">
               Precision
               <select

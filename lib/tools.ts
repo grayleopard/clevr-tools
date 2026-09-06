@@ -185,21 +185,24 @@ export const tools: Tool[] = [
   {
     slug: 'heic-to-jpg',
     name: 'HEIC to JPG Converter',
-    shortDescription: 'Temporarily unavailable while browser HEIC decoding reliability is being verified.',
+    shortDescription: 'Convert HEIC photos to JPG privately in your browser.',
     category: 'convert',
     route: '/convert/heic-to-jpg',
     acceptedFormats: ['.heic', '.heif'],
     icon: 'Smartphone',
-    metaTitle: 'HEIC to JPG Converter — Currently Unavailable | clevr.tools',
+    metaTitle: 'HEIC to JPG Converter — Free & Private | clevr.tools',
     metaDescription:
-      'This converter is unavailable while bounded browser decoding and representative HEIC output compatibility are verified.',
+      'Convert HEIC and HEIF photos to JPG free in your browser. Adjust quality, preview results, and download a batch ZIP. Your photos stay on your device.',
     seoContent: `
-      <h2>Current status</h2>
-      <p>This converter is unavailable while bounded browser decoding and representative HEIC output compatibility are verified. No conversion, metadata-transfer, batch, orientation, or Live Photo behavior is currently promised.</p>
+      <h2>Convert HEIC photos to shareable JPG files</h2>
+      <p>Choose one or more HEIC or HEIF photos. The converter creates a JPG on your device, so your photos are not uploaded. Preview the result, adjust JPEG quality, and download individual photos or a ZIP of successful conversions.</p>
+      <h2>File limits and supported output</h2>
+      <p>Use a current Chrome, Edge, Firefox, or Safari browser. Each file must be 50 MB or smaller. Photos are processed one at a time; conversions that exceed 15 seconds stop with an error, and you can cancel at any time. Some HEIF variants and very large images may not convert.</p>
+      <p>The output is a still JPG image. Live Photo motion, depth information, and original camera or location metadata are not preserved. Keep your original photos if you need these features. JPG compression can reduce detail, so use a higher quality setting when that matters.</p>
+      <p>Need a smaller JPG afterward? Try the <a href="/compress/image">image compressor</a>. To change a JPG into PNG, use <a href="/convert/jpg-to-png">JPG to PNG</a>.</p>
     `,
     relatedTools: ['image-compressor', 'jpg-to-png', 'png-to-jpg'],
-    live: false,
-    contained: true,
+    live: true,
     badge: 'new',
   },
   {
@@ -1218,6 +1221,7 @@ export const tools: Tool[] = [
       <p>It's also a teaching tool. Students working through math or finance problems can see both the answer and the step-by-step calculation. Understanding that "percentage of" is multiplication, "what percent" is division, and "percentage change" is a ratio removes the mystery from a concept that trips people up well into adulthood.</p>
 
       <h2>Good to know</h2>
+      <p>Percentage change uses a positive starting value. A zero baseline has no defined percentage change, and negative baselines need context rather than an automatic increase or decrease label. Equal values have 0% change.</p>
       <p><strong>Percentage change has a direction.</strong> Going from 100 to 150 is a 50% increase. Going from 150 back to 100 is a 33.3% decrease — not 50%. The denominator changes because percentage change is always relative to the starting value. This asymmetry surprises people and is the most common percentage mistake.</p>
       <p><strong>"Percentage of" and "percent off" are different operations.</strong> "20% of 80" is 16. "20% off 80" is 80 minus 16 = 64. The first is pure multiplication; the second is a discount calculation. Make sure you're solving the right problem.</p>
       <p><strong>Percentages can exceed 100%.</strong> If your stock went from $50 to $150, that's a 200% increase. If your website traffic tripled, that's a 200% increase too. "100% more" means doubled, not "all of it."</p>
@@ -1236,7 +1240,7 @@ export const tools: Tool[] = [
         </tbody>
       </table>
     `,
-    relatedTools: ['odds-calculator', 'unit-converter'],
+    relatedTools: ['discount-calculator', 'tip-calculator', 'unit-converter'],
   },
   {
     slug: 'odds-calculator',
@@ -3165,10 +3169,10 @@ export const tools: Tool[] = [
     seoContent: `
       <h2>When to use this</h2>
       <p>Weight (or more precisely, mass) is the second most commonly converted physical quantity after length. You need it when buying produce at a European market that sells in kilograms, comparing your body weight between a US doctor (pounds) and an international form (kilograms), checking airline baggage limits, or converting recipe ingredients between ounces and grams. This converter handles milligrams, grams, kilograms, metric tons, ounces, pounds, and stone.</p>
-      <p>The most frequently searched weight conversions are kg to lbs, lbs to kg, oz to grams, and stone to pounds. Stone (14 pounds per stone) is still commonly used for body weight in the UK and Ireland. If you need just one specific pair, we have dedicated converters for kg-to-lbs, lbs-to-kg, and oz-to-grams. This tool is best when you need to convert across multiple units or uncommon pairs.</p>
+      <p>The most frequently searched weight conversions are kg to lbs, lbs to kg, oz to grams, and stone to pounds. Stone (14 pounds per stone) is still commonly used for body weight in the UK and Ireland. If you need just one specific pair, use <a href="/calc/convert/kg-to-lbs">kg to pounds</a>, <a href="/calc/convert/lbs-to-kg">pounds to kg</a>, or <a href="/calc/convert/oz-to-grams">ounces to grams</a>. This tool is best when you need to convert across multiple units or uncommon pairs.</p>
 
       <h2>Good to know</h2>
-      <p><strong>1 kg = 2.20462 lbs is the most useful conversion to memorize.</strong> For quick mental math: double the kilograms and add 10%. So 75 kg becomes 150 + 15 = 165 lbs (actual: 165.3 lbs). This shortcut works reliably across the full range of practical weights.</p>
+      <p><strong>Weight conversions use exact unit definitions.</strong> One pound is exactly 0.45359237 kg, one ounce is exactly 28.349523125 g, and one stone is exactly 14 pounds. Displayed answers are rounded to your selected precision. For quick mental math: double the kilograms and add 10%. So 75 kg becomes 150 + 15 = 165 lbs (actual: 165.3 lbs). This shortcut works reliably across the full range of practical weights.</p>
       <p><strong>The UK uses stone for body weight, which confuses everyone else.</strong> If a British person says they weigh "11 stone 4," that is 158 pounds (11 x 14 + 4) or 71.7 kg. Stone is rarely used outside body weight, and even in the UK, younger people are increasingly using kilograms.</p>
       <p><strong>Metric tons and imperial tons are close but not identical.</strong> A metric ton (tonne) is exactly 1,000 kg (2,204.6 lbs). A US short ton is 2,000 lbs (907.2 kg). A UK long ton is 2,240 lbs (1,016.0 kg). When someone says "a ton," always ask which one — the difference between a short ton and a metric ton is about 10%.</p>
 
@@ -3313,16 +3317,16 @@ export const tools: Tool[] = [
     route: '/calc/convert/speed',
     acceptedFormats: [],
     icon: 'Gauge',
-    metaTitle: 'Speed Converter — MPH, KM/H & Knots | clevr.tools',
-    metaDescription: 'Free speed converter. Convert between meters per second, kilometers per hour, miles per hour, knots, and feet per second.',
+    metaTitle: 'Speed Converter — km/h to mph, Knots & m/s | clevr.tools',
+    metaDescription: 'Convert km/h (kph) to mph, mph to km/h, knots, m/s and ft/s. Try common values, adjust precision and copy your result. Free, with no signup.',
     seoContent: `
       <h2>When to use this</h2>
       <p>You are driving in Europe and the speed limit sign says 130 — that is km/h, but how fast is that in mph? Or you are reading a weather report about wind speeds in knots and want to understand the real-world impact in miles per hour. Or a physics problem gives velocity in meters per second and you need km/h. Speed conversion comes up in driving abroad, aviation, sailing, meteorology, physics, and sports.</p>
-      <p>The most commonly searched speed conversions are mph to km/h, km/h to mph, and knots to mph. This converter handles all of these plus meters per second (the SI unit) and feet per second. The key relationships: 1 mph = 1.609 km/h, 1 knot = 1.151 mph, and 1 m/s = 3.6 km/h.</p>
+      <p>Use km/h to mph for a speed shown in kilometers per hour, mph to km/h for miles per hour, or knots for nautical speeds. The labels kph, kmh, and km/h refer to the same unit. This converter handles all of these plus meters per second (the SI unit) and feet per second. The key relationships: 1 mph = 1.609 km/h, 1 knot = 1.151 mph, and 1 m/s = 3.6 km/h.</p>
 
       <h2>Good to know</h2>
       <p><strong>Quick mph-to-km/h estimate: multiply by 1.6.</strong> 60 mph is about 97 km/h. 100 km/h is about 62 mph. For most driving situations, these estimates are close enough to understand speed limit signs in another country.</p>
-      <p><strong>A knot is one nautical mile per hour.</strong> Knots are used in aviation and maritime because they tie directly to the latitude/longitude coordinate system. One knot = 1.852 km/h = 1.151 mph. When a pilot reports airspeed in knots, they are describing movement relative to the coordinate grid of the Earth.</p>
+      <p><strong>A knot is one nautical mile per hour.</strong> Knots are used in aviation and maritime because they tie directly to the latitude/longitude coordinate system. One knot = 1.852 km/h = 1.151 mph. Airspeed is measured relative to the surrounding air; ground speed is measured relative to the ground. Converting the unit does not change that reference.</p>
       <p><strong>Feet per second is common in engineering.</strong> One foot per second equals exactly 0.3048 m/s, or about 1.09728 km/h and 0.681818 mph. It is useful for projectile motion, flow rates, and US engineering specifications.</p>
       <p><strong>Meters per second puts everyday speeds in perspective.</strong> Walking speed is about 1.4 m/s. A fast sprint is about 10 m/s. Highway driving at 70 mph is about 31 m/s. The speed of sound at sea level is about 343 m/s. Using m/s helps you understand the physics behind familiar experiences.</p>
 

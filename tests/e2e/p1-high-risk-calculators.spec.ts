@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("Body Fat uses equivalent centimeter inputs for the legacy circumference equation", async ({ page }) => {
   await page.goto("/calc/body-fat", { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => {});
 
   await expect(page.getByText("Legacy Circumference Estimate", { exact: true })).toBeVisible();
   await expect(page.getByText("17.2%", { exact: true })).toBeVisible();

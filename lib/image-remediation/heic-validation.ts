@@ -1,6 +1,7 @@
 export const HEIC_CONVERSION_TIMEOUT_MS = 15_000;
 
 export type HeicConversionErrorCode =
+  | "too-large"
   | "invalid-input"
   | "timeout"
   | "unsupported-browser"
@@ -22,6 +23,7 @@ const HEIF_BRANDS = new Set([
 ]);
 
 const ERROR_MESSAGES: Record<HeicConversionErrorCode, string> = {
+  "too-large": "Choose a HEIC or HEIF photo smaller than 50 MB.",
   "invalid-input":
     "This file does not contain a valid HEIC or HEIF image. Choose the original photo and try again.",
   timeout:
@@ -72,6 +74,7 @@ export function hasHeicFileSignature(bytes: Uint8Array): boolean {
 }
 
 export async function assertHeicInput(file: Blob): Promise<void> {
+  if (file.size > 50 * 1024 * 1024) throw new HeicConversionError("too-large");
   const header = new Uint8Array(await file.slice(0, 512).arrayBuffer());
   if (!hasHeicFileSignature(header)) throw new HeicConversionError("invalid-input");
 }
