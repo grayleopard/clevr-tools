@@ -4,7 +4,6 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useAutoLoadFile } from "@/lib/useAutoLoadFile";
 import FileDropZone from "@/components/tool/FileDropZone";
 import DownloadCard from "@/components/tool/DownloadCard";
-import ImagePreviewCard from "@/components/tool/ImagePreviewCard";
 import PostDownloadState from "@/components/tool/PostDownloadState";
 import ProcessingIndicator from "@/components/tool/ProcessingIndicator";
 import { usePasteImage } from "@/lib/usePasteImage";
@@ -19,12 +18,11 @@ import { truncateFilename } from "@/lib/utils";
 import { TipJar } from "@/components/tool/TipJar";
 
 interface Result {
+  blob: Blob;
   url: string;
   filename: string;
   size: number;
   originalSize: number;
-  originalName: string;
-  originalUrl: string;
 }
 
 interface ConversionFailure {
@@ -40,6 +38,8 @@ export default function HeicToJpg() {
   const [downloaded, setDownloaded] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
+  const abortRef = useRef<AbortController | null>(null);
+  const resultsRef = useRef<Result[]>([]);
   const sourceFilesRef = useRef<File[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const conversionRunRef = useRef(0);
@@ -47,33 +47,38 @@ export default function HeicToJpg() {
   const convert = useCallback(
     async (files: File[], q: number) => {
       if (files.length === 0) return;
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
       const runId = ++conversionRunRef.current;
       setIsProcessing(true);
-      setResults((prev) => {
-        prev.forEach((r) => {
-          URL.revokeObjectURL(r.url);
-          URL.revokeObjectURL(r.originalUrl);
-        });
-        return [];
-      });
+      resultsRef.current.forEach((result) => URL.revokeObjectURL(result.url));
+      resultsRef.current = [];
+      setResults([]);
+      setDownloaded(false);
       setFailures([]);
 
       const converted: Result[] = [];
       const failed: ConversionFailure[] = [];
       for (const file of files) {
+        if (controller.signal.aborted) break;
         try {
-          const blob = await heicToJpg(file, q);
+          const blob = await heicToJpg(file, q, controller.signal);
           const baseName = file.name.replace(/\.(heic|heif)$/i, "");
+          let filename = `${baseName}.jpg`;
+          let suffix = 2;
+          while (converted.some((result) => result.filename === filename)) {
+            filename = `${baseName}-${suffix++}.jpg`;
+          }
           converted.push({
+            blob,
             url: URL.createObjectURL(blob),
-            filename: `${baseName}.jpg`,
+            filename,
             size: blob.size,
             originalSize: file.size,
-            originalName: file.name,
-            originalUrl: URL.createObjectURL(file),
           });
         } catch (err) {
-          console.error(`Failed to convert ${file.name}:`, err);
+          if (controller.signal.aborted) break;
           const message = getHeicConversionErrorMessage(err);
           failed.push({ filename: file.name, message });
           if (conversionRunRef.current === runId) {
@@ -85,11 +90,11 @@ export default function HeicToJpg() {
       if (conversionRunRef.current !== runId) {
         converted.forEach((result) => {
           URL.revokeObjectURL(result.url);
-          URL.revokeObjectURL(result.originalUrl);
         });
         return;
       }
 
+      resultsRef.current = converted;
       setResults(converted);
       setFailures(failed);
       setIsProcessing(false);
@@ -123,26 +128,32 @@ export default function HeicToJpg() {
 
   const downloadAll = useCallback(async () => {
     if (results.length < 2) return;
-    const JSZip = (await import("jszip")).default;
-    const zip = new JSZip();
-    for (const r of results) {
-      const blob = await fetch(r.url).then((res) => res.blob());
-      zip.file(r.filename, blob);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      for (const r of results) {
+        zip.file(r.filename, await r.blob.arrayBuffer());
+      }
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "converted-images.zip";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setDownloaded(true);
+    } catch {
+      addToast("Could not create the ZIP. Download the images individually or try again.", "error");
     }
-    const zipBlob = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(zipBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "converted-images.zip";
-    a.click();
-    URL.revokeObjectURL(url);
   }, [results]);
 
   const reset = useCallback(() => {
-    results.forEach((r) => {
+    abortRef.current?.abort();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    resultsRef.current.forEach((r) => {
       URL.revokeObjectURL(r.url);
-      URL.revokeObjectURL(r.originalUrl);
     });
+    resultsRef.current = [];
     setResults([]);
     setFailures([]);
     conversionRunRef.current += 1;
@@ -150,14 +161,23 @@ export default function HeicToJpg() {
     setDownloaded(false);
     sourceFilesRef.current = [];
     setResetKey((k) => k + 1);
-  }, [results]);
+  }, []);
+
+  useEffect(() => () => {
+    conversionRunRef.current += 1;
+    abortRef.current?.abort();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    resultsRef.current.forEach((result) => {
+      URL.revokeObjectURL(result.url);
+    });
+  }, []);
 
   return (
     <div className="space-y-6">
       <PageDragOverlay onFiles={handleFiles} />
 
       {/* 1. Drop zone */}
-      <FileDropZone accept=".heic,.heif" multiple maxSizeMB={100} onFiles={handleFiles} resetKey={resetKey} compact={results.length > 0} />
+      <FileDropZone accept=".heic,.heif" multiple maxSizeMB={50} onFiles={handleFiles} resetKey={resetKey} compact={results.length > 0} />
 
       {/* 2. Options */}
       <div className="rounded-xl border border-border bg-card p-5 space-y-3">
@@ -171,6 +191,8 @@ export default function HeicToJpg() {
           step={1}
           value={[quality]}
           onValueChange={([v]) => setQuality(v)}
+          disabled={isProcessing}
+          aria-label="JPEG quality"
           className="w-full"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
@@ -180,7 +202,12 @@ export default function HeicToJpg() {
       </div>
 
       {/* 3. Processing */}
-      {isProcessing && <ProcessingIndicator label="Converting HEIC to JPG…" />}
+      {isProcessing && (
+        <div className="space-y-3">
+          <ProcessingIndicator label="Converting HEIC to JPG…" />
+          <button type="button" onClick={reset} className="min-h-11 rounded-lg border border-border px-4 py-2 text-sm">Cancel conversion</button>
+        </div>
+      )}
 
       {/* 3b. Failures */}
       {!isProcessing && failures.length > 0 && (
@@ -206,16 +233,9 @@ export default function HeicToJpg() {
           <h2 className="text-sm font-semibold">Results</h2>
           {results.map((r, i) => (
             <div key={i} className="space-y-3">
-              <ImagePreviewCard
-                originalUrl={r.originalUrl}
-                originalName={r.originalName}
-                originalSize={r.originalSize}
-                processedUrl={r.url}
-                processedName={r.filename}
-                processedSize={r.size}
-              />
               <DownloadCard
                 href={r.url}
+                thumbnailUrl={r.url}
                 filename={r.filename}
                 fileSize={r.size}
                 originalSize={r.originalSize}
@@ -225,7 +245,7 @@ export default function HeicToJpg() {
           ))}
           {results.length > 1 && (
             <button
-              onClick={() => { downloadAll(); setDownloaded(true); }}
+              onClick={downloadAll}
               className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               <Package className="h-4 w-4" />

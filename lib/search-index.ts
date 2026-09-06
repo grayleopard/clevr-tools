@@ -27,6 +27,14 @@ export interface SearchTool {
  */
 export const searchIndex: readonly SearchTool[] = [
   {
+    "name": "HEIC to JPG Converter",
+    "route": "/convert/heic-to-jpg",
+    "category": "convert",
+    "shortDescription": "Convert HEIC photos to JPG privately in your browser.",
+    "aliases": [],
+    "icon": "Smartphone"
+  },
+  {
     "name": "Image Compressor",
     "route": "/compress/image",
     "category": "compress",

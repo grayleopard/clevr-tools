@@ -1,0 +1,6 @@
+This site uses heic-to 1.5.2, licensed under LGPL-3.0, with libheif 1.22.2.
+Copyright and full license: LICENSE.txt in this directory.
+The library is loaded separately on demand for HEIC conversion.
+Library source and build instructions: https://github.com/hoppergee/heic-to
+Exact distributed package, including src and build script: https://registry.npmjs.org/heic-to/-/heic-to-1.5.2.tgz
+libheif source: https://github.com/strukturag/libheif/releases/tag/v1.22.2

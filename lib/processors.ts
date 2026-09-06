@@ -10,7 +10,6 @@ import {
   HeicConversionError,
   normalizeHeicConversionError,
   normalizeValidatedJpeg,
-  withHeicTimeout,
 } from "@/lib/image-remediation/heic-validation";
 
 export type ImageOutputFormat = "original" | "jpeg" | "webp";
@@ -128,35 +127,21 @@ export async function toWebp(file: File, quality = 85): Promise<Blob> {
   return blob;
 }
 
-/**
- * Convert HEIC/HEIF to JPG with the local browser decoder.
- *
- * `heic2any` performs decoding in a browser Worker. Its promise is not
- * cancellable, so the timeout bounds the user-visible operation and prevents
- * a decoder stall from leaving the UI in an indefinite processing state.
- */
-export async function heicToJpg(file: File, quality = 90): Promise<Blob> {
+/** Convert locally in an owned, cancellable worker; never upload the input. */
+export async function heicToJpg(file: File, quality = 90, signal?: AbortSignal): Promise<Blob> {
   await assertHeicInput(file);
-
-  if (typeof window === "undefined" || typeof Worker === "undefined") {
+  if (typeof window === "undefined" || typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined") {
     throw new HeicConversionError("unsupported-browser");
   }
-
   try {
-    const result = await withHeicTimeout(
-      (async () => {
-        const heic2any = (await import("heic2any")).default;
-        return heic2any({
-          blob: file,
-          toType: "image/jpeg",
-          quality: normalizeCanvasQuality(quality),
-        });
-      })()
+    const { runHeicWorker } = await import("@/lib/heic/owned-worker");
+    const blob = await runHeicWorker(
+      () => new Worker(new URL("./heic/heic-converter.worker.ts", import.meta.url)),
+      file, normalizeCanvasQuality(quality) ?? 0.9, signal,
     );
-    const blob = Array.isArray(result) ? result[0] : result;
-    if (!(blob instanceof Blob)) throw new HeicConversionError("invalid-output");
     return await normalizeValidatedJpeg(blob);
   } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") throw error;
     throw normalizeHeicConversionError(error);
   }
 }

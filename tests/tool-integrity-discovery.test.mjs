@@ -45,7 +45,6 @@ const indexableTools = liveTools.filter((tool) => tool.indexable !== false);
 const indexableRoutes = new Set(indexableTools.map((tool) => tool.route));
 const requiredContainedSlugs = [
   "background-remover",
-  "heic-to-jpg",
   "paycheck",
   "pdf-to-fillable",
   "poker",
@@ -64,7 +63,7 @@ function inboundLinkPattern(route) {
 
 test("registered tool routes, slugs, related links, and page sources are internally consistent", () => {
   assert.equal(registry.tools.length, 114);
-  assert.equal(liveTools.length, 108);
+  assert.equal(liveTools.length, 109);
   assert.equal(new Set(registry.tools.map((tool) => tool.route)).size, 114);
   assert.equal(new Set(registry.tools.map((tool) => tool.slug)).size, 114);
 
@@ -92,7 +91,7 @@ test("sitemap projects exactly the current public portfolio", () => {
   const entries = sitemapModule.default();
   const routes = new Set(entries.map((entry) => new URL(entry.url).pathname));
 
-  assert.equal(entries.length, 128);
+  assert.equal(entries.length, 129);
   for (const route of indexableRoutes) assert.ok(routes.has(route), `sitemap omitted ${route}`);
   for (const tool of registry.tools.filter((item) => item.live === false || item.indexable === false)) {
     assert.ok(!routes.has(tool.route), `sitemap exposed excluded ${tool.route}`);
@@ -113,7 +112,7 @@ test("sitemap projects exactly the current public portfolio", () => {
 });
 
 test("navigation and search expose live tools without leaking hidden tools", () => {
-  assert.equal(searchIndex.searchIndex.length, 108);
+  assert.equal(searchIndex.searchIndex.length, 109);
   assert.deepEqual(new Set(searchIndex.searchIndex.map((entry) => entry.route)), liveRoutes);
 
   const featuredRoutes = navigation.navigationCategories.flatMap((category) =>

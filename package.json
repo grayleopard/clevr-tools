@@ -36,7 +36,7 @@
     "gifenc": "^1.0.3",
     "gifuct-js": "^2.1.2",
     "gray-matter": "^4.0.3",
-    "heic2any": "^0.0.4",
+    "heic-to": "1.5.2",
     "html-to-pdfmake": "^2.5.32",
     "jszip": "^3.10.1",
     "lucide-react": "^0.575.0",

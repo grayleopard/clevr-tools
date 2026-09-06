@@ -463,29 +463,24 @@ export const toolFaqsBySlug: Record<string, FaqItem[]> = {
   ],
   "heic-to-jpg": [
     {
-      question: "How do I convert HEIC photos from my iPhone to JPG?",
-      answer:
-        "Drop your HEIC files into the converter. It uses the heic2any library in your browser to decode Apple's HEIC format and re-encode each photo as a standard JPG. No app installation or upload required.",
+      question: "How do I convert HEIC photos to JPG?",
+      answer: "Choose your HEIC or HEIF photos, wait for conversion, then download each JPG or the batch ZIP. Adjust JPEG quality to balance detail and file size. Conversion is free and runs locally in your browser.",
     },
     {
-      question: "Is HEIC to JPG conversion free?",
-      answer:
-        "Yes. This tool is completely free with no signup, no watermarks, and no per-file limits. Convert as many HEIC photos as your device can handle.",
+      question: "What are the file and browser limits?",
+      answer: "Each input must be 50 MB or smaller. Use a current Chrome, Edge, Firefox, or Safari browser. Very large images and some HEIF variants may not convert; the tool stops conversions that take longer than 15 seconds per file and shows an error. You can cancel at any time.",
     },
     {
-      question: "Can I convert multiple HEIC files at once?",
-      answer:
-        "Yes. Drop multiple HEIC files simultaneously and they will all be converted in parallel. Download them individually or as a single ZIP archive.",
+      question: "Can I convert multiple photos at once?",
+      answer: "Yes. Select multiple files and they are processed one at a time to limit memory use. Download the successful conversions individually or as a ZIP. Files that cannot be converted are listed separately.",
     },
     {
-      question: "Why can't I open HEIC files on Windows?",
-      answer:
-        "HEIC uses Apple's HEVC codec, which is not natively supported on Windows without installing the HEVC Video Extensions from the Microsoft Store. Converting to JPG gives you universal compatibility across all devices and operating systems.",
+      question: "Are Live Photos and photo metadata preserved?",
+      answer: "The JPG contains a still image. Live Photo motion, depth information, and original camera or location metadata are not preserved. Keep your original HEIC files if you need these features.",
     },
     {
-      question: "Are my iPhone photos uploaded to a server?",
-      answer:
-        "No. All HEIC to JPG conversion happens locally in your browser. Your photos never leave your device, making it safe for personal and private images.",
+      question: "Are my photos uploaded to a server?",
+      answer: "No. Your browser decodes the photo and creates the JPG on your device. The converter does not upload your photos.",
     },
   ],
   "webp-to-png": [

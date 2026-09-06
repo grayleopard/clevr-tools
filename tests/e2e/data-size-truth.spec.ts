@@ -7,6 +7,7 @@ test.use({
 
 test("Data Size exposes truthful modes, precision, copy, and a clean mobile route", async ({ page }) => {
   await page.goto("/calc/convert/data", { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => {});
 
   await expect(page.getByRole("button", { name: /SI decimal/i })).toHaveAttribute(
     "aria-pressed",
@@ -37,6 +38,7 @@ test("Data Size exposes truthful modes, precision, copy, and a clean mobile rout
 
 test("Mbps to Gbps stays limited to transfer-rate units", async ({ page }) => {
   await page.goto("/calc/convert/mbps-to-gbps", { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => {});
 
   await expect(page.getByRole("button", { name: /SI decimal/i })).toHaveCount(0);
   await expect(page.getByLabel("From unit").locator("option")).toHaveText(["Megabits (Mbit)", "Gigabits (Gbit)"]);

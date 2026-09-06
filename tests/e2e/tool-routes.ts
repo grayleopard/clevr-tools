@@ -79,7 +79,6 @@ export const FILE_TOOL_CATEGORIES: ReadonlySet<ToolCategory> = new Set([
 export const CONTAINED_ROUTES: ReadonlySet<string> = new Set([
   "/tools/background-remover",
   "/tools/pdf-to-fillable",
-  "/convert/heic-to-jpg",
   "/calc/poker",
   "/calc/take-home-pay",
   "/calc/paycheck",

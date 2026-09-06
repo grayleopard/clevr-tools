@@ -27,24 +27,11 @@ test.beforeAll(async () => {
 });
 
 test.describe("P1 file and image remediations", () => {
-  test("HEIC route contains the unreliable browser decoder immediately and actionably", async ({ page }) => {
-    const started = Date.now();
+  test("HEIC route rejects invalid content without creating a download", async ({ page }) => {
     await page.goto("/convert/heic-to-jpg", { waitUntil: "domcontentloaded" });
-    const notice = page.getByRole("status").filter({ hasText: /temporarily unavailable/i });
-    await expect(notice).toContainText(/browser decoder can stall/i);
-    await expect(notice).toContainText(/disabled until/i);
-    await expect(page.locator('main input[type="file"]')).toHaveCount(0);
-    await expect(page.getByText(/Converting HEIC to JPG/i)).toHaveCount(0);
-    expect(Date.now() - started).toBeLessThan(5_000);
-    const message = (await notice.textContent()) ?? "";
-    await fs.writeFile(
-      path.join(EVIDENCE_DIR, "heic-browser-outcome.json"),
-      JSON.stringify(
-        { outcome: "contained-route", elapsedMs: Date.now() - started, message },
-        null,
-        2
-      )
-    );
+    await page.locator('main input[type="file"]').setInputFiles(path.join(EVIDENCE_DIR, "invalid.heic"));
+    await expect(page.getByRole("alert").filter({ hasText: /does not contain a valid HEIC/i })).toBeVisible();
+    await expect(page.locator('main a[download][href^="blob:"]')).toHaveCount(0);
   });
 
   test("Smart Converter hides unsupported HEIC, JPG, and WebP actions", async ({ page }) => {

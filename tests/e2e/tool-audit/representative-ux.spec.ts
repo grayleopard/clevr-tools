@@ -59,10 +59,12 @@ test.describe("representative mobile, dark-mode, and runtime integrity", () => {
       expect(response?.status(), `${route} HTTP status`).toBeLessThan(400);
       await expect(page.locator("main h1").first()).toBeVisible({ timeout: 15_000 });
 
-      const controls = await page
-        .locator('main input:not([type="hidden"]), main textarea, main select, main button')
-        .count();
-      expect(controls, `${route} lacks a mobile primary/control surface`).toBeGreaterThan(0);
+      // Numble renders its title while its client session is still loading.
+      // Wait for the actual control surface instead of sampling an empty count.
+      await expect.poll(
+        () => page.locator('main input:not([type="hidden"]), main textarea, main select, main button').count(),
+        { timeout: 15_000, message: `${route} lacks a mobile primary/control surface` }
+      ).toBeGreaterThan(0);
 
       const horizontalOverflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth
