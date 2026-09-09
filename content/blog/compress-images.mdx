@@ -34,9 +34,9 @@ Use the before-and-after size shown by the compressor, then inspect the output a
 
 ## JPG vs PNG: which to compress?
 
-JPG is already a lossy format — it was designed for photos and handles compression well. Reducing quality from 100 to 80 removes data that's invisible to most people.
+JPG uses lossy compression. Lowering quality can reduce file size, but the visible difference depends on the image and encoder. Compare fine detail and gradients before choosing a setting.
 
-PNG is lossless by design. The compressor reduces PNG file size by optimizing the encoding without discarding data. You can be more aggressive with PNG compression without worrying about visual artifacts.
+PNG can store pixels losslessly, but this tool's PNG compression can reduce the number of colors before encoding. That quantization changes pixel values and may introduce banding or affect small text. Keep the original when exact pixel preservation matters.
 
 WebP supports both lossy and lossless compression. If your destination accepts it, compare a WebP output with JPG or PNG rather than assuming one format will always be smaller.
 
@@ -44,7 +44,7 @@ WebP supports both lossy and lossless compression. If your destination accepts i
 
 Lower JPG quality settings can introduce block patterns in gradients, smearing around sharp edges, and halos around text. The point where those artifacts become objectionable varies by image, so compare the preview instead of relying on one universal threshold.
 
-For PNG, quality loss isn't a factor — the compression is lossless. File size reduction comes from smarter encoding, not discarding pixels.
+For PNG output, inspect gradients, transparency edges, and small text for changes from color reduction. A PNG filename alone does not guarantee that an optimization preserved every original pixel.
 
 ### Does compressing an image reduce its resolution?
 

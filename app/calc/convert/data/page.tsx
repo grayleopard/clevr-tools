@@ -62,8 +62,17 @@ export default function Page() {
             </table>
           </div>
           <p className="mt-3">
+            These are illustrative ranges, not upload limits. Dimensions, duration,
+            encoding, and quality settings can change file size substantially.
             For internet speed conversions, try our{" "}
             <Link href="/calc/convert/mbps-to-gbps" className="text-primary underline hover:no-underline">Mbps to Gbps converter</Link>.
+          </p>
+          <p className="mt-3">
+            Converting MB to GB changes how a size is expressed; it does not make
+            the file smaller. To meet an upload limit, follow the{" "}
+            <Link href="/blog/reduce-image-file-size" className="text-primary underline hover:no-underline">image file-size budget workflow</Link>{" "}
+            or use the{" "}
+            <Link href="/compress/image" className="text-primary underline hover:no-underline">Image Compressor</Link>.
           </p>
         </section>
       </div>

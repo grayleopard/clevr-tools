@@ -8,7 +8,21 @@ tags: ["images", "compression", "web performance"]
 relatedTools: ["/compress/image", "/convert/png-to-webp", "/tools/resize-image"]
 ---
 
-Your hero image is 4.7 MB. Your email platform caps attachments at 1 MB. Your Shopify store is getting flagged for slow load times. You need the same image, just smaller — without it looking like it was faxed in 1997.
+An upload limit is a byte budget. Start with the receiving site's actual limit and accepted formats, then make a copy of your image that fits while preserving the detail you need. A web performance budget is a separate choice: an image can pass an upload limit and still be unnecessarily large for a page.
+
+## Work out your file-size budget
+
+Suppose your image is 4.7 MB and a form allows 1 MB. Using decimal units, you need to reduce 4,700,000 bytes to at most 1,000,000 bytes: a reduction of about 78.7%. That is a target, not a prediction of what a compression setting will achieve.
+
+**Required reduction = (1 - limit / original size) × 100%.** Use the same units for both sizes. The [Data Size Converter](/calc/convert/data) distinguishes MB from MiB: 1 MB is 1,000,000 bytes, while 1 MiB is 1,048,576 bytes. If a receiving service labels its limit ambiguously, leave some headroom and test the upload.
+
+| Example limit | Decimal byte budget | Check before exporting |
+| --- | --- | --- |
+| 100 kB | 100,000 bytes | Small text and sharp edges |
+| 500 kB | 500,000 bytes | Faces, gradients, and fine texture |
+| 1 MB | 1,000,000 bytes | Dimensions and accepted format |
+
+These are example budgets, not recommended limits for every website. The finished file's byte size is the deciding measurement; quality 50 does not mean half the original file size.
 
 Here are five methods to try. Their impact depends on the source image and its destination.
 
@@ -28,7 +42,7 @@ If your platform accepts WebP, convert a copy with the [PNG to WebP converter](/
 
 ## 3. Resize the dimensions first
 
-This is the step most people skip, and it's often the most impactful. A 4000×3000 photo from your phone is roughly 12 megapixels. If it's going on a blog post displayed at 800px wide, you're shipping 11 million unnecessary pixels.
+Check dimensions before repeatedly lowering quality. A 4000×3000 photo has 12 million pixels. At an 800-pixel display width, an 800×600 version has 480,000 pixels; a 1600×1200 version is a 2× source for that display width, with twice the dimensions and four times the pixels. Choose based on display size, sharpness requirements, and the destination's rules.
 
 Resize close to the largest dimensions the destination will display *before* compressing. Fewer pixels usually means less data to store, although the final file size will also depend on format and content. Use the [Image Resizer](/tools/resize-image) to choose exact dimensions.
 
@@ -73,4 +87,4 @@ For photos, compare JPG and WebP when the destination accepts both. For screensh
 
 ### Does resizing an image reduce file size?
 
-Yes, significantly. A 4000×3000 photo is ~12 megapixels. Resizing to 1920×1440 cuts the pixel count by 75%, which directly reduces file size. Always resize to your target display dimensions before compressing.
+Usually, but the byte savings depend on encoding and image detail. Resizing 4000×3000 to 1920×1440 reduces the pixel count from 12,000,000 to 2,764,800, a 76.96% reduction. The file-size reduction need not match that percentage. Check the exported file after resizing and compression.
