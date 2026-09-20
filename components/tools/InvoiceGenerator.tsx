@@ -462,7 +462,7 @@ export default function InvoiceGenerator() {
         },
       };
 
-      pdfMake
+      await pdfMake
         .createPdf(docDef)
         .download(`invoice-${data.invoiceNumber}.pdf`);
 

@@ -113,7 +113,7 @@ export default function WordToPdf() {
       const buffer = await file.arrayBuffer();
 
       setProgress("Extracting document content…");
-      const mammoth = await import("mammoth/mammoth.browser");
+      const mammoth = await import("mammoth");
 
       const { value: html } = await mammoth.convertToHtml(
         { arrayBuffer: buffer },
@@ -206,15 +206,9 @@ export default function WordToPdf() {
       setProgress("Generating PDF…");
 
       const pdfBlob = await Promise.race([
-        new Promise<Blob>((resolve, reject) => {
-          try {
-            pdfMake.createPdf(docDefinition).getBlob((blob: Blob) => {
-              if (blob) resolve(blob);
-              else reject(new Error("pdfmake returned an empty result"));
-            });
-          } catch (err) {
-            reject(err);
-          }
+        pdfMake.createPdf(docDefinition).getBlob().then(blob => {
+          if (!blob?.size) throw new Error("pdfmake returned an empty result");
+          return blob;
         }),
         new Promise<never>((_, reject) =>
           setTimeout(

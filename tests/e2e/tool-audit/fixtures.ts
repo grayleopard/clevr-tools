@@ -467,7 +467,7 @@ export const FIXTURES: Record<string, Fixture> = {
   "word-to-pdf": {
     kind: "file",
     fixtureFiles: ["sample.docx"],
-    skip: "heavy/flaky in headless CI — mirrors the existing skip in file-tools-happy.spec.ts",
+    skip: "covered by the DOCX download and PDF text assertions in file-tools-happy.spec.ts",
   },
   "background-remover": {
     kind: "file",

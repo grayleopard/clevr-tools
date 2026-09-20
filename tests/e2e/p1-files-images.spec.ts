@@ -1,8 +1,5 @@
 import path from "node:path";
-import { promises as fs } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
-
-const EVIDENCE_DIR = "/tmp/clevr-p1-remediation";
 
 function fixture(name: string): string {
   return path.join(process.cwd(), "tests", "fixtures", name);
@@ -20,16 +17,14 @@ async function uploadSmartFile(page: Page, file: string, typeLabel: string): Pro
   ).toBeVisible({ timeout: 15_000 });
 }
 
-test.beforeAll(async () => {
-  await fs.mkdir(EVIDENCE_DIR, { recursive: true });
-  await fs.writeFile(path.join(EVIDENCE_DIR, "invalid.heic"), "not a HEIC file");
-  await fs.writeFile(path.join(EVIDENCE_DIR, "renamed.pdf"), "not a PDF file");
-});
-
 test.describe("P1 file and image remediations", () => {
   test("HEIC route rejects invalid content without creating a download", async ({ page }) => {
     await page.goto("/convert/heic-to-jpg", { waitUntil: "domcontentloaded" });
-    await page.locator('main input[type="file"]').setInputFiles(path.join(EVIDENCE_DIR, "invalid.heic"));
+    await page.locator('main input[type="file"]').setInputFiles({
+      name: "invalid.heic",
+      mimeType: "image/heic",
+      buffer: Buffer.from("not a HEIC file"),
+    });
     await expect(page.getByRole("alert").filter({ hasText: /does not contain a valid HEIC/i })).toBeVisible();
     await expect(page.locator('main a[download][href^="blob:"]')).toHaveCount(0);
   });
@@ -55,7 +50,11 @@ test.describe("P1 file and image remediations", () => {
       .locator('input[id^="deferred-converter-input-"], input[id^="smart-converter-input-"]')
       .first();
     await expect(input).toBeAttached();
-    await input.setInputFiles(path.join(EVIDENCE_DIR, "renamed.pdf"));
+    await input.setInputFiles({
+      name: "renamed.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("not a PDF file"),
+    });
     await expect(page.locator('[id^="smart-converter-error-"]')).toContainText(
       /contents do not match/i
     );
