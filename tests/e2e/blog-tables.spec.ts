@@ -20,7 +20,7 @@ for (const width of [390, 1440]) {
         await expect(content.getByRole("table")).toHaveCount(article.tables);
         await expect(content.getByRole("columnheader", { name: article.heading, exact: true })).toBeVisible();
         await expect(content.getByRole("cell", { name: article.cell, exact: true })).toBeVisible();
-        const scrollRegion = content.getByRole("region", { name: "Scrollable table" }).first();
+        const scrollRegion = content.getByRole("group", { name: "Scrollable table" }).first();
         await expect(scrollRegion).toHaveAttribute("tabindex", "0");
         if (width === 390) {
           await scrollRegion.focus();

@@ -19,7 +19,7 @@ const SITE_ORGANIZATION = {
 const blogComponents = {
   table: ({ children, ...props }: ComponentProps<"table">) => (
     <div
-      role="region"
+      role="group"
       aria-label="Scrollable table"
       tabIndex={0}
       className="my-6 overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-primary"
