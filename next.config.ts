@@ -32,6 +32,7 @@ const cspDirectives = [
 ];
 
 const nextConfig: NextConfig = {
+  agentRules: false,
   // pdf-parse@1.x uses __dirname and test-file path detection that break
   // when bundled by Turbopack. Exclude it from bundling so Node.js resolves
   // it directly from node_modules at runtime.

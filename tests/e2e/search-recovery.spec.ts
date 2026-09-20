@@ -68,7 +68,7 @@ test("calculator events exclude defaults and all entered values", async ({page})
     Object.assign(window,{__calculatorEvents: events,gtag:(...args:unknown[])=>events.push(args)});
   });
   await page.goto("/calc/convert/data");
-  const events = () => page.evaluate(() => (window as Window & {__calculatorEvents:unknown[][]}).__calculatorEvents.filter(e=>String(e[1]).startsWith("calculator_")));
+  const events = () => page.evaluate(() => (window as unknown as Window & {__calculatorEvents:unknown[][]}).__calculatorEvents.filter(e=>String(e[1]).startsWith("calculator_")));
   expect(await events()).toEqual([]);
   await page.getByLabel("From",{exact:true}).fill("1234567");
   await page.getByLabel("From",{exact:true}).fill("7654321");
