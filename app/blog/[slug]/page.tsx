@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import type { ComponentProps } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
@@ -13,6 +15,19 @@ const SITE_ORGANIZATION = {
   name: "clevr.tools",
   url: SITE_URL,
 } as const;
+
+const blogComponents = {
+  table: ({ children, ...props }: ComponentProps<"table">) => (
+    <div
+      role="group"
+      aria-label="Scrollable table"
+      tabIndex={0}
+      className="my-6 overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-primary"
+    >
+      <table {...props}>{children}</table>
+    </div>
+  ),
+};
 
 function getCanonicalUrl(slug: string): string {
   return `${SITE_URL}/blog/${slug}`;
@@ -158,7 +173,11 @@ export default async function BlogPostPage({
 
         <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
           <div className="prose prose-zinc max-w-none overflow-x-auto overscroll-x-contain prose-headings:max-w-3xl prose-headings:break-words prose-headings:tracking-tight prose-p:max-w-3xl prose-p:break-words prose-p:leading-[1.7] prose-ul:max-w-3xl prose-ol:max-w-3xl prose-blockquote:max-w-3xl prose-a:break-words prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-pre:max-w-3xl prose-pre:rounded-lg prose-pre:bg-muted prose-pre:p-4 prose-table:min-w-[36rem] prose-table:max-w-4xl dark:prose-invert">
-            <MDXRemote source={post.content} />
+            <MDXRemote
+              source={post.content}
+              components={blogComponents}
+              options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+            />
           </div>
         </article>
 
