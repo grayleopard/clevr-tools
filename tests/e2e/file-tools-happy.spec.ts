@@ -1,5 +1,11 @@
 import path from "node:path";
+import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
+import { PDFDocument } from "pdf-lib";
+import { createRequire } from "node:module";
+
+const parsePdf = createRequire(path.join(process.cwd(), "package.json"))("pdf-parse/lib/pdf-parse.js") as
+  (bytes: Buffer) => Promise<{ text: string }>;
 
 function fixture(name: string): string {
   return path.join(process.cwd(), "tests", "fixtures", name);
@@ -70,8 +76,39 @@ test.describe("file tool happy paths", () => {
   });
 
   test("/convert/word-to-pdf converts a tiny DOCX", async ({ page }) => {
-    test.skip(true, "Word to PDF conversion is heavy/flaky in headless CI; covered by route smoke.");
+    test.setTimeout(60_000);
     await upload("/convert/word-to-pdf", fixture("sample.docx"), page);
-    await expectDownloadUi(page);
+    await expect(page.getByText("Document Preview", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Convert to PDF", exact: true }).click();
+    const link = page.locator('main a[download][href^="blob:"]').first();
+    await expect(link).toBeVisible({ timeout: 35_000 });
+    const downloadPromise = page.waitForEvent("download");
+    await link.click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe("sample.pdf");
+    const output = await download.path();
+    expect(output).not.toBeNull();
+    const bytes = await readFile(output!);
+    expect(bytes.subarray(0, 5).toString()).toBe("%PDF-");
+    const pdf = await PDFDocument.load(bytes);
+    expect(pdf.getPageCount()).toBeGreaterThan(0);
+    expect((await parsePdf(bytes)).text).toContain("clevr.tools sample DOCX");
+  });
+
+  test("/files/invoice-generator downloads a readable PDF", async ({ page }) => {
+    await page.goto("/files/invoice-generator");
+    await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => {});
+    await page.getByPlaceholder("Service or product").first().fill("Synthetic test service");
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "Download PDF", exact: true }).first().click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toBe("invoice-INV-001.pdf");
+    const output = await download.path();
+    expect(output).not.toBeNull();
+    const bytes = await readFile(output!);
+    expect(bytes.subarray(0, 5).toString()).toBe("%PDF-");
+    const pdf = await PDFDocument.load(bytes);
+    expect(pdf.getPageCount()).toBeGreaterThan(0);
+    expect((await parsePdf(bytes)).text).toContain("Synthetic test service");
   });
 });

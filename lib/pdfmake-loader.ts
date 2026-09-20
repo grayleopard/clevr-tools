@@ -1,11 +1,11 @@
 type PdfMakeModule = {
-  vfs: Record<string, string>;
+  addVirtualFileSystem(vfs: Record<string, string>): void;
   fonts?: Record<string, unknown>;
   createPdf(documentDefinition: Record<string, unknown>): {
-    download(filename?: string): void;
-    getBlob(cb: (blob: Blob) => void): void;
-    getBase64(cb: (data: string) => void): void;
-    getDataUrl(cb: (url: string) => void): void;
+    download(filename?: string): Promise<void>;
+    getBlob(): Promise<Blob>;
+    getBase64(): Promise<string>;
+    getDataUrl(): Promise<string>;
   };
 };
 
@@ -23,10 +23,16 @@ function extractVfs(moduleValue: unknown): Record<string, string> | null {
     const fromDefault = maybe.default as { pdfMake?: { vfs?: Record<string, string> }; vfs?: Record<string, string> };
     if (fromDefault.pdfMake?.vfs) return fromDefault.pdfMake.vfs;
     if (fromDefault.vfs) return fromDefault.vfs;
+    if (Object.values(fromDefault).every(value => typeof value === "string")) {
+      return fromDefault as Record<string, string>;
+    }
   }
 
   if (maybe.pdfMake?.vfs) return maybe.pdfMake.vfs;
   if (maybe.vfs) return maybe.vfs;
+  if (Object.values(moduleValue).every(value => typeof value === "string")) {
+    return moduleValue as Record<string, string>;
+  }
   return null;
 }
 
@@ -42,10 +48,10 @@ export async function loadPdfMake(): Promise<PdfMakeModule> {
         (pdfMakeImport as unknown as PdfMakeModule));
       const vfs = extractVfs(vfsImport);
 
-      if (vfs) pdfMake.vfs = vfs;
-      if (!pdfMake?.createPdf) {
+      if (!pdfMake?.createPdf || !pdfMake.addVirtualFileSystem || !vfs) {
         throw new Error("Failed to initialize pdfmake");
       }
+      pdfMake.addVirtualFileSystem(vfs);
 
       return pdfMake;
     })();
