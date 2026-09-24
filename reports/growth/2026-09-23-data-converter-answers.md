@@ -2,9 +2,9 @@
 
 ## Baseline and evidence
 
-Source: Google Search Console, `clevr.tools` domain property, Web search, reviewed September 23, 2026. The latest 28-day page report for `/calc/convert/data` showed 7 clicks, 7.88K impressions, 0.1% CTR, and average position 17.3, versus 5 clicks, 8.31K impressions, and position 13.8 in the prior 28 days. Query rows are privacy-filtered and do not sum to page totals. Among visible queries were `4.7gb to mb` (25 impressions), `4k mb to gb` (27), and broader `kb mb gb` variants. Those counts justify a small answer improvement, not separate keyword pages or a traffic forecast.
+Source: Google Search Console, `clevr.tools` domain property, Web search, reviewed September 23, 2026. For `/calc/convert/data`, the latest complete seven days (September 15-21) showed 2 clicks, 1.33K impressions, 0.2% CTR, and average position 9.6. The latest 28 days showed 7 clicks, 7.88K impressions, 0.1% CTR, and position 17.3, versus 5 clicks, 8.31K impressions, and position 13.8 in the prior 28 days. June 22-September 21 showed 13 clicks, 18.7K impressions, 0.1% CTR, and position 15.1. Query rows are privacy-filtered and do not sum to page totals. Among visible 28-day queries were `4.7gb to mb` (25 impressions), `4k mb to gb` (27), and broader `kb mb gb` variants. Those counts justify a small answer improvement, not separate keyword pages or a traffic forecast.
 
-The prior complete seven-day and 90-day sitewide baselines are in `reports/growth/2026-09-23-indexing-cohort.md`. Page/query-level 7-day and 90-day exports, device splits, and search appearance for this URL remain `UNKNOWN`.
+The corresponding sitewide baselines are in `reports/growth/2026-09-23-indexing-cohort.md`. Full page/query exports, device splits, and search appearance for this URL remain `UNKNOWN`.
 
 ## Cohort and gate
 
