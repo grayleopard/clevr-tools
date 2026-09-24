@@ -51,13 +51,14 @@ export const tools: Tool[] = [
       <p>You're about to upload a hero image to your site and it's 4.7 MB straight from the camera. Your email newsletter platform caps images at 1 MB. Shopify is warning you that your product photos are slowing down your store. These are compression moments — you need the same image, just smaller.</p>
       <p>The other common trigger is a platform-specific upload limit. Check the current requirement at the destination, then compare the compressed file with that limit rather than relying on a generic target.</p>
       <p>If the source is much larger than its displayed dimensions, resize a copy before the final compression pass. This avoids encoding pixels the destination will not show.</p>
+      <p>For a step-by-step workflow, see <a href="/blog/compress-images">how to compress images and check the result</a>.</p>
 
       <h2>Good to know</h2>
       <p><strong>Quality values are encoder-specific.</strong> Start with a high setting, lower it in small steps, and inspect gradients, text, faces, and sharp edges at the intended display size.</p>
       <p><strong>Results vary by source.</strong> Dimensions, existing compression, detail, transparency, and output format all affect the final size. An already optimized image may change very little.</p>
       <p><strong>Compare accepted formats.</strong> If the destination supports both WebP and JPG or PNG, export copies and choose the smallest result that preserves the detail you need.</p>
       <p><strong>Compression is lossy and one-way.</strong> Once you compress, the discarded data is gone. Always keep your original files. Compress copies, not sources.</p>
-      <p><strong>Everything stays on your device.</strong> No server upload, no account, no tracking. Your images never leave your browser tab.</p>
+      <p><strong>Image processing stays on your device.</strong> No account or server upload is required for compression. Your image files stay in your browser tab.</p>
 
       <h2>Quick Reference</h2>
       <table>
@@ -395,22 +396,22 @@ export const tools: Tool[] = [
       <h2>When to use this</h2>
       <p>You need to drop a chart from a PDF into a slide deck. You want to share a single page from a report on Slack or social media. You're building a web gallery of document thumbnails. Or you just need a quick image of page 1 for a preview card. All of these need JPG, not PDF.</p>
       <p>PDF-to-JPG is also the go-to when you need to extract visuals — graphs, diagrams, infographics — from reports without access to the original source files. Convert the relevant pages, crop in any image editor, done.</p>
-      <p>It's particularly useful for social media sharing, where PDF links get ignored but images get engagement. Convert, post, get clicks.</p>
+      <p>For a page-by-page walkthrough and checks before sharing, see <a href="/blog/convert-pdf-to-jpg">how to convert PDF pages to JPG images</a>.</p>
 
       <h2>Good to know</h2>
-      <p><strong>85% quality is the sweet spot.</strong> It's visually indistinguishable from 100% for most documents but produces files 40-60% smaller. Only go higher if you're printing or zooming into fine detail.</p>
-      <p><strong>DPI controls the resolution, not the quality slider.</strong> Higher DPI means more pixels per page — bigger files, but sharper output when printed or zoomed. For screen viewing, default DPI is fine. For print, bump it up.</p>
-      <p><strong>Text stays sharp because of how rendering works.</strong> Text renders as vector outlines first, then rasterizes to your chosen resolution. This means text is as sharp as the DPI allows, not limited by the original PDF's internal resolution.</p>
-      <p><strong>Use page range to save time.</strong> A 200-page PDF doesn't need all 200 pages converted. Select just the pages you need — the tool skips everything else, which is dramatically faster on long documents.</p>
+      <p><strong>Choose quality by inspecting the output.</strong> Higher JPG quality usually increases file size, but the visible difference depends on the page. Check small text, diagrams, and gradients at the intended viewing size.</p>
+      <p><strong>JPG quality does not restore missing detail.</strong> The tool renders each PDF page at a fixed scale, then applies your chosen JPG quality to the resulting image.</p>
+      <p><strong>Source quality still matters.</strong> A low-resolution scan will not gain missing detail when rendered at a larger size. Inspect the exported page rather than assuming a particular setting will keep every document sharp.</p>
+      <p><strong>Use page range when you only need a few pages.</strong> Choosing the relevant pages avoids exporting images you do not plan to use.</p>
 
       <h2>Quick Reference</h2>
       <table>
-        <thead><tr><th>Use Case</th><th>Quality</th><th>DPI</th><th>Typical File Size</th></tr></thead>
+        <thead><tr><th>Use Case</th><th>What to check</th><th>Starting approach</th></tr></thead>
         <tbody>
-          <tr><td>Web / social media</td><td>75–85%</td><td>Default (150)</td><td>80–200 KB/page</td></tr>
-          <tr><td>Email sharing</td><td>85%</td><td>Default (150)</td><td>150–300 KB/page</td></tr>
-          <tr><td>Presentations</td><td>90%</td><td>200</td><td>300–600 KB/page</td></tr>
-          <tr><td>Printing</td><td>95–100%</td><td>300</td><td>500 KB–1.5 MB/page</td></tr>
+          <tr><td>Web or social sharing</td><td>Readability at display size</td><td>Export one page and inspect it</td></tr>
+          <tr><td>Email</td><td>Attachment limit and legibility</td><td>Compare quality and file size</td></tr>
+          <tr><td>Presentations</td><td>Charts and small labels on screen</td><td>Inspect a sample slide at display size</td></tr>
+          <tr><td>Print</td><td>Detail at the intended print size</td><td>Test a page before exporting all</td></tr>
         </tbody>
       </table>
     `,
