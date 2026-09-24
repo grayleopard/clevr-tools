@@ -31,7 +31,16 @@ The two tool-to-guide links are a narrow discovery and user-navigation change, n
 - Linked the PDF-to-JPG tool's practical guidance to the PDF-to-JPG guide.
 - Replaced unverified PDF-to-JPG percentage, DPI-control, and file-size promises with guidance matching the actual quality-only control and fixed render scale.
 - Removed the image page's unsupported "no tracking" claim while retaining the local-file-processing description.
+- Added primary BIPM and IEC definition links to the Data Size Converter's existing exact-value reference; its calculations and defaults are unchanged.
 - No tool logic, metadata, routes, sitemap entries, or index directives changed.
+
+## Live crawl and distribution checks
+
+Checked September 23, before this branch was deployed:
+
+- `https://clevr.tools/sitemap.xml` returns one permanent 308 redirect to `https://www.clevr.tools/sitemap.xml`; the destination returns 200 XML and contains both guides and both flagship tool URLs. Search Console last processed the submitted bare-host sitemap successfully September 20. This is not evidence of a broken sitemap.
+- The live `/blog/compress-images` page returns 200 HTML with a self-referencing `www` canonical and a rendered H1. No robots exclusion appeared in the response headers or inspected HTML. The URL Inspection report nevertheless says it has not been crawled. A live Googlebot test and post-release reinspection remain necessary; there is no proven technical root cause yet.
+- The Clevr AgentMail inbox had one sent publisher pitch after September 20 and no publisher replies as of this check. No new outreach was sent. Future batches require specific owner review.
 
 ## New-page decision
 
@@ -43,6 +52,7 @@ Do not publish a batch of new pages in this sprint. A candidate must solve a dis
 - Lint: PASS, zero errors or warnings reported.
 - Focused tests: PASS, 11/11 across data-size truth, SEO crawl remediation, and P2 flagship readiness.
 - Generated HTML: PASS, the Image Compressor and PDF-to-JPG pages each contain their intended guide link.
+- Data-size source test and post-update build: PASS. Focused suite now 12/12, lint again passed, and the production build again generated 175/175 static pages. The existing output-file-tracing-root warning remains.
 - Deployment commit/date: not yet released. The review branch `codex/growth-guide-discovery` is based on refreshed `origin/main` at `f6236d4` (the merged security release). Do not describe these edits as live until reviewed and deployed.
 
 ## Measurement
@@ -53,4 +63,4 @@ Do not publish a batch of new pages in this sprint. A candidate must solve a dis
 | Day 28 after deploy | Guide indexing, page-level impressions/clicks, data-converter query cohort and CTR by device, amortization query trend | Pending |
 | Day 90 after deploy | Durable organic visits, qualified referrals/editorial links, task completion, revenue readiness | Pending |
 
-Unknown: fresh live URL tests, current referring domains, full GSC query coverage, analytics completion events, ad yield, and whether Google will choose to index either guide. Do not request mass indexing or infer an algorithmic penalty from the exclusion count. No outreach is authorized by this report.
+Unknown: fresh Googlebot live URL tests, current referring domains, full GSC query coverage, analytics completion events, ad yield, and whether Google will choose to index either guide. Do not request mass indexing or infer an algorithmic penalty from the exclusion count. No outreach is authorized by this report.
