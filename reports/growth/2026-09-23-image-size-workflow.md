@@ -11,10 +11,10 @@ This sprint improves `/compress/image` for the existing job of meeting a destina
 | URL | Priority / confidence | Reliability gate | Intervention |
 | --- | --- | --- | --- |
 | `/compress/image` | P2 / medium; first-party demand and completion data unknown | Eligible with documented edge limits | Optional target in KB, actual met/missed feedback, browser test of downloaded bytes |
-| `/blog/compress-images` | Index-discovery check / medium | Supporting guide; no unsupported performance claim | Live tool-to-guide link already released; indexing requested in Search Console |
-| `/blog/convert-pdf-to-jpg` | Index-discovery check / medium | Supporting guide; no unsupported performance claim | Live tool-to-guide link already released; inspection found discovered-not-indexed |
+| `/blog/compress-images` | Index-discovery check / medium | Supporting guide; no unsupported performance claim | Indexed after the live tool-to-guide link and indexing request |
+| `/blog/convert-pdf-to-jpg` | Index-discovery check / medium | Supporting guide; no unsupported performance claim | Request confirmed; still discovered-not-indexed, but live URL test says it can be indexed |
 
-Search Console URL Inspection still showed both guides as **Discovered - currently not indexed**, with no recorded crawl, after the new contextual links went live. The image guide's indexing request was confirmed as added to a priority crawl queue. The PDF guide request was started, but the Mac locked before its completion could be confirmed; request status is **UNKNOWN**. Do not repeatedly request either URL. This is an indexing signal check, not evidence that Google will index or rank them.
+Search Console later confirmed the image guide **is indexed**: Googlebot smartphone fetched it successfully on September 23, 2026 at 6:50 PM local time, indexing was allowed, and Google selected the intended canonical. The PDF guide's indexing request was also confirmed as added to the priority crawl queue. It remains **Discovered - currently not indexed**, with no recorded crawl; a separate live URL test says the page can be indexed. The live page returns HTTP 200, declares the intended canonical, is allowed by robots.txt, and appears in the sitemap. Do not repeatedly request either URL. Indexing of one guide is a discovery milestone, not evidence of rankings or traffic.
 
 ## Implementation and truth boundary
 
@@ -36,7 +36,7 @@ Search Console URL Inspection still showed both guides as **Discovered - current
 
 ## Release and measurement
 
-Deployment commit/date: **PENDING**. This branch is not production until reviewed, merged, and a production deployment is verified.
+Deployment: PR #36 merged as `84d884f284e2afe902c7815760f74bea26188d10` on September 24, 2026 at 02:25 UTC. Vercel marked the production deployment successful at 02:27 UTC; the live `/compress/image` page contains the new target-size control and the expected build-commit marker. Both post-merge `main` CI runs passed. A production browser check after client startup uploaded the deterministic 598,590-byte JPEG and downloaded an 80,833-byte JPEG for the 100 KB target, with the matching on-page status. This is a functional verification, not a ranking or broad compression claim.
 
 | Checkpoint | Fields |
 | --- | --- |

@@ -146,7 +146,7 @@ test("Image Compressor emits a parseable JPG and safe lifecycle events", async (
 
 test("Image Compressor reports the actual target-size outcome and stays usable on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/compress/image", { waitUntil: "domcontentloaded" });
+  await page.goto("/compress/image", { waitUntil: "networkidle" });
 
   const targetInput = page.getByLabel("Aim for a file size (optional)");
   await targetInput.fill("9");
