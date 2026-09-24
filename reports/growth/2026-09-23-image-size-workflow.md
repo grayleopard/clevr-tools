@@ -36,7 +36,7 @@ Search Console URL Inspection still showed both guides as **Discovered - current
 
 ## Release and measurement
 
-Deployment commit/date: **PENDING**. This branch is not production until reviewed, merged, and a production deployment is verified.
+Deployment: PR #36 merged as `84d884f284e2afe902c7815760f74bea26188d10` on September 24, 2026 at 02:25 UTC. Vercel marked the production deployment successful at 02:27 UTC; the live `/compress/image` page contains the new target-size control and the expected build-commit marker. Both post-merge `main` CI runs passed. A production browser check after client startup uploaded the deterministic 598,590-byte JPEG and downloaded an 80,833-byte JPEG for the 100 KB target, with the matching on-page status. This is a functional verification, not a ranking or broad compression claim.
 
 | Checkpoint | Fields |
 | --- | --- |
