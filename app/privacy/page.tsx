@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           {/* Header */}
           <div className="mb-10">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Privacy Policy</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Last updated: July 2026</p>
+            <p className="mt-2 text-sm text-muted-foreground">Last updated: September 2026</p>
           </div>
 
           {/* Core trust statement */}
@@ -167,10 +167,10 @@ export default function PrivacyPage() {
               <p className="text-muted-foreground">
                 Questions about privacy? Email{" "}
                 <a
-                  href="mailto:privacy@clevr.tools"
+                  href="mailto:clevr-tools@agentmail.to"
                   className="text-primary underline hover:opacity-80 transition-opacity"
                 >
-                  privacy@clevr.tools
+                  clevr-tools@agentmail.to
                 </a>
                 .
               </p>

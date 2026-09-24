@@ -184,7 +184,7 @@ export default function MethodologyPage() {
                 </p>
               </div>
               <a
-                href="mailto:privacy@clevr.tools?subject=clevr.tools%20correction%20request"
+                href="mailto:clevr-tools@agentmail.to?subject=clevr.tools%20correction%20request"
                 className="group flex items-start justify-between gap-5 border border-foreground bg-card p-5 text-left transition-colors hover:border-primary hover:bg-primary/10"
               >
                 <span>
@@ -195,7 +195,7 @@ export default function MethodologyPage() {
                     Send a correction or data-handling question
                   </span>
                   <span className="mt-2 block text-xs leading-5 text-muted-foreground">
-                    privacy@clevr.tools
+                    clevr-tools@agentmail.to
                   </span>
                 </span>
                 <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
