@@ -42,7 +42,7 @@ Do not compare these as a strict ordered league table. Amortization and Speed Co
 
 - PR [#33](https://github.com/grayleopard/clevr-tools/pull/33) merged to `main` as `6e7d35ad6764a80cb98bbe6ec5956a3130c51ee0` on September 24 UTC. It adds contextual flagship-to-guide links and bounds related claims.
 - PR [#34](https://github.com/grayleopard/clevr-tools/pull/34) merged to `main` as `31539e2c7643c01c8219a237419515ab423caef7` on September 24 UTC. It replaces unsupported typical file-size ranges with calculated answers on Data Size Converter.
-- Both PRs had successful PR CI and Vercel preview checks before merge. Vercel reported a successful production deployment for `31539e2` at September 24, 01:37 UTC. Direct requests to the live site returned HTTP 200 and confirmed the new Data Size answer table and both flagship guide links. Post-merge `main` CI was still running at this report's final check.
+- Both PRs had successful PR CI and Vercel preview checks before merge. Vercel reported a successful production deployment for `31539e2` at September 24, 01:37 UTC. Direct requests to the live site returned HTTP 200 and confirmed the new Data Size answer table and both flagship guide links. Post-merge `main` CI passed for both commits, including lint, tests, build, and browser smoke checks.
 - No new keyword pages, public benchmark claims, or outreach messages were published in this sprint.
 
 ## Reliability and authority gates
