@@ -29,6 +29,7 @@ interface CompressedFile {
   url: string;
   width: number;
   height: number;
+  targetSizeKB: number | null;
 }
 
 const tool = getToolBySlug("image-compressor")!;
@@ -92,6 +93,7 @@ function createCompressedFilename(
 export default function ImageCompressor() {
   const [quality, setQuality] = useState(80);
   const [outputFormat, setOutputFormat] = useState<ImageOutputFormat>("original");
+  const [targetSizeInput, setTargetSizeInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<CompressedFile[]>([]);
   const [downloaded, setDownloaded] = useState(false);
@@ -103,6 +105,10 @@ export default function ImageCompressor() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resultsRef = useRef<CompressedFile[]>([]);
   const processRunRef = useRef(0);
+  const targetSizeKB = targetSizeInput.trim() === "" ? null : Number(targetSizeInput);
+  const targetSizeValid =
+    targetSizeKB === null ||
+    (Number.isInteger(targetSizeKB) && targetSizeKB >= 10 && targetSizeKB <= 50000);
 
   const clearResults = useCallback(() => {
     revokeCompressedFiles(resultsRef.current);
@@ -115,7 +121,7 @@ export default function ImageCompressor() {
   }, []);
 
   const compress = useCallback(
-    async (files: File[], q: number, fmt: ImageOutputFormat) => {
+    async (files: File[], q: number, fmt: ImageOutputFormat, targetKB: number | null) => {
       if (files.length === 0) return;
       const runId = ++processRunRef.current;
       const startedAt = performance.now();
@@ -150,7 +156,12 @@ export default function ImageCompressor() {
               validInputRecorded = true;
             }
 
-            const { blob, ext, mimeType } = await compressImage(originalFile, q, fmt);
+            const { blob, ext, mimeType } = await compressImage(
+              originalFile,
+              q,
+              fmt,
+              targetKB ?? undefined
+            );
             if (blob.size === 0) throw new Error("Empty compression output");
 
             const filename = createCompressedFilename(originalFile.name, ext, usedNames);
@@ -167,6 +178,7 @@ export default function ImageCompressor() {
               url: outputUrl,
               width,
               height,
+              targetSizeKB: targetKB,
             });
             originalUrl = null;
             outputUrl = null;
@@ -225,9 +237,13 @@ export default function ImageCompressor() {
       sourceFilesRef.current = files;
       setHasSelection(files.length > 0);
       setDownloaded(false);
-      void compress(files, quality, outputFormat);
+      if (!targetSizeValid) {
+        addToast("Enter a target between 10 and 50,000 KB before processing.", "error");
+        return;
+      }
+      void compress(files, quality, outputFormat, targetSizeKB);
     },
-    [quality, outputFormat, compress]
+    [quality, outputFormat, targetSizeKB, targetSizeValid, compress]
   );
 
   useAutoLoadFile(handleFiles);
@@ -236,13 +252,20 @@ export default function ImageCompressor() {
   useEffect(() => {
     if (sourceFilesRef.current.length === 0) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!targetSizeValid) {
+      processRunRef.current += 1;
+      clearResults();
+      setIsProcessing(false);
+      setLastProcessMs(null);
+      return;
+    }
     debounceRef.current = setTimeout(() => {
-      void compress(sourceFilesRef.current, quality, outputFormat);
+      void compress(sourceFilesRef.current, quality, outputFormat, targetSizeKB);
     }, 400);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [quality, outputFormat, compress]);
+  }, [quality, outputFormat, targetSizeKB, targetSizeValid, compress, clearResults]);
 
   useEffect(() => {
     return () => {
@@ -329,9 +352,41 @@ export default function ImageCompressor() {
       ? Math.max(0, Math.round((1 - totalCompressedSize / totalOriginalSize) * 100))
       : 0;
   const primaryResult = results[0] ?? null;
+  const targetMetCount = results.filter(
+    (result) =>
+      result.targetSizeKB !== null && result.file.size <= result.targetSizeKB * 1024
+  ).length;
 
   const settingsPanel = (
     <div className="space-y-6">
+      <div className="space-y-3">
+        <label htmlFor="image-target-size" className="text-sm font-medium text-foreground">
+          Aim for a file size <span className="font-normal text-muted-foreground">(optional)</span>
+        </label>
+        <div className="flex items-center gap-3">
+          <input
+            id="image-target-size"
+            type="number"
+            inputMode="numeric"
+            min={10}
+            max={50000}
+            step={1}
+            value={targetSizeInput}
+            onChange={(event) => setTargetSizeInput(event.target.value)}
+            aria-invalid={!targetSizeValid}
+            aria-describedby="image-target-size-help"
+            placeholder="e.g. 500"
+            className="min-w-0 flex-1 border border-[color:var(--ghost-border)] bg-card/80 px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+          />
+          <span className="text-sm font-semibold text-muted-foreground">KB</span>
+        </div>
+        <p id="image-target-size-help" className="text-xs leading-5 text-muted-foreground">
+          {targetSizeValid
+            ? "Leave blank for quality-only compression. A size target may require smaller dimensions and cannot always be met."
+            : "Enter a whole number from 10 to 50,000 KB."}
+        </p>
+      </div>
+
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <label className="text-sm font-medium text-foreground">Quality</label>
@@ -521,6 +576,18 @@ export default function ImageCompressor() {
                 </div>
 
                 <div className="space-y-8 border-l-4 border-primary bg-muted/55 p-6 sm:p-8">
+                  {primaryResult.targetSizeKB !== null ? (
+                    <p
+                      role="status"
+                      className={`text-sm font-semibold ${
+                        targetMetCount === 1 ? "text-primary" : "text-amber-700 dark:text-amber-300"
+                      }`}
+                    >
+                      {targetMetCount === 1
+                        ? `Under your ${formatBytes(primaryResult.targetSizeKB * 1024)} target.`
+                        : `Above your ${formatBytes(primaryResult.targetSizeKB * 1024)} target. Try WebP if supported, or resize the image first.`}
+                    </p>
+                  ) : null}
                   <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
                     <div className="flex justify-center lg:justify-start">
                       <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center border-2 border-primary bg-primary/12 text-primary">
@@ -590,6 +657,12 @@ export default function ImageCompressor() {
                 <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   Results
                 </h2>
+                {primaryResult && primaryResult.targetSizeKB !== null ? (
+                  <p role="status" className="text-sm text-muted-foreground">
+                    {targetMetCount} of {results.length} images are under the{" "}
+                    {formatBytes(primaryResult.targetSizeKB * 1024)} target. Check each file size before uploading.
+                  </p>
+                ) : null}
                 {results.map((result, index) => (
                   <DownloadCard
                     key={`${result.file.name}-${index}`}
