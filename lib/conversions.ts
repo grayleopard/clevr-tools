@@ -129,8 +129,8 @@ export const speedConfig: UnitConverterConfig = {
     { label: "Knots", symbol: "kn", toBase: (v) => v * 0.514444, fromBase: (v) => v / 0.514444 },
     { label: "Feet per Second", symbol: "ft/s", toBase: (v) => v * 0.3048, fromBase: (v) => v / 0.3048 },
   ],
-  defaultFromUnit: "mph",
-  defaultToUnit: "km/h",
+  defaultFromUnit: "km/h",
+  defaultToUnit: "mph",
 };
 
 // ─── Time (base: second) ───────────────────────────────────────────────
