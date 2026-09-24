@@ -52,6 +52,9 @@ test("HEIC rejects invalid content and can cancel a real conversion", async ({pa
 
 test("speed example, precision, swap and reset preserve the expected quantity", async ({page}) => {
   await page.goto("/calc/convert/speed");
+  await expect(page.getByLabel("From unit",{exact:true})).toHaveValue("km/h");
+  await expect(page.getByLabel("To unit",{exact:true})).toHaveValue("mph");
+  await expect(page.getByLabel("To",{exact:true})).toHaveValue(/^0\.621371/);
   await page.getByRole("button",{name:/113 km\/h =/}).click();
   await expect(page.getByLabel("From",{exact:true})).toHaveValue("113");
   await expect(page.getByLabel("To",{exact:true})).toHaveValue(/^70\.2149/);
@@ -59,7 +62,8 @@ test("speed example, precision, swap and reset preserve the expected quantity", 
   await expect(page.getByLabel("To",{exact:true})).toHaveValue("113");
   await page.getByRole("button",{name:"Reset",exact:true}).click();
   await expect(page.getByLabel("From",{exact:true})).toHaveValue("1");
-  await expect(page.getByLabel("From unit",{exact:true})).toHaveValue("mph");
+  await expect(page.getByLabel("From unit",{exact:true})).toHaveValue("km/h");
+  await expect(page.getByLabel("To unit",{exact:true})).toHaveValue("mph");
 });
 
 test("calculator events exclude defaults and all entered values", async ({page}) => {
