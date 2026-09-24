@@ -14,12 +14,19 @@ test("methodology is a canonical public trust page", () => {
 
   assert.match(source, /title:\s*"How clevr\.tools Works \| Methodology"/);
   assert.match(source, /canonical:\s*"https:\/\/www\.clevr\.tools\/methodology"/);
-  assert.match(source, /privacy@clevr\.tools/);
+  assert.match(source, /clevr-tools@agentmail\.to/);
   assert.match(source, /State the processing boundary/);
   assert.match(source, /Updates and corrections/);
   assert.match(source, /Last reviewed:/);
   assert.match(source, /dateTime="2026-08-04"/);
   assert.match(source, /behaviors and inputs covered by our current checks/);
+});
+
+test("privacy policy uses the approved interim contact", () => {
+  const source = read("app/privacy/page.tsx");
+
+  assert.match(source, /mailto:clevr-tools@agentmail\.to/);
+  assert.doesNotMatch(source, /privacy@clevr\.tools/);
 });
 
 test("methodology is discoverable from the sitemap, footer, and About page", () => {
