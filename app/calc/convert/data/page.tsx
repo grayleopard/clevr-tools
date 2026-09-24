@@ -3,11 +3,17 @@ import UnitConverterPage from "@/components/tools/UnitConverterPage";
 import { getToolFaqs } from "@/lib/seo/tool-faqs";
 import FaqSchema from "@/components/seo/FaqSchema";
 import { tools } from "@/lib/tools";
+import { convertDataSize, formatExactDataSizeValue } from "@/lib/data-size";
 import Link from "next/link";
 import type { Metadata } from "next";
 
 const tool = tools.find((t) => t.slug === "convert-data")!;
 const faqItems = getToolFaqs("convert-data");
+const commonConversions = [
+  { amount: 4.7, from: "GB", to: "MB" },
+  { amount: 4000, from: "MB", to: "GB" },
+  { amount: 1, from: "GiB", to: "GB" },
+] as const;
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -35,35 +41,32 @@ export default function Page() {
       <FaqSchema items={faqItems} />
       <div className="mt-12 space-y-8 text-sm text-muted-foreground leading-relaxed">
         <section>
-          <h2 className="text-lg font-semibold text-foreground mb-3">Practical File Size Reference</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Common MB and GB conversions</h2>
+          <p className="mb-4">
+            These answers use decimal units for MB and GB. GiB is a binary unit,
+            so its value in GB is different.
+          </p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-primary/10">
-                  <th className="text-left p-2 font-medium">File Type</th>
-                  <th className="text-left p-2 font-medium">Typical Size</th>
+                  <th className="text-left p-2 font-medium">From</th>
+                  <th className="text-left p-2 font-medium">Equivalent</th>
                 </tr>
               </thead>
               <tbody>
-                {[
-                  ["Photo (JPEG)", "3 - 5 MB"],
-                  ["Song (MP3)", "3 - 5 MB"],
-                  ["Ebook", "1 - 5 MB"],
-                  ["HD movie (1080p)", "4 - 5 GB"],
-                  ["4K movie", "20 - 100 GB"],
-                  ["1 hour of 4K video recording", "40 - 60 GB"],
-                ].map((row, i) => (
-                  <tr key={i} className="even:bg-muted/30">
-                    <td className="p-2">{row[0]}</td>
-                    <td className="p-2">{row[1]}</td>
+                {commonConversions.map(({ amount, from, to }) => (
+                  <tr key={`${amount}-${from}-${to}`} className="even:bg-muted/30">
+                    <td className="p-2">{formatExactDataSizeValue(amount)} {from}</td>
+                    <td className="p-2 font-semibold text-foreground">
+                      {formatExactDataSizeValue(convertDataSize(amount, from, to))} {to}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <p className="mt-3">
-            These are illustrative ranges, not upload limits. Dimensions, duration,
-            encoding, and quality settings can change file size substantially.
             For internet speed conversions, try our{" "}
             <Link href="/calc/convert/mbps-to-gbps" className="text-primary underline hover:no-underline">Mbps to Gbps converter</Link>.
           </p>
