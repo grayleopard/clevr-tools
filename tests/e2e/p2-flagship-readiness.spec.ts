@@ -24,6 +24,16 @@ async function makeFixtures(): Promise<void> {
   await fs.mkdir(EVIDENCE_DIR, { recursive: true });
   await fs.writeFile(evidence("invalid.pdf"), "not a PDF");
 
+  const pixels = Buffer.alloc(768 * 768 * 3);
+  let seed = 12345;
+  for (let index = 0; index < pixels.length; index += 1) {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    pixels[index] = seed >>> 24;
+  }
+  await sharp(pixels, { raw: { width: 768, height: 768, channels: 3 } })
+    .jpeg({ quality: 95 })
+    .toFile(evidence("large.jpg"));
+
   const first = await PDFDocument.create();
   first.addPage([210, 310]);
   await fs.writeFile(evidence("first.pdf"), await first.save());
@@ -132,6 +142,37 @@ test("Image Compressor emits a parseable JPG and safe lifecycle events", async (
     "tool_download",
     "tool_process_another",
   ]);
+});
+
+test("Image Compressor reports the actual target-size outcome and stays usable on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/compress/image", { waitUntil: "domcontentloaded" });
+
+  const targetInput = page.getByLabel("Aim for a file size (optional)");
+  await targetInput.fill("9");
+  await expect(targetInput).toHaveAttribute("aria-invalid", "true");
+  await page.locator('main input[type="file"]').first().setInputFiles(evidence("large.jpg"));
+  await expect(page.getByRole("link", { name: "Download Optimized" })).toHaveCount(0);
+
+  await targetInput.fill("100");
+  await expect(targetInput).toHaveAttribute("aria-invalid", "false");
+  const downloadLink = page.getByRole("link", { name: "Download Optimized" });
+  await expect(downloadLink).toBeVisible({ timeout: 45_000 });
+  const firstOutputUrl = await downloadLink.getAttribute("href");
+  const bytes = await downloadFrom(downloadLink, "large-compressed.jpg");
+  expect((await sharp(bytes).metadata()).format).toBe("jpeg");
+  expect(bytes.length).toBeLessThanOrEqual(100 * 1024);
+  await expect(page.getByText("Under your 100.0 KB target.")).toBeVisible();
+
+  await targetInput.fill("10");
+  await expect(downloadLink).not.toHaveAttribute("href", firstOutputUrl!, { timeout: 45_000 });
+  const tighterBytes = await downloadFrom(downloadLink, "large-compressed.jpg");
+  if (tighterBytes.length <= 10 * 1024) {
+    await expect(page.getByText("Under your 10.0 KB target.")).toBeVisible();
+  } else {
+    await expect(page.getByText(/Above your 10\.0 KB target/)).toBeVisible();
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test("PDF to JPG emits ordered, parseable JPG files in a ZIP", async ({ page }) => {

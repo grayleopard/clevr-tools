@@ -54,6 +54,7 @@ export const tools: Tool[] = [
       <p>For a step-by-step workflow, see <a href="/blog/compress-images">how to compress images and check the result</a>.</p>
 
       <h2>Good to know</h2>
+      <p><strong>Aim for an upload limit.</strong> Enter the destination's file-size cap in KB before choosing an image. The compressor will try to get under it, but some images cannot meet a small target without further resizing or a different supported format. Check the actual output size and appearance before uploading.</p>
       <p><strong>Quality values are encoder-specific.</strong> Start with a high setting, lower it in small steps, and inspect gradients, text, faces, and sharp edges at the intended display size.</p>
       <p><strong>Results vary by source.</strong> Dimensions, existing compression, detail, transparency, and output format all affect the final size. An already optimized image may change very little.</p>
       <p><strong>Compare accepted formats.</strong> If the destination supports both WebP and JPG or PNG, export copies and choose the smallest result that preserves the detail you need.</p>

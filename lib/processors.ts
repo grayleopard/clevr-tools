@@ -22,7 +22,8 @@ interface CanvasExportOptions {
 export async function compressImage(
   file: File,
   quality = 80,
-  outputFormat: ImageOutputFormat = "original"
+  outputFormat: ImageOutputFormat = "original",
+  targetSizeKB?: number
 ): Promise<{ blob: Blob; ext: string; mimeType: string }> {
   const { default: imageCompression } = await import("browser-image-compression");
   const qualityPercent = qualityToPercent(quality);
@@ -36,7 +37,7 @@ export async function compressImage(
 
   const runCompression = (requestedQuality: number) =>
     imageCompression(file, {
-      maxSizeMB: 100,
+      maxSizeMB: targetSizeKB === undefined ? 100 : targetSizeKB / 1024,
       initialQuality: normalizeCanvasQuality(requestedQuality),
       useWebWorker: true,
       fileType: mimeType,
