@@ -134,6 +134,15 @@ test("Data Size keeps its clean canonical and sitemap eligibility without result
   assert.notEqual(heic.contained, true);
 });
 
+test("common conversion answers use the shared unit definitions instead of file-size estimates", () => {
+  const pageSource = read("app/calc/convert/data/page.tsx");
+  assert.match(pageSource, /convertDataSize\(amount, from, to\)/);
+  assert.doesNotMatch(pageSource, /Typical Size|HD movie|4K movie/);
+  assert.equal(dataSize.convertDataSize(4.7, "GB", "MB"), 4700);
+  assert.equal(dataSize.convertDataSize(4000, "MB", "GB"), 4);
+  assert.equal(dataSize.convertDataSize(1, "GiB", "GB"), 1.073741824);
+});
+
 test("Data Size UI keeps bounded controls and responsive layout cues", () => {
   const source = read("components/tools/UnitConverterPage.tsx");
   assert.match(source, /\[3, 4, 5, 6, 8, 10, 12, 15]/);
