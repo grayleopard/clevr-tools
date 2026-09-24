@@ -197,4 +197,7 @@ export const dataSizeSeoContent = `
     <thead><tr><th>Unit</th><th>System</th><th>Exact bytes</th></tr></thead>
     <tbody>${referenceTableRows}</tbody>
   </table>
+
+  <h2>Definitions and sources</h2>
+  <p>The factors in this calculator are generated from the same unit definitions as the results and reference table. For the underlying conventions, see the <a href="https://www.bipm.org/en/measurement-units/si-prefixes">BIPM's SI prefix definitions</a> and the <a href="https://styleguide.iec.ch/?docs=iec%2Ftypographic%2Funits-and-symbols">IEC's binary unit symbols</a>. If a storage label uses MB or GB but means a power of 1,024, confirm that convention with the source before converting; the unambiguous binary symbols are MiB and GiB.</p>
 `;

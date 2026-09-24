@@ -108,6 +108,11 @@ test("calculator, generated tables, worked examples, and FAQs share the registry
   );
 });
 
+test("data-size reference cites primary SI and binary-unit definitions", () => {
+  assert.match(dataSize.dataSizeSeoContent, /https:\/\/www\.bipm\.org\/en\/measurement-units\/si-prefixes/);
+  assert.match(dataSize.dataSizeSeoContent, /https:\/\/styleguide\.iec\.ch\/\?docs=iec%2Ftypographic%2Funits-and-symbols/);
+});
+
 test("Data Size keeps its clean canonical and sitemap eligibility without result URLs", () => {
   const pageSource = read("app/calc/convert/data/page.tsx");
   const componentSource = read("components/tools/UnitConverterPage.tsx");
