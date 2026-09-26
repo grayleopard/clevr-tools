@@ -267,7 +267,7 @@ export default function ToolLayout({
             <div className={`mx-auto ${contentWidth} px-4 pb-12 sm:px-6 sm:pb-16`}>
               <nav
                 aria-label="Breadcrumb"
-                className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-b border-[color:var(--ghost-border)] py-6 text-xs font-medium text-muted-foreground"
+                className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-b border-[color:var(--ghost-border)] py-4 text-xs font-medium text-muted-foreground"
               >
                 <Link
                   href="/"
@@ -288,24 +288,24 @@ export default function ToolLayout({
                 </span>
               </nav>
 
-              <header className="relative mb-10 flex flex-col justify-between gap-7 border-b-2 border-foreground py-8 sm:flex-row sm:items-end sm:py-10">
+              <header className="relative mb-6 flex flex-col justify-between gap-5 border-b border-[color:var(--ghost-border)] py-6 sm:flex-row sm:items-end sm:py-7">
                 <div className="max-w-4xl">
-                <div className="mb-4 inline-flex items-center gap-2 text-primary">
+                <div className="mb-3 inline-flex items-center gap-2 text-primary">
                   <ShieldCheck className="h-[14px] w-[14px]" aria-hidden="true" />
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
                     {badgeLabel}
                   </span>
                 </div>
 
-                <h1 className="break-words font-display text-[clamp(3rem,7vw,6.25rem)] font-black uppercase leading-[0.84] tracking-[-0.075em]">
+                <h1 className="break-words font-display text-[clamp(2.25rem,4vw,3.75rem)] font-black uppercase leading-[0.95] tracking-[-0.055em]">
                   {tool.name}
                 </h1>
-                <p className="mt-5 max-w-2xl break-words text-base leading-7 text-muted-foreground">
+                <p className="mt-3 max-w-2xl break-words text-base leading-7 text-muted-foreground">
                   {tool.shortDescription}
                 </p>
                 </div>
                 {!isContained ? (
-                  <span className="w-fit shrink-0 border border-primary px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-primary">
+                  <span className="w-fit shrink-0 rounded-md bg-primary/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
                     Ready to use
                   </span>
                 ) : null}

@@ -36,12 +36,16 @@ export default function UnitConverterPage({
   defaultTo,
   allowedUnits,
   seoContent,
+  presets,
+  showReferenceTable = true,
 }: {
   configKey: string;
   defaultFrom?: string;
   defaultTo?: string;
   allowedUnits?: readonly string[];
   seoContent?: React.ReactNode;
+  presets?: readonly { label: string; value: number; from: string; to: string }[];
+  showReferenceTable?: boolean;
 }) {
   const config: UnitConverterConfig = converterConfigs[configKey] ?? converterConfigs.length;
   const effectiveDefaultFrom = defaultFrom ?? config.defaultFromUnit;
@@ -75,6 +79,13 @@ export default function UnitConverterPage({
     setFromValue(String(example.value));
     setActiveField("from");
     recordInput(String(example.value), example.from, example.to);
+  };
+  const handlePreset = (preset: NonNullable<typeof presets>[number]) => {
+    setFromUnit(preset.from);
+    setToUnit(preset.to);
+    setFromValue(String(preset.value));
+    setActiveField("from");
+    recordInput(String(preset.value), preset.from, preset.to);
   };
   const isDataSize = configKey === "data";
   const hasFixedUnitSet = (allowedUnits?.length ?? 0) > 0;
@@ -179,6 +190,24 @@ export default function UnitConverterPage({
 
   return (
     <div className="space-y-6">
+      {presets?.length ? (
+        <section aria-label="Common amounts" className="space-y-2">
+          <h2 className="text-sm font-semibold">Common amounts</h2>
+          <div className="flex flex-wrap gap-2">
+            {presets.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => handlePreset(preset)}
+                className="min-h-11 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground">US customary cups; a metric cup is 250 mL.</p>
+        </section>
+      ) : null}
       {examples.length > 0 && (
         <section aria-label="Common conversion examples" className="space-y-2">
           <h2 className="text-sm font-semibold">Try a common conversion</h2>
@@ -354,7 +383,7 @@ export default function UnitConverterPage({
       </div>
 
       {/* Quick reference table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      {showReferenceTable && <div className="rounded-xl border border-border bg-card overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-primary/10">
@@ -382,7 +411,7 @@ export default function UnitConverterPage({
             ))}
           </tbody>
         </table>
-      </div>
+      </div>}
 
       <TipJar />
 
